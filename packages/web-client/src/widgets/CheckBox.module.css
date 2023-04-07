@@ -1,0 +1,29 @@
+.CheckBox {
+  height: 28px;
+  width: 28px;
+  position: relative;
+  background-color: white;
+  border: rgb(73, 73, 73) 2px solid;
+}
+
+.CheckBox > input {
+  height: 28px;
+  width: 28px;
+  opacity: 0;
+}
+
+.checkMark {
+  pointer-events: none;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 20px;
+  width: 20px;
+  background-color: rgb(28, 179, 141);
+  opacity: 0;
+  transition: opacity 100ms linear;
+}
+
+input:checked + .checkMark {
+  opacity: 1;
+}

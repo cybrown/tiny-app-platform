@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "add",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "BinaryOperator",
+        "operator": "+",
+        "right": {
+          "kind": "Local",
+          "name": "b"
+        },
+        "left": {
+          "kind": "Local",
+          "name": "a"
+        }
+      },
+      "parameters": [
+        "a",
+        "b"
+      ]
+    }
+  }
+]

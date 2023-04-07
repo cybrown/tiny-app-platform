@@ -1,0 +1,109 @@
+[
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "argKind": "Positional",
+        "value": {
+          "kind": "BinaryOperator",
+          "operator": "==",
+          "right": 1,
+          "left": {
+            "kind": "Local",
+            "name": "a"
+          }
+        }
+      },
+      {
+        "argKind": "Positional",
+        "value": {
+          "kind": "BlockOfExpressions",
+          "children": [
+            "ok1"
+          ]
+        }
+      },
+      {
+        "argKind": "Positional",
+        "value": {
+          "kind": "Call",
+          "args": [
+            {
+              "argKind": "Positional",
+              "value": {
+                "kind": "BinaryOperator",
+                "operator": "==",
+                "right": 2,
+                "left": {
+                  "kind": "Local",
+                  "name": "a"
+                }
+              }
+            },
+            {
+              "argKind": "Positional",
+              "value": {
+                "kind": "BlockOfExpressions",
+                "children": [
+                  "ok2-1",
+                  "ok2-2"
+                ]
+              }
+            },
+            {
+              "argKind": "Positional",
+              "value": {
+                "kind": "Call",
+                "args": [
+                  {
+                    "argKind": "Positional",
+                    "value": {
+                      "kind": "BinaryOperator",
+                      "operator": "==",
+                      "right": 3,
+                      "left": {
+                        "kind": "Local",
+                        "name": "a"
+                      }
+                    }
+                  },
+                  {
+                    "argKind": "Positional",
+                    "value": {
+                      "kind": "BlockOfExpressions",
+                      "children": [
+                        "ok3"
+                      ]
+                    }
+                  },
+                  {
+                    "argKind": "Positional",
+                    "value": {
+                      "kind": "BlockOfExpressions",
+                      "children": [
+                        "ko2",
+                        "ko2"
+                      ]
+                    }
+                  }
+                ],
+                "value": {
+                  "kind": "Local",
+                  "name": "if"
+                }
+              }
+            }
+          ],
+          "value": {
+            "kind": "Local",
+            "name": "if"
+          }
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "if"
+    }
+  }
+]

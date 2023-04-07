@@ -1,0 +1,13 @@
+.Column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.Column > * {
+  flex-shrink: 0;
+}
+
+div.Column {
+  flex-shrink: 1;
+}

@@ -1,0 +1,63 @@
+.Snippet {
+  height: 92px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;
+  position: relative;
+}
+
+.preContainer {
+  height: 100%;
+  overflow: auto;
+}
+
+.Snippet.noMaxHeight {
+  height: initial;
+}
+
+.Snippet.viewMore {
+  height: 276px;
+}
+
+.floatingToolBar {
+  z-index: 1;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  opacity: 0;
+  transition: linear 100ms opacity;
+}
+
+.Snippet:hover .floatingToolBar {
+  opacity: 1;
+}
+
+.Snippet pre.preInline {
+  line-height: 28px;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+
+.Snippet .fullScreen {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  position: fixed;
+  z-index: 1;
+  background-color: azure;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+}
+
+.Snippet .floatingFullscreenToolbar {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.scroller {
+  overflow: auto;
+  height: 100%;
+}

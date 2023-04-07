@@ -1,0 +1,48 @@
+.SwitchContainer {
+  position: relative;
+  height: 28px;
+}
+
+.Switch,
+.background {
+  width: 52px;
+  height: 28px;
+}
+
+.Switch {
+  opacity: 0;
+}
+
+.background {
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  background-color: rgb(192, 192, 192);
+  transition: background-color 100ms linear;
+  border-radius: 14px;
+}
+
+.switch {
+  display: block;
+  height: 24px;
+  width: 24px;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  pointer-events: none;
+  transition: transform 100ms linear;
+  border-radius: 12px;
+}
+
+.background,
+.switch {
+  position: absolute;
+}
+
+.Switch:checked + .background {
+  background-color: rgb(28, 179, 141);
+}
+
+.Switch:checked + .background + .switch {
+  transform: translateX(24px);
+}

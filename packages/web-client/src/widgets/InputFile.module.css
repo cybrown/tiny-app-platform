@@ -1,0 +1,19 @@
+.InputFile {
+  height: 28px;
+  background-color: rgb(248, 250, 249);
+  border-style: solid;
+  border-width: 1px;
+  outline: none;
+
+  transition-property: background-color;
+  transition-duration: 250ms;
+}
+
+.InputFile:focus {
+  background-color: white;
+  border-color: rgb(72, 73, 73);
+}
+
+.InputFile:hover {
+  background-color: white;
+}

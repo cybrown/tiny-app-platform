@@ -1,0 +1,49 @@
+[
+  {
+    "kind": "Quote",
+    "children": [
+      42
+    ]
+  },
+  {
+    "kind": "Quote",
+    "children": [
+      {
+        "kind": "BinaryOperator",
+        "operator": "+",
+        "right": {
+          "kind": "Local",
+          "name": "b"
+        },
+        "left": {
+          "kind": "Local",
+          "name": "a"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "Quote",
+    "children": [
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "argKind": "Positional",
+            "value": {
+              "kind": "Local",
+              "name": "a"
+            }
+          }
+        ],
+        "value": {
+          "kind": "BlockOfExpressions",
+          "children": [
+            "A",
+            42
+          ]
+        }
+      }
+    ]
+  }
+]

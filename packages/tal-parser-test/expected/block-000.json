@@ -1,0 +1,10 @@
+[
+  {
+    "kind": "BlockOfExpressions",
+    "children": [
+      "value1",
+      "value2",
+      13
+    ]
+  }
+]

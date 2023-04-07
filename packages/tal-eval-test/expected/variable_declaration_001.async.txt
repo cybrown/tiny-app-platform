@@ -1,0 +1,18 @@
+<void>
+<error: 'Set undeclared local: b'>
+<void>
+"a1"
+<error: 'Local not found: b'>
+"c1"
+<error: 'Local already declared: a'>
+<error: 'Set undeclared local: b'>
+<error: 'Local already declared: c'>
+"a1"
+<error: 'Local not found: b'>
+"c1"
+<error: 'Tried to set a not mutable local: a'>
+<error: 'Set undeclared local: b'>
+"c3"
+"a1"
+<error: 'Local not found: b'>
+"c3"

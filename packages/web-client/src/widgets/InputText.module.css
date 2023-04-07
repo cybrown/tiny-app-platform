@@ -1,0 +1,23 @@
+.InputText {
+  height: 28px;
+  background-color: rgb(248, 250, 249);
+  border-style: solid;
+  border-width: 1px;
+  outline: none;
+
+  transition-property: background-color;
+  transition-duration: 250ms;
+}
+
+.InputText:focus {
+  background-color: white;
+  border-color: rgb(72, 73, 73);
+}
+
+.InputText:hover {
+  background-color: white;
+}
+
+textarea.InputText {
+  height: 140px;
+}

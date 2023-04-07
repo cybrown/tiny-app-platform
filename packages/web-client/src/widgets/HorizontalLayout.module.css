@@ -1,0 +1,8 @@
+.HorizontalLayout {
+  display: flex;
+  width: 100%;
+}
+
+.HorizontalLayoutChild {
+  display: block;
+}

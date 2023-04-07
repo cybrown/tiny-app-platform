@@ -1,0 +1,159 @@
+import { defineFunction, RuntimeContext } from "tal-eval";
+import { base64_to_bytes } from "../util/base64";
+
+export const string_to_bytes = defineFunction(
+  "string_to_bytes",
+  [{ name: "string" }, { name: "encoding" }],
+  (ctx, { string, encoding = "utf-8" }) => {
+    switch (encoding) {
+      case "base64":
+        return base64_to_bytes(string);
+      case "base64url":
+        return base64_to_bytes(string);
+      case "utf-8":
+        return new TextEncoder().encode(string);
+      default:
+        throw new Error("Encoding not supported: " + encoding);
+    }
+  }
+);
+
+export const string_to_number = defineFunction(
+  "string_to_number",
+  [{ name: "string" }],
+  (ctx, { string }) => {
+    return Number(string);
+  }
+);
+
+export const string_split = defineFunction(
+  "string_split",
+  [{ name: "string" }, { name: "separator" }],
+  (ctx, { string, separator }) => {
+    return string.split(separator);
+  }
+);
+
+export const string_locale_compare = defineFunction(
+  "string_locale_compare",
+  [{ name: "a" }, { name: "b" }],
+  (ctx, { a, b }) => a.localeCompare(b)
+);
+
+export const string_trim = defineFunction(
+  "string_trim",
+  [{ name: "string" }],
+  (ctx, { string }) => (string as string).trim()
+);
+
+export const string_starts_with = defineFunction(
+  "string_starts_with",
+  [{ name: "string" }, { name: "search" }],
+  (ctx, { string, search }) => (string as string).startsWith(search)
+);
+
+export const string_ends_with = defineFunction(
+  "string_ends_with",
+  [{ name: "string" }, { name: "search" }],
+  (ctx, { string, search }) => (string as string).endsWith(search)
+);
+
+export const string_contains = defineFunction(
+  "string_contains",
+  [{ name: "string" }, { name: "search" }],
+  (ctx, { string, search }) => (string as string).includes(search)
+);
+
+export const string_format = defineFunction(
+  "string_format",
+  [{ name: "template" }, { name: "values" }],
+  string_format_impl
+);
+
+export const string_lower = defineFunction(
+  "string_lower",
+  [{ name: "string" }],
+  (ctx, { string }) => (string as string).toLocaleLowerCase()
+);
+
+export const string_upper = defineFunction(
+  "string_upper",
+  [{ name: "string" }],
+  (ctx, { string }) => (string as string).toLocaleUpperCase()
+);
+
+export const string_slice = defineFunction(
+  "string_slice",
+  [{ name: "string" }, { name: "start" }, { name: "end" }],
+  (ctx, { string, start, end }) => (string as string).slice(start, end)
+);
+
+export const string_repeat = defineFunction(
+  "string_repeat",
+  [{ name: "string" }, { name: "count" }],
+  (ctx, { string, count }) => (string as string).repeat(count)
+);
+
+export const string_trim_start = defineFunction(
+  "string_trim_start",
+  [{ name: "string" }],
+  (ctx, { string }) => (string as string).trimStart()
+);
+
+export const string_trim_end = defineFunction(
+  "string_trim_end",
+  [{ name: "string" }],
+  (ctx, { string }) => (string as string).trimEnd()
+);
+
+export const string_pad_start = defineFunction(
+  "string_pad_start",
+  [{ name: "string" }, { name: "length" }, { name: "fill" }],
+  (ctx, { string, length, fill }) => (string as string).padStart(length, fill)
+);
+
+export const string_pad_end = defineFunction(
+  "string_pad_end",
+  [{ name: "string" }, { name: "length" }, { name: "fill" }],
+  (ctx, { string, length, fill }) => (string as string).padEnd(length, fill)
+);
+
+// Replace this implementation
+const extractPlaceholdersRegexp = /\$[a-zA-Z_$]+[a-zA-Z_$0-9]*/g;
+
+function replacePlaceholdersByLocals(ctx: RuntimeContext, str: string) {
+  return str.replace(
+    extractPlaceholdersRegexp,
+    (name) => ctx.getLocalOr(name.substring(1), "") as string
+  );
+}
+
+function replacePlaceholdersByExpressions(
+  ctx: RuntimeContext,
+  str: string,
+  values: { [key: string]: string }
+) {
+  return str.replace(extractPlaceholdersRegexp, (name) => {
+    try {
+      return values[name.substring(1)];
+    } catch (err) {
+      // TODO: Only return this when error is missing local
+      return "";
+    }
+  });
+}
+
+function string_format_impl(
+  ctx: RuntimeContext,
+  value: { [key: string]: any }
+) {
+  if (value.values) {
+    return replacePlaceholdersByExpressions(
+      ctx,
+      value.template as string,
+      value.values as { [key: string]: string }
+    );
+  } else {
+    return replacePlaceholdersByLocals(ctx, value.template);
+  }
+}

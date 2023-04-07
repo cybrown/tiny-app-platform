@@ -1,0 +1,15 @@
+.Select {
+  height: 28px;
+}
+
+.selectDisabled {
+  color: gray;
+}
+
+.optionDisabled {
+  color: gray;
+}
+
+.option {
+  color: black;
+}

@@ -1,0 +1,7 @@
+.RenderError {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(230, 104, 104);
+  color: rgb(245, 242, 242);
+}

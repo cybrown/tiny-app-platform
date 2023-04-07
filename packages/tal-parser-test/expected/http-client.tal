@@ -1,0 +1,180 @@
+set_system_property(key: "title", value: "HTTP Client demo")
+var headers = []
+var body = null
+var language = "text"
+var doFormat = false
+var doShowHeaders = false
+var method
+var url
+var response
+let executeHttpRequest = () => {
+  set response = http_request(
+    method
+    url
+    headers
+    body
+    allowErrorStatusCode: true
+  )
+}
+
+Column {
+  Row {
+    Box {
+      flex: 0
+
+      Select {
+        bindTo:      method
+        placeholder: "Method"
+        options:     [
+          "GET"
+          "POST"
+          "PUT"
+          "PATCH"
+          "DELETE"
+          "LIST"
+          "HEAD"
+          "OPTIONS"
+        ]
+      }
+    }
+
+    Box {
+      flex: 1
+
+      InputText {
+        bindTo:      url
+        placeholder: "URL"
+        onSubmit:    executeHttpRequest()
+      }
+    }
+  }
+
+  array_map(
+    headers
+    () => [
+      Row {
+        Box {
+          flex: 1
+
+          InputText {
+            placeholder: "Header name"
+            bindTo:      it[0]
+          }
+        }
+
+        Box {
+          flex: 3
+
+          InputText {
+            placeholder: "Header value"
+            bindTo:      it[1]
+          }
+        }
+
+        Box {
+          flex: 0
+
+          Button {
+            text:    "Remove"
+            onClick: set headers = array_remove(headers, index)
+          }
+        }
+      }
+    ]
+  )
+
+  Button {
+    text:    "New header"
+    onClick: { set headers = array_append(headers, ["", ""]) }
+  }
+
+  InputText {
+    bindTo:      body
+    placeholder: "body"
+    multiline:   true
+  }
+
+  Button {
+    text:    "Execute HTTP Request"
+    onClick: executeHttpRequest()
+  }
+
+  if (method != null && url != null) Text {
+    copy: true
+    text: "curl -X $method $headers '$url'"
+      |  string_format({
+          method:  method
+          url:     url
+          headers: headers
+            |  array_map(() => string_format(
+                "-H '$name: $value'"
+                {name: it[0], value: it[1]}
+              ))
+            |  array_join(" ")
+        })
+  }
+
+  if (response != null) Column {
+    Row {
+      Text {
+        text: string_format(
+          "Status code: $status"
+          {status: response.status}
+        )
+      }
+    }
+
+    Row {
+      Text { "Show headers" }
+      Switch { bindTo: doShowHeaders }
+    }
+
+    if (doShowHeaders) Column {
+      flexShrink: 0
+
+      Text { text: "Headers:" }
+
+      Table {
+        columns: [
+          {description: "Name", display: () => Text { text: row.key }}
+
+          {
+            description: "Value"
+            display:     () => Text { text: row.value }
+          }
+        ]
+        values:  response.headers | object_entries | array_map(() => {key: it[0], value: it[1]})
+      }
+    }
+
+    Row {
+      Text { "Language syntax to highlight" }
+
+      Select {
+        options: [
+          "text"
+          "json"
+          "html"
+          "xml"
+          "javascript"
+          "css"
+        ]
+        bindTo:  language
+      }
+
+      Text { "Format code (when possible)" }
+      Switch { bindTo: doFormat }
+    }
+
+    Box {
+      scroll: true
+
+      Snippet {
+        text:        bytes_to_string(response.body)
+        format:      doFormat
+        language:    language
+        noMaxHeight: true
+      }
+    }
+  }
+}

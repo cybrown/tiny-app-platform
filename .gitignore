@@ -1,0 +1,5 @@
+/pgdata
+/pg_logs.txt
+/node_modules
+/packages/*/dist
+/packages/*/build

@@ -1,0 +1,26 @@
+{
+  "name": "my-nocode-workspace",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm test --workspaces --if-present"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cybrown/my-nocode.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cybrown/my-nocode/issues"
+  },
+  "homepage": "https://github.com/cybrown/my-nocode#readme",
+  "workspaces": [
+    "packages/tal-parser",
+    "packages/tal-parser-test",
+    "packages/tal-eval",
+    "packages/tal-eval-test",
+    "packages/backend",
+    "packages/web-client"
+  ]
+}

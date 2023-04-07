@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo nothing to build yet",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "content-disposition": "^0.5.4",
+    "form-data": "^4.0.0",
+    "mongodb": "^4.10.0",
+    "pg": "^8.8.0",
+    "route-parser": "^0.0.5",
+    "serve-static": "^1.15.0"
+  }
+}

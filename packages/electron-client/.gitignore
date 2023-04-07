@@ -1,0 +1,8 @@
+node_modules
+
+out/
+
+/back/
+/asset-manifest.json
+/static/
+/index.html

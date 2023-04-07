@@ -1,0 +1,42 @@
+.App {
+  display: flex;
+  height: 100vh;
+}
+
+.BtnEdit {
+  position: fixed;
+  bottom: 2px;
+  right: 2px;
+}
+
+.AppRendererContainer {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.AppRendererContainer > * {
+  height: 100%;
+}
+
+.App.hasEditor .AppRendererContainer {
+  width: 50%;
+}
+
+@media (max-width: 480px) {
+  .App.hasEditor .AppRendererContainer {
+    display: none;
+  }
+}
+
+.EditorContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 480px) {
+  .EditorContainer {
+    width: 100%;
+  }
+}

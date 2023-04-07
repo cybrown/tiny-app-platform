@@ -1,0 +1,28 @@
+.Text {
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;
+  position: relative;
+}
+
+.buttonCopy {
+  z-index: 1;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  opacity: 0;
+  transition: linear 100ms opacity;
+}
+
+.Text:hover .buttonCopy {
+  opacity: 1;
+}
+
+.Text pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 200px;
+  overflow: hidden;
+}

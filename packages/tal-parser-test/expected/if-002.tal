@@ -1,0 +1,11 @@
+if (a == 1) {
+  "ok1"
+} else if (a == 2) {
+  "ok2-1"
+  "ok2-2"
+} else if (a == 3) {
+  "ok3"
+} else {
+  "ko2"
+  "ko2"
+}

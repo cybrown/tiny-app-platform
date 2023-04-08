@@ -172,7 +172,11 @@ export function evaluateExpression(
         let previousError = null;
         let previousValue: Expression | null = null;
         try {
-          previousValue = { location: locationOf(value.first), kind: 'Value', value: ctx.evaluate(value.first) };
+          previousValue = {
+            location: locationOf(value.first),
+            kind: 'Value',
+            value: ctx.evaluate(value.first),
+          };
         } catch (err) {
           previousError = err;
         }
@@ -211,7 +215,11 @@ export function evaluateExpression(
             ],
           };
           try {
-            previousValue = { location: locationOf(newCurrent), kind: 'Value', value: ctx.evaluate(newCurrent) };
+            previousValue = {
+              location: locationOf(newCurrent),
+              kind: 'Value',
+              value: ctx.evaluate(newCurrent),
+            };
             previousError = null;
           } catch (err) {
             previousError = err;
@@ -533,7 +541,7 @@ export async function evaluateAsyncExpression(
                     consolidatedProvidedAndMissingArguments[argName]
                   );
             }
-            return (func.callAsync ?? func.call)(
+            return await (func.callAsync ?? func.call)(
               ctx,
               namedArgumentsEvaluated,
               remainingPositionalArguments
@@ -564,7 +572,7 @@ export async function evaluateAsyncExpression(
               );
               counter++;
             }
-            return ctx
+            return await ctx
               .createChild(finalNamedArgumentsEvaluated)
               .evaluateAsync(func2.body);
           } else {
@@ -670,13 +678,17 @@ export async function evaluateAsyncExpression(
 }
 
 export class EvaluationError extends Error {
-  constructor(message: string, public readonly expression: Expression, public readonly cause: unknown) {
+  constructor(
+    message: string,
+    public readonly expression: Expression,
+    public readonly cause: unknown
+  ) {
     super(message);
   }
 }
 
 function locationOf(expression: Expression): ExpressionLocation | undefined {
-  if (expression && typeof expression == "object") {
+  if (expression && typeof expression == 'object') {
     return expression.location;
   }
   return undefined;

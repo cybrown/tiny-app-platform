@@ -59,12 +59,14 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
   return <Debug ctx={null as any} value={ui} />;
 }
 
-function RenderError({
+export function RenderError({
   expression,
   err,
+  isStartup = false,
 }: {
   expression: Expression;
   err: unknown;
+  isStartup?: boolean;
 }) {
   let locationMessage = "";
   const expressionToUse =
@@ -79,9 +81,11 @@ function RenderError({
   }
   return (
     <div className={styles.RenderError}>
-      {`Failed to evaluate ${nameKindOfExpression(
-        expression
-      )} during render because of: <${err}>${locationMessage}`}
+      {`Failed to evaluate ${
+        expression ? nameKindOfExpression(expression) : "an expression"
+      } during ${
+        isStartup ? "startup" : "render"
+      } because of: <${err}>${locationMessage}`}
       <button
         onClick={() =>
           console.error(err instanceof EvaluationError ? err.cause : err)
@@ -93,7 +97,7 @@ function RenderError({
   );
 }
 
-function nameKindOfExpression(expr: Expression) {
+export function nameKindOfExpression(expr: Expression) {
   if (expr && !Array.isArray(expr) && typeof expr == "object" && expr.kind) {
     return expr.kind;
   }

@@ -107,6 +107,7 @@ import {
   number_random,
   number_randint,
 } from "./functions/number";
+import errorStyles from "./runtime/styles.module.css";
 
 const queryParams = window.location.search
   .slice(1)
@@ -456,7 +457,7 @@ function App() {
           {app ? (
             <AppRenderer ctx={ctx} app={app} />
           ) : parseError ? (
-            <div>
+            <div className={errorStyles.RenderError}>
               <div>Error parsing source: {parseError.message}</div>
               <div>
                 At line {(parseError as any)?.location?.start?.line} column{" "}
@@ -651,7 +652,7 @@ function ToolBar({
       const app = tal.parse(sourceToSave);
       sourceToSave = tal.stringify(app);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to format because of syntax error", err);
     } finally {
       setSource(sourceToSave);
     }

@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { ExpressionLocation, FunctionExpression } from "tal-parser";
 import { APP_DEBUG_MODE_ENV } from "../constants";
 import styles from "./Debug.module.css";
 
@@ -29,6 +30,12 @@ function RenderAny({ value, path }: { value: unknown; path: string }): any {
   } else if (Array.isArray(value)) {
     return <RenderArray value={value} path={path} />;
   } else if (typeof value === "object") {
+    if ("kind" in value && typeof value.kind === "string") {
+      const kind = value.kind;
+      if (typeof kind == "string") {
+        return <RenderKindedObject value={value} path={path} kind={kind} />;
+      }
+    }
     return <RenderObject value={value} path={path} />;
   } else if (["string", "number", "boolean"].includes(typeof value)) {
     const valueAsJson = JSON.stringify(value);
@@ -80,6 +87,50 @@ function RenderArray({ value, path }: { value: unknown[]; path: string }) {
       ) : null}
     </span>
   );
+}
+
+function RenderKindedObject({
+  value,
+  path,
+  kind,
+}: {
+  value: object;
+  kind: string;
+  path: string;
+}) {
+  switch (kind) {
+    case "Function":
+      const func = value as FunctionExpression & {
+        location: ExpressionLocation;
+      }; // TODO: Find a better way to pass expression nodes
+      return (
+        <span>
+          Function ({func.parameters.join(", ")}) defined at location{" "}
+          {func.location.start.line}:{func.location.start.column}
+        </span>
+      );
+  }
+  if (
+    "location" in value &&
+    value.location &&
+    typeof value.location == "object" &&
+    "start" in value.location &&
+    value.location.start &&
+    typeof value.location.start == "object" &&
+    "line" in value.location.start &&
+    "column" in value.location.start &&
+    typeof value.location.start.line == "number" &&
+    typeof value.location.start.column == "number"
+  ) {
+    return (
+      <span>
+        {kind} defined at location {value.location.start.line}:
+        {value.location.start.column}
+      </span>
+    );
+  } else {
+    return <span>{kind}</span>;
+  }
 }
 
 function RenderObject({ value, path }: { value: object; path: string }) {

@@ -2,3 +2,8 @@
   height: 168px;
   flex-grow: 0;
 }
+
+.fitted {
+  width: 100%;
+  height: 100%;
+}

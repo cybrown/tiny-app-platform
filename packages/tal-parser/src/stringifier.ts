@@ -127,14 +127,17 @@ class Stringifier {
     obj: DeclareLocalExpression,
     func: FunctionExpression
   ): string {
-    return (
-      'fun ' +
-      obj.name +
-      '(' +
-      func.parameters.join(', ') +
-      ') ' +
-      this.stringify(func.body)
-    );
+    let argList = '(' + func.parameters.join(', ') + ') ';
+    if (argList.length > 60) {
+      argList = '(';
+      this.incrementDepth();
+      for (let parameter of func.parameters) {
+        argList += '\n' + this.depthSpace() + parameter;
+      }
+      this.decrementDepth();
+      argList += '\n' + this.depthSpace() + ') ';
+    }
+    return 'fun ' + obj.name + argList + this.stringify(func.body);
   }
 
   stringifySubExpression(obj: SubExpressionExpression): string {

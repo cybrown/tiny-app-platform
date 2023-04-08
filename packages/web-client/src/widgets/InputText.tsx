@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { ChangeEvent, useCallback, useState } from "react";
 import { Expression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
@@ -43,23 +43,47 @@ export default function InputText({
     [ctx, onSubmit]
   );
 
-  return multiline ? (
-    <textarea
-      className={styles.InputText}
-      placeholder={placeholder}
-      onChange={(e) => ctx.setValue(bindTo, e.target.value)}
-      value={ctx.evaluateOr(bindTo, "") as string}
-    />
-  ) : (
+  const onInputChangeHandler = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      try {
+        ctx.setValue(bindTo, e.target.value);
+      } catch (err) {
+        setLastError(err);
+      }
+    },
+    [bindTo, ctx]
+  );
+
+  const onTextareaChangeHandler = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement>) => {
+      try {
+        ctx.setValue(bindTo, e.target.value);
+      } catch (err) {
+        setLastError(err);
+      }
+    },
+    [bindTo, ctx]
+  );
+
+  return (
     <>
-      <input
-        className={styles.InputText}
-        placeholder={placeholder}
-        type={type ?? "text"}
-        onChange={(e) => ctx.setValue(bindTo, e.target.value)}
-        onKeyDown={onKeyDownHandler}
-        value={ctx.evaluateOr(bindTo, "") as string}
-      />
+      {multiline ? (
+        <textarea
+          className={styles.InputText}
+          placeholder={placeholder}
+          onChange={onTextareaChangeHandler}
+          value={ctx.evaluateOr(bindTo, "") as string}
+        />
+      ) : (
+        <input
+          className={styles.InputText}
+          placeholder={placeholder}
+          type={type ?? "text"}
+          onChange={onInputChangeHandler}
+          onKeyDown={onKeyDownHandler}
+          value={ctx.evaluateOr(bindTo, "") as string}
+        />
+      )}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );

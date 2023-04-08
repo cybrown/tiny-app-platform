@@ -1,7 +1,8 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { AddressableExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Select.module.css";
+import ErrorPopin from "./internal/ErrorPopin";
 
 type SelectProps = {
   ctx: RuntimeContext;
@@ -16,6 +17,8 @@ export default function Select({
   options,
   placeholder,
 }: SelectProps) {
+  const [lastError, setLastError] = useState(null as any);
+
   const showEmpty =
     !ctx.hasValue(bindTo) ||
     !options
@@ -24,42 +27,50 @@ export default function Select({
 
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const optionToSet = options[e.target.selectedIndex - (showEmpty ? 1 : 0)];
-      ctx.setValue(
-        bindTo,
-        typeof optionToSet === "string" ? optionToSet : optionToSet.value
-      );
+      try {
+        const optionToSet =
+          options[e.target.selectedIndex - (showEmpty ? 1 : 0)];
+        ctx.setValue(
+          bindTo,
+          typeof optionToSet === "string" ? optionToSet : optionToSet.value
+        );
+      } catch (err) {
+        setLastError(err);
+      }
     },
     [bindTo, ctx, options, showEmpty]
   );
 
   return (
-    <select
-      className={[styles.Select, showEmpty ? styles.selectDisabled : ""].join(
-        " "
-      )}
-      onChange={onChangeHandler}
-      value={ctx.evaluateOr(bindTo, "") as string}
-    >
-      {showEmpty ? (
-        <option className={styles.optionDisabled}>{placeholder}</option>
-      ) : null}
-      {options.map((option) =>
-        typeof option === "string" ? (
-          <option className={styles.option} key={option} value={option}>
-            {option}
-          </option>
-        ) : (
-          <option
-            className={styles.option}
-            key={option.value}
-            value={option.value}
-          >
-            {option.label}
-          </option>
-        )
-      )}
-    </select>
+    <>
+      <select
+        className={[styles.Select, showEmpty ? styles.selectDisabled : ""].join(
+          " "
+        )}
+        onChange={onChangeHandler}
+        value={ctx.evaluateOr(bindTo, "") as string}
+      >
+        {showEmpty ? (
+          <option className={styles.optionDisabled}>{placeholder}</option>
+        ) : null}
+        {options.map((option) =>
+          typeof option === "string" ? (
+            <option className={styles.option} key={option} value={option}>
+              {option}
+            </option>
+          ) : (
+            <option
+              className={styles.option}
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          )
+        )}
+      </select>
+      <ErrorPopin lastError={lastError} setLastError={setLastError} />
+    </>
   );
 }
 

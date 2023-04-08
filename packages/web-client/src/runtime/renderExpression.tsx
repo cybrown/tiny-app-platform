@@ -97,8 +97,16 @@ export function RenderError({
   );
 }
 
-export function nameKindOfExpression(expr: Expression) {
-  if (expr && !Array.isArray(expr) && typeof expr == "object" && expr.kind) {
+function nameKindOfExpression(expr: Expression) {
+  if (expr && typeof expr == "object") {
+    if (
+      "value" in expr &&
+      expr.value &&
+      typeof expr.value == "object" &&
+      "kind" in expr.value
+    ) {
+      return expr.value.kind;
+    }
     return expr.kind;
   }
   if (expr == null) {

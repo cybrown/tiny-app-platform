@@ -1,4 +1,56 @@
-import { defineFunction } from "tal-eval";
+import { RuntimeContext, defineFunction } from "tal-eval";
+import { Expression } from "tal-parser";
+
+const watches = new WeakMap<RuntimeContext, Map<Expression, unknown>>();
+
+export const watch = defineFunction(
+  "watch",
+  [{ name: "expr", lazy: true }, { name: "action" }],
+  (ctx, { expr, action }) => {
+    let currentCtxMap = watches.get(ctx);
+    if (!currentCtxMap) {
+      currentCtxMap = new Map();
+      watches.set(ctx, currentCtxMap);
+    }
+    currentCtxMap.set(expr, ctx.evaluate(expr));
+
+    function run(
+      currentCtxMap: Map<Expression, unknown>,
+      oldValue: unknown,
+      newValue: unknown
+    ) {
+      currentCtxMap.set(expr, newValue);
+      ctx.callFunctionAsync(action, [
+        oldValue,
+        newValue,
+        oldValue === undefined,
+      ]);
+      // TODO: Show errors in UI
+    }
+
+    ctx.registerStateChangedListener(() => {
+      if (!currentCtxMap) return;
+      const oldValue = currentCtxMap.get(expr);
+      const newValue = ctx.evaluate(expr);
+      if (oldValue === undefined) {
+        run(currentCtxMap, oldValue, newValue);
+      } else if (
+        Array.isArray(oldValue) &&
+        Array.isArray(newValue) &&
+        oldValue.length === newValue.length
+      ) {
+        for (let i = 0; i < oldValue.length; i++) {
+          if (oldValue[i] !== newValue[i]) {
+            run(currentCtxMap, oldValue, newValue);
+            break;
+          }
+        }
+      } else if (oldValue !== newValue) {
+        run(currentCtxMap, oldValue, newValue);
+      }
+    });
+  }
+);
 
 export const typeof$ = defineFunction(
   "typeof",

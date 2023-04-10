@@ -51,6 +51,7 @@ import {
   set_system_property,
   is_defined,
   default$,
+  watch,
 } from "./functions/core";
 import { event_on, event_trigger } from "./functions/event";
 import { json_parse, json_stringify, jmespath_search } from "./functions/json";
@@ -108,6 +109,7 @@ import {
   number_randint,
 } from "./functions/number";
 import errorStyles from "./runtime/styles.module.css";
+import Pager, { PagerDocumentation } from "./widgets/Pager";
 
 const queryParams = window.location.search
   .slice(1)
@@ -188,6 +190,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Link", Link, LinkDocumentation);
   ctx.registerWidget("ListLayout", ListLayout, ListLayoutDocumentation);
   ctx.registerWidget("Loader", Loader, LoaderDocumentation);
+  ctx.registerWidget("Pager", Pager, PagerDocumentation);
   ctx.registerWidget("Row", Row, RowDocumentation);
   ctx.registerWidget("Select", Select, SelectDocumentation);
   ctx.registerWidget("Snippet", Snippet, SnippetDocumentation);
@@ -201,6 +204,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(throw$);
   ctx.registerFunction(try$);
   ctx.registerFunction(typeof$);
+  ctx.registerFunction(watch);
 
   ctx.registerFunction(array_append);
   ctx.registerFunction(array_concat);
@@ -348,9 +352,10 @@ function App() {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, dummyStateUpdate] = useState(0);
-  const ctx: RuntimeContext = useMemo(() => {
-    return buildContext(() => dummyStateUpdate(Math.random()));
-  }, []);
+  const ctx: RuntimeContext = useMemo(
+    () => buildContext(() => dummyStateUpdate(Math.random())),
+    []
+  );
   const [updateSourceFunc, setUpdateSource] = useState<(() => string) | null>(
     null
   );

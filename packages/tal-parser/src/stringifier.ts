@@ -42,6 +42,51 @@ class Stringifier {
     throw new Error('Expression kind not supported for serialization');
   }
 
+  stringifyCustomKind(value: Expression & object): string {
+    const result = this.stringifyCustomKindSingleLine(value);
+    if (result.length > 80 || result.includes('\n')) {
+      return this.stringifyCustomKindMultiLine(value);
+    }
+    return result;
+  }
+
+  stringifyCustomKindSingleLine(value: Expression & object): string {
+    return (
+      '%' +
+      value.kind +
+      ' { ' +
+      Object.entries(value)
+        .filter(([key]) => key !== 'kind' && key !== 'location')
+        .map(([key, value]) => key + ': ' + this.stringify(value as Expression))
+        .join(', ') +
+      ' }'
+    );
+  }
+
+  stringifyCustomKindMultiLine(value: Expression & object): string {
+    let result = '%' + value.kind + ' {\n';
+    this.incrementDepth();
+    const argsToStringify = Object.entries(value).filter(
+      ([key]) => key !== 'kind' && key !== 'location'
+    );
+    const maxKeyLength = Math.max(
+      ...argsToStringify.map(([key]) => key.length)
+    );
+    argsToStringify.forEach(
+      ([key, value]) =>
+        (result +=
+          this.depthSpace() +
+          key +
+          ': ' +
+          padSpaces(maxKeyLength - key.length) +
+          this.stringify(value as Expression) +
+          '\n')
+    );
+    this.decrementDepth();
+    result += this.depthSpace() + '}';
+    return result;
+  }
+
   escapeString(str: string): string {
     return str.replace('\n', '\\n');
   }
@@ -86,6 +131,8 @@ class Stringifier {
         return this.stringify(obj.value as any);
       case 'KindedObject':
         return this.stringifyKindedObject(obj);
+      default:
+        return this.stringifyCustomKind(obj);
     }
   }
 

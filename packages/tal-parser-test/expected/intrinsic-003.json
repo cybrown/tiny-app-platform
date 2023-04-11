@@ -1,0 +1,18 @@
+[
+  {
+    "kind": "CustomExpression",
+    "bindTo": {
+      "kind": "Local",
+      "name": "myVar"
+    },
+    "name": {
+      "kind": "Local",
+      "name": "toto"
+    },
+    "values": {
+      "kind": "OtherCustom",
+      "value1": 1,
+      "value2": 2
+    }
+  }
+]

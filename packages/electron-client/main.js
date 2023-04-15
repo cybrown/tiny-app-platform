@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, shell, ipcMain } = require("electron");
+const { app, BrowserWindow, shell, ipcMain, dialog } = require("electron");
 const path = require("path");
 const findFreePort = require("find-free-port");
 const fs = require("fs");
@@ -63,21 +63,35 @@ function createWindow() {
 
   // and load the index.html of the app.
   mainWindow.loadFile("index.html");
-  mainWindow.webContents.on("did-navigate", async function () {
+  mainWindow.webContents.on("did-navigate", async function() {
     let sourceFromFile = null;
     let sourcePath = null;
     openInSystemBrowser = false;
     try {
       sourceFromFile = await new Promise((resolve, reject) => {
-        if (process.argv && process.argv.length > 1) {
+        if (process.argv.length > 1) {
           sourcePath = process.argv[1];
-          fs.readFile(sourcePath, (err, data) => {
-            if (err) return reject(err);
-            resolve(data.toString("utf-8"));
-          });
-        } else {
-          resolve(null);
         }
+        if (sourcePath == null) {
+          const sourcePaths = dialog.showOpenDialogSync({
+            buttonLabel: "File to load or create",
+            filters: [{ name: "Tiny app scripts", extensions: ["tas"] }],
+            properties: [
+              "createDirectory",
+              "promptToCreate",
+              "dontAddToRecent",
+            ],
+          });
+          if (sourcePaths === undefined) {
+            dialog.showErrorBox("Error", "A file must be selected to continue");
+            process.exit(0);
+          }
+          sourcePath = sourcePaths[0];
+        }
+        fs.readFile(sourcePath, (err, data) => {
+          if (err) return reject(err);
+          resolve(data.toString("utf-8"));
+        });
       });
     } catch (err) {
       console.error("Failed to load file", err);
@@ -118,7 +132,7 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
-  app.on("activate", function () {
+  app.on("activate", function() {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -128,7 +142,7 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on("window-all-closed", function () {
+app.on("window-all-closed", function() {
   if (process.platform !== "darwin") app.quit();
 });
 

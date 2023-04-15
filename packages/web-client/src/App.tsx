@@ -123,14 +123,6 @@ const queryParams = window.location.search
     return prev;
   }, {} as { [key: string]: string[] });
 
-const allApps: string[] = [];
-for (let i = 0; i < localStorage.length; i++) {
-  const key = localStorage.key(i);
-  if (key) {
-    allApps.push(key);
-  }
-}
-
 async function getRemoteConfiguration() {
   const response = await fetch(backendUrl + "/configuration");
   if (response.status < 200 || response.status >= 300) {
@@ -165,9 +157,11 @@ async function saveApp(name: string, source: string) {
 }
 
 let sourceFromFile: string | null = null;
+let failedToLoadFromFile = false;
 try {
   sourceFromFile = (window as any).electronAPI.config().sourceFromFile;
 } catch (err) {
+  failedToLoadFromFile = true;
   console.log("failed to initialize config event for sourceFromFile");
 }
 
@@ -335,9 +329,9 @@ function App() {
           setSource(remoteAppSource);
         } else {
           setSource(
-            sourceFromFile ??
-              localStorage.getItem(currentAppName) ??
-              DEFAULT_APP_SOURCE
+            failedToLoadFromFile
+              ? localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE
+              : sourceFromFile ?? DEFAULT_APP_SOURCE
           );
         }
       } catch (err) {

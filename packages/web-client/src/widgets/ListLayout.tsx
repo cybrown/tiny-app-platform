@@ -1,6 +1,6 @@
 import { Expression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import renderExpression from "../runtime/renderExpression";
+import RenderExpression from "../runtime/RenderExpression";
 import styles from "./ListLayout.module.css";
 
 type ListLayoutProps = {
@@ -12,7 +12,7 @@ export default function ListLayout({ ctx, children }: ListLayoutProps) {
   return (
     <div className={styles.ListLayout}>
       {children
-        .flatMap((child) => renderExpression(ctx, child))
+        .flatMap((child) => <RenderExpression ctx={ctx} expression={child} />)
         .map((child, index) => (
           <div className={styles.ListLayoutChild} key={index}>
             {child}

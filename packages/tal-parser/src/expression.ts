@@ -93,6 +93,9 @@ export type BinaryOperatorExpression = {
 export type BlockOfExpressionsExpression = {
   kind: 'BlockOfExpressions';
   children: Expression[];
+  // Used by function calls when the body is directly a block of expression
+  // There's no need to create a child context in those cases
+  mustKeepContext?: boolean;
 };
 
 export type DeclareLocalExpression = {

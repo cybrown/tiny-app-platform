@@ -1,6 +1,6 @@
 import { Expression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import renderExpression from "../runtime/renderExpression";
+import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 
 type TableModelColumn = {
@@ -30,10 +30,13 @@ export default function Table({ ctx, columns, values }: TableProps) {
             <tr key={index}>
               {(columns ?? []).map((col) => (
                 <td key={col.description}>
-                  {renderExpression(ctx, {
-                    kind: "Value",
-                    value: ctx.callFunction(col.display as any, [value]),
-                  })}
+                  <RenderExpression
+                    ctx={ctx}
+                    expression={{
+                      kind: "Value",
+                      value: ctx.callFunction(col.display as any, [value]),
+                    }}
+                  />
                 </td>
               ))}
             </tr>

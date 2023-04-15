@@ -3,12 +3,18 @@ import {
   Expression,
   ExpressionLocation,
   FunctionExpression,
+  isExpr,
 } from 'tal-parser';
-import { RegisterableFunction, RuntimeContext } from './RuntimeContext';
+import {
+  ContextInternalState,
+  RegisterableFunction,
+  RuntimeContext,
+} from './RuntimeContext';
 
 export function evaluateExpression(
   ctx: RuntimeContext,
-  value: Expression
+  value: Expression,
+  contextInternalState?: ContextInternalState
 ): unknown {
   try {
     if (
@@ -150,9 +156,19 @@ export function evaluateExpression(
             );
             counter++;
           }
-          return ctx
-            .createChild(finalNamedArgumentsEvaluated)
-            .evaluate(func2.body);
+          if (isExpr(func2.body, 'BlockOfExpressions')) {
+            func2.body.mustKeepContext = true;
+          }
+          let childContext = ctx.createChild(
+            finalNamedArgumentsEvaluated,
+            false
+          );
+          if (contextInternalState) {
+            childContext = childContext.createChildWithInternalState(
+              contextInternalState
+            );
+          }
+          return childContext.evaluate(func2.body);
         } else {
           console.error(func);
           throw new Error('Call not supported');
@@ -318,9 +334,9 @@ export function evaluateExpression(
       }
       case 'BlockOfExpressions': {
         let lastValue = null;
-        const childContext = ctx.createChild({});
+        const contextToUse = value.mustKeepContext ? ctx : ctx.createChild({});
         for (let expression of value.children ?? []) {
-          lastValue = childContext.evaluate(expression);
+          lastValue = contextToUse.evaluate(expression);
         }
         return lastValue;
       }

@@ -1,5 +1,5 @@
 import { RuntimeContext } from "tal-eval";
-import renderExpression, { RenderError } from "./runtime/renderExpression";
+import RenderExpression, { RenderError } from "./runtime/RenderExpression";
 import { Expression } from "tal-parser";
 import { useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
@@ -43,7 +43,7 @@ function AppRenderer({
   return lastError ? (
     <RenderError expression={null} err={lastError} isStartup />
   ) : appUi ? (
-    <>{renderExpression(ctx, appUi)}</>
+    <RenderExpression ctx={ctx} expression={appUi} />
   ) : null;
 }
 

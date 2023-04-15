@@ -1,6 +1,6 @@
 import { Expression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import renderExpression from "../runtime/renderExpression";
+import RenderExpression from "../runtime/RenderExpression";
 import styles from "./HorizontalLayout.module.css";
 
 type HorizontalLayoutProps = {
@@ -18,7 +18,7 @@ export default function HorizontalLayout({
   return (
     <div className={styles.HorizontalLayout}>
       {children
-        .flatMap((child) => renderExpression(ctx, child))
+        .flatMap((child) => <RenderExpression ctx={ctx} expression={child} />)
         .map((child, index) => (
           <div
             className={styles.HorizontalLayoutChild}

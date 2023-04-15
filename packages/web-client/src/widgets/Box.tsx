@@ -1,6 +1,6 @@
 import React from "react";
 import { Expression } from "tal-parser";
-import renderExpression from "../runtime/renderExpression";
+import RenderExpression from "../runtime/RenderExpression";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Box.module.css";
 
@@ -39,7 +39,9 @@ export default function Box({
     >
       {children
         ? children
-            .flatMap((child) => renderExpression(childContext, child))
+            .flatMap((child) => (
+              <RenderExpression ctx={childContext} expression={child} />
+            ))
             .map((child, index) => (
               <React.Fragment key={index}>{child}</React.Fragment>
             ))

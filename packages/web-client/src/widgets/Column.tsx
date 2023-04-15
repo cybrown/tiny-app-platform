@@ -1,6 +1,6 @@
 import { Expression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import renderExpression from "../runtime/renderExpression";
+import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Column.module.css";
 import React from "react";
 
@@ -19,7 +19,9 @@ export default function Column({
   return (
     <div className={styles.Column} style={{ flexShrink }}>
       {children
-        .flatMap((child) => renderExpression(childContext, child))
+        .flatMap((child) => (
+          <RenderExpression ctx={childContext} expression={child} />
+        ))
         .map((child, index) => (
           <React.Fragment key={index}>{child}</React.Fragment>
         ))}

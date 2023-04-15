@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Expression } from "tal-parser";
-import renderExpression from "../runtime/renderExpression";
+import RenderExpression from "../runtime/RenderExpression";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 
 type LoaderProps = {
@@ -82,7 +82,10 @@ export default function Loader({ ctx, data, view, watch, error }: LoaderProps) {
     ctx.evaluateAsync(data).then(
       (result) => {
         setLatestNominalResult(
-          renderExpression(ctx.createChild({ data: result }), view)
+          <RenderExpression
+            ctx={ctx.createChild({ data: result })}
+            expression={view}
+          />
         );
         setCurrentState("ok");
       },
@@ -90,7 +93,10 @@ export default function Loader({ ctx, data, view, watch, error }: LoaderProps) {
         setCurrentState("error");
         setLatestErrorResult(
           error ? (
-            renderExpression(ctx.createChild({ error: err }), error)
+            <RenderExpression
+              ctx={ctx.createChild({ error: err })}
+              expression={error}
+            />
           ) : (
             <div>error</div>
           )

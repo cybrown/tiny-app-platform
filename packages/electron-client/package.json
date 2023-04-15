@@ -34,7 +34,13 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "mimeType": ["application/x-tas"],
+            "scripts": {
+              "postinst": "postinst.sh",
+              "postrm": "postrm.sh"
+            }
+          }
         }
       ]
     }

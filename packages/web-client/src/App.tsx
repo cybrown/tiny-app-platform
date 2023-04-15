@@ -110,6 +110,13 @@ import {
 } from "./functions/number";
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
+import {
+  Text as TextComponent,
+  Stack,
+  InputText as InputTextComponent,
+  Button as ButtonComponent,
+  For,
+} from "tal-ui";
 
 const queryParams = window.location.search
   .slice(1)
@@ -172,7 +179,14 @@ try {
 }
 
 function buildContext(onStateChange: () => void): RuntimeContext {
-  const ctx = new RuntimeContext(onStateChange);
+  const ctx = new RuntimeContext(onStateChange, {
+    Text2: TextComponent,
+    Text: TextComponent,
+    Stack,
+    InputText: InputTextComponent,
+    Button: ButtonComponent,
+    For,
+  });
 
   ctx.registerWidget("Box", Box, BoxDocumentation);
   ctx.registerWidget("Button", Button, ButtonDocumentation);

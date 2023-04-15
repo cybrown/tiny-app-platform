@@ -20,6 +20,7 @@
     "packages/tal-parser-test",
     "packages/tal-eval",
     "packages/tal-eval-test",
+    "packages/tal-ui",
     "packages/backend",
     "packages/web-client"
   ]

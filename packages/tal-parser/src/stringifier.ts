@@ -13,6 +13,7 @@ import {
   QuoteExpression,
   SetValueExpression,
   SubExpressionExpression,
+  TemplateExpression,
   UnaryOperatorExpression,
 } from './expression';
 
@@ -52,7 +53,7 @@ class Stringifier {
 
   stringifyCustomKindSingleLine(value: Expression & object): string {
     return (
-      '%' +
+      '%%' +
       value.kind +
       ' { ' +
       Object.entries(value)
@@ -64,7 +65,7 @@ class Stringifier {
   }
 
   stringifyCustomKindMultiLine(value: Expression & object): string {
-    let result = '%' + value.kind + ' {\n';
+    let result = '%%' + value.kind + ' {\n';
     this.incrementDepth();
     const argsToStringify = Object.entries(value).filter(
       ([key]) => key !== 'kind' && key !== 'location'
@@ -131,9 +132,30 @@ class Stringifier {
         return this.stringify(obj.value as any);
       case 'KindedObject':
         return this.stringifyKindedObject(obj);
+      case 'Template':
+        return this.stringifyTemplate(obj);
       default:
         return this.stringifyCustomKind(obj);
     }
+  }
+
+  stringifyTemplate(obj: TemplateExpression): string {
+    let result = this.stringify(obj.component) + ' {\n';
+    this.incrementDepth();
+    Object.entries(obj.props.value)
+      .filter(([key]) => key != 'children')
+      .forEach(([key, value]) => {
+        result += this.depthSpace() + key + ': ' + this.stringify(value) + '\n';
+      });
+    (
+      (obj.props.value as any).children ?? { kind: 'Array', value: [] }
+    ).value.forEach((child: any) => {
+      result += this.depthSpace() + this.stringify(child) + '\n';
+    });
+
+    this.decrementDepth();
+    result += this.depthSpace() + '}';
+    return result;
   }
 
   stringifyDeref(obj: DerefExpression): string {

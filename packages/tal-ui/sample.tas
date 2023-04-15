@@ -1,0 +1,69 @@
+var message
+let inputText = %%Template { component: InputText, props: {bindTo: message} }
+
+fun getTicalc() { http_request("get", "https://www.ticalc.org") set message = "Click ok" }
+
+var values = [
+  {name: "a"}
+
+  {name: "b"}
+
+  {name: "c"}
+]
+let t = %%Template {
+  component: Stack
+  props:     {
+    children: [
+      %%Template {
+        component: Button
+        props:     {text: "Click me !", onClick: getTicalc()}
+      }
+
+      %%Template { component: Text2, props: {text: "Hello, World 1 !" + message} }
+
+      inputText
+      %%Template { component: InputText, props: {bindTo: message} }
+
+      %%Template { component: Text2, props: {text: "Hello, World 2 !"} }
+
+      %%Template {
+        component: Button
+        props:     {
+          text:    "Append"
+          onClick: { set values = array_append(values, {name: "d"}) }
+        }
+      }
+
+      %%Template {
+        component: Button
+        props:     {
+          text:    "Remove"
+          onClick: { set values = array_remove(values, array_length(values) - 1) }
+        }
+      }
+
+      %%Template { component: Text, props: {text: json_stringify(values)} }
+
+      %%Template {
+        component: For
+        props:     {
+          values:   values
+          children: [
+            %%Template {
+              component: Stack
+              props:     {
+                children: [
+                  %%Template { component: InputText, props: {bindTo: value.name} }
+
+                  %%Template { component: Text2, props: {text: value.name} }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+t

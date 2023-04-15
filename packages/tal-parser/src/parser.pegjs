@@ -102,7 +102,7 @@ SubExpression
     	{ return { location: location(), kind: 'SubExpression', expr }; }
 
 Intrinsic
-    = '%' _ kind:Identifier _ args:("{" _ (ObjectKeyValuePair _)* "}")
+    = '%%' _ kind:Identifier _ args:("{" _ (ObjectKeyValuePair _)* "}")
         { return { location: location(), kind, ...Object.fromEntries(args[2].map(arg => arg[0]))}; }
 
 NamedFunction
@@ -126,16 +126,19 @@ ObjectWithKind
               }, []);
             return {
                 location: location(),
-                kind: "KindedObject",
-                value: {
-                    kind: kind,
-                    ...(children.length ? {children} : {}),
-                    ...values.map(a => a[0]).reduce((prev, cur) => {
-                        if (Array.isArray(cur)) {
-                            prev[cur[0]] = cur[1];
-                        }
-                        return prev;
-                    }, {})
+                kind: "Template",
+                component: {kind: "Local", name: kind},
+                props: {
+                    kind: "Object",
+                    value: {
+                        ...(children.length ? {children: {kind: "Array", value: children}} : {}),
+                        ...values.map(a => a[0]).reduce((prev, cur) => {
+                            if (Array.isArray(cur)) {
+                                prev[cur[0]] = cur[1];
+                            }
+                            return prev;
+                        }, {})
+                    }
                 }
             };
         }

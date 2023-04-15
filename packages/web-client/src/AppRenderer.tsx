@@ -1,8 +1,9 @@
 import { RuntimeContext } from "tal-eval";
 import renderExpression, { RenderError } from "./runtime/renderExpression";
-import { Expression } from "tal-parser";
-import { useEffect, useState } from "react";
+import { Expression, TemplateExpression } from "tal-parser";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
+import { compileTemplate } from "tal-ui";
 
 function AppRenderer({
   app,
@@ -24,14 +25,8 @@ function AppRenderer({
           await ctx.evaluateAsync(expression);
         }
         ctx.endReinit();
-        const lastExpr = app.at(-1);
-        setAppUi({
-          kind: "KindedObject" as const,
-          value: {
-            kind: "Column",
-            children: Array.isArray(lastExpr) ? lastExpr : [lastExpr],
-          },
-        });
+        const lastExpr = app.at(-1)!;
+        setAppUi(ctx.evaluate(lastExpr) as any);
         setLastError(null);
       } catch (err) {
         setLastError(err);
@@ -43,8 +38,29 @@ function AppRenderer({
   return lastError ? (
     <RenderError expression={null} err={lastError} isStartup />
   ) : appUi ? (
-    <>{renderExpression(ctx, appUi)}</>
+    //<>{renderExpression(ctx, appUi)}</>
+    <RenderTemplate ctx={ctx} template={appUi as any} />
   ) : null;
+}
+
+function RenderTemplate({
+  ctx,
+  template,
+}: {
+  ctx: RuntimeContext;
+  template: TemplateExpression;
+}) {
+  const domRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const currentDomRef = domRef.current;
+    const compiledElement = compileTemplate(ctx, document, template);
+    domRef.current?.appendChild(compiledElement);
+    return () => {
+      currentDomRef?.removeChild(compiledElement);
+      // TODO: inflater.destroy();
+    };
+  }, [ctx, template]);
+  return <div ref={domRef}></div>;
 }
 
 export default AppRenderer;

@@ -107,6 +107,12 @@ export type KindedObjectExpression = {
   value: { [key: string]: unknown };
 };
 
+export type TemplateExpression = {
+  kind: 'Template';
+  component: Expression;
+  props: ObjectExpression;
+};
+
 export type ArrayExpression = {
   kind: 'Array';
   value: Expression[];
@@ -150,6 +156,7 @@ export type ExpressionByKind = {
   BlockOfExpressions: BlockOfExpressionsExpression;
   DeclareLocal: DeclareLocalExpression;
   KindedObject: KindedObjectExpression;
+  Template: TemplateExpression;
 };
 
 export type Expression =
@@ -173,6 +180,7 @@ export type Expression =
       | BlockOfExpressionsExpression
       | DeclareLocalExpression
       | KindedObjectExpression
+      | TemplateExpression
     ) & {
       location?: ExpressionLocation;
     });

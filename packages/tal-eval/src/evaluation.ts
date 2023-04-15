@@ -353,7 +353,11 @@ export function evaluateExpression(
           throw new Error('Unknown KindedObject: ' + valueAsUiWidget.kind);
         }
       }
+      case 'Template': {
+        return value;
+      }
     }
+
     throw new Error(
       'Failed to evaluate node with kind: ' + (value as any).kind
     );

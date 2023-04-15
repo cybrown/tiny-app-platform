@@ -262,12 +262,7 @@ export class RuntimeContext {
     initialValues: { [x: string]: unknown },
     extendable?: boolean
   ): RuntimeContext {
-    return new RuntimeContext(
-      () => this.triggerStateChangedListeners(),
-      initialValues,
-      this,
-      extendable
-    );
+    return new RuntimeContext(() => null, initialValues, this, extendable);
   }
 
   listLocals(): [string, unknown][] {

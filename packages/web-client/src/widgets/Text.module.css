@@ -1,9 +1,8 @@
 .Text {
-  height: 28px;
+  min-height: 28px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  white-space: nowrap;
   position: relative;
 }
 

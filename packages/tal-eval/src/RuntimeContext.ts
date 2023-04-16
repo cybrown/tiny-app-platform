@@ -4,6 +4,7 @@ import {
   AddressableExpression,
   FunctionExpression,
   CallExpression,
+  ArgumentExpression,
 } from 'tal-parser';
 
 class GetLocalError extends Error {
@@ -249,17 +250,31 @@ export class RuntimeContext {
   callFunction(
     func: FunctionExpression,
     args: unknown[],
-    kwargs: { [name: string]: unknown } = {}
+    kwargs: { [name: string]: unknown } = {},
+    contextInternalState?: ContextInternalState
   ) {
     const node: CallExpression = {
       kind: 'Call',
-      args: args.map(arg => ({
-        argKind: 'Positional',
-        value: { kind: 'Value', value: arg },
-      })),
+      args: args
+        .map(
+          arg =>
+            ({
+              argKind: 'Positional',
+              value: { kind: 'Value', value: arg },
+            } as ArgumentExpression)
+        )
+        .concat(
+          Object.entries(kwargs).map(([name, value]) => {
+            return {
+              argKind: 'Named',
+              name,
+              value: { kind: 'Value', value },
+            } as ArgumentExpression;
+          })
+        ),
       value: func,
     };
-    return this.createChild(kwargs).evaluate(node);
+    return this.evaluate(node, contextInternalState);
   }
 
   async callFunctionAsync(
@@ -269,13 +284,26 @@ export class RuntimeContext {
   ) {
     const node: CallExpression = {
       kind: 'Call',
-      args: args.map(arg => ({
-        argKind: 'Positional',
-        value: { kind: 'Value', value: arg },
-      })),
+      args: args
+        .map(
+          arg =>
+            ({
+              argKind: 'Positional',
+              value: { kind: 'Value', value: arg },
+            } as ArgumentExpression)
+        )
+        .concat(
+          Object.entries(kwargs).map(([name, value]) => {
+            return {
+              argKind: 'Named',
+              name,
+              value,
+            } as ArgumentExpression;
+          })
+        ),
       value: func,
     };
-    return this.createChild(kwargs).evaluateAsync(node);
+    return this.evaluateAsync(node);
   }
 
   createChild(
@@ -366,7 +394,7 @@ export class RuntimeContext {
     [key: string]: WidgetDocumentation<any>;
   } = {};
 
-  getWidgetByKind(kind: string): (props: any) => JSX.Element | null {
+  getWidgetByKind(kind: string): ((props: any) => JSX.Element | null) | null {
     const widget = this.widgets[kind];
     if (widget) {
       return widget;
@@ -374,7 +402,7 @@ export class RuntimeContext {
     if (this.parent) {
       return this.parent.getWidgetByKind(kind);
     }
-    throw new Error('Unknown widget kind: ' + kind);
+    return null;
   }
 
   registerWidget<T>(

@@ -145,6 +145,14 @@ export const log = defineFunction(
   }
 );
 
+export const expression_eval = defineFunction(
+  "expression_eval",
+  [{ name: "expression" }],
+  (ctx, { expression }) => {
+    return ctx.evaluate(expression);
+  }
+);
+
 export const set_system_property = defineFunction(
   "set_system_property",
   [{ name: "key" }, { name: "value" }],

@@ -18,12 +18,10 @@ export default function RenderExpression({
 }): JSX.Element {
   const customContextInternalStateRef = useRef(buildContextInternalState());
   try {
-    const contextInternalState: ContextInternalState | undefined = isExpr(
-      expression,
-      "Call"
-    )
-      ? customContextInternalStateRef.current
-      : undefined;
+    const contextInternalState: ContextInternalState | undefined =
+      isExpr(expression, "Call") || isExpr(expression, "KindedObject")
+        ? customContextInternalStateRef.current
+        : undefined;
     const ui = ctx.evaluate(expression, contextInternalState);
     contextInternalState && (contextInternalState.hasRenderedOnce = true);
     const result = renderNullableWidget(ui);
@@ -76,7 +74,11 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
     ui.ctx instanceof RuntimeContext &&
     typeof ui.kind == "string"
   ) {
-    return React.createElement(ui.ctx.getWidgetByKind(ui.kind), ui);
+    const component = ui.ctx.getWidgetByKind(ui.kind);
+    if (component == null) {
+      throw new Error("Component is null");
+    }
+    return React.createElement(component, ui);
   }
   return <Debug ctx={null as any} value={ui} />;
 }

@@ -52,6 +52,7 @@ import {
   is_defined,
   default$,
   watch,
+  expression_eval,
 } from "./functions/core";
 import { event_on, event_trigger } from "./functions/event";
 import { json_parse, json_stringify, jmespath_search } from "./functions/json";
@@ -193,6 +194,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Text", Text, TextDocumentation);
 
   ctx.registerFunction(default$);
+  ctx.registerFunction(expression_eval);
   ctx.registerFunction(if$);
   ctx.registerFunction(log);
   ctx.registerFunction(throw$);

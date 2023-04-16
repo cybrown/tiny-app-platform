@@ -365,6 +365,34 @@ export function evaluateExpression(
                 .map(([key, value]) => [key, ctx.evaluate(value as any)])
             ),
           };
+        } else if (ctx.hasLocal(valueAsUiWidget.kind)) {
+          const value = ctx.getLocal(valueAsUiWidget.kind) as Expression;
+          if (!isExpr(value, 'Function')) {
+            throw new Error('Only function can be used as UI Widgets');
+          }
+          return ctx.callFunction(
+            value,
+            [],
+            {
+              children: valueAsUiWidget.children,
+              bindTo: valueAsUiWidget.bindTo,
+              ...Object.fromEntries(
+                Object.entries(valueAsUiWidget).filter(([key]) =>
+                  key.startsWith('on')
+                )
+              ),
+              ...Object.fromEntries(
+                Object.entries(valueAsUiWidget)
+                  .filter(
+                    ([key]) =>
+                      !key.startsWith('on') &&
+                      !['kind', 'ctx', 'children', 'bindTo'].includes(key)
+                  )
+                  .map(([key, value]) => [key, ctx.evaluate(value as any)])
+              ),
+            },
+            contextInternalState
+          );
         } else {
           throw new Error('Unknown KindedObject: ' + valueAsUiWidget.kind);
         }

@@ -244,6 +244,9 @@ class Stringifier {
   }
 
   stringifyBlockOfExpressions(obj: BlockOfExpressionsExpression): string {
+    if (obj.children.length > 1) {
+      return this.stringifyBlockOfExpressionsMultiLine(obj);
+    }
     const result = this.stringifyBlockOfExpressionsOneLine(obj);
     if (result.length > 80 || result.includes('\n')) {
       return this.stringifyBlockOfExpressionsMultiLine(obj);

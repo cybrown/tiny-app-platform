@@ -61,7 +61,10 @@ export function evaluateExpression(
         return value.children[0];
       }
       case 'Function': {
-        contextForFunction.set(value, ctx);
+        // TODO: make sure we are in a function declaration
+        if (!contextForFunction.has(value)) {
+          contextForFunction.set(value, ctx);
+        }
         return value;
       }
       case 'Call': {
@@ -142,21 +145,19 @@ export function evaluateExpression(
             remainingPositionalArguments
           );
         } else if (isExpr(func, 'Function')) {
-          const finalNamedArgumentsEvaluated = Object.fromEntries(
-            Object.entries(providedNamedArguments).map(([name, value]) => [
-              name,
-              ctx.evaluate(value),
-            ])
-          );
+          const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
           let counter = 0;
           for (let parameter of func.parameters) {
-            if (finalNamedArgumentsEvaluated.hasOwnProperty(parameter)) {
-              continue;
+            if (providedNamedArguments.hasOwnProperty(parameter)) {
+              finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
+                providedNamedArguments[parameter]
+              );
+            } else {
+              finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
+                positionalArguments[counter]
+              );
+              counter++;
             }
-            finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
-              positionalArguments[counter]
-            );
-            counter++;
           }
           if (isExpr(func.body, 'BlockOfExpressions')) {
             func.body.mustKeepContext = true;
@@ -599,25 +600,19 @@ export async function evaluateAsyncExpression(
               remainingPositionalArguments
             );
           } else if (isExpr(func, 'Function')) {
-            const finalNamedArgumentsEvaluated = Object.fromEntries(
-              await Promise.all(
-                Object.entries(
-                  providedNamedArguments
-                ).map(async ([name, value]) => [
-                  name,
-                  await ctx.evaluateAsync(value),
-                ])
-              )
-            );
+            const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
             let counter = 0;
             for (let parameter of func.parameters) {
-              if (finalNamedArgumentsEvaluated.hasOwnProperty(parameter)) {
-                continue;
+              if (providedNamedArguments.hasOwnProperty(parameter)) {
+                finalNamedArgumentsEvaluated[
+                  parameter
+                ] = await ctx.evaluateAsync(providedNamedArguments[parameter]);
+              } else {
+                finalNamedArgumentsEvaluated[
+                  parameter
+                ] = await ctx.evaluateAsync(positionalArguments[counter]);
+                counter++;
               }
-              finalNamedArgumentsEvaluated[parameter] = await ctx.evaluateAsync(
-                positionalArguments[counter]
-              );
-              counter++;
             }
             const parentContext = contextForFunction.get(func);
             if (!parentContext) {

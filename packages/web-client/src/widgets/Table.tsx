@@ -1,11 +1,11 @@
-import { Expression } from "tal-parser";
+import { FunctionExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 
 type TableModelColumn = {
   description: string;
-  display: Expression;
+  display: FunctionExpression;
 };
 
 type TableProps = {
@@ -34,7 +34,7 @@ export default function Table({ ctx, columns, values }: TableProps) {
                     ctx={ctx}
                     expression={{
                       kind: "Value",
-                      value: ctx.callFunction(col.display as any, [value]),
+                      value: ctx.callFunction(col.display, [value]),
                     }}
                   />
                 </td>

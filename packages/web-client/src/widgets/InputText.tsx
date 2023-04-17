@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
-import { Expression } from "tal-parser";
+import { FunctionExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import styles from "./InputText.module.css";
@@ -10,7 +10,7 @@ type InputTextProps = {
   bindTo: AddressableExpression;
   multiline: boolean;
   placeholder: string;
-  onSubmit?: Expression;
+  onSubmit?: FunctionExpression;
   type?: "text" | "email" | "url" | "password";
 };
 
@@ -34,7 +34,7 @@ export default function InputText({
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       try {
         if (e.key === "Enter" && onSubmit) {
-          await ctx.evaluateAsync(onSubmit);
+          await ctx.callFunctionAsync(onSubmit, []);
         }
       } catch (err) {
         setLastError(err);

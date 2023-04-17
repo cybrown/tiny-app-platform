@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Expression } from "tal-parser";
+import { FunctionExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
 import ErrorPopin from "./internal/ErrorPopin";
@@ -8,7 +8,7 @@ import StyledButton from "./internal/StyledButton";
 type ButtonProps = {
   ctx: RuntimeContext;
   text: string;
-  onClick: Expression;
+  onClick: FunctionExpression;
   confirm?: string | boolean;
   secondary?: boolean;
 };
@@ -26,7 +26,7 @@ export default function Button({
     (async () => {
       try {
         setLastError(null);
-        const evaluationPromise = ctx.createChild({}).evaluateAsync(onClick);
+        const evaluationPromise = ctx.callFunctionAsync(onClick, []);
         setIsLoading(true);
         await evaluationPromise;
       } catch (err) {

@@ -360,15 +360,9 @@ export function evaluateExpression(
             children: valueAsUiWidget.children,
             bindTo: valueAsUiWidget.bindTo,
             ...Object.fromEntries(
-              Object.entries(valueAsUiWidget).filter(([key]) =>
-                key.startsWith('on')
-              )
-            ),
-            ...Object.fromEntries(
               Object.entries(valueAsUiWidget)
                 .filter(
                   ([key]) =>
-                    !key.startsWith('on') &&
                     !['kind', 'ctx', 'children', 'bindTo'].includes(key)
                 )
                 .map(([key, value]) => [key, ctx.evaluate(value as any)])
@@ -386,15 +380,9 @@ export function evaluateExpression(
               children: valueAsUiWidget.children,
               bindTo: valueAsUiWidget.bindTo,
               ...Object.fromEntries(
-                Object.entries(valueAsUiWidget).filter(([key]) =>
-                  key.startsWith('on')
-                )
-              ),
-              ...Object.fromEntries(
                 Object.entries(valueAsUiWidget)
                   .filter(
                     ([key]) =>
-                      !key.startsWith('on') &&
                       !['kind', 'ctx', 'children', 'bindTo'].includes(key)
                   )
                   .map(([key, value]) => [key, ctx.evaluate(value as any)])

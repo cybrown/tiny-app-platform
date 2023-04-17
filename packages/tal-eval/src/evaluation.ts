@@ -11,6 +11,8 @@ import {
   RuntimeContext,
 } from './RuntimeContext';
 
+const contextForFunction = new WeakMap<FunctionExpression, RuntimeContext>();
+
 export function evaluateExpression(
   ctx: RuntimeContext,
   value: Expression,
@@ -59,6 +61,7 @@ export function evaluateExpression(
         return value.children[0];
       }
       case 'Function': {
+        contextForFunction.set(value, ctx);
         return value;
       }
       case 'Call': {
@@ -138,8 +141,7 @@ export function evaluateExpression(
             namedArgumentsEvaluated,
             remainingPositionalArguments
           );
-        } else if (func && typeof func == 'object' && func.kind == 'Function') {
-          const func2: FunctionExpression = func;
+        } else if (isExpr(func, 'Function')) {
           const finalNamedArgumentsEvaluated = Object.fromEntries(
             Object.entries(providedNamedArguments).map(([name, value]) => [
               name,
@@ -147,7 +149,7 @@ export function evaluateExpression(
             ])
           );
           let counter = 0;
-          for (let parameter of func2.parameters) {
+          for (let parameter of func.parameters) {
             if (finalNamedArgumentsEvaluated.hasOwnProperty(parameter)) {
               continue;
             }
@@ -156,10 +158,14 @@ export function evaluateExpression(
             );
             counter++;
           }
-          if (isExpr(func2.body, 'BlockOfExpressions')) {
-            func2.body.mustKeepContext = true;
+          if (isExpr(func.body, 'BlockOfExpressions')) {
+            func.body.mustKeepContext = true;
           }
-          let childContext = ctx.createChild(
+          const parentContext = contextForFunction.get(func);
+          if (!parentContext) {
+            throw new Error('Parent context not found for function');
+          }
+          let childContext = parentContext.createChild(
             finalNamedArgumentsEvaluated,
             false
           );
@@ -167,8 +173,10 @@ export function evaluateExpression(
             childContext = childContext.createChildWithInternalState(
               contextInternalState
             );
+          } else {
+            childContext = childContext.createChild({});
           }
-          return childContext.evaluate(func2.body);
+          return childContext.evaluate(func.body);
         } else {
           console.error(func);
           throw new Error('Call not supported');
@@ -590,12 +598,7 @@ export async function evaluateAsyncExpression(
               namedArgumentsEvaluated,
               remainingPositionalArguments
             );
-          } else if (
-            func &&
-            typeof func == 'object' &&
-            func.kind == 'Function'
-          ) {
-            const func2: FunctionExpression = func;
+          } else if (isExpr(func, 'Function')) {
             const finalNamedArgumentsEvaluated = Object.fromEntries(
               await Promise.all(
                 Object.entries(
@@ -607,7 +610,7 @@ export async function evaluateAsyncExpression(
               )
             );
             let counter = 0;
-            for (let parameter of func2.parameters) {
+            for (let parameter of func.parameters) {
               if (finalNamedArgumentsEvaluated.hasOwnProperty(parameter)) {
                 continue;
               }
@@ -616,9 +619,13 @@ export async function evaluateAsyncExpression(
               );
               counter++;
             }
-            return await ctx
+            const parentContext = contextForFunction.get(func);
+            if (!parentContext) {
+              throw new Error('Parent context not found for function');
+            }
+            return await parentContext
               .createChild(finalNamedArgumentsEvaluated)
-              .evaluateAsync(func2.body);
+              .evaluateAsync(func.body);
           } else {
             console.error(func);
             throw new Error('Call not supported');

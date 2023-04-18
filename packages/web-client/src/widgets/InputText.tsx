@@ -1,6 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
-import { FunctionExpression } from "tal-parser";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import styles from "./InputText.module.css";
 import { AddressableExpression } from "tal-parser";
@@ -10,7 +9,7 @@ type InputTextProps = {
   bindTo: AddressableExpression;
   multiline: boolean;
   placeholder: string;
-  onSubmit?: FunctionExpression;
+  onSubmit?: FunctionValue;
   type?: "text" | "email" | "url" | "password";
 };
 

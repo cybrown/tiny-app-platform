@@ -1,17 +1,132 @@
 import {
+  ArgumentExpression,
   CallExpression,
   Expression,
   ExpressionLocation,
-  FunctionExpression,
   isExpr,
 } from 'tal-parser';
 import {
   ContextInternalState,
+  FunctionValue,
   RegisterableFunction,
   RuntimeContext,
+  isFunctionValue,
 } from './RuntimeContext';
 
-const contextForFunction = new WeakMap<FunctionExpression, RuntimeContext>();
+export function evaluateCall(
+  ctx: RuntimeContext,
+  func: any,
+  args: ArgumentExpression[],
+  contextInternalState?: ContextInternalState
+) {
+  const providedNamedArguments = Object.fromEntries(
+    args
+      .filter(a => a.argKind === 'Named')
+      .map(
+        it =>
+          (it.argKind === 'Named' ? [it.name, it.value] : []) as [
+            string,
+            Expression
+          ]
+      )
+  );
+  const positionalArguments = args
+    .filter(a => a.argKind === 'Positional')
+    .map(({ value }) => value);
+
+  if (
+    func &&
+    ((func.call && typeof func.call == 'function') ||
+      (func.callAsync && typeof func.callAsync == 'function'))
+  ) {
+    const consolidatedProvidedAndMissingArguments = {
+      ...providedNamedArguments,
+    };
+    const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction).parameters.filter(
+      parameter => !providedNamedArguments.hasOwnProperty(parameter.name)
+    );
+
+    // check parameters with export name and set value from context if exists
+    const namedArgumentsEvaluated: { [key: string]: unknown } = {};
+    missingDeclaredNamedParametersBeforeEnvironment.forEach(param => {
+      if (param.env) {
+        const localExportedValue = ctx.getEnv(param.env);
+        if (localExportedValue != null) {
+          namedArgumentsEvaluated[param.name] = localExportedValue;
+        }
+      }
+    });
+    const missingDeclaredNamedParameters = missingDeclaredNamedParametersBeforeEnvironment.filter(
+      parameter => !namedArgumentsEvaluated.hasOwnProperty(parameter.name)
+    );
+
+    for (
+      let paramIndex = 0;
+      paramIndex <
+      Math.min(
+        positionalArguments.length,
+        missingDeclaredNamedParameters.length
+      );
+      paramIndex++
+    ) {
+      const param = missingDeclaredNamedParameters[paramIndex];
+      consolidatedProvidedAndMissingArguments[param.name] =
+        positionalArguments[paramIndex];
+    }
+    const remainingPositionalArguments = positionalArguments
+      .slice(missingDeclaredNamedParameters.length)
+      .map(arg => ctx.evaluate(arg));
+    for (var argName of Object.keys(consolidatedProvidedAndMissingArguments)) {
+      const isArgLazy = !!(func.parametersByName[argName] ?? {}).lazy;
+      namedArgumentsEvaluated[argName] = isArgLazy
+        ? consolidatedProvidedAndMissingArguments[argName]
+        : ctx.evaluate(consolidatedProvidedAndMissingArguments[argName]);
+    }
+    if (!func.call) {
+      throw new Error(
+        'Function is not available in non async execution context'
+      );
+    }
+    return func.call(
+      ctx,
+      namedArgumentsEvaluated,
+      remainingPositionalArguments
+    );
+  } else if (isFunctionValue(func)) {
+    const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
+    let counter = 0;
+    for (let parameter of func.func.parameters) {
+      if (providedNamedArguments.hasOwnProperty(parameter)) {
+        finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
+          providedNamedArguments[parameter]
+        );
+      } else {
+        finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
+          positionalArguments[counter]
+        );
+        counter++;
+      }
+    }
+    if (isExpr(func.func.body, 'BlockOfExpressions')) {
+      func.func.body.mustKeepContext = true;
+    }
+    let childContext = func.ctx.createChild(
+      finalNamedArgumentsEvaluated,
+      false
+    );
+    if (contextInternalState) {
+      childContext = childContext.createChildWithInternalState(
+        contextInternalState
+      );
+    } else {
+      childContext = childContext.createChild({});
+    }
+    return childContext.evaluate(func.func.body);
+  } else {
+    console.error(func);
+    throw new Error('Call not supported');
+  }
+}
 
 export function evaluateExpression(
   ctx: RuntimeContext,
@@ -61,127 +176,16 @@ export function evaluateExpression(
         return value.children[0];
       }
       case 'Function': {
-        // TODO: make sure we are in a function declaration
-        if (!contextForFunction.has(value)) {
-          contextForFunction.set(value, ctx);
-        }
-        return value;
+        const functionValue: FunctionValue = {
+          __kind: 'FunctionValue',
+          func: value,
+          ctx,
+        };
+        return functionValue;
       }
       case 'Call': {
         const func = ctx.evaluate(value.value) as any;
-        const providedNamedArguments = Object.fromEntries(
-          value.args
-            .filter(a => a.argKind === 'Named')
-            .map(
-              it =>
-                (it.argKind === 'Named' ? [it.name, it.value] : []) as [
-                  string,
-                  Expression
-                ]
-            )
-        );
-        const positionalArguments = value.args
-          .filter(a => a.argKind === 'Positional')
-          .map(({ value }) => value);
-
-        if (
-          func &&
-          ((func.call && typeof func.call == 'function') ||
-            (func.callAsync && typeof func.callAsync == 'function'))
-        ) {
-          const consolidatedProvidedAndMissingArguments = {
-            ...providedNamedArguments,
-          };
-          const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction).parameters.filter(
-            parameter => !providedNamedArguments.hasOwnProperty(parameter.name)
-          );
-
-          // check parameters with export name and set value from context if exists
-          const namedArgumentsEvaluated: { [key: string]: unknown } = {};
-          missingDeclaredNamedParametersBeforeEnvironment.forEach(param => {
-            if (param.env) {
-              const localExportedValue = ctx.getEnv(param.env);
-              if (localExportedValue != null) {
-                namedArgumentsEvaluated[param.name] = localExportedValue;
-              }
-            }
-          });
-          const missingDeclaredNamedParameters = missingDeclaredNamedParametersBeforeEnvironment.filter(
-            parameter => !namedArgumentsEvaluated.hasOwnProperty(parameter.name)
-          );
-
-          for (
-            let paramIndex = 0;
-            paramIndex <
-            Math.min(
-              positionalArguments.length,
-              missingDeclaredNamedParameters.length
-            );
-            paramIndex++
-          ) {
-            const param = missingDeclaredNamedParameters[paramIndex];
-            consolidatedProvidedAndMissingArguments[param.name] =
-              positionalArguments[paramIndex];
-          }
-          const remainingPositionalArguments = positionalArguments
-            .slice(missingDeclaredNamedParameters.length)
-            .map(arg => ctx.evaluate(arg));
-          for (var argName of Object.keys(
-            consolidatedProvidedAndMissingArguments
-          )) {
-            const isArgLazy = !!(func.parametersByName[argName] ?? {}).lazy;
-            namedArgumentsEvaluated[argName] = isArgLazy
-              ? consolidatedProvidedAndMissingArguments[argName]
-              : ctx.evaluate(consolidatedProvidedAndMissingArguments[argName]);
-          }
-          if (!func.call) {
-            throw new Error(
-              'Function is not available in non async execution context'
-            );
-          }
-          return func.call(
-            ctx,
-            namedArgumentsEvaluated,
-            remainingPositionalArguments
-          );
-        } else if (isExpr(func, 'Function')) {
-          const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
-          let counter = 0;
-          for (let parameter of func.parameters) {
-            if (providedNamedArguments.hasOwnProperty(parameter)) {
-              finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
-                providedNamedArguments[parameter]
-              );
-            } else {
-              finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
-                positionalArguments[counter]
-              );
-              counter++;
-            }
-          }
-          if (isExpr(func.body, 'BlockOfExpressions')) {
-            func.body.mustKeepContext = true;
-          }
-          const parentContext = contextForFunction.get(func);
-          if (!parentContext) {
-            throw new Error('Parent context not found for function');
-          }
-          let childContext = parentContext.createChild(
-            finalNamedArgumentsEvaluated,
-            false
-          );
-          if (contextInternalState) {
-            childContext = childContext.createChildWithInternalState(
-              contextInternalState
-            );
-          } else {
-            childContext = childContext.createChild({});
-          }
-          return childContext.evaluate(func.body);
-        } else {
-          console.error(func);
-          throw new Error('Call not supported');
-        }
+        return evaluateCall(ctx, func, value.args, contextInternalState);
       }
 
       // Expression
@@ -369,9 +373,9 @@ export function evaluateExpression(
             ),
           };
         } else if (ctx.hasLocal(valueAsUiWidget.kind)) {
-          const value = ctx.getLocal(valueAsUiWidget.kind) as Expression;
-          if (!isExpr(value, 'Function')) {
-            throw new Error('Only function can be used as UI Widgets');
+          const value = ctx.getLocal(valueAsUiWidget.kind) as FunctionValue;
+          if (!value.__kind) {
+            throw new Error('Only function values can be used as UI Widgets');
           }
           return ctx.callFunction(
             value,
@@ -587,10 +591,10 @@ export async function evaluateAsyncExpression(
               namedArgumentsEvaluated,
               remainingPositionalArguments
             );
-          } else if (isExpr(func, 'Function')) {
+          } else if (isFunctionValue(func)) {
             const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
             let counter = 0;
-            for (let parameter of func.parameters) {
+            for (let parameter of func.func.parameters) {
               if (providedNamedArguments.hasOwnProperty(parameter)) {
                 finalNamedArgumentsEvaluated[
                   parameter
@@ -602,13 +606,9 @@ export async function evaluateAsyncExpression(
                 counter++;
               }
             }
-            const parentContext = contextForFunction.get(func);
-            if (!parentContext) {
-              throw new Error('Parent context not found for function');
-            }
-            return await parentContext
+            return await func.ctx
               .createChild(finalNamedArgumentsEvaluated)
-              .evaluateAsync(func.body);
+              .evaluateAsync(func.func.body);
           } else {
             console.error(func);
             throw new Error('Call not supported');

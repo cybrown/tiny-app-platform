@@ -1,10 +1,15 @@
-import { evaluateAsyncExpression, evaluateExpression } from './evaluation';
+import {
+  evaluateAsyncExpression,
+  evaluateCall,
+  evaluateExpression,
+} from './evaluation';
 import {
   Expression,
   AddressableExpression,
   FunctionExpression,
   CallExpression,
   ArgumentExpression,
+  isExpr,
 } from 'tal-parser';
 
 class GetLocalError extends Error {
@@ -248,37 +253,33 @@ export class RuntimeContext {
   }
 
   callFunction(
-    func: FunctionExpression,
+    func: FunctionValue,
     args: unknown[],
     kwargs: { [name: string]: unknown } = {},
     contextInternalState?: ContextInternalState
   ) {
-    const node: CallExpression = {
-      kind: 'Call',
-      args: args
-        .map(
-          arg =>
-            ({
-              argKind: 'Positional',
-              value: { kind: 'Value', value: arg },
-            } as ArgumentExpression)
-        )
-        .concat(
-          Object.entries(kwargs).map(([name, value]) => {
-            return {
-              argKind: 'Named',
-              name,
-              value: { kind: 'Value', value },
-            } as ArgumentExpression;
-          })
-        ),
-      value: func,
-    };
-    return this.evaluate(node, contextInternalState);
+    const argsForCall = args
+      .map(
+        arg =>
+          ({
+            argKind: 'Positional',
+            value: { kind: 'Value', value: arg },
+          } as ArgumentExpression)
+      )
+      .concat(
+        Object.entries(kwargs).map(([name, value]) => {
+          return {
+            argKind: 'Named',
+            name,
+            value: { kind: 'Value', value },
+          } as ArgumentExpression;
+        })
+      );
+    return evaluateCall(this, func, argsForCall, contextInternalState);
   }
 
   async callFunctionAsync(
-    func: FunctionExpression,
+    func: FunctionValue,
     args: unknown[],
     kwargs: { [name: string]: unknown } = {}
   ) {
@@ -301,7 +302,7 @@ export class RuntimeContext {
             } as ArgumentExpression;
           })
         ),
-      value: func,
+      value: func.func,
     };
     return this.evaluateAsync(node);
   }
@@ -441,6 +442,23 @@ export class RuntimeContext {
       initialValue: func,
     });
   }
+}
+
+export type FunctionValue = {
+  __kind: 'FunctionValue';
+  func: FunctionExpression;
+  ctx: RuntimeContext;
+};
+
+export function isFunctionValue(value: any): value is FunctionValue {
+  return !!(
+    value &&
+    typeof value == 'object' &&
+    '__kind' in value &&
+    value.__kind === 'FunctionValue' &&
+    'func' in value &&
+    isExpr(value.func as Expression, 'Function')
+  );
 }
 
 type ParameterDeclaration = {

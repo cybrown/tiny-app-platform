@@ -1,11 +1,10 @@
-import { FunctionExpression } from "tal-parser";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 
 type TableModelColumn = {
   description: string;
-  display: FunctionExpression;
+  display: FunctionValue;
 };
 
 type TableProps = {

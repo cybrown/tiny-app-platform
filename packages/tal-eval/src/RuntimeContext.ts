@@ -36,21 +36,6 @@ export type WidgetDocumentation<T> = {
   };
 };
 
-export type ContextInternalState = {
-  locals: { [key: string]: unknown };
-  extendable: boolean;
-  mutableLocals: Set<string>;
-  hasRenderedOnce?: boolean;
-};
-
-export function buildContextInternalState(): ContextInternalState {
-  return {
-    locals: {},
-    extendable: true,
-    mutableLocals: new Set<string>(),
-  };
-}
-
 export class RuntimeContext {
   constructor(
     onStateChange: () => void,
@@ -230,11 +215,8 @@ export class RuntimeContext {
     return true;
   }
 
-  evaluate(
-    expr: Expression,
-    contextInternalState?: ContextInternalState
-  ): unknown {
-    return evaluateExpression(this, expr, contextInternalState);
+  evaluate(expr: Expression): unknown {
+    return evaluateExpression(this, expr);
   }
 
   evaluateAsync(expr: Expression): Promise<unknown> {
@@ -255,8 +237,7 @@ export class RuntimeContext {
   callFunction(
     func: FunctionValue,
     args: unknown[],
-    kwargs: { [name: string]: unknown } = {},
-    contextInternalState?: ContextInternalState
+    kwargs: { [name: string]: unknown } = {}
   ) {
     const argsForCall = args
       .map(
@@ -275,7 +256,7 @@ export class RuntimeContext {
           } as ArgumentExpression;
         })
       );
-    return evaluateCall(this, func, argsForCall, contextInternalState);
+    return evaluateCall(this, func, argsForCall);
   }
 
   async callFunctionAsync(
@@ -317,18 +298,6 @@ export class RuntimeContext {
       this,
       extendable
     );
-  }
-
-  createChildWithInternalState(
-    internalState: ContextInternalState
-  ): RuntimeContext {
-    const childCtx = this.createChild(
-      internalState.locals,
-      internalState.extendable
-    );
-    childCtx.mutableLocals = internalState.mutableLocals;
-    childCtx.isWidgetState = internalState.hasRenderedOnce ?? false;
-    return childCtx;
   }
 
   listLocals(): [string, unknown][] {

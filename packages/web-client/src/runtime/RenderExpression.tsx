@@ -1,10 +1,5 @@
-import {
-  EvaluationError,
-  RuntimeContext,
-  ContextInternalState,
-  buildContextInternalState,
-} from "tal-eval";
-import { Expression, isExpr } from "tal-parser";
+import { EvaluationError, RuntimeContext } from "tal-eval";
+import { Expression } from "tal-parser";
 import styles from "./styles.module.css";
 import React, { useRef } from "react";
 import Debug from "../widgets/Debug";
@@ -16,21 +11,16 @@ export default function RenderExpression({
   ctx: RuntimeContext;
   expression: Expression | null;
 }): JSX.Element {
-  const customContextInternalStateRef = useRef(buildContextInternalState());
+  const ctxRef = useRef(ctx.createChild({}));
   try {
-    const contextInternalState: ContextInternalState | undefined =
-      isExpr(expression, "Call") || isExpr(expression, "KindedObject")
-        ? customContextInternalStateRef.current
-        : undefined;
-    const ui = ctx.evaluate(expression, contextInternalState);
-    contextInternalState && (contextInternalState.hasRenderedOnce = true);
+    const ui = ctxRef.current.evaluate(expression);
     const result = renderNullableWidget(ui);
     if (Array.isArray(result)) {
       return (
         <>
           {result.map((child) => (
             <ErrorBoundary
-              ctx={ctx}
+              ctx={ctxRef.current}
               onError={(err) => (
                 <RenderError expression={expression} err={err} />
               )}
@@ -43,7 +33,7 @@ export default function RenderExpression({
     } else {
       return (
         <ErrorBoundary
-          ctx={ctx}
+          ctx={ctxRef.current}
           onError={(err) => <RenderError expression={expression} err={err} />}
         >
           {renderNullableWidget(ui)}

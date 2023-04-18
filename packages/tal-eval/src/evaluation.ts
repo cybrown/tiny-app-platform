@@ -6,7 +6,6 @@ import {
   isExpr,
 } from 'tal-parser';
 import {
-  ContextInternalState,
   FunctionValue,
   RegisterableFunction,
   RuntimeContext,
@@ -16,8 +15,7 @@ import {
 export function evaluateCall(
   ctx: RuntimeContext,
   func: any,
-  args: ArgumentExpression[],
-  contextInternalState?: ContextInternalState
+  args: ArgumentExpression[]
 ) {
   const providedNamedArguments = Object.fromEntries(
     args
@@ -110,17 +108,9 @@ export function evaluateCall(
     if (isExpr(func.func.body, 'BlockOfExpressions')) {
       func.func.body.mustKeepContext = true;
     }
-    let childContext = func.ctx.createChild(
-      finalNamedArgumentsEvaluated,
-      false
-    );
-    if (contextInternalState) {
-      childContext = childContext.createChildWithInternalState(
-        contextInternalState
-      );
-    } else {
-      childContext = childContext.createChild({});
-    }
+    let childContext = func.ctx
+      .createChild(finalNamedArgumentsEvaluated, false)
+      .createChild({});
     return childContext.evaluate(func.func.body);
   } else {
     console.error(func);
@@ -130,8 +120,7 @@ export function evaluateCall(
 
 export function evaluateExpression(
   ctx: RuntimeContext,
-  value: Expression,
-  contextInternalState?: ContextInternalState
+  value: Expression
 ): unknown {
   try {
     if (
@@ -185,7 +174,7 @@ export function evaluateExpression(
       }
       case 'Call': {
         const func = ctx.evaluate(value.value) as any;
-        return evaluateCall(ctx, func, value.args, contextInternalState);
+        return evaluateCall(ctx, func, value.args);
       }
 
       // Expression
@@ -377,23 +366,18 @@ export function evaluateExpression(
           if (!value.__kind) {
             throw new Error('Only function values can be used as UI Widgets');
           }
-          return ctx.callFunction(
-            value,
-            [],
-            {
-              children: valueAsUiWidget.children,
-              bindTo: valueAsUiWidget.bindTo,
-              ...Object.fromEntries(
-                Object.entries(valueAsUiWidget)
-                  .filter(
-                    ([key]) =>
-                      !['kind', 'ctx', 'children', 'bindTo'].includes(key)
-                  )
-                  .map(([key, value]) => [key, ctx.evaluate(value as any)])
-              ),
-            },
-            contextInternalState
-          );
+          return ctx.callFunction(value, [], {
+            children: valueAsUiWidget.children,
+            bindTo: valueAsUiWidget.bindTo,
+            ...Object.fromEntries(
+              Object.entries(valueAsUiWidget)
+                .filter(
+                  ([key]) =>
+                    !['kind', 'ctx', 'children', 'bindTo'].includes(key)
+                )
+                .map(([key, value]) => [key, ctx.evaluate(value as any)])
+            ),
+          });
         } else {
           throw new Error('Unknown KindedObject: ' + valueAsUiWidget.kind);
         }

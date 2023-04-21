@@ -111,6 +111,7 @@ import {
 } from "./functions/number";
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
+import { regex_match } from "./functions/regex";
 
 const queryParams = window.location.search
   .slice(1)
@@ -250,6 +251,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(object_values);
   ctx.registerFunction(pg_query);
   ctx.registerFunction(process_exec);
+  ctx.registerFunction(regex_match);
   ctx.registerFunction(set_system_property);
   ctx.registerFunction(string_contains);
   ctx.registerFunction(string_ends_with);

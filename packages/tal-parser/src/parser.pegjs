@@ -168,25 +168,25 @@ Local
 
 String
 	= "\"" str:([^"\\] / '\\n' )* "\""
-    	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
+    	{ return { kind: "Literal", value: str.map(a => a == '\\n' ? '\n' : a).join('') }; }
 	/ "'" str:[^']* "'"
-    	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
+    	{ return { kind: "Literal", value: str.map(a => a == '\\n' ? '\n' : a).join('') }; }
 
 Number
 	= num:[0-9]+ '.' num2:[0-9]*
-    	{ return Number([...num, '.', ...num2].join('')); }
+    	{ return { kind: "Literal", value: Number([...num, '.', ...num2].join('')) }; }
 	/ num:[0-9]+
-    	{ return Number([...num].join('')); }
+    	{ return { kind: "Literal", value: Number([...num].join('')) }; }
 	/ '.' num:[0-9]+
-    	{ return Number(['.', ...num].join('')); }
+    	{ return { kind: "Literal", value: Number(['.', ...num].join('')) }; }
 
 Boolean
 	= bool:("true" / "false") ! IdentifierTailCharacters
-    	{ return bool === "true"; }
+    	{ return { kind: "Literal", value: bool === "true" }; }
 
 Null
 	= "null" ! IdentifierTailCharacters
-    	{ return null; }
+    	{ return { kind: "Literal", value: null }; }
 
 Identifier
     = head:IdentifierHeadCharacters tail:IdentifierTailCharacters*

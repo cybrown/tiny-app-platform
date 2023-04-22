@@ -8,6 +8,7 @@ import {
   FunctionExpression,
   isExpr,
   KindedObjectExpression,
+  LiteralExpression,
   ObjectExpression,
   PipeExpression,
   QuoteExpression,
@@ -22,27 +23,14 @@ export function stringify(value: Expression[]): string {
 
 class Stringifier {
   stringify(value: Expression | Expression[], isRoot = false): string {
-    if (value === null) {
-      return 'null';
-    } else if (Array.isArray(value)) {
+    if (Array.isArray(value)) {
       return this.stringifyArray(value, isRoot);
-    } else if (typeof value == 'object') {
+    } else {
       return this.stringifyKind(value);
-    } else if (typeof value == 'string') {
-      // TODO: find a better way to escape quotes
-      if (value.includes('"')) {
-        return "'" + this.escapeString(value) + "'";
-      }
-      return '"' + this.escapeString(value) + '"';
-    } else if (typeof value == 'number') {
-      return String(value);
-    } else if (typeof value == 'boolean') {
-      return String(value);
     }
-    throw new Error('Expression kind not supported for serialization');
   }
 
-  stringifyCustomKind(value: Expression & object): string {
+  stringifyCustomKind(value: Expression): string {
     const result = this.stringifyCustomKindSingleLine(value);
     if (result.length > 80 || result.includes('\n')) {
       return this.stringifyCustomKindMultiLine(value);
@@ -50,7 +38,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyCustomKindSingleLine(value: Expression & object): string {
+  stringifyCustomKindSingleLine(value: Expression): string {
     return (
       '%' +
       value.kind +
@@ -63,7 +51,7 @@ class Stringifier {
     );
   }
 
-  stringifyCustomKindMultiLine(value: Expression & object): string {
+  stringifyCustomKindMultiLine(value: Expression): string {
     let result = '%' + value.kind + ' {\n';
     this.incrementDepth();
     const argsToStringify = Object.entries(value).filter(
@@ -91,8 +79,10 @@ class Stringifier {
     return str.replace('\n', '\\n');
   }
 
-  stringifyKind(obj: Expression & object): string {
+  stringifyKind(obj: Expression): string {
     switch (obj.kind) {
+      case 'Literal':
+        return this.stringifyLiteral(obj);
       case 'Local':
         return obj.name;
       case 'UnaryOperator':
@@ -133,6 +123,24 @@ class Stringifier {
         return this.stringifyKindedObject(obj);
       default:
         return this.stringifyCustomKind(obj);
+    }
+  }
+
+  stringifyLiteral(obj: LiteralExpression): string {
+    if (obj.value == null) {
+      return 'null';
+    } else if (typeof obj.value === 'boolean') {
+      return String(obj.value);
+    } else if (typeof obj.value === 'number') {
+      return String(obj.value);
+    } else if (typeof obj.value === 'string') {
+      // TODO: find a better way to escape quotes
+      if (obj.value.includes('"')) {
+        return "'" + this.escapeString(obj.value) + "'";
+      }
+      return '"' + this.escapeString(obj.value) + '"';
+    } else {
+      throw new Error('Literal type not handled: ' + typeof obj.value);
     }
   }
 

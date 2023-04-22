@@ -38,6 +38,11 @@ export type BinaryOperator =
   | '&&'
   | '||';
 
+export type LiteralExpression = {
+  kind: 'Literal';
+  value: null | boolean | number | string;
+};
+
 export type CallExpression = {
   kind: 'Call';
   value: Expression;
@@ -135,6 +140,7 @@ export type ExpressionLocation = {
 };
 
 export type ExpressionByKind = {
+  Literal: LiteralExpression;
   Local: LocalExpression;
   Deref: DerefExpression;
   Attribute: AttributeExpression;
@@ -155,30 +161,26 @@ export type ExpressionByKind = {
   KindedObject: KindedObjectExpression;
 };
 
-export type Expression =
-  | string
-  | number
-  | boolean
-  | null
-  | ((
-      | AddressableExpression
-      | ValueExpression
-      | ArrayExpression
-      | ObjectExpression
-      | SetValueExpression
-      | QuoteExpression
-      | FunctionExpression
-      | CallExpression
-      | SubExpressionExpression
-      | PipeExpression
-      | UnaryOperatorExpression
-      | BinaryOperatorExpression
-      | BlockOfExpressionsExpression
-      | DeclareLocalExpression
-      | KindedObjectExpression
-    ) & {
-      location?: ExpressionLocation;
-    });
+export type Expression = (
+  | LiteralExpression
+  | AddressableExpression
+  | ValueExpression
+  | ArrayExpression
+  | ObjectExpression
+  | SetValueExpression
+  | QuoteExpression
+  | FunctionExpression
+  | CallExpression
+  | SubExpressionExpression
+  | PipeExpression
+  | UnaryOperatorExpression
+  | BinaryOperatorExpression
+  | BlockOfExpressionsExpression
+  | DeclareLocalExpression
+  | KindedObjectExpression
+) & {
+  location?: ExpressionLocation;
+};
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
   expr: Expression,

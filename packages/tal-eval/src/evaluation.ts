@@ -98,7 +98,7 @@ export function evaluateCall(
         finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
           providedNamedArguments[parameter]
         );
-      } else {
+      } else if (positionalArguments.length > counter) {
         finalNamedArgumentsEvaluated[parameter] = ctx.evaluate(
           positionalArguments[counter]
         );
@@ -123,16 +123,10 @@ export function evaluateExpression(
   value: Expression
 ): unknown {
   try {
-    if (
-      value == null ||
-      typeof value == 'string' ||
-      typeof value == 'number' ||
-      typeof value == 'boolean'
-    ) {
-      return value;
-    }
     switch (value.kind) {
       // Core interactions
+      case 'Literal':
+        return value.value;
       case 'Value':
         return value.value;
       case 'Array':
@@ -221,6 +215,9 @@ export function evaluateExpression(
             };
           } else {
             callCurrentExpression = current;
+          }
+          if (!previousValue) {
+            throw new Error('previousValue must not be null');
           }
           const newCurrent: CallExpression = {
             ...callCurrentExpression,
@@ -461,6 +458,9 @@ export async function evaluateAsyncExpression(
             } else {
               callCurrentExpression = current;
             }
+            if (!previousValue) {
+              throw new Error('previousValue must not be null');
+            }
             const newCurrent: CallExpression = {
               ...callCurrentExpression,
               args: [
@@ -583,7 +583,7 @@ export async function evaluateAsyncExpression(
                 finalNamedArgumentsEvaluated[
                   parameter
                 ] = await ctx.evaluateAsync(providedNamedArguments[parameter]);
-              } else {
+              } else if (positionalArguments.length > counter) {
                 finalNamedArgumentsEvaluated[
                   parameter
                 ] = await ctx.evaluateAsync(positionalArguments[counter]);

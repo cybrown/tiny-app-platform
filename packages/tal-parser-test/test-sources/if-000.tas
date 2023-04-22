@@ -1,5 +1,5 @@
 if(a == 3, "ok")
-if(a == 3, do { "ok1" "ok2" })
+if(a == 3, { "ok1" "ok2" })
 if(a == 3, "ok", "ko")
-if(a == 3, do { "ok1" "ok2" }, do { "ko1" "ko2" })
+if(a == 3, { "ok1" "ok2" }, { "ko1" "ko2" })
 if(a == 3, "ok") toto

@@ -17,7 +17,7 @@ const result = tal.parse(source);
 
 const jsonResult = JSON.stringify(
   result,
-  (key, value) => (key == "location" ? undefined : value), // We are not interested in testing location yet
+  (key, value) => (key == "location" || key == "newLines" ? undefined : value), // We are not interested in testing location yet
   "  "
 );
 

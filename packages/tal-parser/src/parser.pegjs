@@ -68,7 +68,6 @@ ExpressionLevel1
     / If
     / Assignement
     / LocalDeclaration
-    / DeprecatedBlockOfExpressions
     / NamedFunction
     / Function
 	/ ObjectWithKind
@@ -213,10 +212,6 @@ Assignement
 LocalDeclaration
     = keyword:("let" / "var") _ name:Identifier value:(_ '=' _ Expression)?
         { return { location: location(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
-
-DeprecatedBlockOfExpressions
-    = "do" _ "{" _ children:ManyExpressions "}"
-        { return { location: location(), kind: "BlockOfExpressions", children }; }
 
 BlockOfExpressions
     = "{" _ children:ManyExpressions "}"

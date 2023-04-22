@@ -1,5 +1,0 @@
-%CustomExpression {
-    bindTo: myVar
-    name: "toto"
-    values: [1, 2, 3]
-}

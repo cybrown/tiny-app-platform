@@ -78,7 +78,6 @@ ExpressionLevel1
     / Number
     / Array
     / SubExpression
-    / Intrinsic
 
 If
     = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:BlockOfExpressions ifFalse:(_ 'else' _ (BlockOfExpressions / If))?
@@ -99,10 +98,6 @@ Deref
 SubExpression
 	= '(' _ expr:Expression _ ')'
     	{ return { location: location(), kind: 'SubExpression', expr }; }
-
-Intrinsic
-    = '%' _ kind:Identifier _ args:("{" _ (ObjectKeyValuePair _)* "}")
-        { return { location: location(), kind, ...Object.fromEntries(args[2].map(arg => arg[0]))}; }
 
 NamedFunction
     = 'fun' _ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression

@@ -13,7 +13,7 @@ export default function RenderExpression({
 }): JSX.Element {
   const ctxRef = useRef(ctx.createChild({}));
   try {
-    const ui = ctxRef.current.evaluate(expression);
+    const ui = expression == null ? null : ctxRef.current.evaluate(expression);
     const result = renderNullableWidget(ui);
     if (Array.isArray(result)) {
       return (
@@ -78,7 +78,7 @@ export function RenderError({
   err,
   isStartup = false,
 }: {
-  expression: Expression;
+  expression: Expression | null;
   err: unknown;
   isStartup?: boolean;
 }) {

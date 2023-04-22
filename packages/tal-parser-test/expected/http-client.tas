@@ -7,6 +7,7 @@ var doShowHeaders = false
 var method
 var url
 var response
+
 let executeHttpRequest = () => {
   set response = http_request(
     method

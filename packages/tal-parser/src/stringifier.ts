@@ -275,8 +275,13 @@ class Stringifier {
   ): string {
     let result = '{\n';
     this.incrementDepth();
-    ((obj.children ?? []) as any[]).forEach(e => {
+    (obj.children ?? []).forEach(e => {
       result += this.depthSpace() + this.stringify(e) + '\n';
+      if (e.newLines) {
+        for (let i = 0; i < e.newLines - 1; i++) {
+          result += '\n';
+        }
+      }
     });
     this.decrementDepth();
     result += this.depthSpace() + '}';
@@ -382,24 +387,17 @@ class Stringifier {
           '\n';
       });
     if (obj.children && Array.isArray(obj.children)) {
-      let previousChildContent: string | null = null;
-      (obj.children as any[]).forEach((child, index) => {
+      (obj.children as Expression[]).forEach((child, index) => {
         const content = this.stringify(child);
-        // Add an empty line when one of this conditions match :
-        //  Current is a multiline block
-        //  The current kinded object has attributes and the current child is the first one
-        //  The previous child is a multiline block
-        if (
-          (index !== 0 && content.endsWith('}') && content.includes('\n')) ||
-          (index === 0 && hasNamedAttributes) ||
-          (previousChildContent != null &&
-            previousChildContent.endsWith('}') &&
-            previousChildContent.includes('\n'))
-        ) {
+        if (hasNamedAttributes && index === 0) {
           result += '\n';
         }
         result += this.depthSpace() + content + '\n';
-        previousChildContent = content;
+        if (child.newLines) {
+          for (let i = 0; i < child.newLines - 1; i++) {
+            result += '\n';
+          }
+        }
       });
     }
     this.decrementDepth();
@@ -563,11 +561,13 @@ class Stringifier {
       result = '[\n';
       this.incrementDepth();
     }
-    value.forEach((child: any, index) => {
+    value.forEach(child => {
       const stringifiedElement = this.stringify(child);
       result += this.depthSpace() + stringifiedElement + '\n';
-      if (index !== value.length - 1 && stringifiedElement.at(-1) === '}') {
-        result += '\n';
+      if (child.newLines) {
+        for (let i = 0; i < child.newLines - 1; i++) {
+          result += '\n';
+        }
       }
     });
     if (!isRoot) {

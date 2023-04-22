@@ -7,6 +7,7 @@ var doShowHeaders = false
 var method
 var url
 var response
+
 let executeHttpRequest = fun {
   set response = http_request(
     method
@@ -118,6 +119,7 @@ Column {
           })
     }
   )
+
   if(
     response != null
     Column {

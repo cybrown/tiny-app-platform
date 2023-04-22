@@ -1,5 +1,5 @@
 Document
-	= _ expr:(Expression _)* { return expr.map(a => a[0]); }
+	= _ expr:(Expression _)* { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
 
 Expression
     = PipeExpression
@@ -112,12 +112,8 @@ Function
 ObjectWithKind
     = kind:Identifier _ "{" _ values:((ObjectWithKindKeyValuePair / Expression) _ ','? _)* "}"
         {
-            const children = values.map(a => a[0]).reduce((prev, cur) => {
-                if (!Array.isArray(cur)) {
-                    prev.push(cur);
-                }
-                return prev;
-              }, []);
+            const children = values.filter(a => !Array.isArray(a[0]))
+                .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
             return {
                 location: location(),
                 kind: "KindedObject",
@@ -160,7 +156,7 @@ ObjectKey
 
 Array
 	= '[' _ expressions:(Expression _ ','? _ )* ']'
-    	{ return { location: location(), kind: "Array", value: expressions.map(e => e[0]) }; }
+    	{ return { location: location(), kind: "Array", value: expressions.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })) }; }
 
 Local
     = id:Identifier
@@ -214,8 +210,8 @@ BlockOfExpressions
 
 ManyExpressions
     = expressions:(Expression _ ','? _)*
-        { return expressions.map(e => e[0]); }
+        { return expressions.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })); }
 
 _ "whitespace"
-	= [ \t\n\r]*
-    	{ return; }
+	= chars:([ \t\n\r]*)
+    	{ return [...chars].filter(c => c === "\n").length; }

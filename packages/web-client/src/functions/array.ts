@@ -169,7 +169,7 @@ export const array_map = defineFunction(
 );
 
 export const array_map_parallel = defineFunction(
-  "array_map",
+  "array_map_parallel",
   [{ name: "array" }, { name: "mapper" }],
   (ctx, { array, mapper }) => {
     return (array as any[]).map((it, index) =>

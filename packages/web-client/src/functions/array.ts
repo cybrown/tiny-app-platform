@@ -159,6 +159,24 @@ export const array_map = defineFunction(
     );
   },
   async (ctx, { array, mapper }) => {
+    const result = [];
+    for (let index = 0; index < array.length; index++) {
+      const it = array[index];
+      result.push(await ctx.callFunctionAsync(mapper, [it, index]));
+    }
+    return result;
+  }
+);
+
+export const array_map_parallel = defineFunction(
+  "array_map",
+  [{ name: "array" }, { name: "mapper" }],
+  (ctx, { array, mapper }) => {
+    return (array as any[]).map((it, index) =>
+      ctx.callFunction(mapper, [it, index])
+    );
+  },
+  async (ctx, { array, mapper }) => {
     return Promise.all(
       (array as any[]).map((it, index) =>
         ctx.callFunctionAsync(mapper, [it, index])
@@ -166,6 +184,7 @@ export const array_map = defineFunction(
     );
   }
 );
+
 export const array_flat_map = defineFunction(
   "array_flat_map",
   [{ name: "array" }, { name: "mapper" }],
@@ -175,11 +194,13 @@ export const array_flat_map = defineFunction(
     );
   },
   async (ctx, { array, mapper }) => {
-    return (await Promise.all(
-      (array as any[]).map((it, index) =>
-        ctx.callFunctionAsync(mapper, [it, index])
+    return (
+      await Promise.all(
+        (array as any[]).map((it, index) =>
+          ctx.callFunctionAsync(mapper, [it, index])
+        )
       )
-    )).flat();
+    ).flat();
   }
 );
 

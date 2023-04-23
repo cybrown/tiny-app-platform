@@ -39,6 +39,7 @@ import {
   array_concat,
   array_length,
   array_flat_map,
+  array_map_parallel,
 } from "./functions/array";
 import { bytes_to_string } from "./functions/bytes";
 import { cheerio_load, cheerio_find } from "./functions/cheerio";
@@ -212,6 +213,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(array_join);
   ctx.registerFunction(array_length);
   ctx.registerFunction(array_map);
+  ctx.registerFunction(array_map_parallel);
   ctx.registerFunction(array_range);
   ctx.registerFunction(array_unique);
   ctx.registerFunction(array_remove);

@@ -1,2 +1,21 @@
 .Table {
+  border-collapse: collapse;
+}
+
+.Table tr {
+  height: 28px;
+}
+
+.Table th {
+  text-align: left;
+}
+
+table.Table.bordered,
+.Table.bordered th,
+.Table.bordered td {
+  border: 1px solid;
+}
+
+.Table.striped tbody tr:nth-child(2n + 1) {
+  background-color: rgb(206, 206, 206);
 }

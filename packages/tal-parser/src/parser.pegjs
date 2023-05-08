@@ -66,6 +66,7 @@ ExpressionLevel1
     / Boolean
     / Deref
     / If
+    / For
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -89,6 +90,19 @@ If
             ].filter(arg => arg != null)
              .map(arg => ({argKind: "Positional", value: arg}));
             return { location: location(), kind: "Call", args, value: { location: location(), kind: "Local", name: "if"} };
+        }
+
+For
+    = 'for' _ '(' _ init:Expression _ ';' _ condition:Expression _ ';' _ each:Expression _ ')' _ body: Expression
+        {
+            const args = [
+                init,
+                condition,
+                each,
+                body,
+            ].filter(arg => arg != null)
+             .map(arg => ({argKind: "Positional", value: arg}));
+            return { location: location(), kind: "Call", args, value: { location: location(), kind: "Local", name: "for"} };
         }
 
 Deref

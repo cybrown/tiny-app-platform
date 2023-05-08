@@ -91,6 +91,36 @@ export const if$ = defineFunction(
   }
 );
 
+export const for$ = defineFunction(
+  "for",
+  [
+    { name: "init", lazy: true },
+    { name: "condition", lazy: true },
+    { name: "each", lazy: true },
+    { name: "body", lazy: true },
+  ],
+  (ctx, { init, condition, each, body }) => {
+    const childCtx = ctx.createChild({});
+    childCtx.evaluate(init);
+    let lastValue = null;
+    while (childCtx.evaluate(condition)) {
+      lastValue = childCtx.evaluate(body);
+      childCtx.evaluate(each);
+    }
+    return lastValue;
+  },
+  async (ctx, { init, condition, each, body }) => {
+    const childCtx = ctx.createChild({});
+    await childCtx.evaluateAsync(init);
+    let lastValue = null;
+    while (await childCtx.evaluateAsync(condition)) {
+      lastValue = await childCtx.evaluateAsync(body);
+      childCtx.evaluateAsync(each);
+    }
+    return lastValue;
+  }
+);
+
 export const try$ = defineFunction(
   "try",
   [

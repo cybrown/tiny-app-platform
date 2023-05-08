@@ -54,6 +54,7 @@ import {
   default$,
   watch,
   expression_eval,
+  for$,
 } from "./functions/core";
 import { event_on, event_trigger } from "./functions/event";
 import { json_parse, json_stringify, jmespath_search } from "./functions/json";
@@ -198,6 +199,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(default$);
   ctx.registerFunction(expression_eval);
   ctx.registerFunction(if$);
+  ctx.registerFunction(for$);
   ctx.registerFunction(log);
   ctx.registerFunction(throw$);
   ctx.registerFunction(try$);

@@ -406,8 +406,13 @@ class Stringifier {
   }
 
   stringifyCall(obj: CallExpression) {
-    if (isExpr(obj.value, 'Local') && obj.value.name == 'if') {
-      return this.stringifyIf(obj);
+    if (isExpr(obj.value, 'Local')) {
+      switch (obj.value.name) {
+        case 'if':
+          return this.stringifyIf(obj);
+        case 'for':
+          return this.stringifyFor(obj);
+      }
     }
     // Maybe optimize this to not stringify twice ?
     if (obj.args.length > 3) {
@@ -441,6 +446,23 @@ class Stringifier {
         .join(', ') +
       ')'
     );
+  }
+
+  stringifyFor(obj: CallExpression) {
+    let result =
+      'for (' +
+      this.stringify(obj.args[0].value) +
+      '; ' +
+      this.stringify(obj.args[1].value) +
+      '; ' +
+      this.stringify(obj.args[2].value) +
+      ') ';
+    if (obj.args[3].value.kind == 'BlockOfExpressions') {
+      result += this.stringifyBlockOfExpressionsMultiLine(obj.args[3].value);
+    } else {
+      result += this.stringify(obj.args[3].value);
+    }
+    return result;
   }
 
   stringifyIf(obj: CallExpression) {

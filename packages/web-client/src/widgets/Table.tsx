@@ -38,42 +38,44 @@ export default function Table({
     effectiveColumns = columns;
   }
   return (
-    <table
-      className={`${styles.Table} ${bordered ? styles.bordered : ""} ${
-        striped ? styles.striped : ""
-      }`}
-    >
-      <thead>
-        <tr>
-          {(effectiveColumns ?? []).map((col) => (
-            <th key={col.description}>{col.description}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {(values ?? []).map((value, index) => {
-          return (
-            <tr key={index}>
-              {(effectiveColumns ?? []).map((col) => (
-                <td key={col.description}>
-                  {col.display ? (
-                    <RenderExpression
-                      ctx={ctx}
-                      expression={{
-                        kind: "Value",
-                        value: ctx.callFunction(col.display, [value]),
-                      }}
-                    />
-                  ) : (value as any)[col.description] !== undefined ? (
-                    <Debug value={(value as any)[col.description]} />
-                  ) : null}
-                </td>
-              ))}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className={styles.TableContainer}>
+      <table
+        className={`${styles.Table} ${bordered ? styles.bordered : ""} ${
+          striped ? styles.striped : ""
+        }`}
+      >
+        <thead>
+          <tr>
+            {(effectiveColumns ?? []).map((col) => (
+              <th key={col.description}>{col.description}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {(values ?? []).map((value, index) => {
+            return (
+              <tr key={index}>
+                {(effectiveColumns ?? []).map((col) => (
+                  <td key={col.description}>
+                    {col.display ? (
+                      <RenderExpression
+                        ctx={ctx}
+                        expression={{
+                          kind: "Value",
+                          value: ctx.callFunction(col.display, [value]),
+                        }}
+                      />
+                    ) : (value as any)[col.description] !== undefined ? (
+                      <Debug value={(value as any)[col.description]} />
+                    ) : null}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

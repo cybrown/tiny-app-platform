@@ -1,15 +1,16 @@
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import styles from "./Link.module.css";
+import { WidgetDocumentation } from "tal-eval";
+import Text, { TextProps, TextDocumentation } from "./Text";
 
-type LinkProps = { ctx: RuntimeContext; url: string; text: string };
+type LinkProps = Omit<TextProps, "text"> & { url?: string; text?: string };
 
-export default function Link({ url, text }: LinkProps) {
+export default function Link({ url, text, ...rest }: LinkProps) {
+  if (!text && !url) {
+    throw new Error("text or url is mandatory for Link widget");
+  }
   return (
-    <div className={styles.Link}>
-      <a href={url} target="_blank" rel="noreferrer">
-        {text ?? url}
-      </a>
-    </div>
+    <a href={url} target="_blank" rel="noreferrer">
+      <Text {...rest} text={text ?? url ?? ""} />
+    </a>
   );
 }
 
@@ -17,6 +18,7 @@ export const LinkDocumentation: WidgetDocumentation<LinkProps> = {
   description:
     "A link to navigate elsewhere, use system properties to configure the context where to navigate",
   props: {
+    ...TextDocumentation.props,
     text: "Text content of the link",
     url: "URL to navigate to",
   },

@@ -2,10 +2,10 @@ import { useCallback, useMemo } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Text.module.css";
 
-type TextProps = {
+export type TextProps = {
   ctx: RuntimeContext;
   text: string;
-  preformatted: boolean;
+  preformatted?: boolean;
   copy?: boolean;
   size?: number;
   align?: "center" | "right" | "left";

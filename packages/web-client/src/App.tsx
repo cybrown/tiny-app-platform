@@ -113,6 +113,12 @@ import {
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
 import { regex_match } from "./functions/regex";
+import {
+  storage_list,
+  storage_read,
+  storage_remove,
+  storage_write,
+} from "./functions/storage";
 
 const queryParams = window.location.search
   .slice(1)
@@ -255,6 +261,10 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(process_exec);
   ctx.registerFunction(regex_match);
   ctx.registerFunction(set_system_property);
+  ctx.registerFunction(storage_list);
+  ctx.registerFunction(storage_read);
+  ctx.registerFunction(storage_remove);
+  ctx.registerFunction(storage_write);
   ctx.registerFunction(string_contains);
   ctx.registerFunction(string_ends_with);
   ctx.registerFunction(string_format);

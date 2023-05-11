@@ -1,14 +1,13 @@
 import { ChangeEvent, DragEventHandler, useCallback, useState } from "react";
-import { AddressableExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./InputFile.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 
 type InputFileProps = {
   ctx: RuntimeContext;
-  bindTo: AddressableExpression;
   placeholder: string;
-};
+} & InputProps<string>;
 
 // TODO: find a solution out of Electron
 
@@ -19,6 +18,8 @@ export default function InputFile({
   ctx,
   bindTo,
   placeholder,
+  value,
+  onChange,
 }: InputFileProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -29,7 +30,12 @@ export default function InputFile({
         if (files.length) {
           const file = files[0];
           if ((file as any).path) {
-            ctx.setValue(bindTo, (file as any).path);
+            if (bindTo) {
+              ctx.setValue(bindTo, (file as any).path);
+            }
+            if (onChange) {
+              ctx.callFunctionAsync(onChange, [(file as any).path]);
+            }
             event.preventDefault();
           }
         }
@@ -37,18 +43,23 @@ export default function InputFile({
         setLastError(err);
       }
     },
-    [bindTo, ctx]
+    [bindTo, ctx, onChange]
   );
 
   const onInputChangeHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       try {
-        ctx.setValue(bindTo, e.target.value);
+        if (bindTo) {
+          ctx.setValue(bindTo, e.target.value);
+        }
+        if (onChange) {
+          ctx.callFunctionAsync(onChange, [e.target.value]);
+        }
       } catch (err) {
         setLastError(err);
       }
     },
-    [bindTo, ctx]
+    [bindTo, ctx, onChange]
   );
 
   return (
@@ -58,7 +69,7 @@ export default function InputFile({
         placeholder={placeholder}
         type="text"
         onChange={onInputChangeHandler}
-        value={ctx.evaluateOr(bindTo, "") as string}
+        value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
         onDrop={onDropHandler}
         onDragOver={onDragOverHandler}
       />
@@ -71,8 +82,7 @@ export const InputFileDocumentation: WidgetDocumentation<InputFileProps> = {
   description:
     "Input a file from a path located on the server (only compatible with electron)",
   props: {
-    bindTo:
-      "Variable declared with var to bind this widget value to, containing the path on the server",
     placeholder: "Message to show when the widget is empty",
+    ...InputPropsDocs,
   },
 };

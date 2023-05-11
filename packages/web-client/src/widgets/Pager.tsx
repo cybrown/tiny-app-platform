@@ -1,16 +1,23 @@
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { AddressableExpression } from "tal-parser";
 import StyledButton from "./internal/StyledButton";
+import { useCallback } from "react";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 
 type PagerProps = {
   ctx: RuntimeContext;
-  bindTo: AddressableExpression;
   max: number;
   perPage: number;
-};
+} & InputProps<number>;
 
-export default function Pager({ ctx, bindTo, max, perPage }: PagerProps) {
-  const currentPage = ctx.evaluate(bindTo) as any;
+export default function Pager({
+  ctx,
+  bindTo,
+  max,
+  perPage,
+  onChange,
+  value,
+}: PagerProps) {
+  const currentPage = bindTo ? (ctx.evaluate(bindTo) as any) : value;
   const pages = [];
   const difference = 3;
   const maxPage = Math.ceil(max / perPage);
@@ -20,39 +27,52 @@ export default function Pager({ ctx, bindTo, max, perPage }: PagerProps) {
   for (let i = minToShow; i <= maxToShow; i++) {
     pages.push(i);
   }
+
+  const updateValue = useCallback(
+    (value: number) => {
+      if (bindTo) {
+        ctx.setValue(bindTo, value);
+      }
+      if (onChange) {
+        ctx.callFunctionAsync(onChange, [value]);
+      }
+    },
+    [bindTo, ctx, onChange]
+  );
+
   return (
     <div>
       <StyledButton
         text="<<"
         secondary
         disabled={currentPage === 1}
-        onClick={() => ctx.setValue(bindTo, 1)}
+        onClick={() => updateValue(1)}
       />
       <StyledButton
         text="<"
         secondary
         disabled={currentPage === 1}
-        onClick={() => ctx.setValue(bindTo, Math.max(1, currentPage - 1))}
+        onClick={() => updateValue(Math.max(1, currentPage - 1))}
       />
       {pages.map((index) => (
         <StyledButton
           key={index}
           text={index + ""}
           secondary={currentPage !== index}
-          onClick={() => ctx.setValue(bindTo, index)}
+          onClick={() => updateValue(index)}
         />
       ))}
       <StyledButton
         text=">"
         secondary
         disabled={currentPage === maxPage}
-        onClick={() => ctx.setValue(bindTo, Math.min(maxPage, currentPage + 1))}
+        onClick={() => updateValue(Math.min(maxPage, currentPage + 1))}
       />
       <StyledButton
         text=">>"
         secondary
         disabled={currentPage === maxPage}
-        onClick={() => ctx.setValue(bindTo, maxPage)}
+        onClick={() => updateValue(maxPage)}
       />
     </div>
   );
@@ -61,8 +81,8 @@ export default function Pager({ ctx, bindTo, max, perPage }: PagerProps) {
 export const PagerDocumentation: WidgetDocumentation<PagerProps> = {
   description: "Select a page in a paginated data source",
   props: {
-    bindTo: "Current page",
     max: "Maximum page number",
     perPage: "Elements fetched per page",
+    ...InputPropsDocs,
   },
 };

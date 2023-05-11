@@ -2,16 +2,15 @@ import { ChangeEvent, useCallback, useState } from "react";
 import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import styles from "./InputText.module.css";
-import { AddressableExpression } from "tal-parser";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 
 type InputTextProps = {
   ctx: RuntimeContext;
-  bindTo: AddressableExpression;
   multiline: boolean;
   placeholder: string;
   onSubmit?: FunctionValue;
   type?: "text" | "email" | "url" | "password";
-};
+} & InputProps<string>;
 
 export default function InputText({
   ctx,
@@ -20,6 +19,8 @@ export default function InputText({
   bindTo,
   onSubmit,
   type,
+  onChange,
+  value,
 }: InputTextProps) {
   if (type && type !== "text" && multiline) {
     throw new Error(
@@ -45,23 +46,33 @@ export default function InputText({
   const onInputChangeHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       try {
-        ctx.setValue(bindTo, e.target.value);
+        if (bindTo) {
+          ctx.setValue(bindTo, e.target.value);
+        }
+        if (onChange) {
+          ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+        }
       } catch (err) {
         setLastError(err);
       }
     },
-    [bindTo, ctx]
+    [bindTo, ctx, onChange]
   );
 
   const onTextareaChangeHandler = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       try {
-        ctx.setValue(bindTo, e.target.value);
+        if (bindTo) {
+          ctx.setValue(bindTo, e.target.value);
+        }
+        if (onChange) {
+          ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+        }
       } catch (err) {
         setLastError(err);
       }
     },
-    [bindTo, ctx]
+    [bindTo, ctx, onChange]
   );
 
   return (
@@ -71,7 +82,7 @@ export default function InputText({
           className={styles.InputText}
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
-          value={ctx.evaluateOr(bindTo, "") as string}
+          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
         />
       ) : (
         <input
@@ -80,7 +91,7 @@ export default function InputText({
           type={type ?? "text"}
           onChange={onInputChangeHandler}
           onKeyDown={onKeyDownHandler}
-          value={ctx.evaluateOr(bindTo, "") as string}
+          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
         />
       )}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
@@ -91,10 +102,10 @@ export default function InputText({
 export const InputTextDocumentation: WidgetDocumentation<InputTextProps> = {
   description: "Allow the user to input a string",
   props: {
-    bindTo: "Variable declared with var to bind this widget value to",
     multiline: "Allow multiple lines of text. Not compatible with type",
     onSubmit: "Expression to evaluate when the user presses enter",
     type: "One of: text, email, url, password. Not compatible with multiline",
     placeholder: "Message to show when the widget is empty",
+    ...InputPropsDocs,
   },
 };

@@ -1,26 +1,30 @@
 import React, { useCallback, useState } from "react";
-import { AddressableExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Switch.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 
 type SwitchProps = {
   ctx: RuntimeContext;
-  bindTo: AddressableExpression;
-};
+} & InputProps<boolean>;
 
-export default function Switch({ ctx, bindTo }: SwitchProps) {
+export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
-        ctx.setValue(bindTo, e.target.checked);
+        if (bindTo) {
+          ctx.setValue(bindTo, e.target.checked);
+        }
+        if (onChange) {
+          ctx.callFunctionAsync(onChange, [e.target.checked]);
+        }
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, bindTo]
+    [ctx, bindTo, onChange]
   );
 
   return (
@@ -29,7 +33,7 @@ export default function Switch({ ctx, bindTo }: SwitchProps) {
         <input
           className={styles.Switch}
           type="checkbox"
-          checked={ctx.evaluateOr(bindTo, false) as boolean}
+          checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
           onChange={handleChange}
         />
         <div className={styles.background}></div>
@@ -43,6 +47,6 @@ export default function Switch({ ctx, bindTo }: SwitchProps) {
 export const SwitchDocumentation: WidgetDocumentation<SwitchProps> = {
   description: "Input a boolean value. Like Checkbox but with another style",
   props: {
-    bindTo: "Variable declared with var to bind this widget value to",
+    ...InputPropsDocs,
   },
 };

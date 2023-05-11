@@ -1,27 +1,37 @@
 import React, { useCallback, useState } from "react";
-import { AddressableExpression } from "tal-parser";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./CheckBox.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
-  bindTo: AddressableExpression;
   disabled?: boolean;
-};
+} & InputProps<boolean>;
 
-export default function CheckBox({ ctx, bindTo, disabled }: CheckBoxProps) {
+export default function CheckBox({
+  ctx,
+  bindTo,
+  disabled,
+  onChange,
+  value,
+}: CheckBoxProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
-        ctx.setValue(bindTo, e.target.checked);
+        if (bindTo) {
+          ctx.setValue(bindTo, e.target.checked);
+        }
+        if (onChange) {
+          ctx.callFunctionAsync(onChange, [e.target.checked]);
+        }
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, bindTo]
+    [ctx, bindTo, onChange]
   );
 
   return (
@@ -29,7 +39,7 @@ export default function CheckBox({ ctx, bindTo, disabled }: CheckBoxProps) {
       <div className={styles.CheckBox}>
         <input
           type="checkbox"
-          checked={ctx.evaluateOr(bindTo, false) as boolean}
+          checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
           onChange={handleChange}
           disabled={disabled}
         />
@@ -43,7 +53,7 @@ export default function CheckBox({ ctx, bindTo, disabled }: CheckBoxProps) {
 export const CheckBoxDocumentation: WidgetDocumentation<CheckBoxProps> = {
   description: "A checkbox to input a boolean value",
   props: {
-    bindTo: "Variable declared with var to bind this widget value to",
     disabled: "Do not allow changing the value",
+    ...InputPropsDocs,
   },
 };

@@ -12,13 +12,13 @@ export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
         if (bindTo) {
           ctx.setValue(bindTo, e.target.checked);
         }
         if (onChange) {
-          ctx.callFunctionAsync(onChange, [e.target.checked]);
+          await ctx.callFunctionAsync(onChange, [e.target.checked]);
         }
       } catch (err) {
         setLastError(err);

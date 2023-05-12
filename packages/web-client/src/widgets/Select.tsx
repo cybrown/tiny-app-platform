@@ -27,7 +27,7 @@ export default function Select({
       .includes(bindTo ? (ctx.evaluate(bindTo) as string) : value ?? "");
 
   const onChangeHandler = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
+    async (e: React.ChangeEvent<HTMLSelectElement>) => {
       try {
         const optionToSet =
           options[e.target.selectedIndex - (showEmpty ? 1 : 0)];
@@ -37,7 +37,7 @@ export default function Select({
           ctx.setValue(bindTo, valueToSet);
         }
         if (onChange) {
-          ctx.callFunctionAsync(onChange, [valueToSet]);
+          await ctx.callFunctionAsync(onChange, [valueToSet]);
         }
       } catch (err) {
         setLastError(err);

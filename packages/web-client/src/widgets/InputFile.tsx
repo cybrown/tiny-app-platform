@@ -24,7 +24,7 @@ export default function InputFile({
   const [lastError, setLastError] = useState(null as any);
 
   const onDropHandler: DragEventHandler<HTMLInputElement> = useCallback(
-    (event) => {
+    async (event) => {
       try {
         const files = event.dataTransfer.files;
         if (files.length) {
@@ -34,7 +34,7 @@ export default function InputFile({
               ctx.setValue(bindTo, (file as any).path);
             }
             if (onChange) {
-              ctx.callFunctionAsync(onChange, [(file as any).path]);
+              await ctx.callFunctionAsync(onChange, [(file as any).path]);
             }
             event.preventDefault();
           }
@@ -47,13 +47,13 @@ export default function InputFile({
   );
 
   const onInputChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    async (e: ChangeEvent<HTMLInputElement>) => {
       try {
         if (bindTo) {
           ctx.setValue(bindTo, e.target.value);
         }
         if (onChange) {
-          ctx.callFunctionAsync(onChange, [e.target.value]);
+          await ctx.callFunctionAsync(onChange, [e.target.value]);
         }
       } catch (err) {
         setLastError(err);

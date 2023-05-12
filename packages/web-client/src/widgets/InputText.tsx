@@ -44,13 +44,13 @@ export default function InputText({
   );
 
   const onInputChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    async (e: ChangeEvent<HTMLInputElement>) => {
       try {
         if (bindTo) {
           ctx.setValue(bindTo, e.target.value);
         }
         if (onChange) {
-          ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+          await ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
         }
       } catch (err) {
         setLastError(err);

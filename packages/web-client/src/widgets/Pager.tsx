@@ -1,7 +1,8 @@
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import StyledButton from "./internal/StyledButton";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import ErrorPopin from "./internal/ErrorPopin";
 
 type PagerProps = {
   ctx: RuntimeContext;
@@ -28,13 +29,19 @@ export default function Pager({
     pages.push(i);
   }
 
+  const [lastError, setLastError] = useState(null as any);
+
   const updateValue = useCallback(
-    (value: number) => {
-      if (bindTo) {
-        ctx.setValue(bindTo, value);
-      }
-      if (onChange) {
-        ctx.callFunctionAsync(onChange, [value]);
+    async (value: number) => {
+      try {
+        if (bindTo) {
+          ctx.setValue(bindTo, value);
+        }
+        if (onChange) {
+          await ctx.callFunctionAsync(onChange, [value]);
+        }
+      } catch (err) {
+        setLastError(err);
       }
     },
     [bindTo, ctx, onChange]
@@ -74,6 +81,7 @@ export default function Pager({
         disabled={currentPage === maxPage}
         onClick={() => updateValue(maxPage)}
       />
+      <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </div>
   );
 }

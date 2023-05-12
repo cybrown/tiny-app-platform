@@ -11,9 +11,10 @@ type TableModelColumn = {
 type TableProps = {
   ctx: RuntimeContext;
   values: unknown[];
-  columns: TableModelColumn[];
-  bordered: boolean;
-  striped: boolean;
+  columns?: TableModelColumn[];
+  bordered?: boolean;
+  striped?: boolean;
+  noHeader?: boolean;
 };
 
 export default function Table({
@@ -22,6 +23,7 @@ export default function Table({
   values,
   bordered,
   striped,
+  noHeader,
 }: TableProps) {
   let effectiveColumns: any[] = [];
   if (!columns) {
@@ -37,6 +39,13 @@ export default function Table({
   } else {
     effectiveColumns = columns;
   }
+
+  const numberOfColsWithRemaining = effectiveColumns.filter(
+    (col) => col.useRemaining
+  ).length;
+  const remainingPercent =
+    numberOfColsWithRemaining > 0 ? 100 / numberOfColsWithRemaining + "%" : "";
+
   return (
     <div className={styles.TableContainer}>
       <table
@@ -44,13 +53,36 @@ export default function Table({
           striped ? styles.striped : ""
         }`}
       >
-        <thead>
-          <tr>
-            {(effectiveColumns ?? []).map((col) => (
-              <th key={col.description}>{col.description}</th>
-            ))}
-          </tr>
-        </thead>
+        <colgroup>
+          {effectiveColumns.map((col) => (
+            <col
+              key={col.description}
+              span={1}
+              style={{
+                ...(col.width
+                  ? {
+                      minWidth: col.width,
+                      width: col.width,
+                    }
+                  : {}),
+                ...(col.useRemaining
+                  ? {
+                      width: remainingPercent,
+                    }
+                  : {}),
+              }}
+            />
+          ))}
+        </colgroup>
+        {noHeader ? null : (
+          <thead>
+            <tr>
+              {effectiveColumns.map((col) => (
+                <th key={col.description}>{col.description}</th>
+              ))}
+            </tr>
+          </thead>
+        )}
         <tbody>
           {(values ?? []).map((value, index) => {
             return (
@@ -83,9 +115,10 @@ export const TableDocumentation: WidgetDocumentation<TableProps> = {
   description: "Show data in form of a table, with customizable columns",
   props: {
     columns:
-      "Column definition, array of description (string) and display (function that takes one entry and renders its cell)",
+      "Column definition, array of description (string), display (function that takes one entry and renders its cell), width and useRemaining",
     values: "Array of entries",
     bordered: "Add borders",
     striped: "Alternate background color",
+    noHeader: "Skip the header",
   },
 };

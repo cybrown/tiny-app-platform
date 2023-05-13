@@ -175,9 +175,9 @@ export function evaluateExpression(
       case 'SubExpression':
         return ctx.evaluate(value.expr);
       case 'Attribute':
-        return ((ctx.evaluate(value.value) as any) ?? {})[value.key];
+        return (ctx.evaluate(value.value) as any)[value.key];
       case 'Index':
-        return ((ctx.evaluate(value.value) as any) ?? {})[
+        return (ctx.evaluate(value.value) as any)[
           ctx.evaluate(value.index) as any
         ];
       case 'Pipe': {
@@ -488,11 +488,9 @@ export async function evaluateAsyncExpression(
           return previousValue?.value;
         }
         case 'Attribute':
-          return (((await ctx.evaluateAsync(value.value)) as any) ?? {})[
-            value.key
-          ];
+          return ((await ctx.evaluateAsync(value.value)) as any)[value.key];
         case 'Index':
-          return (((await ctx.evaluateAsync(value.value)) as any) ?? {})[
+          return ((await ctx.evaluateAsync(value.value)) as any)[
             (await ctx.evaluateAsync(value.index)) as any
           ];
         case 'SubExpression':

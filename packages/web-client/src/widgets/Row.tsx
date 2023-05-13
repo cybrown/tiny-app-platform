@@ -7,12 +7,13 @@ import React from "react";
 type RowProps = {
   ctx: RuntimeContext;
   children: Expression[];
+  noWrap?: boolean;
 };
 
-export default function Row({ ctx, children }: RowProps) {
+export default function Row({ ctx, children, noWrap }: RowProps) {
   const childContext = ctx.createChild({});
   return (
-    <div className={styles.Row}>
+    <div className={`${styles.Row} ${noWrap ? "" : styles.wrap}`}>
       {children
         .flatMap((child) => (
           <RenderExpression ctx={childContext} expression={child} />
@@ -28,5 +29,6 @@ export const RowDocumentation: WidgetDocumentation<RowProps> = {
   description: "Show content in a horizontal layout",
   props: {
     children: "Widgets to render in line",
+    noWrap: "Do not wrap elements",
   },
 };

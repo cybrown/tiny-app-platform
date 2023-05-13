@@ -47,6 +47,12 @@ function httpRequest(method, urlStr, headers, body) {
 
 const routes = [
   {
+    route: "/health",
+    handler: async (req) => {
+      return okJson({ up: true });
+    },
+  },
+  {
     route: "/op/fetch",
     handler: async (req, params) => {
       const headers = {};
@@ -116,8 +122,9 @@ const routes = [
             }
             case "url": {
               valueToAppend = await new Promise((resolve, reject) => {
-                const req = (
-                  info.value.startsWith("https") ? https : http
+                const req = (info.value.startsWith("https")
+                  ? https
+                  : http
                 ).request(info.value, (response) => {
                   let filename;
                   if (response.headers["content-disposition"]) {

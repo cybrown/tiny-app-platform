@@ -15,6 +15,7 @@ type TableProps = {
   bordered?: boolean;
   striped?: boolean;
   noHeader?: boolean;
+  _key?: FunctionValue;
 };
 
 export default function Table({
@@ -24,6 +25,7 @@ export default function Table({
   bordered,
   striped,
   noHeader,
+  _key,
 }: TableProps) {
   let effectiveColumns: any[] = [];
   if (!columns) {
@@ -48,6 +50,11 @@ export default function Table({
 
   return (
     <div className={styles.TableContainer}>
+      {!_key ? (
+        <div>
+          Warning: No _key prop on Table widget, behavior may be undefined
+        </div>
+      ) : null}
       <table
         className={`${styles.Table} ${bordered ? styles.bordered : ""} ${
           striped ? styles.striped : ""
@@ -86,7 +93,7 @@ export default function Table({
         <tbody>
           {(values ?? []).map((value, index) => {
             return (
-              <tr key={index}>
+              <tr key={_key ? ctx.callFunction(_key, [value]) : index}>
                 {(effectiveColumns ?? []).map((col) => (
                   <td key={col.description}>
                     {col.display ? (
@@ -120,5 +127,6 @@ export const TableDocumentation: WidgetDocumentation<TableProps> = {
     bordered: "Add borders",
     striped: "Alternate background color",
     noHeader: "Skip the header",
+    _key: "A function to compute a key from a value",
   },
 };

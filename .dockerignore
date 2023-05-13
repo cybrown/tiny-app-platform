@@ -19,3 +19,4 @@
 !/packages/tal-eval/package-lock.json
 !/package.json
 !/package-lock.json
+!/download-artifacts.sh

@@ -1,3 +1,4 @@
 #! /bin/bash
 
-docker build -t tap-webapp .
+source ~/gh-token.sh
+docker build -t tap-webapp --build-arg GH_TOKEN .

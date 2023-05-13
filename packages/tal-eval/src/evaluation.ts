@@ -489,10 +489,13 @@ export async function evaluateAsyncExpression(
         }
         case 'Attribute':
           return ((await ctx.evaluateAsync(value.value)) as any)[value.key];
-        case 'Index':
-          return ((await ctx.evaluateAsync(value.value)) as any)[
-            (await ctx.evaluateAsync(value.index)) as any
-          ];
+        case 'Index': {
+          const [a, b] = await Promise.all([
+            (await ctx.evaluateAsync(value.value)) as any,
+            (await ctx.evaluateAsync(value.index)) as any,
+          ]);
+          return a[b];
+        }
         case 'SubExpression':
           return await ctx.evaluateAsync(value.expr);
         case 'Call': {

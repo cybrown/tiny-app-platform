@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "Object",
+    "value": {
+      "hello": "world"
+    }
+  },
+  {
+    "kind": "Object",
+    "value": {
+      "hello": "world"
+    }
+  },
+  {
+    "kind": "Object",
+    "value": {
+      "hel-lo": "world"
+    }
+  },
+  {
+    "kind": "Object",
+    "value": {
+      "hello": "world"
+    }
+  },
+  {
+    "kind": "Object",
+    "value": {
+      "hel-lo": "world"
+    }
+  }
+]

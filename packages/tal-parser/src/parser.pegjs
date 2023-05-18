@@ -152,7 +152,8 @@ ObjectKeyValuePair
 
 ObjectKey
     = Identifier
-    / String
+    / str:String
+        { return str.value; }
 
 Array
 	= '[' _ expressions:(Expression _ ','? _ )* ']'
@@ -188,7 +189,7 @@ Identifier
     = head:IdentifierHeadCharacters tail:IdentifierTailCharacters*
     	{ return head + tail.join(''); }
     / '@' str:String
-    	{ return str;}
+    	{ return str.value;}
 
 IdentifierHeadCharacters
     = [A-Za-z_$]

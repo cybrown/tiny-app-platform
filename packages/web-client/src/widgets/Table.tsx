@@ -3,9 +3,26 @@ import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
 
-type TableModelColumn = {
+type TableModelColumn =
+  | ({
+      useRemaining?: boolean;
+      width?: string | number;
+    } & (
+      | {
+          description: string;
+          display?: FunctionValue;
+        }
+      | {
+          field: string;
+        }
+    ))
+  | string;
+
+type EffectiveTableModelColumn = {
+  useRemaining?: boolean;
+  width?: string | number;
   description: string;
-  display: FunctionValue;
+  display?: FunctionValue;
 };
 
 type TableProps = {
@@ -15,6 +32,7 @@ type TableProps = {
   bordered?: boolean;
   striped?: boolean;
   noHeader?: boolean;
+  noHighlight?: boolean;
   _key?: FunctionValue;
 };
 
@@ -23,14 +41,15 @@ export default function Table({
   columns,
   values,
   bordered,
-  striped,
+  striped = true,
   noHeader,
+  noHighlight,
   _key,
 }: TableProps) {
-  let effectiveColumns: any[] = [];
+  let effectiveColumns: EffectiveTableModelColumn[] = [];
   if (!columns) {
     const columnsToAdd = new Set<string>();
-    values.forEach((value) => {
+    (values ?? []).forEach((value) => {
       if (value && typeof value == "object") {
         Object.keys(value).forEach((name) => columnsToAdd.add(name));
       }
@@ -39,11 +58,25 @@ export default function Table({
       effectiveColumns.push({ description: name });
     });
   } else {
-    effectiveColumns = columns;
+    effectiveColumns = columns.map((col) => {
+      if (typeof col == "string") {
+        return {
+          description: col,
+        };
+      } else if (typeof col == "object" && "field" in col) {
+        return {
+          description: col.field,
+          useRemaining: col.useRemaining,
+          width: col.width,
+        };
+      } else {
+        return col;
+      }
+    });
   }
 
   const numberOfColsWithRemaining = effectiveColumns.filter(
-    (col) => col.useRemaining
+    (col) => typeof col == "object" && col.useRemaining
   ).length;
   const remainingPercent =
     numberOfColsWithRemaining > 0 ? 100 / numberOfColsWithRemaining + "%" : "";
@@ -58,7 +91,7 @@ export default function Table({
       <table
         className={`${styles.Table} ${bordered ? styles.bordered : ""} ${
           striped ? styles.striped : ""
-        }`}
+        } ${noHighlight ? "" : styles["highlight-on-hover"]}`}
       >
         <colgroup>
           {effectiveColumns.map((col) => (
@@ -125,8 +158,9 @@ export const TableDocumentation: WidgetDocumentation<TableProps> = {
       "Column definition, array of description (string), display (function that takes one entry and renders its cell), width and useRemaining",
     values: "Array of entries",
     bordered: "Add borders",
-    striped: "Alternate background color",
+    striped: "Alternate background color, default true",
     noHeader: "Skip the header",
+    noHighlight: "Do not highlight rows on hover",
     _key: "A function to compute a key from a value",
   },
 };

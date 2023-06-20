@@ -22,8 +22,8 @@ export default function Text({
   size,
   align,
   color,
-  weight = "normal",
-  wrap = false,
+  weight,
+  wrap,
 }: TextProps) {
   if (
     preformatted &&
@@ -49,7 +49,7 @@ export default function Text({
       fontSize: (size ?? 1) + "em",
       textAlign: align ?? "left",
       fontFamily: weight === "light" ? "Proxima Nova Lt" : "Proxima Nova Rg",
-      fontWeight: weight,
+      fontWeight: weight ?? "normal",
       whiteSpace: wrap ? undefined : "nowrap",
       color: color,
     }),

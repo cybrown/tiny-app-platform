@@ -1,7 +1,7 @@
 import { EvaluationError, RuntimeContext } from "tal-eval";
 import { Expression } from "tal-parser";
 import styles from "./styles.module.css";
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
 
 export default function RenderExpression({
@@ -12,6 +12,7 @@ export default function RenderExpression({
   expression: Expression | null;
 }): JSX.Element {
   const ctxRef = useRef(ctx.createChild({}));
+  const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
   try {
     const ui = expression == null ? null : ctxRef.current.evaluate(expression);
     const result = renderNullableWidget(ui);
@@ -21,8 +22,8 @@ export default function RenderExpression({
           {result.map((child) => (
             <ErrorBoundary
               ctx={ctxRef.current}
-              onError={(err) => (
-                <RenderError expression={expression} err={err} />
+              onError={(err, retry) => (
+                <RenderError expression={expression} err={err} retry={retry} />
               )}
             >
               {child}
@@ -34,14 +35,16 @@ export default function RenderExpression({
       return (
         <ErrorBoundary
           ctx={ctxRef.current}
-          onError={(err) => <RenderError expression={expression} err={err} />}
+          onError={(err, retry) => (
+            <RenderError expression={expression} err={err} retry={retry} />
+          )}
         >
           {renderNullableWidget(ui)}
         </ErrorBoundary>
       );
     }
   } catch (err) {
-    return <RenderError expression={expression} err={err} />;
+    return <RenderError expression={expression} err={err} retry={retry} />;
   }
 }
 
@@ -77,10 +80,12 @@ export function RenderError({
   expression,
   err,
   isStartup = false,
+  retry,
 }: {
   expression: Expression | null;
   err: unknown;
   isStartup?: boolean;
+  retry: () => void;
 }) {
   let locationMessage = "";
   const expressionToUse =
@@ -107,6 +112,7 @@ export function RenderError({
       >
         Dump error in console
       </button>
+      <button onClick={retry}>Retry</button>
     </div>
   );
 }
@@ -130,7 +136,11 @@ function nameKindOfExpression(expr: Expression) {
 }
 
 class ErrorBoundary extends React.Component<
-  { ctx: RuntimeContext; children: any; onError: (err: any) => JSX.Element },
+  {
+    ctx: RuntimeContext;
+    children: any;
+    onError: (err: any, retry: () => void) => JSX.Element;
+  },
   { error: any }
 > {
   constructor(props: ErrorBoundary["props"]) {
@@ -145,9 +155,13 @@ class ErrorBoundary extends React.Component<
 
   onStateChangeListener = () => this.setState({ error: null });
 
+  retry = () => {
+    this.props.ctx.forceRefresh();
+  };
+
   render() {
     if (this.state.error) {
-      return <div>{this.props.onError(this.state.error)}</div>;
+      return <div>{this.props.onError(this.state.error, this.retry)}</div>;
     }
 
     return this.props.children;

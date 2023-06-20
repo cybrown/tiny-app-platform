@@ -1,7 +1,7 @@
 import { RuntimeContext } from "tal-eval";
 import RenderExpression, { RenderError } from "./runtime/RenderExpression";
 import { Expression } from "tal-parser";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
 
 function AppRenderer({
@@ -13,6 +13,8 @@ function AppRenderer({
 }) {
   const [appUi, setAppUi] = useState(null as Expression | null);
   const [lastError, setLastError] = useState<unknown>(null);
+  const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
+
   useEffect(() => {
     async function run() {
       try {
@@ -41,7 +43,7 @@ function AppRenderer({
     run();
   }, [app, ctx]);
   return lastError ? (
-    <RenderError expression={null} err={lastError} isStartup />
+    <RenderError expression={null} err={lastError} isStartup retry={retry} />
   ) : appUi ? (
     <RenderExpression ctx={ctx} expression={appUi} />
   ) : null;

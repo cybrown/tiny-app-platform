@@ -51,6 +51,10 @@ export class RuntimeContext {
   private mutableLocals = new Set<string>();
   private isWidgetState = false;
 
+  forceRefresh() {
+    this.triggerStateChangedListeners();
+  }
+
   private triggerStateChangedListeners() {
     this.stateChangedListeners.forEach(listener => listener());
   }

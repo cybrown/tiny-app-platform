@@ -56,6 +56,7 @@ import {
   default$,
   watch,
   expression_eval,
+  eval_js,
 } from "./functions/core";
 import { event_on, event_trigger } from "./functions/event";
 import { json_parse, json_stringify, jmespath_search } from "./functions/json";
@@ -235,6 +236,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(bytes_to_string);
   ctx.registerFunction(cheerio_find);
   ctx.registerFunction(cheerio_load);
+  ctx.registerFunction(eval_js);
   ctx.registerFunction(event_on);
   ctx.registerFunction(event_trigger);
   ctx.registerFunction(http_request_form);

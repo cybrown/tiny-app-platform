@@ -27,10 +27,7 @@ export const array_to_object = defineFunction(
     { name: "value_extractor" },
     { name: "accumulator" },
   ],
-  (
-    ctx,
-    { array, key_extractor, value_extractor, accumulator }
-  ) => {
+  (ctx, { array, key_extractor, value_extractor, accumulator }) => {
     const result: { [key: string]: any } = {};
     if (accumulator) {
       (array as any[]).forEach((it) => {
@@ -223,5 +220,15 @@ export const array_reverse = defineFunction(
   [{ name: "array" }],
   (ctx, { array }) => {
     return (array as any[]).slice().reverse();
+  }
+);
+
+export const array_reduce = defineFunction(
+  "array_reduce",
+  [{ name: "array" }, { name: "reducer" }, { name: "init" }],
+  (ctx, { array, reducer, init }) => {
+    return (array as any[]).reduce((previous, current) => {
+      return ctx.callFunction(reducer, [previous, current]);
+    });
   }
 );

@@ -1,34 +1,38 @@
 import { defineFunction } from "tal-eval";
 
-export const array_group_by = defineFunction(
-  "array_group_by",
+export const array_group = defineFunction(
+  "array_group",
+  [{ name: "array" }, { name: "key_extractor" }, { name: "value_extractor" }],
+  (ctx, { array, key_extractor, value_extractor }) => {
+    const result: { [key: string]: any } = {};
+    (array as any[]).forEach((it) => {
+      const key = ctx.callFunction(key_extractor, [it]) as string;
+      const value = value_extractor
+        ? ctx.callFunction(value_extractor, [it])
+        : it;
+      if (!result[key]) {
+        result[key] = [];
+      }
+      result[key].push(value);
+    });
+    return result;
+  }
+);
+
+export const array_to_object = defineFunction(
+  "array_to_object",
   [
     { name: "array" },
     { name: "key_extractor" },
     { name: "value_extractor" },
     { name: "accumulator" },
-    { name: "multi" },
   ],
   (
     ctx,
-    { array, key_extractor, value_extractor, accumulator, multi = false }
+    { array, key_extractor, value_extractor, accumulator }
   ) => {
     const result: { [key: string]: any } = {};
-    if (multi) {
-      if (accumulator) {
-        throw new Error("multi and accumulator are exclusive");
-      }
-      (array as any[]).forEach((it) => {
-        const key = ctx.callFunction(key_extractor, [it]) as string;
-        const value = value_extractor
-          ? ctx.callFunction(value_extractor, [it])
-          : it;
-        if (!result[key]) {
-          result[key] = [];
-        }
-        result[key].push(value);
-      });
-    } else if (accumulator) {
+    if (accumulator) {
       (array as any[]).forEach((it) => {
         const key = ctx.callFunction(key_extractor, [it]) as string;
         const value = value_extractor

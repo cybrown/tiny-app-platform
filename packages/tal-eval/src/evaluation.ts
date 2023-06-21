@@ -40,7 +40,7 @@ export function evaluateCall(
     const consolidatedProvidedAndMissingArguments = {
       ...providedNamedArguments,
     };
-    const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction).parameters.filter(
+    const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction<"dummy string">).parameters.filter(
       parameter => !providedNamedArguments.hasOwnProperty(parameter.name)
     );
 
@@ -523,7 +523,7 @@ export async function evaluateAsyncExpression(
             const consolidatedProvidedAndMissingArguments = {
               ...providedNamedArguments,
             };
-            const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction).parameters.filter(
+            const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction<"dummy string">).parameters.filter(
               parameter =>
                 !providedNamedArguments.hasOwnProperty(parameter.name)
             );

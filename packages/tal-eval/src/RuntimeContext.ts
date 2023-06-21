@@ -392,9 +392,9 @@ export class RuntimeContext {
     return this.widgetsDocumentation;
   }
 
-  defineFunction(
+  defineFunction<T extends string>(
     name: string,
-    parameters: ParameterDeclaration[],
+    parameters: ParameterDeclaration<T>[],
     func?: (
       ctx: RuntimeContext,
       namedArguments: { [key: string]: any },
@@ -410,7 +410,7 @@ export class RuntimeContext {
     this.declareLocal(result.name, { initialValue: result });
   }
 
-  registerFunction(func: RegisterableFunction) {
+  registerFunction<T extends string>(func: RegisterableFunction<T>) {
     this.declareLocal(func.name, {
       initialValue: func,
     });
@@ -434,34 +434,34 @@ export function isFunctionValue(value: any): value is FunctionValue {
   );
 }
 
-type ParameterDeclaration = {
-  name: string;
+type ParameterDeclaration<T extends string> = {
+  name: T;
   lazy?: boolean;
   env?: string;
 };
 
-export function defineFunction(
+export function defineFunction<T extends string>(
   name: string,
-  parameters: ParameterDeclaration[],
+  parameters: ParameterDeclaration<T>[],
   func?: (
     ctx: RuntimeContext,
-    namedArguments: { [key: string]: any },
+    namedArguments: { [key in T]: any },
     positionalArguments: any[]
   ) => any,
   funcAsync?: (
     ctx: RuntimeContext,
-    namedArguments: { [key: string]: any },
+    namedArguments: { [key in T]: any },
     positionalArguments: any[]
   ) => any
 ) {
   // TODO: Define one parameter as the pipe entry point
-  const result: RegisterableFunction = {
+  const result: RegisterableFunction<T> = {
     name,
     parameters,
     parametersByName: parameters.reduce((prev, cur) => {
       prev[cur.name] = cur;
       return prev;
-    }, {} as RegisterableFunction['parametersByName']),
+    }, {} as RegisterableFunction<T>['parametersByName']),
   };
   if (func) {
     result.call = (ctx, namedArguments, positionalArguments) => {
@@ -476,9 +476,9 @@ export function defineFunction(
   return result;
 }
 
-export type RegisterableFunction = {
+export type RegisterableFunction<T extends string> = {
   name: string;
-  parameters: ParameterDeclaration[];
+  parameters: ParameterDeclaration<T>[];
   parametersByName: {
     [argName: string]: {
       name: string;
@@ -488,12 +488,12 @@ export type RegisterableFunction = {
   };
   call?: (
     ctx: RuntimeContext,
-    namedArguments: { [key: string]: any },
+    namedArguments: { [key in T]: any },
     positionalArguments?: any[]
   ) => any;
   callAsync?: (
     ctx: RuntimeContext,
-    namedArguments: { [key: string]: any },
+    namedArguments: { [key in T]: any },
     positionalArguments?: any[]
   ) => any;
 };

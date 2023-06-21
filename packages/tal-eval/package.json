@@ -51,6 +51,7 @@
     "typescript": "^3.9.10"
   },
   "dependencies": {
-    "@types/react": "^18.0.29"
+    "@types/react": "^18.0.29",
+    "tal-parser": "*"
   }
 }

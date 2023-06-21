@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm test --workspaces --if-present"
+    "start": "nx run-many -t start -p backend web-client",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
     "packages/tal-eval-test",
     "packages/backend",
     "packages/web-client"
-  ]
+  ],
+  "devDependencies": {
+    "nx": "^16.3.2"
+  }
 }

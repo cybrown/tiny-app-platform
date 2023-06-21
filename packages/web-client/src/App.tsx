@@ -41,6 +41,7 @@ import {
   array_take,
   array_to_object,
   array_unique,
+  array_reduce,
 } from "./functions/array";
 import { bytes_to_string } from "./functions/bytes";
 import { cheerio_load, cheerio_find } from "./functions/cheerio";
@@ -223,6 +224,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(array_map_parallel);
   ctx.registerFunction(array_range);
   ctx.registerFunction(array_unique);
+  ctx.registerFunction(array_reduce);
   ctx.registerFunction(array_remove);
   ctx.registerFunction(array_reverse);
   ctx.registerFunction(array_skip);

@@ -190,3 +190,17 @@ export const is_defined = defineFunction(
     return ctx.hasLocal(name);
   }
 );
+
+export const eval_js = defineFunction(
+  "eval_js",
+  [{ name: "code" }, { name: "context" }],
+  (ctx, { code, context }) => {
+    function evalInContext() {
+      return function() {
+        // eslint-disable-next-line no-eval
+        return eval(code);
+      }.call(context);
+    }
+    return evalInContext();
+  }
+);

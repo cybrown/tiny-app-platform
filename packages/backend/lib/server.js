@@ -32,9 +32,14 @@ function httpRequest(method, urlStr, headers, body) {
       },
       (response) => {
         readBody(response)
-          .then((body) =>
-            resolve(createResponse(response.status, response.headers, body))
-          )
+          .then((body) => {
+            if ("set-cookie" in response.headers) {
+              response.headers["x-set-cookie"] = response.headers["set-cookie"];
+            }
+            return resolve(
+              createResponse(response.status, response.headers, body)
+            );
+          })
           .catch(reject);
       }
     );

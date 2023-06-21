@@ -23,23 +23,24 @@ import Box, { BoxDocumentation } from "./widgets/Box";
 import Row, { RowDocumentation } from "./widgets/Row";
 import Image, { ImageDocumentation } from "./widgets/Image";
 import {
-  array_group_by,
   array_append,
-  array_remove,
-  array_range,
-  array_get,
-  array_join,
-  array_skip,
-  array_take,
-  array_filter,
-  array_map,
-  array_sort,
-  array_unique,
-  array_reverse,
   array_concat,
-  array_length,
+  array_filter,
   array_flat_map,
+  array_get,
+  array_group,
+  array_join,
+  array_length,
   array_map_parallel,
+  array_map,
+  array_range,
+  array_remove,
+  array_reverse,
+  array_skip,
+  array_sort,
+  array_take,
+  array_to_object,
+  array_unique,
 } from "./functions/array";
 import { bytes_to_string } from "./functions/bytes";
 import { cheerio_load, cheerio_find } from "./functions/cheerio";
@@ -215,7 +216,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(array_filter);
   ctx.registerFunction(array_flat_map);
   ctx.registerFunction(array_get);
-  ctx.registerFunction(array_group_by);
+  ctx.registerFunction(array_group);
   ctx.registerFunction(array_join);
   ctx.registerFunction(array_length);
   ctx.registerFunction(array_map);
@@ -227,6 +228,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(array_skip);
   ctx.registerFunction(array_sort);
   ctx.registerFunction(array_take);
+  ctx.registerFunction(array_to_object);
   ctx.registerFunction(bytes_to_string);
   ctx.registerFunction(cheerio_find);
   ctx.registerFunction(cheerio_load);

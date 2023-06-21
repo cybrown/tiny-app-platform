@@ -121,6 +121,7 @@ import {
   storage_remove,
   storage_write,
 } from "./functions/storage";
+import { time_day_of_week, time_parse } from "./functions/time";
 
 const queryParams = window.location.search
   .slice(1)
@@ -286,6 +287,8 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerFunction(string_to_bytes);
   ctx.registerFunction(string_to_number);
   ctx.registerFunction(string_trim);
+  ctx.registerFunction(time_parse);
+  ctx.registerFunction(time_day_of_week);
   ctx.registerFunction(uuid_v4);
 
   return ctx;

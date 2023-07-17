@@ -132,9 +132,15 @@ const queryParams = window.location.search
     if (!prev[cur[0]]) {
       prev[cur[0]] = [];
     }
-    prev[cur[0]].push(decodeURIComponent(cur[1]));
+    prev[cur[0]]!.push(decodeURIComponent(cur[1]));
     return prev;
-  }, {} as { [key: string]: string[] });
+  }, {} as { [key: string]: string[] | undefined });
+
+const pathNameComponents = window.location.pathname.split('/');
+const appNameFromPathName: string | undefined = pathNameComponents[1];
+const appNameFromQueryParams: string | undefined = (queryParams?.name || [])[0];
+
+const appNameFromUrl = appNameFromPathName || appNameFromQueryParams;
 
 async function getRemoteConfiguration() {
   const response = await fetch(backendUrl + "/configuration");
@@ -348,9 +354,9 @@ function App() {
         };
         if (
           configuration.features.includes("remote-storage") &&
-          queryParams.name
+          appNameFromUrl
         ) {
-          const remoteAppSource = await getApp(queryParams.name[0]);
+          const remoteAppSource = await getApp(appNameFromUrl);
           setSource(remoteAppSource);
         } else {
           setSource(
@@ -421,8 +427,8 @@ function App() {
     // TODO: Find a better way to differentiate where the source is from
     if ((window as any).electronAPI) {
       (window as any).electronAPI.saveFile(sourceFromEditor);
-    } else if (queryParams.name) {
-      saveApp(queryParams.name[0], sourceFromEditor);
+    } else if (appNameFromUrl) {
+      saveApp(appNameFromUrl, sourceFromEditor);
     }
     setSource(sourceFromEditor);
   }, []);

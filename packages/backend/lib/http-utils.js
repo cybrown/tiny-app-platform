@@ -57,7 +57,7 @@ function sendResponse(res, response) {
   res.end();
 }
 
-const superHandler = (routes) => {
+const superHandler = (routes, defaultHandler) => {
   const compiledRoutes = routes.map((routeDefinition) => {
     var compiledRoute = new Route(routeDefinition.route);
     return { ...routeDefinition, compiledRoute };
@@ -84,7 +84,11 @@ const superHandler = (routes) => {
       }
     }
     if (!routeFound) {
-      sendResponse(res, { status: 404 });
+      if (!defaultHandler) {
+        sendResponse(res, { status: 404 });
+      } else {
+        defaultHandler(req, res);
+      }
     }
   };
 };

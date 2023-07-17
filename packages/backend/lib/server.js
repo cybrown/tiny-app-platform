@@ -7,6 +7,7 @@ const {
   okJson,
   okText,
   noContent,
+  sendResponse,
 } = require("./http-utils");
 const https = require("https");
 const http = require("http");
@@ -388,7 +389,16 @@ const routes = [
 ];
 
 const staticHandler = serveStatic("./public");
-const handleRequest = superHandler(routes);
+const staticHandlerFinal = serveStatic("./public", {
+  fallthrough: false,
+});
+
+const handleRequest = superHandler(routes, (req, res) => {
+  req.url = "/";
+  staticHandlerFinal(req, res, (err) =>
+    sendResponse(res, { status: err.statusCode ?? 500 })
+  );
+});
 
 server.on("request", (req, res) =>
   staticHandler(req, res, () => handleRequest(req, res))

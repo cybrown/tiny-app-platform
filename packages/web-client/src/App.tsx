@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styles from "./App.module.css";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import * as tal from "tal-parser";
@@ -123,6 +130,7 @@ import {
   storage_write,
 } from "./functions/storage";
 import { time_day_of_week, time_parse } from "./functions/time";
+import EventEmitter from "events";
 
 const queryParams = window.location.search
   .slice(1)
@@ -136,7 +144,7 @@ const queryParams = window.location.search
     return prev;
   }, {} as { [key: string]: string[] | undefined });
 
-const pathNameComponents = window.location.pathname.split('/');
+const pathNameComponents = window.location.pathname.split("/");
 const appNameFromPathName: string | undefined = pathNameComponents[1];
 const appNameFromQueryParams: string | undefined = (queryParams?.name || [])[0];
 
@@ -446,6 +454,12 @@ function App() {
     [ctx]
   );
 
+  const emitterRef = useRef<EventEmitter>();
+
+  const setEmitter = useCallback((emitter: EventEmitter) => {
+    emitterRef.current = emitter;
+  }, []);
+
   return (
     <>
       <div
@@ -479,7 +493,11 @@ function App() {
               />
             </div>
             {source ? (
-              <Editor source={source} grabSetSource={setUpdateSource} />
+              <Editor
+                source={source}
+                grabSetSource={setUpdateSource}
+                grabEmitter={setEmitter}
+              />
             ) : null}
           </div>
         ) : null}
@@ -507,7 +525,16 @@ function App() {
         </div>
       </div>
       {showDocumentation ? (
-        <Documentation ctx={ctx} onClose={toggleShowDocumentationHandler} />
+        <Documentation
+          ctx={ctx}
+          onClose={toggleShowDocumentationHandler}
+          writeInEditor={(text) => {
+            if (!emitterRef.current) {
+              return;
+            }
+            emitterRef.current.emit("write", text);
+          }}
+        />
       ) : null}
     </>
   );
@@ -516,9 +543,11 @@ function App() {
 function Documentation({
   ctx,
   onClose,
+  writeInEditor,
 }: {
   ctx: RuntimeContext;
   onClose: () => void;
+  writeInEditor(text: string): void;
 }) {
   const widgetsData = useMemo(() => {
     return ctx.listWidgets();
@@ -578,7 +607,10 @@ function Documentation({
               name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
           )
           .map(([name, doc]) => (
-            <div key={name} onClick={() => copyFunctionSnippet(name, doc)}>
+            <div
+              key={name}
+              onClick={() => copyFunctionSnippet(writeInEditor, name, doc)}
+            >
               <div>
                 <strong>{name}</strong>
               </div>
@@ -606,7 +638,9 @@ function Documentation({
           .map(([name, documentation]) => (
             <div
               key={name}
-              onClick={() => copyWidgetSnippet(name, documentation)}
+              onClick={() =>
+                copyWidgetSnippet(writeInEditor, name, documentation)
+              }
             >
               <div>
                 <strong>{name}</strong>: {documentation.description}
@@ -628,8 +662,12 @@ function Documentation({
   );
 }
 
-function copyFunctionSnippet(name: string, documentation: any[]): void {
-  navigator.clipboard.writeText(
+function copyFunctionSnippet(
+  writeInEditor: (text: string) => void,
+  name: string,
+  documentation: any[]
+): void {
+  writeInEditor(
     name +
       "(" +
       documentation.map(({ name }) => name + ": null").join(", ") +
@@ -638,10 +676,11 @@ function copyFunctionSnippet(name: string, documentation: any[]): void {
 }
 
 function copyWidgetSnippet(
+  writeInEditor: (text: string) => void,
   name: string,
   documentation: WidgetDocumentation<any>
 ): void {
-  navigator.clipboard.writeText(
+  writeInEditor(
     name +
       " { " +
       Object.entries(documentation.props)

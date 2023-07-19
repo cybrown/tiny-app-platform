@@ -5,13 +5,16 @@ import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { EditorState } from "@codemirror/state";
 import styles from "./Editor.module.css";
+import { EventEmitter } from "events";
 
 export function Editor({
   source,
   grabSetSource,
+  grabEmitter,
 }: {
   source: string;
   grabSetSource(arg: () => () => string): void;
+  grabEmitter(emitter: EventEmitter): void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorView | null>(null);
@@ -27,6 +30,9 @@ export function Editor({
     },
     [editor]
   );
+
+  const emitterRef = useRef<EventEmitter>(new EventEmitter());
+
   useEffect(() => {
     if (ref.current == null) {
       console.log("ref is null");
@@ -49,5 +55,17 @@ export function Editor({
     }
     grabSetSource(setUpdateSourceFunc);
   }, [editor, grabSetSource, setUpdateSourceFunc, source, sourceBefore]);
+
+  useEffect(() => {
+    grabEmitter(emitterRef.current);
+    emitterRef.current.on("write", (text) => {
+      editor?.dispatch(editor?.state.replaceSelection(text));
+    });
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      emitterRef.current.removeAllListeners();
+    };
+  }, [editor, grabEmitter]);
+
   return <div ref={ref} className={styles.Editor} id="editor"></div>;
 }

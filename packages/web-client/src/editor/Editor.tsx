@@ -3,11 +3,11 @@ import { javascript } from "@codemirror/lang-javascript";
 import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
-import { EditorState } from "@codemirror/state";
 import styles from "./Editor.module.css";
 
 export interface EditorApi {
   replaceSelection(text: string): void;
+  replaceAll(text: string): void;
 }
 
 export function Editor({
@@ -33,11 +33,21 @@ export function Editor({
     },
     [editor]
   );
-  const editorApi = useMemo<EditorApi>(() => ({
-    replaceSelection(text) {
-      editor?.dispatch(editor?.state.replaceSelection(text));
-    }
-  }), [editor]);
+  const editorApi = useMemo<EditorApi>(
+    () => ({
+      replaceSelection(text) {
+        editor?.dispatch(editor?.state.replaceSelection(text));
+      },
+      replaceAll(text) {
+        editor?.dispatch(
+          editor.state.update({
+            changes: { from: 0, to: editor.state.doc.length, insert: text },
+          })
+        );
+      },
+    }),
+    [editor]
+  );
 
   useEffect(() => {
     if (ref.current == null) {
@@ -53,14 +63,10 @@ export function Editor({
         })
       );
     } else if (sourceBefore !== source) {
-      const newState = EditorState.create({
-        doc: source,
-        extensions: [basicSetup, keymap.of([indentWithTab]), javascript()],
-      });
-      editor.setState(newState);
+      editorApi?.replaceAll(source);
     }
     grabSetSource(setUpdateSourceFunc);
-  }, [editor, grabSetSource, setUpdateSourceFunc, source, sourceBefore]);
+  }, [editor, editorApi, grabSetSource, setUpdateSourceFunc, source, sourceBefore]);
 
   useEffect(() => {
     onApiReady(editorApi);

@@ -1,15 +1,8 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import * as tal from "tal-parser";
-import { Editor } from "./editor/Editor";
+import { Editor, EditorApi } from "./editor/Editor";
 import AppRenderer from "./AppRenderer";
 import { useHotkeys } from "react-hotkeys-hook";
 import Button, { ButtonDocumentation } from "./widgets/Button";
@@ -130,7 +123,6 @@ import {
   storage_write,
 } from "./functions/storage";
 import { time_day_of_week, time_parse } from "./functions/time";
-import EventEmitter from "events";
 
 const queryParams = window.location.search
   .slice(1)
@@ -454,10 +446,10 @@ function App() {
     [ctx]
   );
 
-  const emitterRef = useRef<EventEmitter>();
+  const [editorApi, setEditorApi] = useState<EditorApi>();
 
-  const setEmitter = useCallback((emitter: EventEmitter) => {
-    emitterRef.current = emitter;
+  const grabEditorApi = useCallback((api: EditorApi) => {
+    setEditorApi(api);
   }, []);
 
   return (
@@ -496,7 +488,7 @@ function App() {
               <Editor
                 source={source}
                 grabSetSource={setUpdateSource}
-                grabEmitter={setEmitter}
+                onApiReady={grabEditorApi}
               />
             ) : null}
           </div>
@@ -529,10 +521,10 @@ function App() {
           ctx={ctx}
           onClose={toggleShowDocumentationHandler}
           writeInEditor={(text) => {
-            if (!emitterRef.current) {
+            if (!editorApi) {
               return;
             }
-            emitterRef.current.emit("write", text);
+            editorApi.replaceSelection(text);
           }}
         />
       ) : null}

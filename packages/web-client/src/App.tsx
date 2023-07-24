@@ -422,7 +422,7 @@ function App() {
     [showDocumentation]
   );
 
-  const setSourceFromToolbar = useCallback((sourceFromEditor: string) => {
+  const setAndPersistSource = useCallback((sourceFromEditor: string) => {
     localStorage.setItem(currentAppName, sourceFromEditor);
     // TODO: Find a better way to differentiate where the source is from
     if ((window as any).electronAPI) {
@@ -452,6 +452,39 @@ function App() {
     setEditorApi(api);
   }, []);
 
+  const onApplyHandler = useCallback(() => {
+    if (updateSourceFunc) {
+      const newSource = updateSourceFunc();
+      setAndPersistSource(newSource);
+    }
+  }, [setAndPersistSource, updateSourceFunc]);
+
+  const onApplyAndFormatHandler = useCallback(() => {
+    if (!updateSourceFunc) return;
+    let sourceToSave = updateSourceFunc();
+    try {
+      const app = tal.parse(sourceToSave);
+      sourceToSave = tal.stringify(app);
+    } catch (err) {
+      console.error("Failed to format because of syntax error", err);
+    } finally {
+      setAndPersistSource(sourceToSave);
+    }
+  }, [setAndPersistSource, updateSourceFunc]);
+
+  const onCloseHandler = useCallback(() => {
+    // TODO: Find user friendly confirm dialogs
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm("Close without saving ?")) {
+      closeEditorHandle();
+    }
+  }, [closeEditorHandle]);
+
+  const onSaveAndFormatAndCloseHandler = useCallback(() => {
+    onApplyAndFormatHandler();
+    closeEditorHandle();
+  }, [closeEditorHandle, onApplyAndFormatHandler]);
+
   return (
     <>
       <div
@@ -474,10 +507,11 @@ function App() {
           <div className={styles.EditorContainer}>
             <div className={styles.ToolBarContainer}>
               <ToolBar
-                setSource={setSourceFromToolbar}
-                updateSourceFunc={updateSourceFunc}
-                closeEditor={closeEditorHandle}
-                toggleShowFunctionReference={toggleShowDocumentationHandler}
+                onApply={onApplyHandler}
+                onApplyAndFormat={onApplyAndFormatHandler}
+                onClose={onCloseHandler}
+                onSaveAndFormatAndClose={onSaveAndFormatAndCloseHandler}
+                onShowDocumentation={toggleShowDocumentationHandler}
                 appDebugMode={
                   ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
                 }
@@ -685,53 +719,22 @@ function copyWidgetSnippet(
 export default App;
 
 function ToolBar({
-  setSource,
-  updateSourceFunc,
-  closeEditor,
-  toggleShowFunctionReference,
+  onApply,
+  onApplyAndFormat,
+  onClose,
+  onSaveAndFormatAndClose,
+  onShowDocumentation,
   appDebugMode,
   setAppDebugMode,
 }: {
-  setSource: (newSource: string) => void;
-  updateSourceFunc: (() => string) | null;
-  closeEditor(): void;
-  toggleShowFunctionReference(): void;
+  onApply(): void;
+  onApplyAndFormat(): void;
+  onSaveAndFormatAndClose(): void;
+  onClose(): void;
+  onShowDocumentation(): void;
   appDebugMode: boolean;
   setAppDebugMode(debugModeEnabled: boolean): void;
 }) {
-  const applyChanges = useCallback(() => {
-    if (updateSourceFunc) {
-      const newSource = updateSourceFunc();
-      setSource(newSource);
-    }
-  }, [setSource, updateSourceFunc]);
-
-  const formatClickHandler = useCallback(() => {
-    if (!updateSourceFunc) return;
-    let sourceToSave = updateSourceFunc();
-    try {
-      const app = tal.parse(sourceToSave);
-      sourceToSave = tal.stringify(app);
-    } catch (err) {
-      console.error("Failed to format because of syntax error", err);
-    } finally {
-      setSource(sourceToSave);
-    }
-  }, [setSource, updateSourceFunc]);
-
-  const saveAndFormatAndCloseClickHandler = useCallback(() => {
-    formatClickHandler();
-    closeEditor();
-  }, [formatClickHandler, closeEditor]);
-
-  const closeClickHandler = useCallback(() => {
-    // TODO: Find user friendly confirm dialogs
-    // eslint-disable-next-line no-restricted-globals
-    if (confirm("Close without saving ?")) {
-      closeEditor();
-    }
-  }, [closeEditor]);
-
   const onAppDebugModeChangeHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setAppDebugMode(e.target.checked);
@@ -743,15 +746,11 @@ function ToolBar({
 
   return (
     <div>
-      <button onClick={applyChanges}>Apply</button>
-      <button onClick={formatClickHandler}>Apply & format</button>
-      <button onClick={saveAndFormatAndCloseClickHandler}>
-        Save & format & Close
-      </button>
-      <button onClick={closeClickHandler}>Close</button>
-      <button onClick={toggleShowFunctionReference}>
-        Reference documentation
-      </button>
+      <button onClick={onApply}>Apply</button>
+      <button onClick={onApplyAndFormat}>Apply & format</button>
+      <button onClick={onSaveAndFormatAndClose}>Save & format & Close</button>
+      <button onClick={onClose}>Close</button>
+      <button onClick={onShowDocumentation}>Reference documentation</button>
       <input
         type="checkbox"
         id={inputDebugId}

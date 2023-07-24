@@ -501,6 +501,14 @@ function App() {
     closeEditorHandle();
   }, [closeEditorHandle, onApplyAndFormatHandler]);
 
+  const onWriteInEditorHandler = useCallback((text: string) => {
+    if (!editorApi) {
+      return;
+    }
+    editorApi.replaceSelection(text);
+    onFormatHandler();
+  }, [editorApi, onFormatHandler]);
+
   return (
     <>
       <div
@@ -571,12 +579,7 @@ function App() {
         <Documentation
           ctx={ctx}
           onClose={toggleShowDocumentationHandler}
-          writeInEditor={(text) => {
-            if (!editorApi) {
-              return;
-            }
-            editorApi.replaceSelection(text);
-          }}
+          onWriteInEditor={onWriteInEditorHandler}
         />
       ) : null}
     </>

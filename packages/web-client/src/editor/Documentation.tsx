@@ -4,11 +4,11 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 export default function Documentation({
   ctx,
   onClose,
-  writeInEditor,
+  onWriteInEditor: writeInEditor,
 }: {
   ctx: RuntimeContext;
-  onClose: () => void;
-  writeInEditor(text: string): void;
+  onClose(): void;
+  onWriteInEditor(text: string): void;
 }) {
   const widgetsData = useMemo(() => {
     return ctx.listWidgets();

@@ -1,6 +1,6 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { RuntimeContext } from "tal-eval";
 import * as tal from "tal-parser";
 import { Editor, EditorApi } from "./editor/Editor";
 import AppRenderer from "./AppRenderer";
@@ -123,6 +123,8 @@ import {
   storage_write,
 } from "./functions/storage";
 import { time_day_of_week, time_parse } from "./functions/time";
+import Documentation from "./editor/Documentation";
+import ToolBar from "./editor/Toolbar";
 
 const queryParams = window.location.search
   .slice(1)
@@ -343,6 +345,22 @@ function App() {
   const [source, setSource] = useState<string | null>(null);
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
+  const [app, setApp] = useState<tal.Expression[] | null>(null);
+
+  const executeSource = useCallback((newSource: string) => {
+    if (newSource == null) {
+      setApp(null);
+      return;
+    }
+    try {
+      setApp(tal.parse(newSource));
+    } catch (err) {
+      setParseError(err as Error);
+      setApp(null);
+    } finally {
+      setSource(newSource);
+    }
+  }, []);
 
   useEffect(() => {
     (async function() {
@@ -352,19 +370,20 @@ function App() {
         const configuration = (await getRemoteConfiguration()) as {
           features: string[];
         };
+        let sourceToExecute: string;
         if (
           configuration.features.includes("remote-storage") &&
           appNameFromUrl
         ) {
           const remoteAppSource = await getApp(appNameFromUrl);
-          setSource(remoteAppSource);
+          sourceToExecute = remoteAppSource;
         } else {
-          setSource(
-            failedToLoadFromFile
-              ? localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE
-              : sourceFromFile ?? DEFAULT_APP_SOURCE
-          );
+          sourceToExecute = failedToLoadFromFile
+            ? localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE
+            : sourceFromFile ?? DEFAULT_APP_SOURCE;
         }
+        setSource(sourceToExecute);
+        executeSource(sourceToExecute);
       } catch (err) {
         console.error("Failed to get server features");
         console.error(err);
@@ -373,7 +392,7 @@ function App() {
         setIsLoadingApp(false);
       }
     })();
-  }, []);
+  }, [executeSource]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, dummyStateUpdate] = useState(0);
@@ -386,18 +405,6 @@ function App() {
   );
 
   const [parseError, setParseError] = useState<Error | null>(null);
-
-  const app = useMemo(() => {
-    if (source == null) {
-      return null;
-    }
-    try {
-      return tal.parse(source);
-    } catch (err) {
-      setParseError(err as Error);
-      return null;
-    }
-  }, [source]);
 
   const [isDebugMode, setIsDebugMode] = useState(
     queryParams.hasOwnProperty("debug")
@@ -422,7 +429,7 @@ function App() {
     [showDocumentation]
   );
 
-  const setAndPersistSource = useCallback((sourceFromEditor: string) => {
+  const persistSource = useCallback((sourceFromEditor: string) => {
     localStorage.setItem(currentAppName, sourceFromEditor);
     // TODO: Find a better way to differentiate where the source is from
     if ((window as any).electronAPI) {
@@ -430,7 +437,6 @@ function App() {
     } else if (appNameFromUrl) {
       saveApp(appNameFromUrl, sourceFromEditor);
     }
-    setSource(sourceFromEditor);
   }, []);
 
   const openEditorHandler = useCallback(() => {
@@ -448,29 +454,39 @@ function App() {
 
   const [editorApi, setEditorApi] = useState<EditorApi>();
 
-  const grabEditorApi = useCallback((api: EditorApi) => {
-    setEditorApi(api);
-  }, []);
-
   const onApplyHandler = useCallback(() => {
     if (updateSourceFunc) {
-      const newSource = updateSourceFunc();
-      setAndPersistSource(newSource);
+      const source = updateSourceFunc();
+      persistSource(source);
+      setSource(source);
+      executeSource(source);
     }
-  }, [setAndPersistSource, updateSourceFunc]);
+  }, [executeSource, persistSource, updateSourceFunc]);
+
+  const onFormatHandler = useCallback(() => {
+    if (!updateSourceFunc) return;
+    let sourceToFormat = updateSourceFunc();
+    try {
+      setSource(tal.stringify(tal.parse(sourceToFormat)));
+    } catch (err) {
+      console.error("Failed to format because of syntax error", err);
+    }
+  }, [updateSourceFunc]);
 
   const onApplyAndFormatHandler = useCallback(() => {
     if (!updateSourceFunc) return;
-    let sourceToSave = updateSourceFunc();
+    let source = updateSourceFunc();
     try {
-      const app = tal.parse(sourceToSave);
-      sourceToSave = tal.stringify(app);
+      const app = tal.parse(source);
+      source = tal.stringify(app);
     } catch (err) {
       console.error("Failed to format because of syntax error", err);
     } finally {
-      setAndPersistSource(sourceToSave);
+      persistSource(source);
+      setSource(source);
+      executeSource(source);
     }
-  }, [setAndPersistSource, updateSourceFunc]);
+  }, [executeSource, persistSource, updateSourceFunc]);
 
   const onCloseHandler = useCallback(() => {
     // TODO: Find user friendly confirm dialogs
@@ -508,6 +524,7 @@ function App() {
             <div className={styles.ToolBarContainer}>
               <ToolBar
                 onApply={onApplyHandler}
+                onFormat={onFormatHandler}
                 onApplyAndFormat={onApplyAndFormatHandler}
                 onClose={onCloseHandler}
                 onSaveAndFormatAndClose={onSaveAndFormatAndCloseHandler}
@@ -522,7 +539,7 @@ function App() {
               <Editor
                 source={source}
                 grabSetSource={setUpdateSource}
-                onApiReady={grabEditorApi}
+                onApiReady={setEditorApi}
               />
             ) : null}
           </div>
@@ -566,198 +583,4 @@ function App() {
   );
 }
 
-function Documentation({
-  ctx,
-  onClose,
-  writeInEditor,
-}: {
-  ctx: RuntimeContext;
-  onClose: () => void;
-  writeInEditor(text: string): void;
-}) {
-  const widgetsData = useMemo(() => {
-    return ctx.listWidgets();
-  }, [ctx]);
-  const functionsData = useMemo(() => {
-    return ctx
-      .listLocals()
-      .filter(
-        ([name, value]) =>
-          value != null &&
-          typeof value == "object" &&
-          (typeof (value as any).call == "function" ||
-            typeof (value as any).callAsync == "function")
-      )
-      .map(([name, value]) => {
-        const parameters = (value as any).parameters as any[];
-        return [name, parameters] as [string, any[]];
-      });
-  }, [ctx]);
-
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const onSearchChange = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      setSearchTerm((e.target as any).value);
-    },
-    []
-  );
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: "50%",
-        right: 0,
-        background: "rgb(218, 218, 218)",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div>
-        Search: <input onInput={onSearchChange} />
-        <button onClick={onClose}>Close</button>
-      </div>
-      <div style={{ overflow: "auto" }}>
-        <h2>Functions</h2>
-        <em style={{ display: "block", paddingBottom: 16 }}>
-          Click on any function to copy a code snippet
-        </em>
-        {functionsData
-          .filter(
-            ([name]) =>
-              !searchTerm ||
-              searchTerm === "" ||
-              name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-          )
-          .map(([name, doc]) => (
-            <div
-              key={name}
-              onClick={() => copyFunctionSnippet(writeInEditor, name, doc)}
-            >
-              <div>
-                <strong>{name}</strong>
-              </div>
-              <ul style={{ paddingLeft: 16 }}>
-                {doc.map((d) => (
-                  <li key={d.name}>
-                    {d.name}
-                    {d.env ? ` (env: ${d.env})` : ""}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        <h2>Widgets</h2>
-        <em style={{ display: "block", paddingBottom: 16 }}>
-          Click on any widget to copy a code snippet
-        </em>
-        {Object.entries(widgetsData)
-          .filter(
-            ([name]) =>
-              !searchTerm ||
-              searchTerm === "" ||
-              name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-          )
-          .map(([name, documentation]) => (
-            <div
-              key={name}
-              onClick={() =>
-                copyWidgetSnippet(writeInEditor, name, documentation)
-              }
-            >
-              <div>
-                <strong>{name}</strong>: {documentation.description}
-              </div>
-              <ul style={{ paddingLeft: 16 }}>
-                {Object.entries(documentation.props).map(
-                  ([name, description]) => (
-                    <li key={name}>
-                      {name}
-                      {description ? `: ${description}` : null}
-                    </li>
-                  )
-                )}
-              </ul>
-            </div>
-          ))}
-      </div>
-    </div>
-  );
-}
-
-function copyFunctionSnippet(
-  writeInEditor: (text: string) => void,
-  name: string,
-  documentation: any[]
-): void {
-  writeInEditor(
-    name +
-      "(" +
-      documentation.map(({ name }) => name + ": null").join(", ") +
-      ")"
-  );
-}
-
-function copyWidgetSnippet(
-  writeInEditor: (text: string) => void,
-  name: string,
-  documentation: WidgetDocumentation<any>
-): void {
-  writeInEditor(
-    name +
-      " { " +
-      Object.entries(documentation.props)
-        .map(([name]) => name + ": null")
-        .join(", ") +
-      " }"
-  );
-}
-
 export default App;
-
-function ToolBar({
-  onApply,
-  onApplyAndFormat,
-  onClose,
-  onSaveAndFormatAndClose,
-  onShowDocumentation,
-  appDebugMode,
-  setAppDebugMode,
-}: {
-  onApply(): void;
-  onApplyAndFormat(): void;
-  onSaveAndFormatAndClose(): void;
-  onClose(): void;
-  onShowDocumentation(): void;
-  appDebugMode: boolean;
-  setAppDebugMode(debugModeEnabled: boolean): void;
-}) {
-  const onAppDebugModeChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAppDebugMode(e.target.checked);
-    },
-    [setAppDebugMode]
-  );
-
-  const inputDebugId = useMemo(() => Math.random().toString(), []);
-
-  return (
-    <div>
-      <button onClick={onApply}>Apply</button>
-      <button onClick={onApplyAndFormat}>Apply & format</button>
-      <button onClick={onSaveAndFormatAndClose}>Save & format & Close</button>
-      <button onClick={onClose}>Close</button>
-      <button onClick={onShowDocumentation}>Reference documentation</button>
-      <input
-        type="checkbox"
-        id={inputDebugId}
-        checked={appDebugMode ?? false}
-        onChange={onAppDebugModeChangeHandler}
-      ></input>
-      <label htmlFor={inputDebugId}>Debug</label>
-    </div>
-  );
-}

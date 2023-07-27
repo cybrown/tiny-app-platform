@@ -1,4 +1,4 @@
-import { customRpc } from "../runtime/custom-rpc";
+import { customRpc } from "../util/custom-rpc";
 import { defineFunction } from "tal-eval";
 
 let sourcePathDirname: string | null = null;
@@ -12,7 +12,7 @@ export const process_exec = defineFunction(
   "process_exec",
   [{ name: "name" }, { name: "args" }, { name: "timeout" }],
   undefined,
-  async (ctx, { name, args, timeout }) => {
+  async (_ctx, { name, args, timeout }) => {
     const result = await customRpc(
       "exec-process",
       JSON.stringify({

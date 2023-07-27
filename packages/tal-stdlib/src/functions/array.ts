@@ -60,7 +60,7 @@ export const array_to_object = defineFunction(
 export const array_append = defineFunction(
   "array_append",
   [{ name: "array" }, { name: "value" }],
-  (ctx, { array, value }) => {
+  (_ctx, { array, value }) => {
     return [...array, value];
   }
 );
@@ -68,7 +68,7 @@ export const array_append = defineFunction(
 export const array_concat = defineFunction(
   "array_concat",
   [{ name: "array" }, { name: "other" }],
-  (ctx, { array, other }) => {
+  (_ctx, { array, other }) => {
     return [...array, ...other];
   }
 );
@@ -76,7 +76,7 @@ export const array_concat = defineFunction(
 export const array_length = defineFunction(
   "array_length",
   [{ name: "array" }],
-  (ctx, { array }) => {
+  (_ctx, { array }) => {
     return array.length;
   }
 );
@@ -84,7 +84,7 @@ export const array_length = defineFunction(
 export const array_unique = defineFunction(
   "array_unique",
   [{ name: "array" }],
-  (ctx, { array }) => {
+  (_ctx, { array }) => {
     return [...new Set(array as unknown[])];
   }
 );
@@ -92,15 +92,15 @@ export const array_unique = defineFunction(
 export const array_remove = defineFunction(
   "array_remove",
   [{ name: "array" }, { name: "index" }],
-  (ctx, { array, index }) => {
-    return (array as unknown[]).filter((value, i) => index !== i);
+  (_ctx, { array, index }) => {
+    return (array as unknown[]).filter((_value, i) => index !== i);
   }
 );
 
 export const array_range = defineFunction(
   "array_range",
   [{ name: "from" }, { name: "to" }, { name: "step" }],
-  (ctx, { from = 0, to, step = 1 }) => {
+  (_ctx, { from = 0, to, step = 1 }) => {
     const result: number[] = [];
     for (let i = from; i < to; i += step) {
       result.push(i);
@@ -112,7 +112,7 @@ export const array_range = defineFunction(
 export const array_get = defineFunction(
   "array_get",
   [{ name: "array" }, { name: "index" }],
-  (ctx, { array, index }) => {
+  (_ctx, { array, index }) => {
     return array[index];
   }
 );
@@ -120,7 +120,7 @@ export const array_get = defineFunction(
 export const array_join = defineFunction(
   "array_join",
   [{ name: "array" }, { name: "separator" }],
-  (ctx, { array, separator }) => {
+  (_ctx, { array, separator }) => {
     return array.join(separator);
   }
 );
@@ -128,7 +128,7 @@ export const array_join = defineFunction(
 export const array_skip = defineFunction(
   "array_skip",
   [{ name: "array" }, { name: "offset" }],
-  (ctx, { array, offset }) => {
+  (_ctx, { array, offset }) => {
     return array.slice(offset);
   }
 );
@@ -136,7 +136,7 @@ export const array_skip = defineFunction(
 export const array_take = defineFunction(
   "array_take",
   [{ name: "array" }, { name: "take" }],
-  (ctx, { array, take }) => {
+  (_ctx, { array, take }) => {
     return array.slice(0, take);
   }
 );
@@ -218,15 +218,15 @@ export const array_sort = defineFunction(
 export const array_reverse = defineFunction(
   "array_reverse",
   [{ name: "array" }],
-  (ctx, { array }) => {
+  (_ctx, { array }) => {
     return (array as any[]).slice().reverse();
   }
 );
 
 export const array_reduce = defineFunction(
   "array_reduce",
-  [{ name: "array" }, { name: "reducer" }, { name: "init" }],
-  (ctx, { array, reducer, init }) => {
+  [{ name: "array" }, { name: "reducer" }],
+  (ctx, { array, reducer }) => {
     return (array as any[]).reduce((previous, current) => {
       return ctx.callFunction(reducer, [previous, current]);
     });

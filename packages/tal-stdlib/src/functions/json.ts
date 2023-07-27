@@ -4,7 +4,7 @@ import { search } from "jmespath";
 export const json_parse = defineFunction(
   "json_parse",
   [{ name: "string" }],
-  (ctx, { string }) => {
+  (_ctx, { string }) => {
     return JSON.parse(string);
   }
 );
@@ -12,7 +12,7 @@ export const json_parse = defineFunction(
 export const json_stringify = defineFunction(
   "json_stringify",
   [{ name: "any" }],
-  (ctx, { any }) => {
+  (_ctx, { any }) => {
     return JSON.stringify(any);
   }
 );
@@ -20,7 +20,7 @@ export const json_stringify = defineFunction(
 export const jmespath_search = defineFunction(
   "jmespath_search",
   [{ name: "json" }, { name: "query" }],
-  (ctx, { json, query }) => {
+  (_ctx, { json, query }) => {
     return search(json, query as string);
   }
 );

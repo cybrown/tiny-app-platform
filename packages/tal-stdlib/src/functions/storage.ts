@@ -43,7 +43,7 @@ export const storage_read = defineFunction(
   "storage_read",
   [{ name: "key" }],
   undefined,
-  async (ctx, { key }) => {
+  async (_ctx, { key }) => {
     return getStorageDriver().read(key);
   }
 );
@@ -52,7 +52,7 @@ export const storage_write = defineFunction(
   "storage_write",
   [{ name: "key" }, { name: "value" }],
   undefined,
-  async (ctx, { key, value }) => {
+  async (_ctx, { key, value }) => {
     return getStorageDriver().write(key, value);
   }
 );
@@ -70,7 +70,7 @@ export const storage_remove = defineFunction(
   "storage_remove",
   [{ name: "key" }],
   undefined,
-  async (ctx, { key }) => {
+  async (_ctx, { key }) => {
     return getStorageDriver().remove(key);
   }
 );

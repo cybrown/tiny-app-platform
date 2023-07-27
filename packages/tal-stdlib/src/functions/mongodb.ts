@@ -1,4 +1,4 @@
-import { customRpc } from "../runtime/custom-rpc";
+import { customRpc } from "../util/custom-rpc";
 import { defineFunction, RuntimeContext } from "tal-eval";
 
 export const mongodb_find = defineFunction(
@@ -51,7 +51,7 @@ export const mongodb_delete_one = defineFunction(
 );
 
 async function mongodb_delete_one_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await mongodbDeleteOne({
@@ -78,7 +78,7 @@ async function mongodbDeleteOne(params: {
 }
 
 async function mongodb_find_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await mongodbQuery({
@@ -105,7 +105,7 @@ async function mongodbQuery(params: {
 }
 
 async function mongodb_insert_one_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await mongodbInsertOne({
@@ -132,7 +132,7 @@ async function mongodbInsertOne(params: {
 }
 
 async function mongodb_update_one_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await mongodbUpdateOne({

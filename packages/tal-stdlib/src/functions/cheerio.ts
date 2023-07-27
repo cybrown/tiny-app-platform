@@ -15,14 +15,14 @@ export const cheerio_find = defineFunction(
 );
 
 function cheerio_load_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   { source }: { [key: string]: any }
 ) {
   return load(source);
 }
 
 function cheerio_find_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   { selector, doc }: { [key: string]: any }
 ) {
   return (doc as CheerioAPI)(selector)

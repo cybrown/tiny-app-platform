@@ -22,109 +22,16 @@ import Snippet, { SnippetDocumentation } from "./widgets/Snippet";
 import Box, { BoxDocumentation } from "./widgets/Box";
 import Row, { RowDocumentation } from "./widgets/Row";
 import Image, { ImageDocumentation } from "./widgets/Image";
-import {
-  array_append,
-  array_concat,
-  array_filter,
-  array_flat_map,
-  array_get,
-  array_group,
-  array_join,
-  array_length,
-  array_map_parallel,
-  array_map,
-  array_range,
-  array_remove,
-  array_reverse,
-  array_skip,
-  array_sort,
-  array_take,
-  array_to_object,
-  array_unique,
-  array_reduce,
-} from "./functions/array";
-import { bytes_to_string } from "./functions/bytes";
-import { cheerio_load, cheerio_find } from "./functions/cheerio";
-import {
-  typeof$,
-  if$,
-  try$,
-  throw$,
-  log,
-  set_system_property,
-  is_defined,
-  default$,
-  watch,
-  expression_eval,
-  eval_js,
-} from "./functions/core";
-import { event_on, event_trigger } from "./functions/event";
-import { json_parse, json_stringify, jmespath_search } from "./functions/json";
-import {
-  mongodb_delete_one,
-  mongodb_find,
-  mongodb_insert_one,
-  mongodb_update_one,
-} from "./functions/mongodb";
-import {
-  object_keys,
-  object_values,
-  object_entries,
-  object_get,
-  object_merge,
-  object_set,
-} from "./functions/object";
-import { process_exec } from "./functions/process";
-import {
-  string_to_bytes,
-  string_to_number,
-  string_split,
-  string_locale_compare,
-  string_trim,
-  string_contains,
-  string_format,
-  string_ends_with,
-  string_starts_with,
-  string_lower,
-  string_pad_end,
-  string_pad_start,
-  string_repeat,
-  string_slice,
-  string_trim_end,
-  string_trim_start,
-  string_upper,
-} from "./functions/string";
-import { http_request, http_request_form } from "./functions/http";
 import Column, { ColumnDocumentation } from "./widgets/Column";
 import Loader, { LoaderDocumentation } from "./widgets/Loader";
-import { pg_query } from "./functions/pg";
-import { uuid_v4 } from "./functions/uuid";
 import { backendUrl } from "./runtime/configuration";
 import Debug, { DebugDocumentation } from "./widgets/Debug";
 import { APP_DEBUG_MODE_ENV } from "./constants";
-import {
-  number_to_string,
-  number_ceil,
-  number_floor,
-  number_round,
-  number_abs,
-  number_sign,
-  number_trunc,
-  number_random,
-  number_randint,
-} from "./functions/number";
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
-import { regex_match } from "./functions/regex";
-import {
-  storage_list,
-  storage_read,
-  storage_remove,
-  storage_write,
-} from "./functions/storage";
-import { time_day_of_week, time_parse } from "./functions/time";
 import Documentation from "./editor/Documentation";
 import ToolBar from "./editor/Toolbar";
+import { importStdlibInContext } from "tal-stdlib";
 
 const queryParams = window.location.search
   .slice(1)
@@ -188,6 +95,7 @@ try {
 
 function buildContext(onStateChange: () => void): RuntimeContext {
   const ctx = new RuntimeContext(onStateChange);
+  importStdlibInContext(ctx);
 
   ctx.registerWidget("Box", Box, BoxDocumentation);
   ctx.registerWidget("Button", Button, ButtonDocumentation);
@@ -212,94 +120,6 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Switch", Switch, SwitchDocumentation);
   ctx.registerWidget("Table", Table, TableDocumentation);
   ctx.registerWidget("Text", Text, TextDocumentation);
-
-  ctx.registerFunction(default$);
-  ctx.registerFunction(expression_eval);
-  ctx.registerFunction(if$);
-  ctx.registerFunction(log);
-  ctx.registerFunction(throw$);
-  ctx.registerFunction(try$);
-  ctx.registerFunction(typeof$);
-  ctx.registerFunction(watch);
-
-  ctx.registerFunction(array_append);
-  ctx.registerFunction(array_concat);
-  ctx.registerFunction(array_filter);
-  ctx.registerFunction(array_flat_map);
-  ctx.registerFunction(array_get);
-  ctx.registerFunction(array_group);
-  ctx.registerFunction(array_join);
-  ctx.registerFunction(array_length);
-  ctx.registerFunction(array_map);
-  ctx.registerFunction(array_map_parallel);
-  ctx.registerFunction(array_range);
-  ctx.registerFunction(array_unique);
-  ctx.registerFunction(array_reduce);
-  ctx.registerFunction(array_remove);
-  ctx.registerFunction(array_reverse);
-  ctx.registerFunction(array_skip);
-  ctx.registerFunction(array_sort);
-  ctx.registerFunction(array_take);
-  ctx.registerFunction(array_to_object);
-  ctx.registerFunction(bytes_to_string);
-  ctx.registerFunction(cheerio_find);
-  ctx.registerFunction(cheerio_load);
-  ctx.registerFunction(eval_js);
-  ctx.registerFunction(event_on);
-  ctx.registerFunction(event_trigger);
-  ctx.registerFunction(http_request_form);
-  ctx.registerFunction(http_request);
-  ctx.registerFunction(is_defined);
-  ctx.registerFunction(jmespath_search);
-  ctx.registerFunction(json_parse);
-  ctx.registerFunction(json_stringify);
-  ctx.registerFunction(mongodb_delete_one);
-  ctx.registerFunction(mongodb_find);
-  ctx.registerFunction(mongodb_insert_one);
-  ctx.registerFunction(mongodb_update_one);
-  ctx.registerFunction(number_to_string);
-  ctx.registerFunction(number_ceil);
-  ctx.registerFunction(number_floor);
-  ctx.registerFunction(number_round);
-  ctx.registerFunction(number_abs);
-  ctx.registerFunction(number_sign);
-  ctx.registerFunction(number_trunc);
-  ctx.registerFunction(number_random);
-  ctx.registerFunction(number_randint);
-  ctx.registerFunction(object_entries);
-  ctx.registerFunction(object_get);
-  ctx.registerFunction(object_keys);
-  ctx.registerFunction(object_merge);
-  ctx.registerFunction(object_set);
-  ctx.registerFunction(object_values);
-  ctx.registerFunction(pg_query);
-  ctx.registerFunction(process_exec);
-  ctx.registerFunction(regex_match);
-  ctx.registerFunction(set_system_property);
-  ctx.registerFunction(storage_list);
-  ctx.registerFunction(storage_read);
-  ctx.registerFunction(storage_remove);
-  ctx.registerFunction(storage_write);
-  ctx.registerFunction(string_contains);
-  ctx.registerFunction(string_ends_with);
-  ctx.registerFunction(string_format);
-  ctx.registerFunction(string_locale_compare);
-  ctx.registerFunction(string_lower);
-  ctx.registerFunction(string_split);
-  ctx.registerFunction(string_starts_with);
-  ctx.registerFunction(string_upper);
-  ctx.registerFunction(string_slice);
-  ctx.registerFunction(string_repeat);
-  ctx.registerFunction(string_trim_start);
-  ctx.registerFunction(string_trim_end);
-  ctx.registerFunction(string_pad_start);
-  ctx.registerFunction(string_pad_end);
-  ctx.registerFunction(string_to_bytes);
-  ctx.registerFunction(string_to_number);
-  ctx.registerFunction(string_trim);
-  ctx.registerFunction(time_parse);
-  ctx.registerFunction(time_day_of_week);
-  ctx.registerFunction(uuid_v4);
 
   return ctx;
 }
@@ -501,13 +321,16 @@ function App() {
     closeEditorHandle();
   }, [closeEditorHandle, onApplyAndFormatHandler]);
 
-  const onWriteInEditorHandler = useCallback((text: string) => {
-    if (!editorApi) {
-      return;
-    }
-    editorApi.replaceSelection(text);
-    onFormatHandler();
-  }, [editorApi, onFormatHandler]);
+  const onWriteInEditorHandler = useCallback(
+    (text: string) => {
+      if (!editorApi) {
+        return;
+      }
+      editorApi.replaceSelection(text);
+      onFormatHandler();
+    },
+    [editorApi, onFormatHandler]
+  );
 
   return (
     <>

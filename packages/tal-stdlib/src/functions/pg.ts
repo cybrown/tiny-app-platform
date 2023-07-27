@@ -1,4 +1,4 @@
-import { customRpc } from "../runtime/custom-rpc";
+import { customRpc } from "../util/custom-rpc";
 import { defineFunction, RuntimeContext } from "tal-eval";
 
 export const pg_query = defineFunction(
@@ -9,7 +9,7 @@ export const pg_query = defineFunction(
 );
 
 async function pg_query_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await pgQuery({

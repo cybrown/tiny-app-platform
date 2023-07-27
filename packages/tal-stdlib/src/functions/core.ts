@@ -55,7 +55,7 @@ export const watch = defineFunction(
 export const typeof$ = defineFunction(
   "typeof",
   [{ name: "value" }],
-  (ctx, { value }) => {
+  (_ctx, { value }) => {
     if (value === null) {
       return "null";
     } else if (Array.isArray(value)) {
@@ -119,7 +119,7 @@ export const try$ = defineFunction(
   }
 );
 
-export const default$ = defineFunction("default", [], (ctx, kwargs, args) => {
+export const default$ = defineFunction("default", [], (_ctx, _kwargs, args) => {
   for (let arg of args) {
     if (arg != null) {
       return arg;
@@ -131,7 +131,7 @@ export const default$ = defineFunction("default", [], (ctx, kwargs, args) => {
 export const throw$ = defineFunction(
   "throw",
   [{ name: "error" }],
-  (ctx, { error }) => {
+  (_ctx, { error }) => {
     throw error instanceof Error ? error : new Error(error);
   }
 );
@@ -139,7 +139,7 @@ export const throw$ = defineFunction(
 export const log = defineFunction(
   "log",
   [{ name: "value" }],
-  (ctx, { value }, args) => {
+  (_ctx, { value }, args) => {
     console.log(value, ...args);
     return value;
   }
@@ -156,7 +156,7 @@ export const expression_eval = defineFunction(
 export const set_system_property = defineFunction(
   "set_system_property",
   [{ name: "key" }, { name: "value" }],
-  (ctx, { key, value }) => {
+  (_ctx, { key, value }) => {
     setSystemProperty(key, value);
     return null;
   }
@@ -194,7 +194,7 @@ export const is_defined = defineFunction(
 export const eval_js = defineFunction(
   "eval_js",
   [{ name: "code" }, { name: "context" }],
-  (ctx, { code, context }) => {
+  (_ctx, { code, context }) => {
     function evalInContext() {
       return function() {
         // eslint-disable-next-line no-eval

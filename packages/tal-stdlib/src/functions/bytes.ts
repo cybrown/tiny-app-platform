@@ -4,7 +4,7 @@ import { bytes_to_base64 } from "../util/base64";
 export const bytes_to_string = defineFunction(
   "bytes_to_string",
   [{ name: "bytes" }, { name: "encoding" }],
-  (ctx, { bytes, encoding = "utf-8" }) => {
+  (_ctx, { bytes, encoding = "utf-8" }) => {
     switch (encoding) {
       case "base64":
         return bytes_to_base64(bytes);

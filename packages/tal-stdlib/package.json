@@ -1,0 +1,59 @@
+{
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "tal-stdlib",
+  "author": "Cy Brown",
+  "module": "dist/tal-stdlib.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/tal-stdlib.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/tal-stdlib.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^8.2.4",
+    "husky": "^8.0.3",
+    "size-limit": "^8.2.4",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.5.0",
+    "typescript": "^3.9.10"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "jmespath": "^0.16.0",
+    "tal-eval": "*",
+    "uuid": "^9.0.0"
+  }
+}

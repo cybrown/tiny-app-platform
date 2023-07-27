@@ -22,7 +22,8 @@
     "packages/tal-eval",
     "packages/tal-eval-test",
     "packages/backend",
-    "packages/web-client"
+    "packages/web-client",
+    "packages/tal-stdlib"
   ],
   "devDependencies": {
     "nx": "^16.3.2"

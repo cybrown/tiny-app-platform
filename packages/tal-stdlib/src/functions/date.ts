@@ -10,8 +10,8 @@ export const date_from_iso_string = defineFunction(
 );
 
 // Format: "2023-07-27T09:40:00.000Z"
-export const date_to_iso_string = defineFunction(
-  'date_to_iso_string',
+export const date_to_iso_string_utc = defineFunction(
+  'date_to_iso_string_utc',
   [{ name: 'date' }],
   (_ctx, { date }: { date: Date }) => {
     return date.toISOString();

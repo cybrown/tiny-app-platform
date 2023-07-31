@@ -104,6 +104,7 @@ import {
   date_month,
   date_now,
   date_seconds,
+  date_to_iso_string,
   date_to_timezone,
   date_year,
 } from './functions/date';
@@ -153,6 +154,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(date_to_timezone);
   ctx.registerFunction(date_now);
   ctx.registerFunction(date_current_timezone);
+  ctx.registerFunction(date_to_iso_string);
 
   ctx.registerFunction(eval_js);
   ctx.registerFunction(event_on);

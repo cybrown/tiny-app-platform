@@ -9,7 +9,7 @@
 .buttonCopy {
   z-index: 1;
   position: absolute;
-  right: 2px;
+  left: 2px;
   top: 2px;
   opacity: 0;
   transition: linear 100ms opacity;

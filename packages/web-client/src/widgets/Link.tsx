@@ -1,15 +1,24 @@
-import { WidgetDocumentation } from "tal-eval";
+import {
+  TalValue,
+  WidgetDocumentation,
+  talValueToString,
+  toTalValue,
+} from "tal-eval";
 import Text, { TextProps, TextDocumentation } from "./Text";
 
-type LinkProps = Omit<TextProps, "text"> & { url?: string; text?: string };
+type LinkProps = Omit<TextProps, "text"> & { url?: TalValue; text?: TalValue };
 
 export default function Link({ url, text, ...rest }: LinkProps) {
   if (!text && !url) {
     throw new Error("text or url is mandatory for Link widget");
   }
   return (
-    <a href={url} target="_blank" rel="noreferrer">
-      <Text {...rest} text={text ?? url ?? ""} />
+    <a
+      href={(url && talValueToString(url)) || ""}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <Text {...rest} text={text ?? url ?? toTalValue("")} />
     </a>
   );
 }

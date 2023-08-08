@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { RuntimeContext, WidgetDocumentation, toTalValue } from "tal-eval";
 import { ExpressionLocation, FunctionExpression } from "tal-parser";
 import { APP_DEBUG_MODE_ENV } from "../constants";
 import styles from "./Debug.module.css";
@@ -12,7 +12,7 @@ type DebugProps = {
 
 export default function Debug({ ctx, value, force }: DebugProps) {
   // If ctx is null, the value is a raw value to show to the user
-  if (force || !ctx || ctx.getEnvOr(APP_DEBUG_MODE_ENV, false)) {
+  if (force || !ctx || ctx.getEnvOr(APP_DEBUG_MODE_ENV, toTalValue(false))) {
     return (
       <div className={styles.Debug}>
         <RenderAny value={value} path="" />

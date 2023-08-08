@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
-import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { FunctionValue, RuntimeContext, WidgetDocumentation, talValueToString, toTalValue } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import styles from "./InputText.module.css";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -47,10 +47,10 @@ export default function InputText({
     async (e: ChangeEvent<HTMLInputElement>) => {
       try {
         if (bindTo) {
-          ctx.setValue(bindTo, e.target.value);
+          ctx.setValue(bindTo, toTalValue(e.target.value));
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+          await ctx.callFunctionAsync(onChange, [toTalValue(e.currentTarget.value)]);
         }
       } catch (err) {
         setLastError(err);
@@ -63,10 +63,10 @@ export default function InputText({
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       try {
         if (bindTo) {
-          ctx.setValue(bindTo, e.target.value);
+          ctx.setValue(bindTo, toTalValue(e.target.value));
         }
         if (onChange) {
-          ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+          ctx.callFunctionAsync(onChange, [toTalValue(e.currentTarget.value)]);
         }
       } catch (err) {
         setLastError(err);
@@ -82,7 +82,7 @@ export default function InputText({
           className={styles.InputText}
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
-          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
+          value={bindTo ? talValueToString(ctx.evaluateOr(bindTo, toTalValue(""))) : value}
         />
       ) : (
         <input
@@ -91,7 +91,7 @@ export default function InputText({
           type={type ?? "text"}
           onChange={onInputChangeHandler}
           onKeyDown={onKeyDownHandler}
-          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
+          value={bindTo ? talValueToString(ctx.evaluateOr(bindTo, toTalValue(""))) : value}
         />
       )}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />

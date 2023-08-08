@@ -1,5 +1,10 @@
 import { useCallback, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  WidgetDocumentation,
+  talValueToString,
+  toTalValue,
+} from "tal-eval";
 import styles from "./Select.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -24,7 +29,7 @@ export default function Select({
     (bindTo ? !ctx.hasValue(bindTo) : value === undefined) ||
     !options
       .map((a) => (typeof a === "string" ? a : a.value))
-      .includes(bindTo ? (ctx.evaluate(bindTo) as string) : value ?? "");
+      .includes(bindTo ? talValueToString(ctx.evaluate(bindTo)) : value ?? "");
 
   const onChangeHandler = useCallback(
     async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -34,10 +39,10 @@ export default function Select({
         const valueToSet =
           typeof optionToSet === "string" ? optionToSet : optionToSet.value;
         if (bindTo) {
-          ctx.setValue(bindTo, valueToSet);
+          ctx.setValue(bindTo, toTalValue(valueToSet));
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [valueToSet]);
+          await ctx.callFunctionAsync(onChange, [toTalValue(valueToSet)]);
         }
       } catch (err) {
         setLastError(err);
@@ -53,7 +58,11 @@ export default function Select({
           " "
         )}
         onChange={onChangeHandler}
-        value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
+        value={
+          bindTo
+            ? talValueToString(ctx.evaluateOr(bindTo, toTalValue("")))
+            : value ?? ""
+        }
       >
         {showEmpty ? (
           <option className={styles.optionDisabled}>{placeholder}</option>

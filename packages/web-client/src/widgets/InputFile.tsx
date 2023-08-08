@@ -1,5 +1,10 @@
 import { ChangeEvent, DragEventHandler, useCallback, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  WidgetDocumentation,
+  talValueToString,
+  toTalValue,
+} from "tal-eval";
 import styles from "./InputFile.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -50,10 +55,10 @@ export default function InputFile({
     async (e: ChangeEvent<HTMLInputElement>) => {
       try {
         if (bindTo) {
-          ctx.setValue(bindTo, e.target.value);
+          ctx.setValue(bindTo, toTalValue(e.target.value));
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.target.value]);
+          await ctx.callFunctionAsync(onChange, [toTalValue(e.target.value)]);
         }
       } catch (err) {
         setLastError(err);
@@ -69,7 +74,11 @@ export default function InputFile({
         placeholder={placeholder}
         type="text"
         onChange={onInputChangeHandler}
-        value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
+        value={
+          bindTo
+            ? talValueToString(ctx.evaluateOr(bindTo, toTalValue("")))
+            : value
+        }
         onDrop={onDropHandler}
         onDragOver={onDragOverHandler}
       />

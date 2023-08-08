@@ -1,4 +1,4 @@
-import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { FunctionValue, RuntimeContext, TalValue, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
@@ -27,7 +27,7 @@ type EffectiveTableModelColumn = {
 
 type TableProps = {
   ctx: RuntimeContext;
-  values: unknown[];
+  values: TalValue[];
   columns?: TableModelColumn[];
   bordered?: boolean;
   striped?: boolean;

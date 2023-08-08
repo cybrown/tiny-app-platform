@@ -1,5 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  WidgetDocumentation,
+  talValueToBoolean,
+  toTalValue,
+} from "tal-eval";
 import styles from "./Switch.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -15,10 +20,10 @@ export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
         if (bindTo) {
-          ctx.setValue(bindTo, e.target.checked);
+          ctx.setValue(bindTo, toTalValue(e.target.checked));
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.target.checked]);
+          await ctx.callFunctionAsync(onChange, [toTalValue(e.target.checked)]);
         }
       } catch (err) {
         setLastError(err);
@@ -33,7 +38,11 @@ export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
         <input
           className={styles.Switch}
           type="checkbox"
-          checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
+          checked={
+            bindTo
+              ? talValueToBoolean(ctx.evaluateOr(bindTo, toTalValue(false)))
+              : value
+          }
           onChange={handleChange}
         />
         <div className={styles.background}></div>

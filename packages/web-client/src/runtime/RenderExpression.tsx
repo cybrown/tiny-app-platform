@@ -1,4 +1,4 @@
-import { EvaluationError, RuntimeContext } from "tal-eval";
+import { EvaluationError, RuntimeContext, TalValue } from "tal-eval";
 import { Expression } from "tal-parser";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
@@ -48,11 +48,13 @@ export default function RenderExpression({
   }
 }
 
-function renderNullableWidget(ui: unknown): JSX.Element | JSX.Element[] | null {
-  if (ui == null) {
+function renderNullableWidget(
+  ui: TalValue | null
+): JSX.Element | JSX.Element[] | null {
+  if (ui == null || ui.kind === "null") {
     return null;
   }
-  return renderWidget(ui);
+  return renderWidget(ui.value);
 }
 
 function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {

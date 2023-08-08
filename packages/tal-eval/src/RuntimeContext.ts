@@ -1,4 +1,10 @@
 import {
+  TAL_VALUE_NULL,
+  TalValue,
+  toTalExpression,
+  toTalRegisterableFunction,
+} from './TalValue';
+import {
   evaluateAsyncExpression,
   evaluateCall,
   evaluateExpression,
@@ -25,7 +31,7 @@ class GetEnvError extends Error {
 }
 
 type DeclareLocalOptions = {
-  initialValue?: unknown;
+  initialValue?: TalValue;
   mutable?: boolean;
 };
 
@@ -39,7 +45,7 @@ export type WidgetDocumentation<T> = {
 export class RuntimeContext {
   constructor(
     onStateChange: () => void,
-    private _locals: { [key: string]: unknown } = {},
+    private _locals: { [key: string]: TalValue } = {},
     private parent?: RuntimeContext,
     private extendable: boolean = true
   ) {
@@ -96,16 +102,16 @@ export class RuntimeContext {
     }
 
     if (options.hasOwnProperty('initialValue')) {
-      this._locals[name] = options.initialValue;
+      this._locals[name] = options.initialValue ?? TAL_VALUE_NULL;
     } else if (!this._locals.hasOwnProperty(name)) {
-      this._locals[name] = null;
+      this._locals[name] = { kind: 'null' };
     }
     if (options.mutable) {
       this.mutableLocals.add(name);
     }
   }
 
-  setLocal(name: string, value: unknown): void {
+  setLocal(name: string, value: TalValue): void {
     if (!this._locals.hasOwnProperty(name)) {
       if (this.parent) {
         return this.parent.setLocal(name, value);
@@ -120,7 +126,7 @@ export class RuntimeContext {
     this.triggerStateChangedListeners();
   }
 
-  getLocal(name: string): unknown {
+  getLocal(name: string): TalValue {
     if (!this.hasLocal(name)) {
       throw new GetLocalError(name);
     }
@@ -132,7 +138,7 @@ export class RuntimeContext {
     throw new GetLocalError(name);
   }
 
-  getEnv(name: string): unknown {
+  getEnv(name: string): TalValue {
     if (!this.hasLocal(name)) {
       throw new GetEnvError(name);
     }
@@ -144,7 +150,7 @@ export class RuntimeContext {
     throw new GetEnvError(name);
   }
 
-  getEnvOr(name: string, defaultValue: unknown): unknown {
+  getEnvOr(name: string, defaultValue: TalValue): TalValue {
     if (!this.hasLocal(name)) {
       return defaultValue;
     }
@@ -157,7 +163,7 @@ export class RuntimeContext {
   }
 
   // TODO: To remove
-  getLocalOr(name: string, value: unknown): unknown {
+  getLocalOr(name: string, value: TalValue): TalValue {
     return this.hasLocal(name) ? this.getLocal(name) : value;
   }
 
@@ -173,10 +179,10 @@ export class RuntimeContext {
     return false;
   }
 
-  setValue(address: AddressableExpression, value: unknown): void {
+  setValue(address: AddressableExpression, value: TalValue): void {
     if (!address || typeof address != 'object' || !address.kind) {
       throw new Error(
-        'Unknown node to address value of type: ' +
+        'TalValue node to address value of type: ' +
           (address == null ? 'null' : typeof address)
       );
     }
@@ -201,7 +207,7 @@ export class RuntimeContext {
       }
       default:
         throw new Error(
-          'Unknown node to address value: ' + (address as any).kind
+          'TalValue node to address value: ' + (address as any).kind
         );
     }
     this.triggerStateChangedListeners();
@@ -219,15 +225,15 @@ export class RuntimeContext {
     return true;
   }
 
-  evaluate(expr: Expression): unknown {
+  evaluate(expr: Expression): TalValue {
     return evaluateExpression(this, expr);
   }
 
-  evaluateAsync(expr: Expression): Promise<unknown> {
+  evaluateAsync(expr: Expression): Promise<TalValue> {
     return evaluateAsyncExpression(this, expr);
   }
 
-  evaluateOr(expr: Expression, alternative: unknown): unknown {
+  evaluateOr(expr: Expression, alternative: TalValue): TalValue {
     try {
       return this.evaluate(expr) ?? alternative;
     } catch (err) {
@@ -240,8 +246,8 @@ export class RuntimeContext {
 
   callFunction(
     func: FunctionValue,
-    args: unknown[],
-    kwargs: { [name: string]: unknown } = {}
+    args: TalValue[],
+    kwargs: { [name: string]: TalValue } = {}
   ) {
     const argsForCall = args
       .map(
@@ -265,8 +271,8 @@ export class RuntimeContext {
 
   async callFunctionAsync(
     func: FunctionValue,
-    args: unknown[],
-    kwargs: { [name: string]: unknown } = {}
+    args: TalValue[],
+    kwargs: { [name: string]: TalValue } = {}
   ) {
     const node: CallExpression = {
       kind: 'Call',
@@ -283,7 +289,7 @@ export class RuntimeContext {
             return {
               argKind: 'Named',
               name,
-              value,
+              value: { kind: 'Value', value },
             } as ArgumentExpression;
           })
         ),
@@ -293,7 +299,7 @@ export class RuntimeContext {
   }
 
   createChild(
-    initialValues: { [x: string]: unknown },
+    initialValues: { [x: string]: TalValue },
     extendable?: boolean
   ): RuntimeContext {
     return new RuntimeContext(
@@ -304,15 +310,15 @@ export class RuntimeContext {
     );
   }
 
-  listLocals(): [string, unknown][] {
+  listLocals(): [string, TalValue][] {
     return Object.entries(this._locals);
   }
 
   private eventHandlers: {
-    [key: string]: [unknown, () => Promise<void>][];
+    [key: string]: [TalValue, () => Promise<void>][];
   } = {};
 
-  on(eventName: string, callback: Expression | (() => Promise<void>)): void {
+  on(eventName: string, callback: Expression): void {
     if (this.parent) {
       return this.parent.on(eventName, callback);
     }
@@ -320,19 +326,23 @@ export class RuntimeContext {
     if (!this.eventHandlers.hasOwnProperty(eventName)) {
       this.eventHandlers[eventName] = [];
     }
-    if (this.eventHandlers[eventName].find(([cb]) => cb === callback) != null) {
+    if (
+      this.eventHandlers[eventName].find(
+        ([cb]) => cb.kind === 'expression' && cb.value === callback
+      ) != null
+    ) {
       return;
     }
     if (typeof callback == 'function') {
       this.eventHandlers[eventName].push([
-        callback,
+        toTalExpression(callback),
         async () => {
-          await callback();
+          await (callback as any)(); // TODO
         },
       ]);
     } else {
       this.eventHandlers[eventName].push([
-        callback,
+        toTalExpression(callback),
         async () => {
           await this.evaluateAsync(callback);
         },
@@ -340,7 +350,7 @@ export class RuntimeContext {
     }
   }
 
-  off(eventName: string, value: unknown): void {
+  off(eventName: string, value: TalValue): void {
     if (this.parent) {
       return this.parent.off(eventName, value);
     }
@@ -407,12 +417,14 @@ export class RuntimeContext {
     ) => any
   ) {
     const result = defineFunction(name, parameters, func, funcAsync);
-    this.declareLocal(result.name, { initialValue: result });
+    this.declareLocal(result.name, {
+      initialValue: toTalRegisterableFunction(result),
+    });
   }
 
   registerFunction<T extends string>(func: RegisterableFunction<T>) {
     this.declareLocal(func.name, {
-      initialValue: func,
+      initialValue: toTalRegisterableFunction(func),
     });
   }
 }

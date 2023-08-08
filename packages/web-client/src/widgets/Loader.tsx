@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Expression } from "tal-parser";
 import RenderExpression from "../runtime/RenderExpression";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { RuntimeContext, TalValue, WidgetDocumentation } from "tal-eval";
 
 type LoaderProps = {
   ctx: RuntimeContext;
@@ -39,17 +39,23 @@ function useWatch(ctx: RuntimeContext, watch: Expression) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forceRefreshToken, forceRefresh] = useForceRefresh();
 
-  const [oldWatchResult, setOldWatchResult] = useState<null | any[]>(null);
+  const [oldWatchResult, setOldWatchResult] = useState<null | TalValue>(null);
 
   useEffect(() => {
     const listener = () => {
       try {
         if (oldWatchResult == null) {
-          setOldWatchResult(ctx.evaluate(watch) as any[]);
+          setOldWatchResult(ctx.evaluate(watch));
           forceRefresh();
         } else {
-          const watchResult = ctx.evaluate(watch) as any[];
-          if (!checkArrayEquality(oldWatchResult, watchResult)) {
+          const watchResult = ctx.evaluate(watch);
+          if (watchResult.kind !== "array") {
+            throw new Error('Watch result must be an array');
+          }
+          if (oldWatchResult.kind !== "array") {
+            throw new Error('Watch result must be an array');
+          }
+          if (!checkArrayEquality(oldWatchResult.value, watchResult.value)) {
             forceRefresh();
             setOldWatchResult(watchResult);
           }

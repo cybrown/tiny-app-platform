@@ -32,6 +32,7 @@ import Pager, { PagerDocumentation } from "./widgets/Pager";
 import Documentation from "./editor/Documentation";
 import ToolBar from "./editor/Toolbar";
 import { importStdlibInContext } from "tal-stdlib";
+import { toTalValue } from "tal-eval";
 
 const queryParams = window.location.search
   .slice(1)
@@ -268,7 +269,8 @@ function App() {
   }, []);
 
   const setAppDebutModeHandler = useCallback(
-    (appDebugMode: boolean) => ctx.setLocal(APP_DEBUG_MODE_ENV, appDebugMode),
+    (appDebugMode: boolean) =>
+      ctx.setLocal(APP_DEBUG_MODE_ENV, toTalValue(appDebugMode)),
     [ctx]
   );
 
@@ -360,9 +362,17 @@ function App() {
                 onClose={onCloseHandler}
                 onSaveAndFormatAndClose={onSaveAndFormatAndCloseHandler}
                 onShowDocumentation={toggleShowDocumentationHandler}
-                appDebugMode={
-                  ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
-                }
+                appDebugMode={(() => {
+                  const appDebugModeEnvValue = ctx.getLocalOr(
+                    APP_DEBUG_MODE_ENV,
+                    toTalValue(false)
+                  );
+                  return (
+                    (appDebugModeEnvValue.kind === "boolean" &&
+                      appDebugModeEnvValue.value) ||
+                    false
+                  );
+                })()}
                 setAppDebugMode={setAppDebutModeHandler}
               />
             </div>

@@ -11,6 +11,14 @@ import {
   RuntimeContext,
   isFunctionValue,
 } from './RuntimeContext';
+import {
+  TAL_VALUE_NULL,
+  TalValue,
+  toTalExpression,
+  toTalFunction,
+  toTalKindedObject,
+  toTalValue,
+} from './TalValue';
 
 export function evaluateCall(
   ctx: RuntimeContext,
@@ -40,7 +48,9 @@ export function evaluateCall(
     const consolidatedProvidedAndMissingArguments = {
       ...providedNamedArguments,
     };
-    const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction<"dummy string">).parameters.filter(
+    const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction<
+      'dummy string'
+    >).parameters.filter(
       parameter => !providedNamedArguments.hasOwnProperty(parameter.name)
     );
 
@@ -91,7 +101,7 @@ export function evaluateCall(
       remainingPositionalArguments
     );
   } else if (isFunctionValue(func)) {
-    const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
+    const finalNamedArgumentsEvaluated: Record<string, TalValue> = {};
     let counter = 0;
     for (let parameter of func.func.parameters) {
       if (providedNamedArguments.hasOwnProperty(parameter)) {
@@ -121,34 +131,36 @@ export function evaluateCall(
 export function evaluateExpression(
   ctx: RuntimeContext,
   value: Expression
-): unknown {
+): TalValue {
   try {
     switch (value.kind) {
       // Core interactions
       case 'Literal':
-        return value.value;
+        return toTalValue(value.value);
       case 'Value':
-        return value.value;
+        return toTalValue(value.value as any);
       case 'Array':
-        return value.value.map(element => ctx.evaluate(element));
+        return toTalValue(value.value.map(element => ctx.evaluate(element)));
       case 'Object':
-        return Object.fromEntries(
-          Object.entries(value.value).map(([key, subValue]) => [
-            key,
-            ctx.evaluate(subValue as any),
-          ])
+        return toTalValue(
+          Object.fromEntries(
+            Object.entries(value.value).map(([key, subValue]) => [
+              key,
+              ctx.evaluate(subValue as any),
+            ])
+          )
         );
       case 'Local':
         return ctx.getLocal(value.name);
       case 'DeclareLocal': {
-        const options: { initialValue?: unknown; mutable: boolean } = {
+        const options: { initialValue?: TalValue; mutable: boolean } = {
           mutable: value.mutable,
         };
         if (value.value !== undefined) {
           options.initialValue = ctx.evaluate(value.value);
         }
         ctx.declareLocal(value.name, options);
-        return;
+        return TAL_VALUE_NULL;
       }
       case 'SetValue': {
         const content = ctx.evaluate(value.value);
@@ -156,7 +168,7 @@ export function evaluateExpression(
         return content;
       }
       case 'Quote': {
-        return value.children[0];
+        return toTalExpression(value.children[0]);
       }
       case 'Function': {
         const functionValue: FunctionValue = {
@@ -164,7 +176,7 @@ export function evaluateExpression(
           func: value,
           ctx,
         };
-        return functionValue;
+        return toTalFunction(functionValue);
       }
       case 'Call': {
         const func = ctx.evaluate(value.value) as any;
@@ -243,18 +255,18 @@ export function evaluateExpression(
         if (previousError) {
           throw previousError;
         }
-        return previousValue?.value;
+        return toTalValue(previousValue?.value as any); // TODO
       }
       case 'UnaryOperator': {
         const operand = ctx.evaluate(value.operand);
         const operator = value.operator;
         switch (operator) {
           case '-':
-            return -(operand as any);
+            return toTalValue(-(operand as any));
           case '+':
-            return +(operand as any);
+            return toTalValue(+(operand as any));
           case '!':
-            return !operand;
+            return toTalValue(!operand);
           default:
             throw new Error('Unknown unary operator: ' + operator);
         }
@@ -263,76 +275,76 @@ export function evaluateExpression(
         const operator = value.operator;
         switch (operator) {
           case '*':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) *
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '/':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) /
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '%':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) %
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '+':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) +
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '-':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) -
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '<':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) <
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '<=':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) <=
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '>':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) >
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '>=':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) >=
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '==':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) ===
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '!=':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) !==
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '&&':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) &&
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           case '||':
-            return (
+            return toTalValue(
               (ctx.evaluate(value.left) as any) ||
-              (ctx.evaluate(value.right) as any)
+                (ctx.evaluate(value.right) as any)
             );
           default:
             throw new Error('Unknown binary operator: ' + operator);
         }
       }
       case 'BlockOfExpressions': {
-        let lastValue = null;
+        let lastValue = TAL_VALUE_NULL;
         const contextToUse = value.mustKeepContext ? ctx : ctx.createChild({});
         for (let expression of value.children ?? []) {
           lastValue = contextToUse.evaluate(expression);
@@ -344,7 +356,7 @@ export function evaluateExpression(
       case 'KindedObject': {
         const valueAsUiWidget = value.value as any;
         if (ctx.getWidgetByKind(valueAsUiWidget.kind) != null) {
-          return {
+          return toTalKindedObject({
             kind: valueAsUiWidget.kind,
             ctx,
             children: valueAsUiWidget.children,
@@ -357,9 +369,13 @@ export function evaluateExpression(
                 )
                 .map(([key, value]) => [key, ctx.evaluate(value as any)])
             ),
-          };
+          });
         } else if (ctx.hasLocal(valueAsUiWidget.kind)) {
-          const value = ctx.getLocal(valueAsUiWidget.kind) as FunctionValue;
+          const value1 = ctx.getLocal(valueAsUiWidget.kind) as TalValue;
+          if (value1.kind != 'function') {
+            throw new Error('Not a function');
+          }
+          const value = value1.value;
           if (!value.__kind) {
             throw new Error('Only function values can be used as UI Widgets');
           }
@@ -394,19 +410,19 @@ export function evaluateExpression(
 export async function evaluateAsyncExpression(
   ctx: RuntimeContext,
   value: Expression
-): Promise<unknown> {
+): Promise<TalValue> {
   try {
     if (value && typeof value == 'object' && value.kind) {
       switch (value.kind) {
         case 'DeclareLocal': {
-          const options: { initialValue?: unknown; mutable: boolean } = {
+          const options: { initialValue?: TalValue; mutable: boolean } = {
             mutable: value.mutable,
           };
           if (value.value !== undefined) {
             options.initialValue = await ctx.evaluateAsync(value.value);
           }
           ctx.declareLocal(value.name, options);
-          return;
+          return TAL_VALUE_NULL;
         }
         case 'SetValue': {
           const content = await ctx.evaluateAsync(value.value);
@@ -414,7 +430,7 @@ export async function evaluateAsyncExpression(
           return content;
         }
         case 'BlockOfExpressions': {
-          let lastValue = null;
+          let lastValue = TAL_VALUE_NULL;
           const childContext = ctx.createChild({});
           for (let expression of value.children ?? []) {
             lastValue = await childContext.evaluateAsync(expression);
@@ -485,7 +501,7 @@ export async function evaluateAsyncExpression(
           if (previousError) {
             throw previousError;
           }
-          return previousValue?.value;
+          return toTalValue(previousValue?.value as any); // TODO
         }
         case 'Attribute':
           return ((await ctx.evaluateAsync(value.value)) as any)[value.key];
@@ -523,7 +539,9 @@ export async function evaluateAsyncExpression(
             const consolidatedProvidedAndMissingArguments = {
               ...providedNamedArguments,
             };
-            const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction<"dummy string">).parameters.filter(
+            const missingDeclaredNamedParametersBeforeEnvironment = (func as RegisterableFunction<
+              'dummy string'
+            >).parameters.filter(
               parameter =>
                 !providedNamedArguments.hasOwnProperty(parameter.name)
             );
@@ -577,7 +595,7 @@ export async function evaluateAsyncExpression(
               remainingPositionalArguments
             );
           } else if (isFunctionValue(func)) {
-            const finalNamedArgumentsEvaluated: Record<string, unknown> = {};
+            const finalNamedArgumentsEvaluated: Record<string, TalValue> = {};
             let counter = 0;
             for (let parameter of func.func.parameters) {
               if (providedNamedArguments.hasOwnProperty(parameter)) {
@@ -604,11 +622,11 @@ export async function evaluateAsyncExpression(
           const operator = value.operator;
           switch (operator) {
             case '-':
-              return -(await operand);
+              return toTalValue(-(await operand));
             case '+':
-              return +(await operand);
+              return toTalValue(+(await operand));
             case '!':
-              return !(await operand);
+              return toTalValue(!(await operand));
             default:
               throw new Error('Unknown unary operator: ' + operator);
           }
@@ -617,69 +635,69 @@ export async function evaluateAsyncExpression(
           const operator = value.operator;
           switch (operator) {
             case '*':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) *
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '/':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) /
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '%':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) %
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '+':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) +
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '-':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) -
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '<':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) <
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '<=':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) <=
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '>':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) >
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '>=':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) >=
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '==':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) ===
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '!=':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) !==
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '&&':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) &&
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             case '||':
-              return (
+              return toTalValue(
                 ((await ctx.evaluateAsync(value.left)) as any) ||
-                ((await ctx.evaluateAsync(value.right)) as any)
+                  ((await ctx.evaluateAsync(value.right)) as any)
               );
             default:
               throw new Error('Unknown binary operator: ' + operator);

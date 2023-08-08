@@ -1,17 +1,26 @@
 import { useCallback, useMemo } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  TalValue,
+  WidgetDocumentation,
+  talValueToString,
+} from "tal-eval";
 import styles from "./Text.module.css";
+import {
+  talValueToStringEnumOpt,
+  talValueToStringOpt,
+} from "tal-eval/dist/TalValue";
 
 export type TextProps = {
   ctx: RuntimeContext;
-  text: string;
-  preformatted?: boolean;
-  copy?: boolean;
-  size?: number;
-  align?: "center" | "right" | "left";
-  weight?: "light" | "normal" | "bold";
-  wrap?: boolean;
-  color?: string;
+  text: TalValue;
+  preformatted?: TalValue;
+  copy?: TalValue;
+  size?: TalValue;
+  align?: TalValue;
+  weight?: TalValue;
+  wrap?: TalValue;
+  color?: TalValue;
 };
 
 export default function Text({
@@ -41,17 +50,21 @@ export default function Text({
   const showCopyButton = copy ?? preformatted;
 
   const copyClickHandler = useCallback(() => {
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(talValueToString(text));
   }, [text]);
 
   const style = useMemo<React.CSSProperties>(
     () => ({
       fontSize: (size ?? 1) + "em",
-      textAlign: align ?? "left",
-      fontFamily: weight === "light" ? "Proxima Nova Lt" : "Proxima Nova Rg",
-      fontWeight: weight ?? "normal",
-      whiteSpace: wrap ? undefined : "nowrap",
-      color: color,
+      textAlign:
+        talValueToStringEnumOpt(align, ["left", "right", "center"]) ?? "left",
+      fontFamily:
+        talValueToStringOpt(weight) === "light"
+          ? "Proxima Nova Lt"
+          : "Proxima Nova Rg",
+      fontWeight: talValueToStringOpt(weight) ?? "normal",
+      whiteSpace: talValueToStringOpt(wrap) ? undefined : "nowrap",
+      color: talValueToStringOpt(color),
     }),
     [align, size, weight, wrap, color]
   );
@@ -64,10 +77,10 @@ export default function Text({
         </button>
       ) : null}
       {preformatted ? (
-        <pre>{text}</pre>
+        <pre>{talValueToString(text)}</pre>
       ) : (
         <div className={styles.Text} style={style}>
-          {text}
+          {talValueToString(text)}
         </div>
       )}
     </div>

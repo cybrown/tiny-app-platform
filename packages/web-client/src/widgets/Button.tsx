@@ -1,12 +1,18 @@
 import { useCallback, useState } from "react";
-import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  FunctionValue,
+  RuntimeContext,
+  TalValue,
+  WidgetDocumentation,
+  talValueToString,
+} from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
 import ErrorPopin from "./internal/ErrorPopin";
 import StyledButton from "./internal/StyledButton";
 
 type ButtonProps = {
   ctx: RuntimeContext;
-  text: string;
+  text: TalValue;
   onClick: FunctionValue;
   confirm?: string | boolean;
   secondary?: boolean;
@@ -59,7 +65,7 @@ export default function Button({
       <StyledButton
         onClick={clickHandler}
         disabled={isLoading}
-        text={text}
+        text={talValueToString(text)}
         secondary={secondary}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />

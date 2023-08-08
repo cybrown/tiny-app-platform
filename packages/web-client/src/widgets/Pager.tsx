@@ -1,4 +1,4 @@
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { RuntimeContext, WidgetDocumentation, toTalValue } from "tal-eval";
 import StyledButton from "./internal/StyledButton";
 import { useCallback, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -35,10 +35,10 @@ export default function Pager({
     async (value: number) => {
       try {
         if (bindTo) {
-          ctx.setValue(bindTo, value);
+          ctx.setValue(bindTo, toTalValue(value));
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [value]);
+          await ctx.callFunctionAsync(onChange, [toTalValue(value)]);
         }
       } catch (err) {
         setLastError(err);

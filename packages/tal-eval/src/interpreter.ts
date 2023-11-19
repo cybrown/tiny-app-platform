@@ -415,10 +415,8 @@ export async function runNodeAsync(
         return {
           ctx,
           kind: kindIr,
-          //kind: await runNodeAsync(ctx, program, kindIr),
           children: childrenIr,
           props: propsIr,
-          //...(propsIr && (await runNodeAsync(ctx, program, propsIr)) as object || {})
         };
       }
       case 'CTX_RENDER':

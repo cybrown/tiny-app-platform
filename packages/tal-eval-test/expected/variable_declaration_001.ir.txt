@@ -1,0 +1,29 @@
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"a","mutable":false}
+      LITERAL {"value":"a1"}
+    SET_LOCAL {"name":"b"}
+      LITERAL {"value":"b1"}
+    DECLARE_LOCAL {"name":"c","mutable":true}
+      LITERAL {"value":"c1"}
+    LOCAL {"name":"a"}
+    LOCAL {"name":"b"}
+    LOCAL {"name":"c"}
+    DECLARE_LOCAL {"name":"a","mutable":false}
+      LITERAL {"value":"a2"}
+    SET_LOCAL {"name":"b"}
+      LITERAL {"value":"b2"}
+    DECLARE_LOCAL {"name":"c","mutable":true}
+      LITERAL {"value":"c2"}
+    LOCAL {"name":"a"}
+    LOCAL {"name":"b"}
+    LOCAL {"name":"c"}
+    SET_LOCAL {"name":"a"}
+      LITERAL {"value":"a3"}
+    SET_LOCAL {"name":"b"}
+      LITERAL {"value":"b3"}
+    SET_LOCAL {"name":"c"}
+      LITERAL {"value":"c3"}
+    LOCAL {"name":"a"}
+    LOCAL {"name":"b"}
+    LOCAL {"name":"c"}

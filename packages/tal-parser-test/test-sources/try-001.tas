@@ -1,0 +1,5 @@
+try {
+    missing_variable
+} catch {
+    error
+}

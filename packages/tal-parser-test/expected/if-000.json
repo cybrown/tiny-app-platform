@@ -1,153 +1,107 @@
 [
   {
-    "kind": "Call",
-    "args": [
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BinaryOperator",
-          "operator": "==",
-          "right": 3,
-          "left": {
-            "kind": "Local",
-            "name": "a"
-          }
-        }
-      },
-      {
-        "argKind": "Positional",
-        "value": "ok"
+    "kind": "If",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "==",
+      "right": 3,
+      "left": {
+        "kind": "Local",
+        "name": "a"
       }
-    ],
-    "value": {
-      "kind": "Local",
-      "name": "if"
+    },
+    "ifTrue": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ok"
+      ]
     }
   },
   {
-    "kind": "Call",
-    "args": [
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BinaryOperator",
-          "operator": "==",
-          "right": 3,
-          "left": {
-            "kind": "Local",
-            "name": "a"
-          }
-        }
-      },
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BlockOfExpressions",
-          "children": [
-            "ok1",
-            "ok2"
-          ]
-        }
+    "kind": "If",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "==",
+      "right": 3,
+      "left": {
+        "kind": "Local",
+        "name": "a"
       }
-    ],
-    "value": {
-      "kind": "Local",
-      "name": "if"
+    },
+    "ifTrue": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ok1",
+        "ok2"
+      ]
     }
   },
   {
-    "kind": "Call",
-    "args": [
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BinaryOperator",
-          "operator": "==",
-          "right": 3,
-          "left": {
-            "kind": "Local",
-            "name": "a"
-          }
-        }
-      },
-      {
-        "argKind": "Positional",
-        "value": "ok"
-      },
-      {
-        "argKind": "Positional",
-        "value": "ko"
+    "kind": "If",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "==",
+      "right": 3,
+      "left": {
+        "kind": "Local",
+        "name": "a"
       }
-    ],
-    "value": {
-      "kind": "Local",
-      "name": "if"
+    },
+    "ifTrue": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ok"
+      ]
+    },
+    "ifFalse": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ko"
+      ]
     }
   },
   {
-    "kind": "Call",
-    "args": [
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BinaryOperator",
-          "operator": "==",
-          "right": 3,
-          "left": {
-            "kind": "Local",
-            "name": "a"
-          }
-        }
-      },
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BlockOfExpressions",
-          "children": [
-            "ok1",
-            "ok2"
-          ]
-        }
-      },
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BlockOfExpressions",
-          "children": [
-            "ko1",
-            "ko2"
-          ]
-        }
+    "kind": "If",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "==",
+      "right": 3,
+      "left": {
+        "kind": "Local",
+        "name": "a"
       }
-    ],
-    "value": {
-      "kind": "Local",
-      "name": "if"
+    },
+    "ifTrue": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ok1",
+        "ok2"
+      ]
+    },
+    "ifFalse": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ko1",
+        "ko2"
+      ]
     }
   },
   {
-    "kind": "Call",
-    "args": [
-      {
-        "argKind": "Positional",
-        "value": {
-          "kind": "BinaryOperator",
-          "operator": "==",
-          "right": 3,
-          "left": {
-            "kind": "Local",
-            "name": "a"
-          }
-        }
-      },
-      {
-        "argKind": "Positional",
-        "value": "ok"
+    "kind": "If",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "==",
+      "right": 3,
+      "left": {
+        "kind": "Local",
+        "name": "a"
       }
-    ],
-    "value": {
-      "kind": "Local",
-      "name": "if"
+    },
+    "ifTrue": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "ok"
+      ]
     }
   },
   {

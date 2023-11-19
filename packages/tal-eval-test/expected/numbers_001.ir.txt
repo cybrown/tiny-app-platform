@@ -1,0 +1,6 @@
+main: 
+  BLOCK
+    LITERAL {"value":1}
+    LITERAL {"value":42}
+    LITERAL {"value":13}
+    LITERAL {"value":3.14}

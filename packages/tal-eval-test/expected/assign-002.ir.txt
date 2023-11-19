@@ -1,0 +1,9 @@
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"toto","mutable":false}
+      MAKE_OBJECT
+    SET_ATTRIBUTE {"name":"property"}
+      LOCAL {"name":"toto"}
+      LITERAL {"value":"value"}
+    ATTRIBUTE {"name":"property"}
+      LOCAL {"name":"toto"}

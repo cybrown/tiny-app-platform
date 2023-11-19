@@ -1,16 +1,10 @@
+import { IRNode, Program } from './core';
 import {
-  evaluateAsyncExpression,
-  evaluateCall,
-  evaluateExpression,
-} from './evaluation';
-import {
-  Expression,
-  AddressableExpression,
-  FunctionExpression,
-  CallExpression,
-  ArgumentExpression,
-  isExpr,
-} from 'tal-parser';
+  runNodeAsync,
+  runNode,
+  runCall,
+  runCallAsync,
+} from './interpreter';
 
 class GetLocalError extends Error {
   constructor(localName: string) {
@@ -40,6 +34,7 @@ export class RuntimeContext {
   constructor(
     onStateChange: () => void,
     private _locals: { [key: string]: unknown } = {},
+    public program?: Program,
     private parent?: RuntimeContext,
     private extendable: boolean = true
   ) {
@@ -173,7 +168,7 @@ export class RuntimeContext {
     return false;
   }
 
-  setValue(address: AddressableExpression, value: unknown): void {
+  setValue(address: IRNode, value: unknown): void {
     if (!address || typeof address != 'object' || !address.kind) {
       throw new Error(
         'Unknown node to address value of type: ' +
@@ -181,22 +176,21 @@ export class RuntimeContext {
       );
     }
     switch (address.kind) {
-      case 'Attribute': {
-        const object = this.evaluate(address.value);
-        (object as any)[address.key] = value;
+      case 'ATTRIBUTE': {
+        const n = address as IRNode<'ATTRIBUTE'>;
+        const object = this.evaluate(n.children[0]);
+        (object as any)[n.name] = value;
         break;
       }
-      case 'Index': {
-        const object = this.evaluate(address.value);
-        (object as any)[this.evaluate(address.index) as any] = value;
+      case 'INDEX': {
+        const n = address as IRNode<'INDEX'>;
+        const object = this.evaluate(n.children[1]);
+        (object as any)[this.evaluate(n.children[0]) as any] = value;
         break;
       }
-      case 'Local': {
-        this.setLocal(address.name, value);
-        break;
-      }
-      case 'Deref': {
-        this.setValue(this.evaluate(address.value) as any, value);
+      case 'LOCAL': {
+        const n = address as IRNode<'LOCAL'>;
+        this.setLocal(n.name, value);
         break;
       }
       default:
@@ -207,7 +201,7 @@ export class RuntimeContext {
     this.triggerStateChangedListeners();
   }
 
-  hasValue(address: Expression): boolean {
+  hasValue(address: IRNode): boolean {
     try {
       this.evaluate(address);
     } catch (err) {
@@ -219,15 +213,17 @@ export class RuntimeContext {
     return true;
   }
 
-  evaluate(expr: Expression): unknown {
-    return evaluateExpression(this, expr);
+  evaluate(expr: IRNode): unknown {
+    if (!this.program) throw new Error('missing program');
+    return runNode(this, this.program, expr);
   }
 
-  evaluateAsync(expr: Expression): Promise<unknown> {
-    return evaluateAsyncExpression(this, expr);
+  evaluateAsync(expr: IRNode): Promise<unknown> {
+    if (!this.program) throw new Error('missing program');
+    return runNodeAsync(this, this.program, expr);
   }
 
-  evaluateOr(expr: Expression, alternative: unknown): unknown {
+  evaluateOr(expr: IRNode, alternative: unknown): unknown {
     try {
       return this.evaluate(expr) ?? alternative;
     } catch (err) {
@@ -239,57 +235,21 @@ export class RuntimeContext {
   }
 
   callFunction(
-    func: FunctionValue,
+    func: unknown,
     args: unknown[],
     kwargs: { [name: string]: unknown } = {}
   ) {
-    const argsForCall = args
-      .map(
-        arg =>
-          ({
-            argKind: 'Positional',
-            value: { kind: 'Value', value: arg },
-          } as ArgumentExpression)
-      )
-      .concat(
-        Object.entries(kwargs).map(([name, value]) => {
-          return {
-            argKind: 'Named',
-            name,
-            value: { kind: 'Value', value },
-          } as ArgumentExpression;
-        })
-      );
-    return evaluateCall(this, func, argsForCall);
+    if (!this.program) throw new Error('missing program');
+    return runCall(func, this.program, args, kwargs);
   }
 
   async callFunctionAsync(
-    func: FunctionValue,
+    func: unknown,
     args: unknown[],
     kwargs: { [name: string]: unknown } = {}
   ) {
-    const node: CallExpression = {
-      kind: 'Call',
-      args: args
-        .map(
-          arg =>
-            ({
-              argKind: 'Positional',
-              value: { kind: 'Value', value: arg },
-            } as ArgumentExpression)
-        )
-        .concat(
-          Object.entries(kwargs).map(([name, value]) => {
-            return {
-              argKind: 'Named',
-              name,
-              value,
-            } as ArgumentExpression;
-          })
-        ),
-      value: func.func,
-    };
-    return this.evaluateAsync(node);
+    if (!this.program) throw new Error('missing program');
+    return runCallAsync(func, this.program, args, kwargs);
   }
 
   createChild(
@@ -299,6 +259,7 @@ export class RuntimeContext {
     return new RuntimeContext(
       () => this.triggerStateChangedListeners(),
       initialValues,
+      this.program,
       this,
       extendable
     );
@@ -306,61 +267,6 @@ export class RuntimeContext {
 
   listLocals(): [string, unknown][] {
     return Object.entries(this._locals);
-  }
-
-  private eventHandlers: {
-    [key: string]: [unknown, () => Promise<void>][];
-  } = {};
-
-  on(eventName: string, callback: Expression | (() => Promise<void>)): void {
-    if (this.parent) {
-      return this.parent.on(eventName, callback);
-    }
-
-    if (!this.eventHandlers.hasOwnProperty(eventName)) {
-      this.eventHandlers[eventName] = [];
-    }
-    if (this.eventHandlers[eventName].find(([cb]) => cb === callback) != null) {
-      return;
-    }
-    if (typeof callback == 'function') {
-      this.eventHandlers[eventName].push([
-        callback,
-        async () => {
-          await callback();
-        },
-      ]);
-    } else {
-      this.eventHandlers[eventName].push([
-        callback,
-        async () => {
-          await this.evaluateAsync(callback);
-        },
-      ]);
-    }
-  }
-
-  off(eventName: string, value: unknown): void {
-    if (this.parent) {
-      return this.parent.off(eventName, value);
-    }
-
-    if (this.eventHandlers.hasOwnProperty(eventName)) {
-      this.eventHandlers[eventName] = this.eventHandlers[eventName].filter(
-        ([callback]) => callback !== value
-      );
-    }
-  }
-
-  async trigger(eventName: string): Promise<void> {
-    if (this.parent) {
-      return this.parent.trigger(eventName);
-    }
-    // TODO: Run all handlers in concurrency ?
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (let [_, handler] of this.eventHandlers[eventName] ?? []) {
-      await handler();
-    }
   }
 
   private widgets: { [key: string]: (props: any) => JSX.Element | null } = {};
@@ -417,26 +323,8 @@ export class RuntimeContext {
   }
 }
 
-export type FunctionValue = {
-  __kind: 'FunctionValue';
-  func: FunctionExpression;
-  ctx: RuntimeContext;
-};
-
-export function isFunctionValue(value: any): value is FunctionValue {
-  return !!(
-    value &&
-    typeof value == 'object' &&
-    '__kind' in value &&
-    value.__kind === 'FunctionValue' &&
-    'func' in value &&
-    isExpr(value.func as Expression, 'Function')
-  );
-}
-
 type ParameterDeclaration<T extends string> = {
   name: T;
-  lazy?: boolean;
   env?: string;
 };
 
@@ -482,7 +370,6 @@ export type RegisterableFunction<T extends string> = {
   parametersByName: {
     [argName: string]: {
       name: string;
-      lazy?: boolean;
       exported?: boolean;
     };
   };

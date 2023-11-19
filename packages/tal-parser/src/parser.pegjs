@@ -17,7 +17,7 @@ LogicalAndOperator
     	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
 
 EqualityOperators
-	= left:ComparisonOperators right:(_ ('==' / '!=') _ ComparisonOperators)*
+	= left:ComparisonOperators right:(_ ('===' / '!==' / '==' / '!=') _ ComparisonOperators)*
     	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
 
 ComparisonOperators
@@ -66,6 +66,7 @@ ExpressionLevel1
     / Boolean
     / Deref
     / If
+    / Try
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -80,15 +81,17 @@ ExpressionLevel1
     / SubExpression
 
 If
-    = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:BlockOfExpressions ifFalse:(_ 'else' _ (BlockOfExpressions / If))?
+    = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:BlockOfExpressions ifFalseArray:(_ 'else' _ (BlockOfExpressions / If))?
         {
-            const args = [
-                condition,
-                ifTrue,
-                ifFalse ? ifFalse[3] : undefined
-            ].filter(arg => arg != null)
-             .map(arg => ({argKind: "Positional", value: arg}));
-            return { location: location(), kind: "Call", args, value: { location: location(), kind: "Local", name: "if"} };
+            const ifFalse = ifFalseArray ? ifFalseArray[3] : undefined
+            return { location: location(), kind: "If", condition, ifTrue, ifFalse };
+        }
+
+Try
+    = 'try' _ expr:BlockOfExpressions catchBlockArray:(_ 'catch' _ BlockOfExpressions)?
+        {
+            const catchBlock = catchBlockArray ? catchBlockArray[3] : undefined
+            return { location: location(), kind: "Try", expr, catchBlock };
         }
 
 Deref
@@ -199,7 +202,7 @@ IdentifierTailCharacters
 
 Assignement
     = "set" _ address:Expression _ '=' _ value:Expression
-        { return { location: location(), kind: "SetValue", address, value }; }
+        { return { location: location(), kind: "Assign", address, value }; }
 
 LocalDeclaration
     = keyword:("let" / "var") _ name:Identifier value:(_ '=' _ Expression)?

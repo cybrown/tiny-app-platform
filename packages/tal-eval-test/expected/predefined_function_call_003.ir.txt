@@ -1,0 +1,60 @@
+main: 
+  BLOCK
+    CALL
+      LOCAL {"name":"predefined_function"}
+      MAKE_ARRAY
+        LITERAL {"value":"a"}
+        LITERAL {"value":"b"}
+        LITERAL {"value":"c"}
+        LITERAL {"value":"d"}
+        LITERAL {"value":"e"}
+      MAKE_OBJECT
+    CALL
+      LOCAL {"name":"predefined_function"}
+      MAKE_ARRAY
+        LITERAL {"value":"b"}
+        LITERAL {"value":"c"}
+        LITERAL {"value":"d"}
+        LITERAL {"value":"e"}
+      MAKE_OBJECT
+        LITERAL {"value":"arg1"}
+        LITERAL {"value":"a"}
+    CALL
+      LOCAL {"name":"predefined_function"}
+      MAKE_ARRAY
+        LITERAL {"value":"c"}
+        LITERAL {"value":"d"}
+        LITERAL {"value":"e"}
+      MAKE_OBJECT
+        LITERAL {"value":"arg1"}
+        LITERAL {"value":"a"}
+        LITERAL {"value":"arg2"}
+        LITERAL {"value":"b"}
+    CALL
+      LOCAL {"name":"predefined_function"}
+      MAKE_ARRAY
+        LITERAL {"value":"a"}
+        LITERAL {"value":"b"}
+        LITERAL {"value":"d"}
+      MAKE_OBJECT
+        LITERAL {"value":"arg2"}
+        LITERAL {"value":"c"}
+        LITERAL {"value":"arg1"}
+        LITERAL {"value":"e"}
+    CALL
+      LOCAL {"name":"predefined_function"}
+      MAKE_ARRAY
+        LITERAL {"value":"a"}
+      MAKE_OBJECT
+    CALL
+      LOCAL {"name":"predefined_function"}
+      MAKE_ARRAY
+        LITERAL {"value":"b"}
+        LITERAL {"value":"d"}
+      MAKE_OBJECT
+        LITERAL {"value":"arg1"}
+        LITERAL {"value":"a"}
+        LITERAL {"value":"arg1"}
+        LITERAL {"value":"c"}
+        LITERAL {"value":"arg1"}
+        LITERAL {"value":"e"}

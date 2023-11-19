@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { Expression } from "tal-parser";
 import RenderExpression from "../runtime/RenderExpression";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 
 type LoaderProps = {
   ctx: RuntimeContext;
-  data: Expression;
-  view: Expression;
-  watch: Expression;
-  error?: Expression;
+  data: IRNode;
+  view: IRNode;
+  watch: IRNode;
+  error?: IRNode;
 };
 
 function useForceRefresh(): [unknown, () => void] {
@@ -35,7 +34,7 @@ function checkArrayEquality(a: any[], b: any[]): boolean {
   return true;
 }
 
-function useWatch(ctx: RuntimeContext, watch: Expression) {
+function useWatch(ctx: RuntimeContext, watch: IRNode) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forceRefreshToken, forceRefresh] = useForceRefresh();
 
@@ -84,7 +83,7 @@ export default function Loader({ ctx, data, view, watch, error }: LoaderProps) {
         setLatestNominalResult(
           <RenderExpression
             ctx={ctx.createChild({ data: result })}
-            expression={view}
+            evaluatedUI={view}
           />
         );
         setCurrentState("ok");
@@ -95,7 +94,7 @@ export default function Loader({ ctx, data, view, watch, error }: LoaderProps) {
           error ? (
             <RenderExpression
               ctx={ctx.createChild({ error: err })}
-              expression={error}
+              evaluatedUI={error}
             />
           ) : (
             <div>error</div>

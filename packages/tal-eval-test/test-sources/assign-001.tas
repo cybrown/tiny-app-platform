@@ -1,0 +1,3 @@
+var toto
+set toto = "value"
+toto

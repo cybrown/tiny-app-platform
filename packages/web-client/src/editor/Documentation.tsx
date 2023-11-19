@@ -79,7 +79,6 @@ export default function Documentation({
                 {doc.map((d) => (
                   <li key={d.name}>
                     {d.name}
-                    {d.env ? ` (env: ${d.env})` : ""}
                   </li>
                 ))}
               </ul>

@@ -1,7 +1,6 @@
 import React from "react";
-import { Expression } from "tal-parser";
 import RenderExpression from "../runtime/RenderExpression";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Box.module.css";
 
 type BoxProps = {
@@ -11,7 +10,7 @@ type BoxProps = {
   flex?: number;
   backgroundColor?: string;
   scroll?: boolean;
-  children?: Expression[];
+  children?: IRNode[];
 };
 
 export default function Box({
@@ -40,7 +39,7 @@ export default function Box({
       {children
         ? children
             .flatMap((child) => (
-              <RenderExpression ctx={childContext} expression={child} />
+              <RenderExpression ctx={childContext} evaluatedUI={child} />
             ))
             .map((child, index) => (
               <React.Fragment key={index}>{child}</React.Fragment>

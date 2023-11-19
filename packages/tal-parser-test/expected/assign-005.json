@@ -1,0 +1,21 @@
+[
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Attribute",
+      "key": "property",
+      "value": {
+        "kind": "Index",
+        "index": {
+          "kind": "Local",
+          "name": "index"
+        },
+        "value": {
+          "kind": "Local",
+          "name": "toto"
+        }
+      }
+    },
+    "value": "value"
+  }
+]

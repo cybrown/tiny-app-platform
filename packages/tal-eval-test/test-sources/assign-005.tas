@@ -1,0 +1,4 @@
+let toto = [null, null, null, {}]
+let index = 3
+set toto[index].property = "value"
+toto[3].property

@@ -100,81 +100,87 @@ Column {
     onClick: executeHttpRequest()
   }
 
-  if (method != null && url != null) Text {
-    copy: true
-    text: "curl -X $method $headers '$url'"
-      |  string_format({
-          method:  method
-          url:     url
-          headers: headers
-            |  array_map(() => string_format(
-                "-H '$name: $value'"
-                {name: it[0], value: it[1]}
-              ))
-            |  array_join(" ")
-        })
+  if (method != null && url != null) {
+    Text {
+      copy: true
+      text: "curl -X $method $headers '$url'"
+        |  string_format({
+            method:  method
+            url:     url
+            headers: headers
+              |  array_map(() => string_format(
+                  "-H '$name: $value'"
+                  {name: it[0], value: it[1]}
+                ))
+              |  array_join(" ")
+          })
+    }
   }
 
-  if (response != null) Column {
-    Row {
-      Text {
-        text: string_format(
-          "Status code: $status"
-          {status: response.status}
-        )
+  if (response != null) {
+    Column {
+      Row {
+        Text {
+          text: string_format(
+            "Status code: $status"
+            {status: response.status}
+          )
+        }
       }
-    }
 
-    Row {
-      Text { "Show headers" }
-      Switch { bindTo: doShowHeaders }
-    }
+      Row {
+        Text { "Show headers" }
+        Switch { bindTo: doShowHeaders }
+      }
 
-    if (doShowHeaders) Column {
-      flexShrink: 0
+      if (doShowHeaders) {
+        Column {
+          flexShrink: 0
 
-      Text { text: "Headers:" }
+          Text { text: "Headers:" }
 
-      Table {
-        columns: [
-          {description: "Name", display: () => Text { text: row.key }}
+          Table {
+            columns: [
+              {description: "Name", display: () => Text { text: row.key }}
 
-          {
-            description: "Value"
-            display:     () => Text { text: row.value }
+              {
+                description: "Value"
+                display:     () => Text { text: row.value }
+              }
+            ]
+            values:  response.headers | object_entries | array_map(() => {key: it[0], value: it[1]})
           }
-        ]
-        values:  response.headers | object_entries | array_map(() => {key: it[0], value: it[1]})
-      }
-    }
-
-    Row {
-      Text { "Language syntax to highlight" }
-
-      Select {
-        options: [
-          "text"
-          "json"
-          "html"
-          "xml"
-          "javascript"
-          "css"
-        ]
-        bindTo:  language
+        }
       }
 
-      Text { "Format code (when possible)" }
-      Switch { bindTo: doFormat }
-    }
+      Row {
+        Text { "Language syntax to highlight" }
 
-    Box {
-      scroll: true
+        Select {
+          options: [
+            "text"
+            "json"
+            "html"
+            "xml"
+            "javascript"
+            "css"
+          ]
+          bindTo:  language
+        }
 
-      Snippet {
-        text:        bytes_to_string(response.body)
-        format:      doFormat
-        language:    language
-        noMaxHeight: true
+        Text { "Format code (when possible)" }
+        Switch { bindTo: doFormat }
+      }
+
+      Box {
+        scroll: true
+
+        Snippet {
+          text:        bytes_to_string(response.body)
+          format:      doFormat
+          language:    language
+          noMaxHeight: true
+        }
       }
     }
   }

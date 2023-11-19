@@ -1,0 +1,19 @@
+func_0: x
+  INTRINSIC {"operation":"INTRINSIC_ADD"}
+    LOCAL {"name":"x"}
+    LITERAL {"value":1}
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"f","mutable":false}
+      FUNCTION_REF {"name":"func_0"}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"x"}
+        LITERAL {"value":2}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":2}
+      MAKE_OBJECT

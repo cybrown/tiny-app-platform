@@ -1,11 +1,10 @@
-import { FunctionValue } from "tal-eval";
-import { AddressableExpression } from "tal-parser";
+import { IRNode } from "tal-eval";
 
 export type InputProps<T> = {
-  onChange: FunctionValue;
+  onChange: unknown;
 } & (
   | {
-      bindTo: AddressableExpression;
+      bindTo: IRNode;
       value: undefined;
     }
   | {

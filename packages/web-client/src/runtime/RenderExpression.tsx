@@ -1,5 +1,4 @@
-import { EvaluationError, RuntimeContext } from "tal-eval";
-import { Expression } from "tal-parser";
+import { EvaluationError, IRNode, RuntimeContext } from "tal-eval";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
@@ -7,14 +6,22 @@ import Debug from "../widgets/Debug";
 export default function RenderExpression({
   ctx,
   expression,
+  evaluatedUI,
 }: {
   ctx: RuntimeContext;
-  expression: Expression | null;
-}): JSX.Element {
+} & (
+  | { expression: IRNode | null; evaluatedUI?: undefined }
+  | { expression?: undefined; evaluatedUI: unknown }
+)): JSX.Element {
   const ctxRef = useRef(ctx.createChild({}));
   const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
   try {
-    const ui = expression == null ? null : ctxRef.current.evaluate(expression);
+    const ui =
+      expression != null
+        ? ctxRef.current.evaluate(expression)
+        : evaluatedUI != null
+        ? evaluatedUI
+        : null;
     const result = renderNullableWidget(ui);
     if (Array.isArray(result)) {
       return (
@@ -23,7 +30,11 @@ export default function RenderExpression({
             <ErrorBoundary
               ctx={ctxRef.current}
               onError={(err, retry) => (
-                <RenderError expression={expression} err={err} retry={retry} />
+                <RenderError
+                  expression={expression ?? (evaluatedUI as any).kind ?? null}
+                  err={err}
+                  retry={retry}
+                />
               )}
             >
               {child}
@@ -36,7 +47,11 @@ export default function RenderExpression({
         <ErrorBoundary
           ctx={ctxRef.current}
           onError={(err, retry) => (
-            <RenderError expression={expression} err={err} retry={retry} />
+            <RenderError
+              expression={expression ?? (evaluatedUI as any).kind ?? null}
+              err={err}
+              retry={retry}
+            />
           )}
         >
           {renderNullableWidget(ui)}
@@ -44,7 +59,9 @@ export default function RenderExpression({
       );
     }
   } catch (err) {
-    return <RenderError expression={expression} err={err} retry={retry} />;
+    return (
+      <RenderError expression={expression ?? (evaluatedUI as any).kind ?? null} err={err} retry={retry} />
+    );
   }
 }
 
@@ -59,19 +76,25 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
   if (Array.isArray(ui)) {
     return ui.flatMap((a) => renderWidget(a));
   }
+
   if (
     typeof ui == "object" &&
     ui !== null &&
     "kind" in ui &&
     "ctx" in ui &&
-    ui.ctx instanceof RuntimeContext &&
-    typeof ui.kind == "string"
+    ui.ctx instanceof RuntimeContext
   ) {
-    const component = ui.ctx.getWidgetByKind(ui.kind);
+    const kind = ui.ctx.evaluate(ui.kind as any) as string;
+    const children =
+      "children" in ui && ui.children ? ui.ctx.evaluate(ui.children as any) : [];
+    const props =
+      "props" in ui && ui.props ? (ui.ctx.evaluate(ui.props as any) as any) : {};
+
+    const component = ui.ctx.getWidgetByKind(kind);
     if (component == null) {
       throw new Error("Component is null");
     }
-    return React.createElement(component, ui);
+    return React.createElement(component, { ...props, ctx: ui.ctx, children });
   }
   return <Debug ctx={null as any} value={ui} />;
 }
@@ -82,22 +105,24 @@ export function RenderError({
   isStartup = false,
   retry,
 }: {
-  expression: Expression | null;
+  expression: IRNode | null;
   err: unknown;
   isStartup?: boolean;
   retry: () => void;
 }) {
   let locationMessage = "";
-  const expressionToUse =
-    (err instanceof EvaluationError ? err.expression : expression) ??
+
+  const irNode =
+    (err instanceof EvaluationError ? err.node : expression) ??
     expression;
   if (
-    typeof expressionToUse == "object" &&
-    expressionToUse &&
-    expressionToUse.location
+    typeof irNode == "object" &&
+    irNode &&
+    irNode.location
   ) {
-    locationMessage = ` at location: (${expressionToUse.location.start.line}, ${expressionToUse.location.start.column})`;
+    locationMessage = ` at location: (${irNode.location.start.line}, ${irNode.location.start.column})`;
   }
+
   return (
     <div className={styles.RenderError}>
       {`Failed to evaluate ${
@@ -117,7 +142,7 @@ export function RenderError({
   );
 }
 
-function nameKindOfExpression(expr: Expression) {
+function nameKindOfExpression(expr: IRNode) {
   if (expr && typeof expr == "object") {
     if (
       "value" in expr &&

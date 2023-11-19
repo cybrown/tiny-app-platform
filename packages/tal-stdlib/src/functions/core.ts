@@ -5,14 +5,14 @@ const watches = new WeakMap<RuntimeContext, Map<Expression, unknown>>();
 
 export const watch = defineFunction(
   "watch",
-  [{ name: "expr", lazy: true }, { name: "action" }],
+  [{ name: "expr" }, { name: "action" }],
   (ctx, { expr, action }) => {
     let currentCtxMap = watches.get(ctx);
     if (!currentCtxMap) {
       currentCtxMap = new Map();
       watches.set(ctx, currentCtxMap);
     }
-    currentCtxMap.set(expr, ctx.evaluate(expr));
+    currentCtxMap.set(expr, ctx.callFunction(expr, []));
 
     function run(
       currentCtxMap: Map<Expression, unknown>,
@@ -31,7 +31,7 @@ export const watch = defineFunction(
     ctx.registerStateChangedListener(() => {
       if (!currentCtxMap) return;
       const oldValue = currentCtxMap.get(expr);
-      const newValue = ctx.evaluate(expr);
+      const newValue = ctx.callFunction(expr, []);
       if (oldValue === undefined) {
         run(currentCtxMap, oldValue, newValue);
       } else if (
@@ -66,59 +66,6 @@ export const typeof$ = defineFunction(
   }
 );
 
-export const if$ = defineFunction(
-  "if",
-  [
-    { name: "condition" },
-    { name: "ifTrue", lazy: true },
-    { name: "ifFalse", lazy: true },
-  ],
-  (ctx, { condition, ifTrue, ifFalse }) => {
-    if (condition) {
-      return ctx.evaluate(ifTrue);
-    } else if (ifFalse) {
-      return ctx.evaluate(ifFalse);
-    }
-    return null;
-  },
-  (ctx, { condition, ifTrue, ifFalse }) => {
-    if (condition) {
-      return ctx.evaluateAsync(ifTrue);
-    } else if (ifFalse) {
-      return ctx.evaluateAsync(ifFalse);
-    }
-    return null;
-  }
-);
-
-export const try$ = defineFunction(
-  "try",
-  [
-    { name: "expr", lazy: true },
-    { name: "orElse", lazy: true },
-  ],
-  (ctx, { expr, orElse }) => {
-    try {
-      return ctx.evaluate(expr);
-    } catch (error) {
-      if (orElse) {
-        return ctx.createChild({ error }, false).evaluate(orElse);
-      }
-      return null;
-    }
-  },
-  async (ctx, { expr, orElse }) => {
-    try {
-      return await ctx.evaluateAsync(expr);
-    } catch (error) {
-      if (orElse) {
-        return await ctx.createChild({ error }, false).evaluateAsync(orElse);
-      }
-      return null;
-    }
-  }
-);
-
 export const default$ = defineFunction("default", [], (_ctx, _kwargs, args) => {
   for (let arg of args) {
     if (arg != null) {
@@ -142,14 +89,6 @@ export const log = defineFunction(
   (_ctx, { value }, args) => {
     console.log(value, ...args);
     return value;
-  }
-);
-
-export const expression_eval = defineFunction(
-  "expression_eval",
-  [{ name: "expression" }],
-  (ctx, { expression }) => {
-    return ctx.evaluate(expression);
   }
 );
 

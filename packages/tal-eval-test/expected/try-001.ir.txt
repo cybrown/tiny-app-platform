@@ -1,0 +1,7 @@
+main: 
+  BLOCK
+    TRY
+      BLOCK
+        LOCAL {"name":"missing_variable"}
+      BLOCK
+        LITERAL {"value":"value on error"}

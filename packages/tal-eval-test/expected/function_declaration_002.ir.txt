@@ -1,0 +1,150 @@
+func_0: a, b
+  MAKE_OBJECT
+    LITERAL {"value":"a"}
+    LOCAL {"name":"a"}
+    LITERAL {"value":"b"}
+    LOCAL {"name":"b"}
+func_1: a, b
+  MAKE_OBJECT
+    LITERAL {"value":"a"}
+    LOCAL {"name":"a"}
+    LITERAL {"value":"b"}
+    LOCAL {"name":"b"}
+func_2: a, b
+  MAKE_OBJECT
+    LITERAL {"value":"a"}
+    LOCAL {"name":"a"}
+    LITERAL {"value":"b"}
+    LOCAL {"name":"b"}
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"f","mutable":false}
+      FUNCTION_REF {"name":"func_0"}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":1}
+        LITERAL {"value":2}
+      MAKE_OBJECT
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"a"}
+        LITERAL {"value":5}
+        LITERAL {"value":"b"}
+        LITERAL {"value":6}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"b"}
+        LITERAL {"value":7}
+        LITERAL {"value":"a"}
+        LITERAL {"value":8}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":4}
+      MAKE_OBJECT
+        LITERAL {"value":"a"}
+        LITERAL {"value":3}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":6}
+      MAKE_OBJECT
+        LITERAL {"value":"b"}
+        LITERAL {"value":5}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":7}
+      MAKE_OBJECT
+        LITERAL {"value":"a"}
+        LITERAL {"value":8}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":9}
+      MAKE_OBJECT
+        LITERAL {"value":"b"}
+        LITERAL {"value":0}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":1}
+      MAKE_OBJECT
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"a"}
+        LITERAL {"value":2}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"b"}
+        LITERAL {"value":3}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":1}
+      MAKE_OBJECT
+        LITERAL {"value":"c"}
+        LITERAL {"value":4}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"c"}
+        LITERAL {"value":5}
+        LITERAL {"value":"a"}
+        LITERAL {"value":2}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"c"}
+        LITERAL {"value":6}
+        LITERAL {"value":"b"}
+        LITERAL {"value":3}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":1}
+      MAKE_OBJECT
+        LITERAL {"value":"b"}
+        LITERAL {"value":2}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":3}
+      MAKE_OBJECT
+        LITERAL {"value":"a"}
+        LITERAL {"value":4}
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":5}
+      MAKE_OBJECT
+    CALL
+      LOCAL {"name":"f"}
+      MAKE_ARRAY
+        LITERAL {"value":6}
+      MAKE_OBJECT
+    CALL
+      FUNCTION_REF {"name":"func_1"}
+      MAKE_ARRAY
+        LITERAL {"value":7}
+      MAKE_OBJECT
+        LITERAL {"value":"a"}
+        LITERAL {"value":3}
+    CALL
+      FUNCTION_REF {"name":"func_2"}
+      MAKE_ARRAY
+        LITERAL {"value":8}
+      MAKE_OBJECT
+        LITERAL {"value":"b"}
+        LITERAL {"value":4}

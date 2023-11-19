@@ -1,12 +1,11 @@
-import { Expression } from "tal-parser";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Row.module.css";
 import React from "react";
 
 type RowProps = {
   ctx: RuntimeContext;
-  children: Expression[];
+  children: IRNode[];
   noWrap?: boolean;
 };
 
@@ -16,7 +15,7 @@ export default function Row({ ctx, children, noWrap }: RowProps) {
     <div className={`${styles.Row} ${noWrap ? "" : styles.wrap}`}>
       {children
         .flatMap((child) => (
-          <RenderExpression ctx={childContext} expression={child} />
+          <RenderExpression ctx={childContext} evaluatedUI={child} />
         ))
         .map((child, index) => (
           <React.Fragment key={index}>{child}</React.Fragment>

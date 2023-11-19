@@ -1,6 +1,5 @@
-import { RuntimeContext } from "tal-eval";
+import { IRNode, RuntimeContext, Program, buildIRNode } from "tal-eval";
 import RenderExpression, { RenderError } from "./runtime/RenderExpression";
-import { Expression } from "tal-parser";
 import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
 
@@ -8,10 +7,10 @@ function AppRenderer({
   app,
   ctx,
 }: {
-  app: Expression[] | null;
+  app: Program | null;
   ctx: RuntimeContext;
 }) {
-  const [appUi, setAppUi] = useState(null as Expression | null);
+  const [appUi, setAppUi] = useState(null as IRNode | null);
   const [lastError, setLastError] = useState<unknown>(null);
   const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
 
@@ -19,20 +18,25 @@ function AppRenderer({
     async function run() {
       try {
         if (!app) return;
+        // TODO: Do not assign program to ctx here
+        ctx.program = app;
         ctx.beginReinit();
         // TODO: Move that elsewhere later
         ctx.declareLocal(APP_DEBUG_MODE_ENV, { mutable: true });
-        for (let expression of app.slice(0, -1)) {
+        const irNodes = (app["main"].body as IRNode<"BLOCK">).children;
+        for (let expression of irNodes.slice(0, -1)) {
           await ctx.evaluateAsync(expression);
         }
         ctx.endReinit();
-        const lastExpr = app.at(-1);
+        const lastExpr = irNodes.at(-1);
         setAppUi({
-          kind: "KindedObject" as const,
-          value: {
-            kind: "Column",
-            children: Array.isArray(lastExpr) ? lastExpr : [lastExpr],
-          },
+          kind: "KINDED",
+          children: [
+            buildIRNode("LITERAL", lastExpr?.location, { value: "Column" }),
+            buildIRNode("MAKE_ARRAY", lastExpr?.location, {
+              children: lastExpr ? [lastExpr] : [],
+            }),
+          ],
         });
         setLastError(null);
       } catch (err) {

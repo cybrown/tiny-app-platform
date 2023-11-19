@@ -6,14 +6,16 @@ import {
   DerefExpression,
   Expression,
   FunctionExpression,
+  IfExpression,
   isExpr,
   KindedObjectExpression,
   LiteralExpression,
   ObjectExpression,
   PipeExpression,
   QuoteExpression,
-  SetValueExpression,
+  AssignExpression,
   SubExpressionExpression,
+  TryExpression,
   UnaryOperatorExpression,
 } from './expression';
 
@@ -93,6 +95,10 @@ class Stringifier {
         return this.stringifyCall(obj);
       case 'Deref':
         return this.stringifyDeref(obj);
+      case 'If':
+        return this.stringifyIf(obj);
+      case 'Try':
+        return this.stringifyTry(obj);
       case 'SubExpression':
         return this.stringifySubExpression(obj);
       case 'Pipe':
@@ -105,8 +111,8 @@ class Stringifier {
         return this.stringifyBlockOfExpressions(obj);
       case 'DeclareLocal':
         return this.stringifyDeclareLocal(obj);
-      case 'SetValue':
-        return this.stringifySetValue(obj);
+      case 'Assign':
+        return this.stringifyAssign(obj);
       case 'Index':
         return (
           this.stringify(obj.value) + '[' + this.stringify(obj.index) + ']'
@@ -288,7 +294,7 @@ class Stringifier {
     return result;
   }
 
-  stringifySetValue(obj: SetValueExpression): string {
+  stringifyAssign(obj: AssignExpression): string {
     return (
       'set ' + this.stringify(obj.address) + ' = ' + this.stringify(obj.value)
     );
@@ -406,9 +412,6 @@ class Stringifier {
   }
 
   stringifyCall(obj: CallExpression) {
-    if (isExpr(obj.value, 'Local') && obj.value.name == 'if') {
-      return this.stringifyIf(obj);
-    }
     // Maybe optimize this to not stringify twice ?
     if (obj.args.length > 3) {
       return this.stringifyCallMultiLine(obj);
@@ -443,60 +446,97 @@ class Stringifier {
     );
   }
 
-  stringifyIf(obj: CallExpression) {
+  stringifyIf(obj: IfExpression) {
     const result = this.stringifyIfOneLine(obj);
-    if ((result.includes('\n') || result.length > 60) && obj.args.length > 1) {
+    if (result.includes('\n') || result.length > 60) {
       return this.stringifyIfMultiLine(obj);
     }
     return result;
   }
 
-  stringifyIfOneLine(obj: CallExpression) {
-    let result = 'if (' + this.stringify(obj.args[0].value) + ') ';
-    const ifTrue = obj.args[1].value;
+  stringifyIfOneLine(obj: IfExpression) {
+    let result = 'if (' + this.stringify(obj.condition) + ') ';
+    const ifTrue = obj.ifTrue;
     if (isExpr(ifTrue, 'BlockOfExpressions')) {
       result += this.stringifyBlockOfExpressionsOneLine(ifTrue);
     } else {
       result += this.stringify(ifTrue);
     }
-    if (obj.args.length > 1 && obj.args[2]) {
-      const ifFalse = obj.args[2].value;
+    if (obj.ifFalse) {
+      const ifFalse = obj.ifFalse;
       if (isExpr(ifFalse, 'BlockOfExpressions')) {
         result += ' else ' + this.stringifyBlockOfExpressionsOneLine(ifFalse);
-      } else if (
-        isExpr(ifFalse, 'Call') &&
-        isExpr(ifFalse.value, 'Local') &&
-        ifFalse.value.name == 'if'
-      ) {
+      } else if (isExpr(ifFalse, 'If')) {
         result += ' else ' + this.stringifyIfOneLine(ifFalse);
       } else {
-        result += ' else ' + this.stringify(ifFalse);
+        throw new Error('Unreachable');
       }
     }
     return result;
   }
 
-  stringifyIfMultiLine(obj: CallExpression) {
-    let result = 'if (' + this.stringify(obj.args[0].value) + ') ';
-    const ifTrue = obj.args[1].value;
+  stringifyIfMultiLine(obj: IfExpression) {
+    let result = 'if (' + this.stringify(obj.condition) + ') ';
+    const ifTrue = obj.ifTrue;
     if (isExpr(ifTrue, 'BlockOfExpressions')) {
       result += this.stringifyBlockOfExpressionsMultiLine(ifTrue);
     } else {
-      result += this.stringify(ifTrue);
+      throw new Error('Unreachable');
     }
 
-    if (obj.args.length > 1 && obj.args[2]) {
-      const ifFalse = obj.args[2].value;
+    if (obj.ifFalse) {
+      const ifFalse = obj.ifFalse;
       if (isExpr(ifFalse, 'BlockOfExpressions')) {
         result += ' else ' + this.stringifyBlockOfExpressionsMultiLine(ifFalse);
-      } else if (
-        isExpr(ifFalse, 'Call') &&
-        isExpr(ifFalse.value, 'Local') &&
-        ifFalse.value.name == 'if'
-      ) {
+      } else if (isExpr(ifFalse, 'If')) {
         result += ' else ' + this.stringifyIfMultiLine(ifFalse);
       } else {
-        result += ' else ' + this.stringify(ifFalse);
+        throw new Error('Unreachable');
+      }
+    }
+    return result;
+  }
+
+  stringifyTry(obj: TryExpression) {
+    const result = this.stringifyTryOneLine(obj);
+    if (result.includes('\n') || result.length > 60) {
+      return this.stringifyTryMultiLine(obj);
+    }
+    return result;
+  }
+
+  stringifyTryOneLine(obj: TryExpression) {
+    let result = 'try ';
+    if (isExpr(obj.expr, 'BlockOfExpressions')) {
+      result += this.stringifyBlockOfExpressionsOneLine(obj.expr);
+    } else {
+      result += this.stringify(obj.expr);
+    }
+    if (obj.catchBlock) {
+      if (isExpr(obj.catchBlock, 'BlockOfExpressions')) {
+        result +=
+          ' else ' + this.stringifyBlockOfExpressionsOneLine(obj.catchBlock);
+      } else {
+        throw new Error('Unreachable');
+      }
+    }
+    return result;
+  }
+
+  stringifyTryMultiLine(obj: TryExpression) {
+    let result = 'try ';
+    if (isExpr(obj.expr, 'BlockOfExpressions')) {
+      result += this.stringifyBlockOfExpressionsMultiLine(obj.expr);
+    } else {
+      throw new Error('Unreachable');
+    }
+
+    if (obj.catchBlock) {
+      if (isExpr(obj.catchBlock, 'BlockOfExpressions')) {
+        result +=
+          ' else ' + this.stringifyBlockOfExpressionsMultiLine(obj.catchBlock);
+      } else {
+        throw new Error('Unreachable');
       }
     }
     return result;

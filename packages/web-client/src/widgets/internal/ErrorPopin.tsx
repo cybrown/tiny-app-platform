@@ -18,11 +18,11 @@ export default function ErrorPopin({
   const locationMessage = useMemo(() => {
     if (
       lastError instanceof EvaluationError &&
-      typeof lastError.expression == "object" &&
-      lastError.expression &&
-      lastError.expression.location
+      typeof lastError.node == "object" &&
+      lastError.node &&
+      lastError.node.location
     ) {
-      return ` at location: (${lastError.expression.location.start.line}, ${lastError.expression.location.start.column})`;
+      return ` at location: (${lastError.node.location.start.line}, ${lastError.node.location.start.column})`;
     }
     return null;
   }, [lastError]);

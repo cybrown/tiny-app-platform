@@ -24,18 +24,14 @@ import { bytes_to_string } from './functions/bytes';
 import { cheerio_find, cheerio_load } from './functions/cheerio';
 import {
   default$,
-  expression_eval,
-  if$,
   log,
   throw$,
-  try$,
   typeof$,
   watch,
   eval_js,
   is_defined,
   set_system_property,
 } from './functions/core';
-import { event_on, event_trigger } from './functions/event';
 import { http_request_form, http_request } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
 import {
@@ -111,11 +107,8 @@ import {
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
-  ctx.registerFunction(expression_eval);
-  ctx.registerFunction(if$);
   ctx.registerFunction(log);
   ctx.registerFunction(throw$);
-  ctx.registerFunction(try$);
   ctx.registerFunction(typeof$);
   ctx.registerFunction(watch);
 
@@ -157,8 +150,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(date_to_iso_string_utc);
 
   ctx.registerFunction(eval_js);
-  ctx.registerFunction(event_on);
-  ctx.registerFunction(event_trigger);
   ctx.registerFunction(http_request_form);
   ctx.registerFunction(http_request);
   ctx.registerFunction(is_defined);

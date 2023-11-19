@@ -1,0 +1,4 @@
+let toto = []
+let index = 3
+set toto[index] = "value"
+toto[3]

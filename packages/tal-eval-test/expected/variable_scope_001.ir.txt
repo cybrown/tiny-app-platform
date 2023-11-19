@@ -1,0 +1,9 @@
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"a","mutable":false}
+      LITERAL {"value":"1"}
+    BLOCK
+      DECLARE_LOCAL {"name":"a","mutable":false}
+        LITERAL {"value":"2"}
+      LOCAL {"name":"a"}
+    LOCAL {"name":"a"}

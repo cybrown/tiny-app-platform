@@ -1,0 +1,3 @@
+main: 
+  BLOCK
+    LITERAL {"value":42}

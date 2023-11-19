@@ -1,0 +1,3 @@
+let toto = {}
+set toto.property = "value"
+toto.property

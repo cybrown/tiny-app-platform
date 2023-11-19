@@ -1,0 +1,8 @@
+main: 
+  BLOCK
+    INTRINSIC {"operation":"INTRINSIC_ADD"}
+      CALL
+        LOCAL {"name":"give_hello"}
+        MAKE_ARRAY
+        MAKE_OBJECT
+      LITERAL {"value":" Toto"}

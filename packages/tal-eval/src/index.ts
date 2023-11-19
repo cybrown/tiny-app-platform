@@ -2,6 +2,7 @@ export {
   RuntimeContext,
   defineFunction,
   WidgetDocumentation,
-  FunctionValue,
 } from './RuntimeContext';
-export { EvaluationError } from './evaluation';
+export { compile } from './compiler';
+export { run, runAsync, EvaluationError } from './interpreter';
+export { Program, IRNode, FunctionValue, buildIRNode } from './core';

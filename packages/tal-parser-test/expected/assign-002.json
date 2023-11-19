@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Attribute",
+      "key": "property",
+      "value": {
+        "kind": "Local",
+        "name": "toto"
+      }
+    },
+    "value": "value"
+  }
+]

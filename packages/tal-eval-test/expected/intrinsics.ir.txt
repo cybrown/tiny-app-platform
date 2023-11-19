@@ -1,0 +1,55 @@
+main: 
+  BLOCK
+    INTRINSIC {"operation":"INTRINSIC_ADD"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_SUBSTRACT"}
+      LITERAL {"value":2}
+      LITERAL {"value":1}
+    INTRINSIC {"operation":"INTRINSIC_MULTIPLY"}
+      LITERAL {"value":2}
+      LITERAL {"value":6}
+    INTRINSIC {"operation":"INTRINSIC_DIVIDE"}
+      LITERAL {"value":60}
+      LITERAL {"value":3}
+    INTRINSIC {"operation":"INTRINSIC_MODULO"}
+      LITERAL {"value":51}
+      LITERAL {"value":10}
+    INTRINSIC {"operation":"INTRINSIC_LESSER"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_LESSER_OR_EQUAL"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_GREATER"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_GREATER_OR_EQUAL"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_EQUAL"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_NOT_EQUAL"}
+      LITERAL {"value":1}
+      LITERAL {"value":2}
+    BLOCK
+      INTRINSIC {"operation":"INTRINSIC_POSITIF"}
+        LITERAL {"value":3}
+    INTRINSIC {"operation":"INTRINSIC_NOT"}
+      LITERAL {"value":true}
+    BLOCK
+      INTRINSIC {"operation":"INTRINSIC_NEGATE"}
+        LITERAL {"value":2}
+    INTRINSIC {"operation":"INTRINSIC_EQUAL"}
+      LITERAL {"value":"1"}
+      LITERAL {"value":1}
+    INTRINSIC {"operation":"INTRINSIC_NOT_EQUAL"}
+      LITERAL {"value":"1"}
+      LITERAL {"value":1}
+    INTRINSIC {"operation":"INTRINSIC_EQUAL_STRICT"}
+      LITERAL {"value":"1"}
+      LITERAL {"value":1}
+    INTRINSIC {"operation":"INTRINSIC_NOT_EQUAL_STRICT"}
+      LITERAL {"value":"1"}
+      LITERAL {"value":1}

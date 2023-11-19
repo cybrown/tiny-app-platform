@@ -1,0 +1,10 @@
+[
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "toto"
+    },
+    "value": "value"
+  }
+]

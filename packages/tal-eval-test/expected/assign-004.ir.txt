@@ -1,0 +1,17 @@
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"toto","mutable":false}
+      MAKE_OBJECT
+        LITERAL {"value":"property"}
+        MAKE_ARRAY
+    DECLARE_LOCAL {"name":"index","mutable":false}
+      LITERAL {"value":3}
+    SET_INDEX
+      LOCAL {"name":"index"}
+      ATTRIBUTE {"name":"property"}
+        LOCAL {"name":"toto"}
+      LITERAL {"value":"value"}
+    INDEX
+      LITERAL {"value":3}
+      ATTRIBUTE {"name":"property"}
+        LOCAL {"name":"toto"}

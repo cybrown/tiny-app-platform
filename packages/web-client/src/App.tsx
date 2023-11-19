@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
-import { RuntimeContext } from "tal-eval";
+import { Program, RuntimeContext, compile } from "tal-eval";
 import * as tal from "tal-parser";
 import { Editor, EditorApi } from "./editor/Editor";
 import AppRenderer from "./AppRenderer";
@@ -165,7 +165,7 @@ function App() {
   const [source, setSource] = useState<string | null>(null);
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
-  const [app, setApp] = useState<tal.Expression[] | null>(null);
+  const [app, setApp] = useState<Program | null>(null);
 
   const executeSource = useCallback((newSource: string) => {
     if (newSource == null) {
@@ -173,7 +173,7 @@ function App() {
       return;
     }
     try {
-      setApp(tal.parse(newSource));
+      setApp(compile(tal.parse(newSource)));
     } catch (err) {
       setParseError(err as Error);
       setApp(null);

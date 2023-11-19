@@ -1,0 +1,489 @@
+import { RuntimeContext } from './RuntimeContext';
+import { IRNode, Program } from './core';
+
+export function run(
+  ctx: RuntimeContext,
+  program: Program,
+  entryPoint: string,
+  returnAllBlockValues = false
+): unknown {
+  const currentFunction = program[entryPoint];
+  if (currentFunction.body.kind == 'BLOCK' && returnAllBlockValues) {
+    const node = currentFunction.body;
+    let stack: unknown[] = [];
+    if ('children' in node) {
+      stack = node.children.map(n => {
+        try {
+          return runNode(ctx, program, n);
+        } catch (err) {
+          return err;
+        }
+      });
+    }
+    return stack;
+  }
+  return runNode(ctx, program, currentFunction.body);
+}
+
+export function runCall(
+  funcRef: any,
+  program: Program,
+  args: any,
+  kwargs: any
+) {
+  const functionName = (funcRef as any).name;
+  const func = program[functionName];
+  const kwArgsResolved = Object.fromEntries(
+    func.parameters
+      .map(paramName => {
+        return [paramName, (kwargs as any)[paramName]];
+      })
+      .filter(([, value]) => value !== undefined)
+  );
+  func.parameters.forEach(paramName => {
+    if (!(paramName in kwArgsResolved) && (args as any[]).length) {
+      kwArgsResolved[paramName] = (args as any[]).shift();
+    }
+  });
+  const childContext = (funcRef as any).ctx
+    .createChild(kwArgsResolved, false)
+    .createChild({});
+  return runNode(childContext, program, func.body as any);
+}
+
+export function runNode(
+  ctx: RuntimeContext,
+  program: Program,
+  node: IRNode
+): unknown {
+  try {
+    let stack: unknown[] = [];
+    if (
+      !['CONDITION', 'TRY', 'KINDED'].includes(node.kind) &&
+      'children' in node
+    ) {
+      const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
+      stack = node.children.map(n => runNode(ctxToUse, program, n));
+    }
+    switch (node.kind) {
+      case 'LITERAL':
+        return (node as IRNode<'LITERAL'>).value;
+      case 'LOCAL':
+        return ctx.getLocal((node as IRNode<'LOCAL'>).name);
+      case 'MAKE_ARRAY':
+        return stack;
+      case 'MAKE_OBJECT': {
+        const result: Record<string, unknown> = {};
+        for (let i = 0; i < stack.length; i += 2) {
+          result[stack[i] as string] = stack[i + 1];
+        }
+        return result;
+      }
+      case 'CALL': {
+        const [funcRef, args, kwargs] = stack;
+        const functionName = (funcRef as any).name;
+        if (program[functionName]) {
+          return runCall(funcRef, program, args, kwargs);
+        } else {
+          const nativeFuncValue = ctx.getLocal(functionName) as any;
+          nativeFuncValue.parameters;
+
+          const kwArgsResolved = Object.fromEntries(
+            nativeFuncValue.parameters
+              .map(({ name }: any) => {
+                return [name, (kwargs as any)[name]];
+              })
+              .filter(([, value]: any) => value !== undefined)
+          );
+          nativeFuncValue.parameters.forEach(({ name }: any) => {
+            if (!(name in kwArgsResolved) && (args as any[]).length) {
+              kwArgsResolved[name] = (args as any[]).shift();
+            }
+          });
+
+          if (!nativeFuncValue.call) {
+            throw new Error('Function not allowed in synchronous context');
+          }
+          return nativeFuncValue.call(ctx, kwArgsResolved, args);
+        }
+      }
+      case 'INTRINSIC': {
+        const n = node as IRNode<'INTRINSIC'>;
+        return computeIntrinsic(stack, n);
+      }
+      case 'FUNCTION_REF': {
+        const n = node as IRNode<'FUNCTION_REF'>;
+        return {
+          name: n.name,
+          ctx: ctx,
+        };
+      }
+      case 'DECLARE_LOCAL': {
+        const n = node as IRNode<'DECLARE_LOCAL'>;
+        ctx.declareLocal(n.name, {
+          mutable: n.mutable,
+          initialValue: stack[0],
+        });
+        return;
+      }
+      case 'BLOCK':
+        return stack[stack.length - 1];
+      case 'INDEX':
+        return (stack[1] as any[])[stack[0] as any];
+      case 'ATTRIBUTE': {
+        const n = node as IRNode<'ATTRIBUTE'>;
+        return (stack[0] as any)[n.name];
+      }
+      case 'SET_LOCAL': {
+        const n = node as IRNode<'SET_LOCAL'>;
+        ctx.setLocal(n.name as any, stack[0]);
+        return stack[0];
+      }
+      case 'SET_INDEX': {
+        (stack[1] as any)[stack[0] as any] = stack[2];
+        return stack[2];
+      }
+      case 'SET_ATTRIBUTE': {
+        const n = node as IRNode<'SET_ATTRIBUTE'>;
+        (stack[0] as any)[n.name] = stack[1];
+        return stack[1];
+      }
+      case 'CONDITION': {
+        if ('children' in node) {
+          const conditionResult = runNode(ctx, program, node.children[0]);
+          if (conditionResult) {
+            return runNode(ctx, program, node.children[1]);
+          } else if (node.children.length > 2) {
+            return runNode(ctx, program, node.children[2]);
+          } else {
+            return null;
+          }
+        }
+        throw new Error('Unreachable');
+      }
+      case 'TRY': {
+        if ('children' in node) {
+          try {
+            return runNode(ctx, program, node.children[0]);
+          } catch (error) {
+            if (node.children.length <= 1) {
+              return null;
+            }
+            return runNode(
+              ctx.createChild({ error }, false),
+              program,
+              node.children[1]
+            );
+          }
+        }
+        throw new Error('Unreachable');
+      }
+      case 'KINDED': {
+        const n = node as IRNode<'KINDED'>;
+        if (!('children' in n)) {
+          return null;
+        }
+        const kindIr = n.children[0];
+        const childrenIr = n.children[1];
+        const propsIr = n.children[2];
+        return {
+          ctx,
+          kind: kindIr,
+          children: childrenIr,
+          props: propsIr,
+        };
+      }
+      case 'CTX_RENDER':
+        ctx.forceRefresh();
+        return;
+      default:
+        throw new Error('Unknown node kind: ' + node.kind);
+    }
+  } catch (error) {
+    if (error instanceof EvaluationError) {
+      throw error;
+    }
+    throw new EvaluationError((error as any)?.message, node, error);
+  }
+}
+
+export async function runAsync(
+  ctx: RuntimeContext,
+  program: Program,
+  entryPoint: string,
+  returnAllBlockValues = false
+): Promise<unknown> {
+  const currentFunction = program[entryPoint];
+  if (currentFunction.body.kind == 'BLOCK' && returnAllBlockValues) {
+    const node = currentFunction.body;
+    let stack: unknown[] = [];
+    if ('children' in node) {
+      for (let n of node.children) {
+        try {
+          stack.push(await runNodeAsync(ctx, program, n));
+        } catch (err) {
+          stack.push(err);
+        }
+      }
+    }
+    return stack;
+  }
+  return await runNodeAsync(ctx, program, currentFunction.body);
+}
+
+export async function runCallAsync(
+  funcRef: any,
+  program: Program,
+  args: any,
+  kwargs: any
+) {
+  const func = program[funcRef.name];
+  const kwArgsResolved = Object.fromEntries(
+    func.parameters
+      .map(paramName => {
+        return [paramName, (kwargs as any)[paramName]];
+      })
+      .filter(([, value]) => value !== undefined)
+  );
+  func.parameters.forEach(paramName => {
+    if (!(paramName in kwArgsResolved) && (args as any[]).length) {
+      kwArgsResolved[paramName] = (args as any[]).shift();
+    }
+  });
+  const childContext = (funcRef as any).ctx
+    .createChild(kwArgsResolved, false)
+    .createChild({});
+  return await runNodeAsync(childContext, program, func.body as any);
+}
+
+export async function runNodeAsync(
+  ctx: RuntimeContext,
+  program: Program,
+  node: IRNode
+): Promise<unknown> {
+  try {
+    let stack: unknown[] = [];
+    if (
+      !['CONDITION', 'TRY', 'KINDED'].includes(node.kind) &&
+      'children' in node
+    ) {
+      const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
+      for (let n of node.children) {
+        stack.push(await runNodeAsync(ctxToUse, program, n));
+      }
+    }
+    switch (node.kind) {
+      case 'LITERAL':
+        return (node as IRNode<'LITERAL'>).value;
+      case 'LOCAL':
+        return ctx.getLocal((node as IRNode<'LOCAL'>).name);
+      case 'MAKE_ARRAY':
+        return stack;
+      case 'MAKE_OBJECT': {
+        const result: Record<string, unknown> = {};
+        for (let i = 0; i < stack.length; i += 2) {
+          result[stack[i] as string] = stack[i + 1];
+        }
+        return result;
+      }
+      case 'CALL': {
+        const [funcRef, args, kwargs] = stack;
+        const functionName = (funcRef as any).name;
+        if (program[functionName]) {
+          const func = program[functionName];
+          const kwArgsResolved = Object.fromEntries(
+            func.parameters
+              .map(paramName => {
+                return [paramName, (kwargs as any)[paramName]];
+              })
+              .filter(([, value]) => value !== undefined)
+          );
+          func.parameters.forEach(paramName => {
+            if (!(paramName in kwArgsResolved) && (args as any[]).length) {
+              kwArgsResolved[paramName] = (args as any[]).shift();
+            }
+          });
+          const childContext = (funcRef as any).ctx
+            .createChild(kwArgsResolved, false)
+            .createChild({});
+          return await runNodeAsync(childContext, program, func.body as any);
+        } else {
+          const nativeFuncValue = ctx.getLocal(functionName) as any;
+          nativeFuncValue.parameters;
+
+          const kwArgsResolved = Object.fromEntries(
+            nativeFuncValue.parameters
+              .map(({ name }: any) => {
+                return [name, (kwargs as any)[name]];
+              })
+              .filter(([, value]: any) => value !== undefined)
+          );
+          nativeFuncValue.parameters.forEach(({ name }: any) => {
+            if (!(name in kwArgsResolved) && (args as any[]).length) {
+              kwArgsResolved[name] = (args as any[]).shift();
+            }
+          });
+
+          return nativeFuncValue.callAsync
+            ? await nativeFuncValue.callAsync(ctx, kwArgsResolved, args)
+            : nativeFuncValue.call(ctx, kwArgsResolved, args);
+        }
+      }
+      case 'INTRINSIC': {
+        const n = node as IRNode<'INTRINSIC'>;
+        return computeIntrinsic(stack, n);
+      }
+      case 'FUNCTION_REF': {
+        const n = node as IRNode<'FUNCTION_REF'>;
+        return {
+          name: n.name,
+          ctx: ctx,
+        };
+      }
+      case 'DECLARE_LOCAL': {
+        const n = node as IRNode<'DECLARE_LOCAL'>;
+        ctx.declareLocal(n.name, {
+          mutable: n.mutable,
+          initialValue: stack[0],
+        });
+        return;
+      }
+      case 'BLOCK':
+        return stack[stack.length - 1];
+      case 'INDEX':
+        return (stack[1] as any[])[stack[0] as any];
+      case 'ATTRIBUTE': {
+        const n = node as IRNode<'ATTRIBUTE'>;
+        return (stack[0] as any)[n.name];
+      }
+      case 'SET_LOCAL': {
+        const n = node as IRNode<'SET_LOCAL'>;
+        ctx.setLocal(n.name as any, stack[0]);
+        return stack[0];
+      }
+      case 'SET_INDEX': {
+        (stack[1] as any)[stack[0] as any] = stack[2];
+        return stack[2];
+      }
+      case 'SET_ATTRIBUTE': {
+        const n = node as IRNode<'SET_ATTRIBUTE'>;
+        (stack[0] as any)[n.name] = stack[1];
+        return stack[1];
+      }
+      case 'CONDITION': {
+        if ('children' in node) {
+          const conditionResult = await runNodeAsync(
+            ctx,
+            program,
+            node.children[0]
+          );
+          if (conditionResult) {
+            return await runNodeAsync(ctx, program, node.children[1]);
+          } else if (node.children.length > 2) {
+            return await runNodeAsync(ctx, program, node.children[2]);
+          } else {
+            return null;
+          }
+        }
+        throw new Error('Unreachable');
+      }
+      case 'TRY': {
+        if ('children' in node) {
+          try {
+            return await runNodeAsync(ctx, program, node.children[0]);
+          } catch (error) {
+            if (node.children.length <= 1) {
+              return null;
+            }
+            return await runNodeAsync(
+              ctx.createChild({ error }, false),
+              program,
+              node.children[1]
+            );
+          }
+        }
+        throw new Error('Unreachable');
+      }
+      case 'KINDED': {
+        const n = node as IRNode<'KINDED'>;
+        if (!('children' in n)) {
+          return null;
+        }
+        const kindIr = n.children[0];
+        const childrenIr = n.children[1];
+        const propsIr = n.children[2];
+        return {
+          ctx,
+          kind: kindIr,
+          //kind: await runNodeAsync(ctx, program, kindIr),
+          children: childrenIr,
+          props: propsIr,
+          //...(propsIr && (await runNodeAsync(ctx, program, propsIr)) as object || {})
+        };
+      }
+      case 'CTX_RENDER':
+        ctx.forceRefresh();
+        return;
+      default:
+        throw new Error('Unknown node kind: ' + node.kind);
+    }
+  } catch (error) {
+    if (error instanceof EvaluationError) {
+      throw error;
+    }
+    throw new EvaluationError((error as any)?.message, node, error);
+  }
+}
+
+export class EvaluationError extends Error {
+  constructor(
+    message: string,
+    public readonly node: IRNode,
+    public readonly cause: unknown
+  ) {
+    super(message);
+  }
+}
+
+function computeIntrinsic(stack: unknown[], n: IRNode<'INTRINSIC'>) {
+  switch (n.operation) {
+    case 'INTRINSIC_ADD':
+      return (stack[0] as any) + (stack[1] as any);
+    case 'INTRINSIC_SUBSTRACT':
+      return (stack[0] as any) - (stack[1] as any);
+    case 'INTRINSIC_MULTIPLY':
+      return (stack[0] as any) * (stack[1] as any);
+    case 'INTRINSIC_DIVIDE':
+      return (stack[0] as any) / (stack[1] as any);
+    case 'INTRINSIC_MODULO':
+      return (stack[0] as any) % (stack[1] as any);
+    case 'INTRINSIC_LESSER':
+      return (stack[0] as any) < (stack[1] as any);
+    case 'INTRINSIC_LESSER_OR_EQUAL':
+      return (stack[0] as any) <= (stack[1] as any);
+    case 'INTRINSIC_GREATER':
+      return (stack[0] as any) > (stack[1] as any);
+    case 'INTRINSIC_GREATER_OR_EQUAL':
+      return (stack[0] as any) >= (stack[1] as any);
+    case 'INTRINSIC_EQUAL':
+      return (stack[0] as any) == (stack[1] as any);
+    case 'INTRINSIC_NOT_EQUAL':
+      return (stack[0] as any) != (stack[1] as any);
+    case 'INTRINSIC_EQUAL_STRICT':
+      return (stack[0] as any) === (stack[1] as any);
+    case 'INTRINSIC_NOT_EQUAL_STRICT':
+      return (stack[0] as any) !== (stack[1] as any);
+    case 'INTRINSIC_EQUAL':
+      return (stack[0] as any) == (stack[1] as any);
+    case 'INTRINSIC_NOT_EQUAL':
+      return (stack[0] as any) != (stack[1] as any);
+    case 'INTRINSIC_POSITIF':
+      return +(stack[0] as any);
+    case 'INTRINSIC_NOT':
+      return !(stack[0] as any);
+    case 'INTRINSIC_NEGATE':
+      return -(stack[0] as any);
+    default:
+      throw new Error('Unknown intrinsic: ' + n.operation);
+  }
+}

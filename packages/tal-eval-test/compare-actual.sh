@@ -6,4 +6,5 @@ do
   name="${name_with_extension%.*}"
   diff -q "actual/$name.sync.txt" "expected/$name.sync.txt"
   diff -q "actual/$name.async.txt" "expected/$name.async.txt"
+  diff -q "actual/$name.ir.txt" "expected/$name.ir.txt"
 done

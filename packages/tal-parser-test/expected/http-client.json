@@ -77,7 +77,7 @@
           "kind": "BlockOfExpressions",
           "children": [
             {
-              "kind": "SetValue",
+              "kind": "Assign",
               "address": {
                 "kind": "Local",
                 "name": "response"
@@ -286,7 +286,7 @@
                                       "kind": "Button",
                                       "text": "Remove",
                                       "onClick": {
-                                        "kind": "SetValue",
+                                        "kind": "Assign",
                                         "address": {
                                           "kind": "Local",
                                           "name": "headers"
@@ -344,7 +344,7 @@
               "kind": "BlockOfExpressions",
               "children": [
                 {
-                  "kind": "SetValue",
+                  "kind": "Assign",
                   "address": {
                     "kind": "Local",
                     "name": "headers"
@@ -408,36 +408,33 @@
           }
         },
         {
-          "kind": "Call",
-          "args": [
-            {
-              "argKind": "Positional",
-              "value": {
-                "kind": "BinaryOperator",
-                "operator": "&&",
-                "right": {
-                  "kind": "BinaryOperator",
-                  "operator": "!=",
-                  "right": null,
-                  "left": {
-                    "kind": "Local",
-                    "name": "url"
-                  }
-                },
-                "left": {
-                  "kind": "BinaryOperator",
-                  "operator": "!=",
-                  "right": null,
-                  "left": {
-                    "kind": "Local",
-                    "name": "method"
-                  }
-                }
+          "kind": "If",
+          "condition": {
+            "kind": "BinaryOperator",
+            "operator": "&&",
+            "right": {
+              "kind": "BinaryOperator",
+              "operator": "!=",
+              "right": null,
+              "left": {
+                "kind": "Local",
+                "name": "url"
               }
             },
-            {
-              "argKind": "Positional",
-              "value": {
+            "left": {
+              "kind": "BinaryOperator",
+              "operator": "!=",
+              "right": null,
+              "left": {
+                "kind": "Local",
+                "name": "method"
+              }
+            }
+          },
+          "ifTrue": {
+            "kind": "BlockOfExpressions",
+            "children": [
+              {
                 "kind": "KindedObject",
                 "value": {
                   "kind": "Text",
@@ -560,31 +557,24 @@
                   }
                 }
               }
-            }
-          ],
-          "value": {
-            "kind": "Local",
-            "name": "if"
+            ]
           }
         },
         {
-          "kind": "Call",
-          "args": [
-            {
-              "argKind": "Positional",
-              "value": {
-                "kind": "BinaryOperator",
-                "operator": "!=",
-                "right": null,
-                "left": {
-                  "kind": "Local",
-                  "name": "response"
-                }
-              }
-            },
-            {
-              "argKind": "Positional",
-              "value": {
+          "kind": "If",
+          "condition": {
+            "kind": "BinaryOperator",
+            "operator": "!=",
+            "right": null,
+            "left": {
+              "kind": "Local",
+              "name": "response"
+            }
+          },
+          "ifTrue": {
+            "kind": "BlockOfExpressions",
+            "children": [
+              {
                 "kind": "KindedObject",
                 "value": {
                   "kind": "Column",
@@ -660,18 +650,15 @@
                       }
                     },
                     {
-                      "kind": "Call",
-                      "args": [
-                        {
-                          "argKind": "Positional",
-                          "value": {
-                            "kind": "Local",
-                            "name": "doShowHeaders"
-                          }
-                        },
-                        {
-                          "argKind": "Positional",
-                          "value": {
+                      "kind": "If",
+                      "condition": {
+                        "kind": "Local",
+                        "name": "doShowHeaders"
+                      },
+                      "ifTrue": {
+                        "kind": "BlockOfExpressions",
+                        "children": [
+                          {
                             "kind": "KindedObject",
                             "value": {
                               "kind": "Column",
@@ -809,11 +796,7 @@
                               "flexShrink": 0
                             }
                           }
-                        }
-                      ],
-                      "value": {
-                        "kind": "Local",
-                        "name": "if"
+                        ]
                       }
                     },
                     {
@@ -920,11 +903,7 @@
                   ]
                 }
               }
-            }
-          ],
-          "value": {
-            "kind": "Local",
-            "name": "if"
+            ]
           }
         }
       ]

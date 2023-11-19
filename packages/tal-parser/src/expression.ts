@@ -41,6 +41,8 @@ export type BinaryOperator =
   | '>='
   | '!='
   | '=='
+  | '!=='
+  | '==='
   | '&&'
   | '||';
 
@@ -52,6 +54,19 @@ export type ExpressionMetadata = {
 export type LiteralExpression = ExpressionMetadata & {
   kind: 'Literal';
   value: null | boolean | number | string;
+};
+
+export type IfExpression = ExpressionMetadata & {
+  kind: 'If';
+  condition: Expression;
+  ifTrue: Expression;
+  ifFalse: Expression | undefined;
+};
+
+export type TryExpression = ExpressionMetadata & {
+  kind: 'Try';
+  expr: Expression;
+  catchBlock: Expression | undefined;
 };
 
 export type CallExpression = ExpressionMetadata & {
@@ -77,8 +92,8 @@ export type ObjectExpression = ExpressionMetadata & {
   value: object;
 };
 
-export type SetValueExpression = ExpressionMetadata & {
-  kind: 'SetValue';
+export type AssignExpression = ExpressionMetadata & {
+  kind: 'Assign';
   address: AddressableExpression;
   value: Expression;
 };
@@ -164,8 +179,9 @@ export type ExpressionByKind = {
   Index: IndexExpression;
   Value: ValueExpression;
   Array: ArrayExpression;
+  If: IfExpression;
   Object: ObjectExpression;
-  SetValue: SetValueExpression;
+  Assign: AssignExpression;
   Quote: QuoteExpression;
   Function: FunctionExpression;
   Call: CallExpression;
@@ -184,7 +200,9 @@ export type Expression =
   | ValueExpression
   | ArrayExpression
   | ObjectExpression
-  | SetValueExpression
+  | IfExpression
+  | TryExpression
+  | AssignExpression
   | QuoteExpression
   | FunctionExpression
   | CallExpression

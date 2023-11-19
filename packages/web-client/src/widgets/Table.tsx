@@ -126,16 +126,13 @@ export default function Table({
         <tbody>
           {(values ?? []).map((value, index) => {
             return (
-              <tr key={_key ? ctx.callFunction(_key, [value]) : index}>
+              <tr key={_key ? (ctx.callFunction(_key, [value]) as any) : index}>
                 {(effectiveColumns ?? []).map((col) => (
                   <td key={col.description}>
                     {col.display ? (
                       <RenderExpression
                         ctx={ctx}
-                        expression={{
-                          kind: "Value",
-                          value: ctx.callFunction(col.display, [value]),
-                        }}
+                        evaluatedUI={ctx.callFunction(col.display, [value])}
                       />
                     ) : (value as any)[col.description] !== undefined ? (
                       <Debug value={(value as any)[col.description]} />

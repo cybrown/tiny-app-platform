@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "Try",
+    "expr": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        {
+          "kind": "Local",
+          "name": "missing_variable"
+        }
+      ]
+    },
+    "catchBlock": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        {
+          "kind": "Local",
+          "name": "error"
+        }
+      ]
+    }
+  }
+]

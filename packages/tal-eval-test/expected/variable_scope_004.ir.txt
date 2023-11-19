@@ -1,0 +1,22 @@
+func_0: value
+  BLOCK
+    LOCAL {"name":"value"}
+func_1: 
+  BLOCK
+    DECLARE_LOCAL {"name":"value","mutable":false}
+      LITERAL {"value":"b"}
+    CALL
+      LOCAL {"name":"sub_function"}
+      MAKE_ARRAY
+        LOCAL {"name":"value"}
+      MAKE_OBJECT
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"sub_function","mutable":false}
+      FUNCTION_REF {"name":"func_0"}
+    DECLARE_LOCAL {"name":"root_function","mutable":false}
+      FUNCTION_REF {"name":"func_1"}
+    CALL
+      LOCAL {"name":"root_function"}
+      MAKE_ARRAY
+      MAKE_OBJECT

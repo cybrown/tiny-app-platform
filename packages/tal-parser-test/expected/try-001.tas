@@ -1,1 +1,1 @@
-try { missing_variable } else { error }
+try { missing_variable } catch { error }

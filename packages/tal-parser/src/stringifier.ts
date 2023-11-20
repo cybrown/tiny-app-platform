@@ -515,7 +515,7 @@ class Stringifier {
     if (obj.catchBlock) {
       if (isExpr(obj.catchBlock, 'BlockOfExpressions')) {
         result +=
-          ' else ' + this.stringifyBlockOfExpressionsOneLine(obj.catchBlock);
+          ' catch ' + this.stringifyBlockOfExpressionsOneLine(obj.catchBlock);
       } else {
         throw new Error('Unreachable');
       }
@@ -534,7 +534,7 @@ class Stringifier {
     if (obj.catchBlock) {
       if (isExpr(obj.catchBlock, 'BlockOfExpressions')) {
         result +=
-          ' else ' + this.stringifyBlockOfExpressionsMultiLine(obj.catchBlock);
+          ' catch ' + this.stringifyBlockOfExpressionsMultiLine(obj.catchBlock);
       } else {
         throw new Error('Unreachable');
       }

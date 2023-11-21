@@ -129,12 +129,19 @@ export function runNode(
         return stack[0];
       }
       case 'SET_INDEX': {
+        const n = node as IRNode<'SET_INDEX'>;
         (stack[1] as any)[stack[0] as any] = stack[2];
+        if (n.forceRender) {
+          ctx.forceRefresh();
+        }
         return stack[2];
       }
       case 'SET_ATTRIBUTE': {
         const n = node as IRNode<'SET_ATTRIBUTE'>;
         (stack[0] as any)[n.name] = stack[1];
+        if (n.forceRender) {
+          ctx.forceRefresh();
+        }
         return stack[1];
       }
       case 'CONDITION': {
@@ -327,12 +334,19 @@ export async function runNodeAsync(
         return stack[0];
       }
       case 'SET_INDEX': {
+        const n = node as IRNode<'SET_INDEX'>;
         (stack[1] as any)[stack[0] as any] = stack[2];
+        if (n.forceRender) {
+          ctx.forceRefresh();
+        }
         return stack[2];
       }
       case 'SET_ATTRIBUTE': {
         const n = node as IRNode<'SET_ATTRIBUTE'>;
         (stack[0] as any)[n.name] = stack[1];
+        if (n.forceRender) {
+          ctx.forceRefresh();
+        }
         return stack[1];
       }
       case 'CONDITION': {

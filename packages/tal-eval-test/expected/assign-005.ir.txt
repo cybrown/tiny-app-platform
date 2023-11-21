@@ -8,7 +8,7 @@ main:
         MAKE_OBJECT
     DECLARE_LOCAL {"name":"index","mutable":false}
       LITERAL {"value":3}
-    SET_ATTRIBUTE {"name":"property"}
+    SET_ATTRIBUTE {"name":"property","forceRender":true}
       INDEX
         LOCAL {"name":"index"}
         LOCAL {"name":"toto"}

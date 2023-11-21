@@ -56,12 +56,14 @@ export type IRNodes = {
   };
   SET_ATTRIBUTE: {
     name: string;
+    forceRender: boolean;
     children: IRNode[];
   };
   INDEX: {
     children: IRNode[];
   };
   SET_INDEX: {
+    forceRender: boolean;
     children: IRNode[];
   };
   INTRINSIC: {

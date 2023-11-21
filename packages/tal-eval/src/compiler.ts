@@ -1,5 +1,11 @@
 import { Expression, FunctionExpression } from 'tal-parser';
-import { IRNode, buildIRNode, Program, ParameterDef, AnyForNever } from './core';
+import {
+  IRNode,
+  buildIRNode,
+  Program,
+  ParameterDef,
+  AnyForNever,
+} from './core';
 
 export class Compiler {
   private functions: Program = {};
@@ -47,6 +53,7 @@ export class Compiler {
           case 'Attribute':
             return buildIRNode('SET_ATTRIBUTE', value.location, {
               name: value.address.key,
+              forceRender: true,
               children: [
                 this.compile(value.address.value),
                 this.compile(value.value),
@@ -54,6 +61,7 @@ export class Compiler {
             });
           case 'Index':
             return buildIRNode('SET_INDEX', value.location, {
+              forceRender: true,
               children: [
                 this.compile(value.address.index),
                 this.compile(value.address.value),

@@ -4,7 +4,7 @@ main:
       MAKE_ARRAY
     DECLARE_LOCAL {"name":"index","mutable":false}
       LITERAL {"value":3}
-    SET_INDEX
+    SET_INDEX {"forceRender":true}
       LOCAL {"name":"index"}
       LOCAL {"name":"toto"}
       LITERAL {"value":"value"}

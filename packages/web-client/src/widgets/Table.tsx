@@ -1,4 +1,4 @@
-import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
@@ -10,7 +10,7 @@ type TableModelColumn =
     } & (
       | {
           description: string;
-          display?: FunctionValue;
+          display?: Closure;
         }
       | {
           field: string;
@@ -22,7 +22,7 @@ type EffectiveTableModelColumn = {
   useRemaining?: boolean;
   width?: string | number;
   description: string;
-  display?: FunctionValue;
+  display?: Closure;
 };
 
 type TableProps = {
@@ -33,7 +33,7 @@ type TableProps = {
   striped?: boolean;
   noHeader?: boolean;
   noHighlight?: boolean;
-  _key?: FunctionValue;
+  _key?: Closure;
 };
 
 export default function Table({

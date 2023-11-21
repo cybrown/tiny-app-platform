@@ -1,10 +1,5 @@
-import { IRNode, Program } from './core';
-import {
-  runNodeAsync,
-  runNode,
-  runCall,
-  runCallAsync,
-} from './interpreter';
+import { Closure, IRNode, Program } from './core';
+import { runNodeAsync, runNode, runCall, runCallAsync } from './interpreter';
 
 class GetLocalError extends Error {
   constructor(localName: string) {
@@ -235,7 +230,7 @@ export class RuntimeContext {
   }
 
   callFunction(
-    func: unknown,
+    func: Closure,
     args: unknown[],
     kwargs: { [name: string]: unknown } = {}
   ) {
@@ -244,7 +239,7 @@ export class RuntimeContext {
   }
 
   async callFunctionAsync(
-    func: unknown,
+    func: Closure,
     args: unknown[],
     kwargs: { [name: string]: unknown } = {}
   ) {
@@ -366,12 +361,7 @@ export function defineFunction<T extends string>(
 export type RegisterableFunction<T extends string> = {
   name: string;
   parameters: ParameterDeclaration<T>[];
-  parametersByName: {
-    [argName: string]: {
-      name: string;
-      exported?: boolean;
-    };
-  };
+  parametersByName: Record<T, ParameterDeclaration<T>>;
   call?: (
     ctx: RuntimeContext,
     namedArguments: { [key in T]: any },

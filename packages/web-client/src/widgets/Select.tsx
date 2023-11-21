@@ -3,6 +3,7 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Select.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import { Closure } from "tal-eval";
 
 type SelectProps = {
   ctx: RuntimeContext;
@@ -37,7 +38,7 @@ export default function Select({
           ctx.setValue(bindTo, valueToSet);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [valueToSet]);
+          await ctx.callFunctionAsync(onChange as Closure, [valueToSet]);
         }
       } catch (err) {
         setLastError(err);

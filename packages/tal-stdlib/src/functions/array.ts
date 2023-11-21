@@ -100,9 +100,11 @@ export const array_remove = defineFunction(
 export const array_range = defineFunction(
   "array_range",
   [{ name: "from" }, { name: "to" }, { name: "step" }],
-  (_ctx, { from = 0, to, step = 1 }) => {
+  (_ctx, { from, to, step }) => {
+    const pFrom = from ?? 0;
+    const pStep = step ?? 1;
     const result: number[] = [];
-    for (let i = from; i < to; i += step) {
+    for (let i = pFrom; i < to; i += pStep) {
       result.push(i);
     }
     return result;

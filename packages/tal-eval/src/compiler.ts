@@ -1,5 +1,5 @@
 import { Expression, FunctionExpression } from 'tal-parser';
-import { IRNode, buildIRNode, Program } from './core';
+import { IRNode, buildIRNode, Program, ParameterDef, AnyForNever } from './core';
 
 export class Compiler {
   private functions: Program = {};
@@ -68,7 +68,7 @@ export class Compiler {
           default:
             throw new Error(
               'Failed to compile Assign expression with address: ' +
-                value.address.kind
+                (value.address as AnyForNever).kind
             );
         }
       }
@@ -171,7 +171,7 @@ export class Compiler {
                 return 'INTRINSIC_NOT';
               default:
                 throw new Error(
-                  'Unknown unary operator: ' + (value as any).operator
+                  'Unknown unary operator: ' + (value as AnyForNever).operator
                 );
             }
           })(),
@@ -248,7 +248,7 @@ export class Compiler {
                 return 'INTRINSIC_NOT_EQUAL_STRICT';
               default:
                 throw new Error(
-                  'Unknown binary operator: ' + (value as any).operator
+                  'Unknown binary operator: ' + (value as AnyForNever).operator
                 );
             }
           })(),
@@ -276,7 +276,7 @@ export class Compiler {
                   buildIRNode('LITERAL', value.location, { value: 'onChange' }),
                   buildIRNode('FUNCTION_REF', value.location, {
                     name: this.createFunction(
-                      ['newValue'],
+                      [{ name: 'newValue' }],
                       buildIRNode('BLOCK', value.location, {
                         children: [
                           this.compile({
@@ -315,7 +315,7 @@ export class Compiler {
       }
       default: {
         throw new Error(
-          'Failed to compile node with kind: ' + (value as any).kind
+          'Failed to compile node with kind: ' + (value as AnyForNever).kind
         );
       }
     }
@@ -325,12 +325,12 @@ export class Compiler {
 
   private compileFunction(functionExpression: FunctionExpression): string {
     return this.createFunction(
-      functionExpression.parameters,
+      functionExpression.parameters.map(name => ({ name })),
       this.compile(functionExpression.body)
     );
   }
 
-  private createFunction(parameters: string[], body: IRNode): string {
+  private createFunction(parameters: ParameterDef[], body: IRNode): string {
     const name = 'func_' + (this.functionIndexCounter++).toString(16);
     this.functions[name] = { parameters, body };
     return name;

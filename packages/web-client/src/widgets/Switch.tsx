@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { RuntimeContext, WidgetDocumentation, Closure } from "tal-eval";
 import styles from "./Switch.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -18,7 +18,7 @@ export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
           ctx.setValue(bindTo, e.target.checked);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.target.checked]);
+          await ctx.callFunctionAsync(onChange as Closure, [e.target.checked]);
         }
       } catch (err) {
         setLastError(err);

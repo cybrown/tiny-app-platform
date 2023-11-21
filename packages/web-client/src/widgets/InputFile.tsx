@@ -3,6 +3,7 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./InputFile.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import { Closure } from "tal-eval";
 
 type InputFileProps = {
   ctx: RuntimeContext;
@@ -34,7 +35,7 @@ export default function InputFile({
               ctx.setValue(bindTo, (file as any).path);
             }
             if (onChange) {
-              await ctx.callFunctionAsync(onChange, [(file as any).path]);
+              await ctx.callFunctionAsync(onChange as Closure, [(file as any).path]);
             }
             event.preventDefault();
           }
@@ -53,7 +54,7 @@ export default function InputFile({
           ctx.setValue(bindTo, e.target.value);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.target.value]);
+          await ctx.callFunctionAsync(onChange as Closure, [e.target.value]);
         }
       } catch (err) {
         setLastError(err);

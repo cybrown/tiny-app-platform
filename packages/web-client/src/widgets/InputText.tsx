@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
-import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import styles from "./InputText.module.css";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
@@ -8,7 +8,7 @@ type InputTextProps = {
   ctx: RuntimeContext;
   multiline: boolean;
   placeholder: string;
-  onSubmit?: FunctionValue;
+  onSubmit?: Closure;
   type?: "text" | "email" | "url" | "password";
 } & InputProps<string>;
 
@@ -50,7 +50,7 @@ export default function InputText({
           ctx.setValue(bindTo, e.target.value);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+          await ctx.callFunctionAsync(onChange as Closure, [e.currentTarget.value]);
         }
       } catch (err) {
         setLastError(err);
@@ -66,7 +66,7 @@ export default function InputText({
           ctx.setValue(bindTo, e.target.value);
         }
         if (onChange) {
-          ctx.callFunctionAsync(onChange, [e.currentTarget.value]);
+          ctx.callFunctionAsync(onChange as Closure, [e.currentTarget.value]);
         }
       } catch (err) {
         setLastError(err);

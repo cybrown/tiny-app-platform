@@ -4,8 +4,9 @@ import { base64_to_bytes } from "../util/base64";
 export const string_to_bytes = defineFunction(
   "string_to_bytes",
   [{ name: "string" }, { name: "encoding" }],
-  (_ctx, { string, encoding = "utf-8" }) => {
-    switch (encoding) {
+  (_ctx, { string, encoding }) => {
+    const pEncoding = encoding ?? "utf-8"
+    switch (pEncoding) {
       case "base64":
         return base64_to_bytes(string);
       case "base64url":
@@ -13,7 +14,7 @@ export const string_to_bytes = defineFunction(
       case "utf-8":
         return new TextEncoder().encode(string);
       default:
-        throw new Error("Encoding not supported: " + encoding);
+        throw new Error("Encoding not supported: " + pEncoding);
     }
   }
 );

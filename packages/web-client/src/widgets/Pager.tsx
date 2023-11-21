@@ -3,6 +3,7 @@ import StyledButton from "./internal/StyledButton";
 import { useCallback, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import ErrorPopin from "./internal/ErrorPopin";
+import { Closure } from "tal-eval";
 
 type PagerProps = {
   ctx: RuntimeContext;
@@ -38,7 +39,7 @@ export default function Pager({
           ctx.setValue(bindTo, value);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [value]);
+          await ctx.callFunctionAsync(onChange as Closure, [value]);
         }
       } catch (err) {
         setLastError(err);

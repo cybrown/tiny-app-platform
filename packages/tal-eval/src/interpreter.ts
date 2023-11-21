@@ -1,5 +1,5 @@
 import { RuntimeContext } from './RuntimeContext';
-import { IRNode, Program } from './core';
+import { Closure, IRNode, NativeFunctionBinding, ParameterDef, Program } from './core';
 
 export function run(
   ctx: RuntimeContext,
@@ -26,29 +26,22 @@ export function run(
 }
 
 export function runCall(
-  funcRef: any,
+  closure: Closure,
   program: Program,
-  args: any,
-  kwargs: any
+  args: unknown[],
+  kwargs: Record<string, unknown>
 ) {
-  const functionName = (funcRef as any).name;
+  const functionName = closure.name;
   const func = program[functionName];
-  const kwArgsResolved = Object.fromEntries(
-    func.parameters
-      .map(paramName => {
-        return [paramName, (kwargs as any)[paramName]];
-      })
-      .filter(([, value]) => value !== undefined)
+  const [namedArguments /*positionalArguments*/] = resolveArgumentNames(
+    func,
+    kwargs,
+    args
   );
-  func.parameters.forEach(paramName => {
-    if (!(paramName in kwArgsResolved) && (args as any[]).length) {
-      kwArgsResolved[paramName] = (args as any[]).shift();
-    }
-  });
-  const childContext = (funcRef as any).ctx
-    .createChild(kwArgsResolved, false)
+  const childContext = closure.ctx
+    .createChild(namedArguments, false)
     .createChild({});
-  return runNode(childContext, program, func.body as any);
+  return runNode(childContext, program, func.body);
 }
 
 export function runNode(
@@ -80,31 +73,27 @@ export function runNode(
         return result;
       }
       case 'CALL': {
-        const [funcRef, args, kwargs] = stack;
-        const functionName = (funcRef as any).name;
+        const [closure, args, kwargs] = stack as [
+          Closure,
+          unknown[],
+          Record<string, unknown>
+        ];
+        const functionName = closure.name;
         if (program[functionName]) {
-          return runCall(funcRef, program, args, kwargs);
+          return runCall(closure, program, args, kwargs);
         } else {
-          const nativeFuncValue = ctx.getLocal(functionName) as any;
-          nativeFuncValue.parameters;
-
-          const kwArgsResolved = Object.fromEntries(
-            nativeFuncValue.parameters
-              .map(({ name }: any) => {
-                return [name, (kwargs as any)[name]];
-              })
-              .filter(([, value]: any) => value !== undefined)
+          const nativeFuncValue = ctx.getLocal(
+            functionName
+          ) as NativeFunctionBinding;
+          const [namedArguments, positionalArguments] = resolveArgumentNames(
+            nativeFuncValue,
+            kwargs,
+            args
           );
-          nativeFuncValue.parameters.forEach(({ name }: any) => {
-            if (!(name in kwArgsResolved) && (args as any[]).length) {
-              kwArgsResolved[name] = (args as any[]).shift();
-            }
-          });
-
           if (!nativeFuncValue.call) {
             throw new Error('Function not allowed in synchronous context');
           }
-          return nativeFuncValue.call(ctx, kwArgsResolved, args);
+          return nativeFuncValue.call(ctx, namedArguments, positionalArguments);
         }
       }
       case 'INTRINSIC': {
@@ -232,28 +221,21 @@ export async function runAsync(
 }
 
 export async function runCallAsync(
-  funcRef: any,
+  closure: Closure,
   program: Program,
-  args: any,
-  kwargs: any
+  args: unknown[],
+  kwargs: Record<string, unknown>
 ) {
-  const func = program[funcRef.name];
-  const kwArgsResolved = Object.fromEntries(
-    func.parameters
-      .map(paramName => {
-        return [paramName, (kwargs as any)[paramName]];
-      })
-      .filter(([, value]) => value !== undefined)
+  const func = program[closure.name];
+  const [namedArguments /* positionalArguments */] = resolveArgumentNames(
+    func,
+    kwargs,
+    args
   );
-  func.parameters.forEach(paramName => {
-    if (!(paramName in kwArgsResolved) && (args as any[]).length) {
-      kwArgsResolved[paramName] = (args as any[]).shift();
-    }
-  });
-  const childContext = (funcRef as any).ctx
-    .createChild(kwArgsResolved, false)
+  const childContext = closure.ctx
+    .createChild(namedArguments, false)
     .createChild({});
-  return await runNodeAsync(childContext, program, func.body as any);
+  return await runNodeAsync(childContext, program, func.body);
 }
 
 export async function runNodeAsync(
@@ -287,46 +269,29 @@ export async function runNodeAsync(
         return result;
       }
       case 'CALL': {
-        const [funcRef, args, kwargs] = stack;
-        const functionName = (funcRef as any).name;
+        const [
+          closure,
+          providedPositionalArguments,
+          providedNamedArguments,
+        ] = stack as [any, unknown[], Record<string, unknown>];
+        const functionName = closure.name;
         if (program[functionName]) {
-          const func = program[functionName];
-          const kwArgsResolved = Object.fromEntries(
-            func.parameters
-              .map(paramName => {
-                return [paramName, (kwargs as any)[paramName]];
-              })
-              .filter(([, value]) => value !== undefined)
+          return runCallAsync(
+            closure,
+            program,
+            providedPositionalArguments,
+            providedNamedArguments
           );
-          func.parameters.forEach(paramName => {
-            if (!(paramName in kwArgsResolved) && (args as any[]).length) {
-              kwArgsResolved[paramName] = (args as any[]).shift();
-            }
-          });
-          const childContext = (funcRef as any).ctx
-            .createChild(kwArgsResolved, false)
-            .createChild({});
-          return await runNodeAsync(childContext, program, func.body as any);
         } else {
-          const nativeFuncValue = ctx.getLocal(functionName) as any;
-          nativeFuncValue.parameters;
-
-          const kwArgsResolved = Object.fromEntries(
-            nativeFuncValue.parameters
-              .map(({ name }: any) => {
-                return [name, (kwargs as any)[name]];
-              })
-              .filter(([, value]: any) => value !== undefined)
+          const func = ctx.getLocal(functionName) as NativeFunctionBinding;
+          const [namedArguments, positionalArguments] = resolveArgumentNames(
+            func,
+            providedNamedArguments,
+            providedPositionalArguments
           );
-          nativeFuncValue.parameters.forEach(({ name }: any) => {
-            if (!(name in kwArgsResolved) && (args as any[]).length) {
-              kwArgsResolved[name] = (args as any[]).shift();
-            }
-          });
-
-          return nativeFuncValue.callAsync
-            ? await nativeFuncValue.callAsync(ctx, kwArgsResolved, args)
-            : nativeFuncValue.call(ctx, kwArgsResolved, args);
+          return func.callAsync
+            ? await func.callAsync(ctx, namedArguments, positionalArguments)
+            : func.call(ctx, namedArguments, positionalArguments);
         }
       }
       case 'INTRINSIC': {
@@ -484,4 +449,25 @@ function computeIntrinsic(stack: unknown[], n: IRNode<'INTRINSIC'>) {
     default:
       throw new Error('Unknown intrinsic: ' + n.operation);
   }
+}
+
+function resolveArgumentNames(
+  func: { parameters: ParameterDef[] },
+  providedNamedArguments: Record<string, unknown>,
+  providedArguments: unknown[]
+): [Record<string, unknown>, unknown[]] {
+  const args = providedArguments.slice();
+  const namedArgs = Object.fromEntries(
+    func.parameters
+      .map(({ name }) => {
+        return [name, providedNamedArguments[name]];
+      })
+      .filter(([, value]) => value !== undefined)
+  );
+  func.parameters.forEach(({ name }) => {
+    if (!(name in namedArgs)) {
+      namedArgs[name] = args.length ? args.shift() : null;
+    }
+  });
+  return [namedArgs, args];
 }

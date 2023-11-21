@@ -102,17 +102,39 @@ export function buildIRNode<Kind extends keyof IRNodes>(
   location: IRNode['location'] | undefined,
   value: IRNodes[Kind]
 ): IRNodes[Kind] & { kind: Kind } {
-  return { kind, location, ...value } as any;
+  return { kind, location, ...value } as TODO_ANY;
 }
 
+export type NativeFunctionBinding = {
+  parameters: [{ name: string }];
+  call: (
+    ctx: RuntimeContext,
+    kwargs: Record<string, unknown>,
+    args: unknown[]
+  ) => unknown;
+  callAsync: (
+    ctx: RuntimeContext,
+    kwargs: Record<string, unknown>,
+    args: unknown[]
+  ) => Promise<unknown>;
+};
+
+export type ParameterDef = {
+  name: string;
+};
+
 export type FunctionDef = {
-  parameters: string[];
+  parameters: ParameterDef[];
   body: IRNode;
 };
 
 export type Program = { [key: string]: FunctionDef };
 
-export type FunctionValue = {
+export type Closure = {
   name: string;
   ctx: RuntimeContext;
 };
+
+export type AnyForNever = any;
+
+export type TODO_ANY = any;

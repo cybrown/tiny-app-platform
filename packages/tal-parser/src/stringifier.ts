@@ -3,7 +3,6 @@ import {
   BlockOfExpressionsExpression,
   CallExpression,
   DeclareLocalExpression,
-  DerefExpression,
   Expression,
   FunctionExpression,
   IfExpression,
@@ -12,7 +11,6 @@ import {
   LiteralExpression,
   ObjectExpression,
   PipeExpression,
-  QuoteExpression,
   AssignExpression,
   SubExpressionExpression,
   TryExpression,
@@ -93,8 +91,6 @@ class Stringifier {
         return this.stringifyBinaryOperator(obj);
       case 'Call':
         return this.stringifyCall(obj);
-      case 'Deref':
-        return this.stringifyDeref(obj);
       case 'If':
         return this.stringifyIf(obj);
       case 'Try':
@@ -103,8 +99,6 @@ class Stringifier {
         return this.stringifySubExpression(obj);
       case 'Pipe':
         return this.stringifyPipe(obj);
-      case 'Quote':
-        return this.stringifyQuote(obj);
       case 'Function':
         return this.stringifyFunction(obj);
       case 'BlockOfExpressions':
@@ -123,8 +117,6 @@ class Stringifier {
         return this.stringifyArray(obj.value, false);
       case 'Object':
         return this.stringifyObject(obj);
-      case 'Value':
-        return this.stringify(obj.value as any);
       case 'KindedObject':
         return this.stringifyKindedObject(obj);
       default:
@@ -148,10 +140,6 @@ class Stringifier {
     } else {
       throw new Error('Literal type not handled: ' + typeof obj.value);
     }
-  }
-
-  stringifyDeref(obj: DerefExpression): string {
-    return 'deref ' + this.stringify(obj.value);
   }
 
   stringifyUnaryOperator(obj: UnaryOperatorExpression): string {
@@ -242,10 +230,6 @@ class Stringifier {
     }
     this.decrementDepth();
     return result;
-  }
-
-  stringifyQuote(obj: QuoteExpression): string {
-    return '() => ' + this.stringify(obj.children[0]);
   }
 
   stringifyFunction(obj: FunctionExpression): string {

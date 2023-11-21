@@ -3,6 +3,7 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./CheckBox.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import { Closure } from "tal-eval";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
@@ -25,7 +26,7 @@ export default function CheckBox({
           ctx.setValue(bindTo, e.target.checked);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange, [e.target.checked]);
+          await ctx.callFunctionAsync(onChange as Closure, [e.target.checked]);
         }
       } catch (err) {
         setLastError(err);

@@ -18,6 +18,10 @@ func_2: a, b
     LOCAL {"name":"b"}
 main: 
   BLOCK
+    DECLARE_LOCAL {"name":"a","mutable":false}
+      LITERAL {"value":1}
+    DECLARE_LOCAL {"name":"b","mutable":false}
+      LITERAL {"value":2}
     DECLARE_LOCAL {"name":"f","mutable":false}
       FUNCTION_REF {"name":"func_0"}
     CALL

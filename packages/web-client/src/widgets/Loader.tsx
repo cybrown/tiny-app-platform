@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import RenderExpression from "../runtime/RenderExpression";
-import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 
 type LoaderProps = {
   ctx: RuntimeContext;
-  data: IRNode;
-  view: IRNode;
-  watch: IRNode;
-  error?: IRNode;
+  data: Closure;
+  view: Closure;
+  watch: Closure;
+  error?: Closure;
 };
 
 function useForceRefresh(): [unknown, () => void] {
@@ -34,7 +34,7 @@ function checkArrayEquality(a: any[], b: any[]): boolean {
   return true;
 }
 
-function useWatch(ctx: RuntimeContext, watch: IRNode) {
+function useWatch(ctx: RuntimeContext, watch: Closure) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [forceRefreshToken, forceRefresh] = useForceRefresh();
 
@@ -44,10 +44,10 @@ function useWatch(ctx: RuntimeContext, watch: IRNode) {
     const listener = () => {
       try {
         if (oldWatchResult == null) {
-          setOldWatchResult(ctx.evaluate(watch) as any[]);
+          setOldWatchResult(ctx.callFunction(watch, [], {}) as any[]);
           forceRefresh();
         } else {
-          const watchResult = ctx.evaluate(watch) as any[];
+          const watchResult = ctx.callFunction(watch, [], {}) as any[];
           if (!checkArrayEquality(oldWatchResult, watchResult)) {
             forceRefresh();
             setOldWatchResult(watchResult);
@@ -78,12 +78,12 @@ export default function Loader({ ctx, data, view, watch, error }: LoaderProps) {
   useEffect(() => {
     setCurrentState("loading");
     console.log("compute data");
-    ctx.evaluateAsync(data).then(
+    ctx.callFunctionAsync(data, [], {}).then(
       (result) => {
         setLatestNominalResult(
           <RenderExpression
-            ctx={ctx.createChild({ data: result })}
-            evaluatedUI={view}
+            ctx={ctx}
+            evaluatedUI={ctx.callFunction(view, [result], {})}
           />
         );
         setCurrentState("ok");
@@ -93,8 +93,8 @@ export default function Loader({ ctx, data, view, watch, error }: LoaderProps) {
         setLatestErrorResult(
           error ? (
             <RenderExpression
-              ctx={ctx.createChild({ error: err })}
-              evaluatedUI={error}
+              ctx={ctx}
+              evaluatedUI={ctx.callFunction(error, [err], {})}
             />
           ) : (
             <div>error</div>

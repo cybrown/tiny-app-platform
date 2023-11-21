@@ -3,7 +3,7 @@ import { defineFunction } from "tal-eval";
 export const number_to_string = defineFunction(
   "number_to_string",
   [{ name: "number" }, { name: "precision" }],
-  (_ctx, { number, precision = null }) => {
+  (_ctx, { number, precision }) => {
     if (precision == null) {
       return String(number);
     }
@@ -30,8 +30,8 @@ export const number_floor = defineFunction(
 export const number_round = defineFunction(
   "number_round",
   [{ name: "number" }, { name: "precision" }],
-  (_ctx, { number, precision = 0 }) => {
-    if (precision === 0) {
+  (_ctx, { number, precision }) => {
+    if (precision == null || precision === 0) {
       return Math.round(number);
     }
     return +(
@@ -72,7 +72,9 @@ export const number_random = defineFunction("number_random", [], (_ctx) => {
 export const number_randint = defineFunction(
   "number_randint",
   [{ name: "min" }, { name: "max" }],
-  (_ctx, { min = 0, max = 100 }) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  (_ctx, { min, max }) => {
+    const pMin = min ?? 0;
+    const pMax = max ?? 100
+    return Math.floor(Math.random() * (pMax - pMin + 1)) + pMin;
   }
 );

@@ -2,5 +2,5 @@
 "arg1: <a>, arg2: <b>, rest: <c, d, e>"
 "arg1: <a>, arg2: <b>, rest: <c, d, e>"
 "arg1: <e>, arg2: <c>, rest: <a, b, d>"
-"arg1: <a>, arg2: <undefined>, rest: <>"
+"arg1: <a>, arg2: <null>, rest: <>"
 "arg1: <e>, arg2: <b>, rest: <d>"

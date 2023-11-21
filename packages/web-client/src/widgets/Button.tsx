@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { FunctionValue, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
 import ErrorPopin from "./internal/ErrorPopin";
 import StyledButton from "./internal/StyledButton";
@@ -7,7 +7,7 @@ import StyledButton from "./internal/StyledButton";
 type ButtonProps = {
   ctx: RuntimeContext;
   text: string;
-  onClick: FunctionValue;
+  onClick: Closure;
   confirm?: string | boolean;
   secondary?: boolean;
 };

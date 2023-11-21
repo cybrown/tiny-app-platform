@@ -64,7 +64,6 @@ NamedArgument
 ExpressionLevel1
     = Null
     / Boolean
-    / Deref
     / If
     / Try
     / Assignement
@@ -94,10 +93,6 @@ Try
             return { location: location(), kind: "Try", expr, catchBlock };
         }
 
-Deref
-    = 'deref' _ value:Expression
-        { return { location: location(), kind: "Deref", value }; }
-
 SubExpression
 	= '(' _ expr:Expression _ ')'
     	{ return { location: location(), kind: 'SubExpression', expr }; }
@@ -107,9 +102,7 @@ NamedFunction
         { return { location: location(), kind: "DeclareLocal", mutable: false, name, value: { location: location(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
 
 Function
-    = 'fun' _ body:Expression
-        { return { location: location(), kind: "Quote", children: [body] }; }
-    / '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Expression
+    = '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Expression
         { return { location: location(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
 
 ObjectWithKind

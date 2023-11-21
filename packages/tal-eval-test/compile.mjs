@@ -64,7 +64,7 @@ ctx.defineFunction(
 try {
   const program = compile(expressions);
   Object.entries(program).forEach(([name, { parameters, body }]) => {
-    process.stdout.write(name + ": " + parameters.join(", ") + "\n");
+    process.stdout.write(name + ": " + parameters.map(p => p.name).join(", ") + "\n");
     printIrNode(body);
   });
 } catch (err) {

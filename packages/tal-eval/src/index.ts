@@ -5,4 +5,4 @@ export {
 } from './RuntimeContext';
 export { compile } from './compiler';
 export { run, runAsync, EvaluationError } from './interpreter';
-export { Program, IRNode, FunctionValue, buildIRNode } from './core';
+export { Program, IRNode, Closure, buildIRNode } from './core';

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { FunctionDef } from "tal-eval/dist/core";
 
 export default function Documentation({
   ctx,
@@ -13,6 +14,7 @@ export default function Documentation({
   const widgetsData = useMemo(() => {
     return ctx.listWidgets();
   }, [ctx]);
+
   const functionsData = useMemo(() => {
     return ctx
       .listLocals()
@@ -20,12 +22,12 @@ export default function Documentation({
         ([name, value]) =>
           value != null &&
           typeof value == "object" &&
-          (typeof (value as any).call == "function" ||
-            typeof (value as any).callAsync == "function")
+          (("call" in value && typeof value.call == "function") ||
+            ("callAsync" in value && typeof value.callAsync == "function"))
       )
       .map(([name, value]) => {
-        const parameters = (value as any).parameters as any[];
-        return [name, parameters] as [string, any[]];
+        const parameters = (value as FunctionDef).parameters;
+        return [name, parameters] as const;
       });
   }, [ctx]);
 
@@ -77,9 +79,7 @@ export default function Documentation({
               </div>
               <ul style={{ paddingLeft: 16 }}>
                 {doc.map((d) => (
-                  <li key={d.name}>
-                    {d.name}
-                  </li>
+                  <li key={d.name}>{d.name}</li>
                 ))}
               </ul>
             </div>

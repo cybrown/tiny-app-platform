@@ -3,11 +3,6 @@ export type LocalExpression = ExpressionMetadata & {
   name: string;
 };
 
-export type DerefExpression = ExpressionMetadata & {
-  kind: 'Deref';
-  value: Expression;
-};
-
 export type AttributeExpression = ExpressionMetadata & {
   kind: 'Attribute';
   key: string;
@@ -22,7 +17,6 @@ export type IndexExpression = ExpressionMetadata & {
 
 export type AddressableExpression =
   | LocalExpression
-  | DerefExpression
   | AttributeExpression
   | IndexExpression;
 
@@ -82,11 +76,6 @@ export type ArgumentExpression =
     }
   | { argKind: 'Named'; name: string; value: Expression };
 
-export type ValueExpression = ExpressionMetadata & {
-  kind: 'Value';
-  value: unknown;
-};
-
 export type ObjectExpression = ExpressionMetadata & {
   kind: 'Object';
   value: object;
@@ -96,11 +85,6 @@ export type AssignExpression = ExpressionMetadata & {
   kind: 'Assign';
   address: AddressableExpression;
   value: Expression;
-};
-
-export type QuoteExpression = ExpressionMetadata & {
-  kind: 'Quote';
-  children: Expression[];
 };
 
 export type SubExpressionExpression = ExpressionMetadata & {
@@ -174,15 +158,12 @@ export type ExpressionLocation = ExpressionMetadata & {
 export type ExpressionByKind = {
   Literal: LiteralExpression;
   Local: LocalExpression;
-  Deref: DerefExpression;
   Attribute: AttributeExpression;
   Index: IndexExpression;
-  Value: ValueExpression;
   Array: ArrayExpression;
   If: IfExpression;
   Object: ObjectExpression;
   Assign: AssignExpression;
-  Quote: QuoteExpression;
   Function: FunctionExpression;
   Call: CallExpression;
   SubExpression: SubExpressionExpression;
@@ -197,13 +178,11 @@ export type ExpressionByKind = {
 export type Expression =
   | LiteralExpression
   | AddressableExpression
-  | ValueExpression
   | ArrayExpression
   | ObjectExpression
   | IfExpression
   | TryExpression
   | AssignExpression
-  | QuoteExpression
   | FunctionExpression
   | CallExpression
   | SubExpressionExpression

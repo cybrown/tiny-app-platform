@@ -325,7 +325,6 @@ export class RuntimeContext {
 
 type ParameterDeclaration<T extends string> = {
   name: T;
-  env?: string;
 };
 
 export function defineFunction<T extends string>(

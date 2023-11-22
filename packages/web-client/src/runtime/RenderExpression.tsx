@@ -99,60 +99,76 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
         ? (ui.ctx.evaluate(ui.props as any) as any)
         : {};
 
-    const component = ui.ctx.getLocal(kind) as TODO_ANY;
-    if (component == null) {
-      throw new Error("Component is null");
+    const widget = ui.ctx.getLocal(kind) as TODO_ANY;
+    if (widget == null) {
+      throw new Error("Widget is null");
     }
-    if (typeof component == "function") {
-      return React.createElement(component, {
+    if (typeof widget == "function") {
+      return React.createElement(widget, {
         ...props,
         ctx: ui.ctx,
         children,
       });
     }
     return (
-      <CustomComponentHost
-        component={component}
-        props={props}
-        children={children}
-      />
+      <CustomWidgetHost widget={widget} props={props} children={children} />
     );
   }
   return <Debug ctx={null as any} value={ui} />;
 }
 
-function CustomComponentHost({
-  component,
+function CustomWidgetHost({
+  widget,
   props,
   children,
 }: {
-  component: Closure;
+  widget: Closure;
   props: Record<string, unknown>;
   children: unknown[];
 }) {
   const state = useRef({
-    childCtx: component.ctx.createChildForWidget({ ...props, children }),
-    name: component.name,
+    childCtx: widget.ctx.createChildForWidget({ ...props, children }),
+    name: widget.name,
     oldProps: props,
+    oldChildren: children,
   });
 
-  if (component.name !== state.current.name) {
+  if (widget.name !== state.current.name) {
     state.current = {
-      childCtx: component.ctx.createChildForWidget({ ...props, children }),
-      name: component.name,
+      childCtx: widget.ctx.createChildForWidget({ ...props, children }),
+      name: widget.name,
       oldProps: props,
+      oldChildren: children,
     };
   } else {
+    let hasSetNewProp = false;
     for (let [key, value] of Object.entries(state.current.oldProps)) {
       if (props[key] !== value) {
         state.current.childCtx.setOwnLocalWithoutRender(key, props[key]);
+        hasSetNewProp = true;
+      }
+    }
+
+    if (hasSetNewProp) {
+      state.current.oldProps = props;
+    }
+
+    if (children.length !== state.current.oldChildren.length) {
+      state.current.childCtx.setOwnLocalWithoutRender("children", children);
+    } else {
+      for (let i = 0; i < children.length; i++) {
+        if (children[i] !== state.current.oldChildren[i]) {
+          state.current.childCtx.setOwnLocalWithoutRender("children", children);
+          state.current.oldChildren = children;
+          break;
+        }
       }
     }
   }
 
   const { childCtx } = state.current;
 
-  const irNode = component.ctx.program![component.name].body as IRNode;
+  const irNode = widget.ctx.program![widget.name].body as IRNode;
   let ui;
   if (irNode.kind === "BLOCK") {
     const n = irNode as IRNode<"BLOCK">;

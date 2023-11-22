@@ -29,11 +29,27 @@ export class RuntimeContext {
   constructor(
     onStateChange: () => void,
     private _locals: { [key: string]: unknown } = {},
-    public program?: Program,
     private parent?: RuntimeContext,
     private extendable: boolean = true
   ) {
     this.stateChangedListeners.add(onStateChange);
+  }
+
+  private _program?: Program;
+
+  public get program(): Program | undefined {
+    if (this.parent) {
+      return this.parent.program;
+    }
+    return this._program;
+  }
+
+  public set program(value: Program | undefined) {
+    if (this.parent) {
+      this.parent.program = value;
+    } else {
+      this._program = value;
+    }
   }
 
   private stateChangedListeners: Set<() => void> = new Set();
@@ -85,11 +101,14 @@ export class RuntimeContext {
       throw new Error('Local already declared: ' + name);
     }
 
-    if (options.hasOwnProperty('initialValue')) {
-      this._locals[name] = options.initialValue;
-    } else if (!this._locals.hasOwnProperty(name)) {
-      this._locals[name] = null;
+    if (!this._locals.hasOwnProperty(name)) {
+      if (options.hasOwnProperty('initialValue')) {
+        this._locals[name] = options.initialValue;
+      } else {
+        this._locals[name] = null;
+      }
     }
+
     if (options.mutable) {
       this.mutableLocals.add(name);
     }
@@ -254,38 +273,38 @@ export class RuntimeContext {
     return new RuntimeContext(
       () => this.triggerStateChangedListeners(),
       initialValues,
-      this.program,
       this,
       extendable
     );
+  }
+
+  createChildForWidget(initialValues: {
+    [x: string]: unknown;
+  }): RuntimeContext {
+    const ctx = new RuntimeContext(
+      () => this.triggerStateChangedListeners(),
+      initialValues,
+      this,
+      true
+    );
+    ctx.isWidgetState = true;
+    return ctx;
   }
 
   listLocals(): [string, unknown][] {
     return Object.entries(this._locals);
   }
 
-  private widgets: { [key: string]: (props: any) => JSX.Element | null } = {};
   private widgetsDocumentation: {
     [key: string]: WidgetDocumentation<any>;
   } = {};
-
-  getWidgetByKind(kind: string): ((props: any) => JSX.Element | null) | null {
-    const widget = this.widgets[kind];
-    if (widget) {
-      return widget;
-    }
-    if (this.parent) {
-      return this.parent.getWidgetByKind(kind);
-    }
-    return null;
-  }
 
   registerWidget<T>(
     kind: string,
     widget: (props: T) => JSX.Element | null,
     doc: WidgetDocumentation<T>
   ) {
-    this.widgets[kind] = widget;
+    this._locals[kind] = widget;
     this.widgetsDocumentation[kind] = doc;
   }
 

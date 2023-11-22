@@ -1,7 +1,8 @@
-import { EvaluationError, IRNode, RuntimeContext } from "tal-eval";
+import { EvaluationError, IRNode, RuntimeContext, runNode } from "tal-eval";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
+import type { Closure, TODO_ANY } from "tal-eval/dist/core";
 
 export default function RenderExpression({
   ctx,
@@ -60,7 +61,11 @@ export default function RenderExpression({
     }
   } catch (err) {
     return (
-      <RenderError expression={expression ?? (evaluatedUI as any).kind ?? null} err={err} retry={retry} />
+      <RenderError
+        expression={expression ?? (evaluatedUI as any).kind ?? null}
+        err={err}
+        retry={retry}
+      />
     );
   }
 }
@@ -86,17 +91,70 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
   ) {
     const kind = ui.ctx.evaluate(ui.kind as any) as string;
     const children =
-      "children" in ui && ui.children ? ui.ctx.evaluate(ui.children as any) : [];
+      "children" in ui && ui.children
+        ? (ui.ctx.evaluate(ui.children as any) as unknown[])
+        : [];
     const props =
-      "props" in ui && ui.props ? (ui.ctx.evaluate(ui.props as any) as any) : {};
+      "props" in ui && ui.props
+        ? (ui.ctx.evaluate(ui.props as any) as any)
+        : {};
 
-    const component = ui.ctx.getWidgetByKind(kind);
+    const component = ui.ctx.getLocal(kind) as TODO_ANY;
     if (component == null) {
       throw new Error("Component is null");
     }
-    return React.createElement(component, { ...props, ctx: ui.ctx, children });
+    if (typeof component == "function") {
+      return React.createElement(component, {
+        ...props,
+        ctx: ui.ctx,
+        children,
+      });
+    }
+    return (
+      <CustomComponentHost
+        component={component}
+        props={props}
+        children={children}
+      />
+    );
   }
   return <Debug ctx={null as any} value={ui} />;
+}
+
+function CustomComponentHost({
+  component,
+  props,
+  children,
+}: {
+  component: Closure;
+  props: Record<string, unknown>;
+  children: unknown[];
+}) {
+  const state = useRef({
+    childCtx: component.ctx.createChildForWidget({ ...props, children }),
+    name: component.name,
+  });
+
+  if (component.name !== state.current.name) {
+    state.current = {
+      childCtx: component.ctx.createChildForWidget({ ...props, children }),
+      name: component.name,
+    };
+  }
+
+  const { childCtx } = state.current;
+
+  const irNode = component.ctx.program![component.name].body as IRNode;
+  let ui;
+  if (irNode.kind === "BLOCK") {
+    const n = irNode as IRNode<"BLOCK">;
+    for (let childNode of n.children) {
+      ui = runNode(childCtx, childCtx.program!, childNode);
+    }
+  } else {
+    ui = runNode(childCtx, childCtx.program!, irNode);
+  }
+  return <RenderExpression ctx={childCtx} evaluatedUI={ui} />;
 }
 
 export function RenderError({
@@ -113,13 +171,8 @@ export function RenderError({
   let locationMessage = "";
 
   const irNode =
-    (err instanceof EvaluationError ? err.node : expression) ??
-    expression;
-  if (
-    typeof irNode == "object" &&
-    irNode &&
-    irNode.location
-  ) {
+    (err instanceof EvaluationError ? err.node : expression) ?? expression;
+  if (typeof irNode == "object" && irNode && irNode.location) {
     locationMessage = ` at location: (${irNode.location.start.line}, ${irNode.location.start.column})`;
   }
 
@@ -143,6 +196,9 @@ export function RenderError({
 }
 
 function nameKindOfExpression(expr: IRNode) {
+  if (expr.kind === "LITERAL") {
+    return (expr as IRNode<"LITERAL">).value;
+  }
   if (expr && typeof expr == "object") {
     if (
       "value" in expr &&

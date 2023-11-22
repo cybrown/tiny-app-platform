@@ -50,7 +50,9 @@ export default function InputText({
           ctx.setValue(bindTo, e.target.value);
         }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [e.currentTarget.value]);
+          await ctx.callFunctionAsync(onChange as Closure, [
+            e.currentTarget.value,
+          ]);
         }
       } catch (err) {
         setLastError(err);
@@ -82,7 +84,7 @@ export default function InputText({
           className={styles.InputText}
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
-          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
+          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
         />
       ) : (
         <input
@@ -91,7 +93,7 @@ export default function InputText({
           type={type ?? "text"}
           onChange={onInputChangeHandler}
           onKeyDown={onKeyDownHandler}
-          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
+          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
         />
       )}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />

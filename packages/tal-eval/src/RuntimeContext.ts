@@ -129,6 +129,10 @@ export class RuntimeContext {
     this.triggerStateChangedListeners();
   }
 
+  setOwnLocalWithoutRender(name: string, value: unknown): void {
+    this._locals[name] = value;
+  }
+
   getLocal(name: string): unknown {
     if (!this.hasLocal(name)) {
       throw new GetLocalError(name);

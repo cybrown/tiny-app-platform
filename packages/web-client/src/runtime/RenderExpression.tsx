@@ -2,7 +2,7 @@ import { EvaluationError, IRNode, RuntimeContext, runNode } from "tal-eval";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
-import type { Closure, TODO_ANY } from "tal-eval/dist/core";
+import { Closure, TODO_ANY } from "tal-eval/dist/core";
 
 export default function RenderExpression({
   ctx,
@@ -133,13 +133,21 @@ function CustomComponentHost({
   const state = useRef({
     childCtx: component.ctx.createChildForWidget({ ...props, children }),
     name: component.name,
+    oldProps: props,
   });
 
   if (component.name !== state.current.name) {
     state.current = {
       childCtx: component.ctx.createChildForWidget({ ...props, children }),
       name: component.name,
+      oldProps: props,
     };
+  } else {
+    for (let [key, value] of Object.entries(state.current.oldProps)) {
+      if (props[key] !== value) {
+        state.current.childCtx.setOwnLocalWithoutRender(key, props[key]);
+      }
+    }
   }
 
   const { childCtx } = state.current;

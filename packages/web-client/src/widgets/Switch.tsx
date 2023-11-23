@@ -10,7 +10,6 @@ type SwitchProps = {
 
 export default function Switch({
   ctx,
-  bindTo,
   onChange,
   value,
   disabled,
@@ -20,9 +19,6 @@ export default function Switch({
   const handleChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
-        if (bindTo) {
-          ctx.setValue(bindTo, e.target.checked);
-        }
         if (onChange) {
           await ctx.callFunctionAsync(onChange as Closure, [e.target.checked]);
         }
@@ -30,7 +26,7 @@ export default function Switch({
         setLastError(err);
       }
     },
-    [ctx, bindTo, onChange]
+    [ctx, onChange]
   );
 
   return (
@@ -39,7 +35,7 @@ export default function Switch({
         <input
           className={styles.Switch}
           type="checkbox"
-          checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
+          checked={value}
           onChange={handleChange}
           disabled={disabled}
         />

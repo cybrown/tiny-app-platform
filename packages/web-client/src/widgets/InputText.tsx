@@ -16,7 +16,6 @@ export default function InputText({
   ctx,
   multiline,
   placeholder,
-  bindTo,
   onSubmit,
   type,
   onChange,
@@ -45,37 +44,29 @@ export default function InputText({
   );
 
   const onInputChangeHandler = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       try {
-        if (bindTo) {
-          ctx.setValue(bindTo, e.target.value);
-        }
         if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [
-            e.currentTarget.value,
-          ]);
+          ctx.callFunction(onChange as Closure, [e.currentTarget.value]);
         }
       } catch (err) {
         setLastError(err);
       }
     },
-    [bindTo, ctx, onChange]
+    [ctx, onChange]
   );
 
   const onTextareaChangeHandler = useCallback(
     (e: ChangeEvent<HTMLTextAreaElement>) => {
       try {
-        if (bindTo) {
-          ctx.setValue(bindTo, e.target.value);
-        }
         if (onChange) {
-          ctx.callFunctionAsync(onChange as Closure, [e.currentTarget.value]);
+          ctx.callFunction(onChange as Closure, [e.currentTarget.value]);
         }
       } catch (err) {
         setLastError(err);
       }
     },
-    [bindTo, ctx, onChange]
+    [ctx, onChange]
   );
 
   return (
@@ -86,7 +77,7 @@ export default function InputText({
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
           disabled={disabled}
-          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
+          value={value ?? ""}
         />
       ) : (
         <input
@@ -96,7 +87,7 @@ export default function InputText({
           onChange={onInputChangeHandler}
           onKeyDown={onKeyDownHandler}
           disabled={disabled}
-          value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
+          value={value ?? ""}
         />
       )}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />

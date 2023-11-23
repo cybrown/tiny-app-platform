@@ -13,7 +13,6 @@ type SelectProps = {
 
 export default function Select({
   ctx,
-  bindTo,
   options,
   placeholder,
   onChange,
@@ -23,10 +22,10 @@ export default function Select({
   const [lastError, setLastError] = useState(null as any);
 
   const showEmpty =
-    (bindTo ? !ctx.hasValue(bindTo) : value === undefined) ||
+    value === undefined ||
     !options
       .map((a) => (typeof a === "string" ? a : a.value))
-      .includes(bindTo ? (ctx.evaluate(bindTo) as string) : value ?? "");
+      .includes(value ?? "");
 
   const onChangeHandler = useCallback(
     async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -35,9 +34,6 @@ export default function Select({
           options[e.target.selectedIndex - (showEmpty ? 1 : 0)];
         const valueToSet =
           typeof optionToSet === "string" ? optionToSet : optionToSet.value;
-        if (bindTo) {
-          ctx.setValue(bindTo, valueToSet);
-        }
         if (onChange) {
           await ctx.callFunctionAsync(onChange as Closure, [valueToSet]);
         }
@@ -45,7 +41,7 @@ export default function Select({
         setLastError(err);
       }
     },
-    [bindTo, ctx, options, showEmpty, onChange]
+    [ctx, options, showEmpty, onChange]
   );
 
   return (
@@ -55,7 +51,7 @@ export default function Select({
           " "
         )}
         onChange={onChangeHandler}
-        value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
+        value={value ?? ""}
         disabled={disabled}
       >
         {showEmpty ? (

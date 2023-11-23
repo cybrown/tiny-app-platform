@@ -13,13 +13,12 @@ type PagerProps = {
 
 export default function Pager({
   ctx,
-  bindTo,
   max,
   perPage,
   onChange,
   value,
 }: PagerProps) {
-  const currentPage = bindTo ? (ctx.evaluate(bindTo) as any) : value;
+  const currentPage = value;
   const pages = [];
   const difference = 3;
   const maxPage = Math.ceil(max / perPage);
@@ -35,9 +34,6 @@ export default function Pager({
   const updateValue = useCallback(
     async (value: number) => {
       try {
-        if (bindTo) {
-          ctx.setValue(bindTo, value);
-        }
         if (onChange) {
           await ctx.callFunctionAsync(onChange as Closure, [value]);
         }
@@ -45,7 +41,7 @@ export default function Pager({
         setLastError(err);
       }
     },
-    [bindTo, ctx, onChange]
+    [ctx, onChange]
   );
 
   return (

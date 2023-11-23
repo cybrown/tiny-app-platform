@@ -17,7 +17,6 @@ const onDragOverHandler: DragEventHandler<HTMLInputElement> = (event) =>
 
 export default function InputFile({
   ctx,
-  bindTo,
   placeholder,
   value,
   onChange,
@@ -32,9 +31,6 @@ export default function InputFile({
         if (files.length) {
           const file = files[0];
           if ((file as any).path) {
-            if (bindTo) {
-              ctx.setValue(bindTo, (file as any).path);
-            }
             if (onChange) {
               await ctx.callFunctionAsync(onChange as Closure, [
                 (file as any).path,
@@ -47,15 +43,12 @@ export default function InputFile({
         setLastError(err);
       }
     },
-    [bindTo, ctx, onChange]
+    [ctx, onChange]
   );
 
   const onInputChangeHandler = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       try {
-        if (bindTo) {
-          ctx.setValue(bindTo, e.target.value);
-        }
         if (onChange) {
           await ctx.callFunctionAsync(onChange as Closure, [e.target.value]);
         }
@@ -63,7 +56,7 @@ export default function InputFile({
         setLastError(err);
       }
     },
-    [bindTo, ctx, onChange]
+    [ctx, onChange]
   );
 
   return (
@@ -73,7 +66,7 @@ export default function InputFile({
         placeholder={placeholder}
         type="text"
         onChange={onInputChangeHandler}
-        value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
+        value={value}
         onDrop={onDropHandler}
         onDragOver={onDragOverHandler}
         disabled={disabled}

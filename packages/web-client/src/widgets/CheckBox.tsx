@@ -11,7 +11,6 @@ type CheckBoxProps = {
 
 export default function CheckBox({
   ctx,
-  bindTo,
   disabled,
   onChange,
   value,
@@ -21,9 +20,6 @@ export default function CheckBox({
   const handleChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
-        if (bindTo) {
-          ctx.setValue(bindTo, e.target.checked);
-        }
         if (onChange) {
           await ctx.callFunctionAsync(onChange as Closure, [e.target.checked]);
         }
@@ -31,7 +27,7 @@ export default function CheckBox({
         setLastError(err);
       }
     },
-    [ctx, bindTo, onChange]
+    [ctx, onChange]
   );
 
   return (
@@ -39,7 +35,7 @@ export default function CheckBox({
       <div className={styles.CheckBox + (disabled ? ' ' + styles.disabled : '')}>
         <input
           type="checkbox"
-          checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
+          checked={value}
           onChange={handleChange}
           disabled={disabled}
         />

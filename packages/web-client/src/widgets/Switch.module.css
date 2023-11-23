@@ -22,6 +22,10 @@
   border-radius: 14px;
 }
 
+.backgroundDisabled {
+  background-color: rgb(194, 194, 194);
+}
+
 .switch {
   display: block;
   height: 24px;
@@ -34,6 +38,10 @@
   border-radius: 12px;
 }
 
+.switchDisabled {
+  background-color: rgb(223, 222, 222);
+}
+
 .background,
 .switch {
   position: absolute;
@@ -41,6 +49,10 @@
 
 .Switch:checked + .background {
   background-color: rgb(28, 179, 141);
+}
+
+.Switch:checked + .backgroundDisabled {
+  background-color: rgb(84, 185, 160);
 }
 
 .Switch:checked + .background + .switch {

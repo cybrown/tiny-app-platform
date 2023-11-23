@@ -10,6 +10,7 @@ type ButtonProps = {
   onClick: Closure;
   confirm?: string | boolean;
   secondary?: boolean;
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -18,11 +19,15 @@ export default function Button({
   text,
   confirm,
   secondary,
+  disabled,
 }: ButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const doClickAction = useCallback(() => {
     (async () => {
+      if (!onClick) {
+        return;
+      }
       try {
         setLastError(null);
         const evaluationPromise = ctx.callFunctionAsync(onClick, []);
@@ -58,7 +63,7 @@ export default function Button({
       />
       <StyledButton
         onClick={clickHandler}
-        disabled={isLoading}
+        disabled={disabled || isLoading}
         text={text}
         secondary={secondary}
       />
@@ -71,6 +76,7 @@ export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {
   description: "A clickable button",
   props: {
     confirm: "Message to show to confirm the action",
+    disabled: "Do not allow the user to interact with this widget",
     onClick: "Expression to evaluate on click",
     secondary: "Give the secondary style",
     text: "Message to show inside the button",

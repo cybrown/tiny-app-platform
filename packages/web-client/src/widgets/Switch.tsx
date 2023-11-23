@@ -8,7 +8,13 @@ type SwitchProps = {
   ctx: RuntimeContext;
 } & InputProps<boolean>;
 
-export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
+export default function Switch({
+  ctx,
+  bindTo,
+  onChange,
+  value,
+  disabled,
+}: SwitchProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
@@ -35,9 +41,10 @@ export default function Switch({ ctx, bindTo, onChange, value }: SwitchProps) {
           type="checkbox"
           checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
           onChange={handleChange}
+          disabled={disabled}
         />
-        <div className={styles.background}></div>
-        <div className={styles.switch}></div>
+        <div className={styles.background + (disabled ? ' ' + styles.backgroundDisabled : '')}></div>
+        <div className={styles.switch + (disabled ? ' ' + styles.switchDisabled : '')}></div>
       </div>
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>

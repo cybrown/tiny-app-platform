@@ -12,6 +12,11 @@
   opacity: 0;
 }
 
+.disabled {
+  background-color: rgb(240, 240, 240);
+  border: rgb(133, 133, 133) 2px solid;
+}
+
 .checkMark {
   pointer-events: none;
   position: absolute;

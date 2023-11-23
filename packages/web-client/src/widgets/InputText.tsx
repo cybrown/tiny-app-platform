@@ -21,6 +21,7 @@ export default function InputText({
   type,
   onChange,
   value,
+  disabled,
 }: InputTextProps) {
   if (type && type !== "text" && multiline) {
     throw new Error(
@@ -84,6 +85,7 @@ export default function InputText({
           className={styles.InputText}
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
+          disabled={disabled}
           value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
         />
       ) : (
@@ -93,6 +95,7 @@ export default function InputText({
           type={type ?? "text"}
           onChange={onInputChangeHandler}
           onKeyDown={onKeyDownHandler}
+          disabled={disabled}
           value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
         />
       )}

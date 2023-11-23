@@ -7,7 +7,6 @@ import { Closure } from "tal-eval";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
-  disabled?: boolean;
 } & InputProps<boolean>;
 
 export default function CheckBox({
@@ -37,7 +36,7 @@ export default function CheckBox({
 
   return (
     <>
-      <div className={styles.CheckBox}>
+      <div className={styles.CheckBox + (disabled ? ' ' + styles.disabled : '')}>
         <input
           type="checkbox"
           checked={bindTo ? (ctx.evaluateOr(bindTo, false) as boolean) : value}
@@ -54,7 +53,6 @@ export default function CheckBox({
 export const CheckBoxDocumentation: WidgetDocumentation<CheckBoxProps> = {
   description: "A checkbox to input a boolean value",
   props: {
-    disabled: "Do not allow changing the value",
     ...InputPropsDocs,
   },
 };

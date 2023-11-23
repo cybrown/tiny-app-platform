@@ -21,6 +21,7 @@ export default function InputFile({
   placeholder,
   value,
   onChange,
+  disabled,
 }: InputFileProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -35,7 +36,9 @@ export default function InputFile({
               ctx.setValue(bindTo, (file as any).path);
             }
             if (onChange) {
-              await ctx.callFunctionAsync(onChange as Closure, [(file as any).path]);
+              await ctx.callFunctionAsync(onChange as Closure, [
+                (file as any).path,
+              ]);
             }
             event.preventDefault();
           }
@@ -73,6 +76,7 @@ export default function InputFile({
         value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value}
         onDrop={onDropHandler}
         onDragOver={onDragOverHandler}
+        disabled={disabled}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>

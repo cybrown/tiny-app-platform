@@ -18,6 +18,7 @@ export default function Select({
   placeholder,
   onChange,
   value,
+  disabled,
 }: SelectProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -55,6 +56,7 @@ export default function Select({
         )}
         onChange={onChangeHandler}
         value={bindTo ? (ctx.evaluateOr(bindTo, "") as string) : value ?? ""}
+        disabled={disabled}
       >
         {showEmpty ? (
           <option className={styles.optionDisabled}>{placeholder}</option>

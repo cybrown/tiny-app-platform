@@ -81,7 +81,7 @@ export default function Select({
 export const SelectDocumentation: WidgetDocumentation<SelectProps> = {
   description: "Pick a string value from a predefined list",
   props: {
-    options: "List of all possible values as string",
+    options: "List of all possible values as string | {value: string, label: string}",
     placeholder: "Message to show when the widget is empty",
     ...InputPropsDocs,
   },

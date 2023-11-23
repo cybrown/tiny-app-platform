@@ -92,7 +92,7 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
     const kind = ui.ctx.evaluate(ui.kind as any) as string;
     const children =
       "children" in ui && ui.children
-        ? (ui.ctx.evaluate(ui.children as any) as unknown[])
+        ? (ui.ctx.evaluate(ui.children as any, true) as unknown[])
         : [];
     const props =
       "props" in ui && ui.props
@@ -169,14 +169,14 @@ function CustomWidgetHost({
   const { childCtx } = state.current;
 
   const irNode = widget.ctx.program![widget.name].body as IRNode;
-  let ui;
+  let ui: unknown;
   if (irNode.kind === "BLOCK") {
     const n = irNode as IRNode<"BLOCK">;
-    for (let childNode of n.children) {
-      ui = runNode(childCtx, childCtx.program!, childNode);
-    }
+    ui = n.children
+      .map((childNode) => runNode(childCtx, childCtx.program!, childNode, true))
+      .filter((child) => child !== undefined);
   } else {
-    ui = runNode(childCtx, childCtx.program!, irNode);
+    ui = runNode(childCtx, childCtx.program!, irNode, true);
   }
   return <RenderExpression ctx={childCtx} evaluatedUI={ui} />;
 }

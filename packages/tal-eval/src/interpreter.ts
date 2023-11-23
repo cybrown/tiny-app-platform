@@ -1,5 +1,11 @@
 import { RuntimeContext } from './RuntimeContext';
-import { Closure, IRNode, NativeFunctionBinding, ParameterDef, Program } from './core';
+import {
+  Closure,
+  IRNode,
+  NativeFunctionBinding,
+  ParameterDef,
+  Program,
+} from './core';
 
 export function run(
   ctx: RuntimeContext,
@@ -47,7 +53,8 @@ export function runCall(
 export function runNode(
   ctx: RuntimeContext,
   program: Program,
-  node: IRNode
+  node: IRNode,
+  returnArrayFromBlock = false
 ): unknown {
   try {
     let stack: unknown[] = [];
@@ -56,7 +63,9 @@ export function runNode(
       'children' in node
     ) {
       const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
-      stack = node.children.map(n => runNode(ctxToUse, program, n));
+      stack = node.children.map(n =>
+        runNode(ctxToUse, program, n, returnArrayFromBlock)
+      );
     }
     switch (node.kind) {
       case 'LITERAL':
@@ -116,6 +125,9 @@ export function runNode(
         return;
       }
       case 'BLOCK':
+        if (returnArrayFromBlock) {
+          return stack.filter(s => s !== undefined);
+        }
         return stack[stack.length - 1];
       case 'INDEX':
         return (stack[1] as any[])[stack[0] as any];
@@ -148,9 +160,19 @@ export function runNode(
         if ('children' in node) {
           const conditionResult = runNode(ctx, program, node.children[0]);
           if (conditionResult) {
-            return runNode(ctx, program, node.children[1]);
+            return runNode(
+              ctx,
+              program,
+              node.children[1],
+              returnArrayFromBlock
+            );
           } else if (node.children.length > 2) {
-            return runNode(ctx, program, node.children[2]);
+            return runNode(
+              ctx,
+              program,
+              node.children[2],
+              returnArrayFromBlock
+            );
           } else {
             return null;
           }
@@ -160,7 +182,12 @@ export function runNode(
       case 'TRY': {
         if ('children' in node) {
           try {
-            return runNode(ctx, program, node.children[0]);
+            return runNode(
+              ctx,
+              program,
+              node.children[0],
+              returnArrayFromBlock
+            );
           } catch (error) {
             if (node.children.length <= 1) {
               return null;

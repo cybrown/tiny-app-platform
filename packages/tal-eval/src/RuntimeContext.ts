@@ -231,9 +231,9 @@ export class RuntimeContext {
     return true;
   }
 
-  evaluate(expr: IRNode): unknown {
+  evaluate(expr: IRNode, returnArrayFromBlock = false): unknown {
     if (!this.program) throw new Error('missing program');
-    return runNode(this, this.program, expr);
+    return runNode(this, this.program, expr, returnArrayFromBlock);
   }
 
   evaluateAsync(expr: IRNode): Promise<unknown> {

@@ -126,7 +126,7 @@ export function runNode(
       }
       case 'BLOCK':
         if (returnArrayFromBlock) {
-          return stack.filter(s => s !== undefined);
+          return stack.filter(s => s !== null);
         }
         return stack[stack.length - 1];
       case 'INDEX':

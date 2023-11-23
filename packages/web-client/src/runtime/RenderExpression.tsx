@@ -27,20 +27,22 @@ export default function RenderExpression({
     if (Array.isArray(result)) {
       return (
         <>
-          {result.map((child) => (
-            <ErrorBoundary
-              ctx={ctxRef.current}
-              onError={(err, retry) => (
-                <RenderError
-                  expression={expression ?? (evaluatedUI as any).kind ?? null}
-                  err={err}
-                  retry={retry}
-                />
-              )}
-            >
-              {child}
-            </ErrorBoundary>
-          ))}
+          {result
+            .filter((child) => child != null)
+            .map((child) => (
+              <ErrorBoundary
+                ctx={ctxRef.current}
+                onError={(err, retry) => (
+                  <RenderError
+                    expression={expression ?? (evaluatedUI as any).kind ?? null}
+                    err={err}
+                    retry={retry}
+                  />
+                )}
+              >
+                {child}
+              </ErrorBoundary>
+            ))}
         </>
       );
     } else {
@@ -79,7 +81,7 @@ function renderNullableWidget(ui: unknown): JSX.Element | JSX.Element[] | null {
 
 function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
   if (Array.isArray(ui)) {
-    return ui.flatMap((a) => renderWidget(a));
+    return ui.flatMap((a) => renderWidget(a)).filter((a) => a != null);
   }
 
   if (
@@ -174,7 +176,7 @@ function CustomWidgetHost({
     const n = irNode as IRNode<"BLOCK">;
     ui = n.children
       .map((childNode) => runNode(childCtx, childCtx.program!, childNode, true))
-      .filter((child) => child !== undefined);
+      .filter((child) => child != null);
   } else {
     ui = runNode(childCtx, childCtx.program!, irNode, true);
   }

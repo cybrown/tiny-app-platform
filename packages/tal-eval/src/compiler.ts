@@ -16,7 +16,7 @@ export class Compiler {
       main: {
         parameters: [],
         body: Array.isArray(value)
-          ? buildIRNode('BLOCK', value[0].location, {
+          ? buildIRNode('BLOCK', value.length ? value[0].location : undefined, {
               children: value.map(a => this.compile(a)),
             })
           : this.compile(value),

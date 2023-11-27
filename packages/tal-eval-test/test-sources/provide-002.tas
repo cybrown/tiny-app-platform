@@ -1,0 +1,11 @@
+fun func_1() {
+    func_2()
+}
+
+fun func_2() {
+    & "http.timeoutMs"
+}
+
+provide ("http.timeoutMs" = 250) {
+    func_1()
+}

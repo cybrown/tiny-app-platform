@@ -169,6 +169,31 @@ export class RuntimeContext {
     throw new GetEnvError(name);
   }
 
+  private providedKey: unknown;
+  private providedValue: unknown;
+  private providedParent?: RuntimeContext;
+
+  createChildWithProvider(key: unknown, value: unknown): RuntimeContext {
+    const childContext = this.createChild({});
+    childContext.providedKey = key;
+    childContext.providedValue = value;
+    childContext.providedParent = this;
+    return childContext;
+  }
+
+  getProvidedValue(key: unknown): unknown {
+    if (this.providedKey === key) {
+      return this.providedValue;
+    }
+    if (this.providedParent) {
+      return this.providedParent.getProvidedValue(key);
+    }
+    if (this.parent) {
+      return this.parent.getProvidedValue(key);
+    }
+    return null;
+  }
+
   // TODO: To remove
   getLocalOr(name: string, value: unknown): unknown {
     return this.hasLocal(name) ? this.getLocal(name) : value;
@@ -258,7 +283,7 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runCall(func, this.program, args, kwargs);
+    return runCall(func, this.program, args, kwargs, this);
   }
 
   async callFunctionAsync(
@@ -267,12 +292,12 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runCallAsync(func, this.program, args, kwargs);
+    return runCallAsync(func, this.program, args, kwargs, this);
   }
 
   createChild(
     initialValues: { [x: string]: unknown },
-    extendable?: boolean
+    extendable?: boolean,
   ): RuntimeContext {
     return new RuntimeContext(
       () => this.triggerStateChangedListeners(),
@@ -280,6 +305,12 @@ export class RuntimeContext {
       this,
       extendable
     );
+  }
+
+  createChildWithProvideParent(initialValue: Record<string, unknown>, parentCtx: RuntimeContext) {
+    const childCtx = this.createChild(initialValue);
+    childCtx.providedParent = parentCtx;
+    return childCtx;
   }
 
   createChildForWidget(initialValues: {

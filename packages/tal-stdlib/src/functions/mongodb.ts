@@ -50,13 +50,21 @@ export const mongodb_delete_one = defineFunction(
   mongodb_delete_one_impl
 );
 
+function getUri(uri: string, ctx: RuntimeContext) {
+  return uri ?? ctx.getProvidedValue("mongodb.uri")
+}
+
+function getCollection(collection: string, ctx: RuntimeContext) {
+  return collection ?? ctx.getProvidedValue("mongodb.collection")
+}
+
 async function mongodb_delete_one_impl(
   _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await mongodbDeleteOne({
-    uri: value.uri,
-    collection: value.collection,
+    uri: getUri(value.uri, _ctx),
+    collection: getCollection(value.collection, _ctx),
     query: value.query,
     options: value.options,
   });
@@ -82,8 +90,8 @@ async function mongodb_find_impl(
   value: { [key: string]: any }
 ) {
   const response = await mongodbQuery({
-    uri: value.uri,
-    collection: value.collection,
+    uri: getUri(value.uri, _ctx),
+    collection: getCollection(value.collection, _ctx),
     query: value.query,
     options: value.options,
   });
@@ -109,8 +117,8 @@ async function mongodb_insert_one_impl(
   value: { [key: string]: any }
 ) {
   const response = await mongodbInsertOne({
-    uri: value.uri,
-    collection: value.collection,
+    uri: getUri(value.uri, _ctx),
+    collection: getCollection(value.collection, _ctx),
     data: value.data,
     options: value.options,
   });
@@ -136,8 +144,8 @@ async function mongodb_update_one_impl(
   value: { [key: string]: any }
 ) {
   const response = await mongodbUpdateOne({
-    uri: value.uri,
-    collection: value.collection,
+    uri: getUri(value.uri, _ctx),
+    collection: getCollection(value.collection, _ctx),
     query: value.query,
     data: value.data,
     options: value.options,

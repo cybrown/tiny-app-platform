@@ -1,0 +1,14 @@
+fun func_1() {
+    func_2()
+}
+
+fun func_2() {
+    (& "http.timeoutMs") + ', ' + (& "http.useCookies")
+}
+
+provide (
+    "http.timeoutMs" = 250
+    "http.useCookies" = false
+) {
+    func_1()
+}

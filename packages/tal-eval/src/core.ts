@@ -77,6 +77,12 @@ export type IRNodes = {
     children: IRNode[];
   };
   CTX_RENDER: {};
+  PROVIDE: {
+    children: IRNode[];
+  };
+  PROVIDED: {
+    children: IRNode[];
+  };
 };
 
 export type IRIntrinsicOperator =

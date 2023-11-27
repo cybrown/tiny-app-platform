@@ -35,7 +35,8 @@ export function runCall(
   closure: Closure,
   program: Program,
   args: unknown[],
-  kwargs: Record<string, unknown>
+  kwargs: Record<string, unknown>,
+  parentStackContext: RuntimeContext
 ) {
   const functionName = closure.name;
   const func = program[functionName];
@@ -46,7 +47,7 @@ export function runCall(
   );
   const childContext = closure.ctx
     .createChild(namedArguments, false)
-    .createChild({});
+    .createChildWithProvideParent({}, parentStackContext);
   return runNode(childContext, program, func.body);
 }
 
@@ -59,7 +60,7 @@ export function runNode(
   try {
     let stack: unknown[] = [];
     if (
-      !['CONDITION', 'TRY', 'KINDED'].includes(node.kind) &&
+      !['CONDITION', 'TRY', 'KINDED', 'PROVIDE'].includes(node.kind) &&
       'children' in node
     ) {
       const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
@@ -89,7 +90,7 @@ export function runNode(
         ];
         const functionName = closure.name;
         if (program[functionName]) {
-          return runCall(closure, program, args, kwargs);
+          return runCall(closure, program, args, kwargs, ctx);
         } else {
           const nativeFuncValue = ctx.getLocal(
             functionName
@@ -201,6 +202,29 @@ export function runNode(
         }
         throw new Error('Unreachable');
       }
+      case 'PROVIDE': {
+        const n = node as IRNode<'PROVIDE'>;
+        if (!('children' in n)) {
+          return null;
+        }
+        const keyIr = n.children[0];
+        const valueIr = n.children[1];
+        const bodyIr = n.children[2];
+
+        const key = runNode(ctx, program, keyIr);
+        const value = runNode(ctx, program, valueIr);
+
+        const childContext = ctx.createChildWithProvider(key, value);
+
+        return runNode(childContext, program, bodyIr);
+      }
+      case 'PROVIDED': {
+        const n = node as IRNode<'PROVIDED'>;
+        if (!('children' in n)) {
+          return null;
+        }
+        return ctx.getProvidedValue(stack[0]);
+      }
       case 'KINDED': {
         const n = node as IRNode<'KINDED'>;
         if (!('children' in n)) {
@@ -258,7 +282,8 @@ export async function runCallAsync(
   closure: Closure,
   program: Program,
   args: unknown[],
-  kwargs: Record<string, unknown>
+  kwargs: Record<string, unknown>,
+  parentStackContext: RuntimeContext
 ) {
   const func = program[closure.name];
   const [namedArguments /* positionalArguments */] = resolveArgumentNames(
@@ -268,7 +293,7 @@ export async function runCallAsync(
   );
   const childContext = closure.ctx
     .createChild(namedArguments, false)
-    .createChild({});
+    .createChildWithProvideParent({}, parentStackContext);
   return await runNodeAsync(childContext, program, func.body);
 }
 
@@ -280,7 +305,7 @@ export async function runNodeAsync(
   try {
     let stack: unknown[] = [];
     if (
-      !['CONDITION', 'TRY', 'KINDED'].includes(node.kind) &&
+      !['CONDITION', 'TRY', 'KINDED', 'PROVIDE'].includes(node.kind) &&
       'children' in node
     ) {
       const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
@@ -314,7 +339,8 @@ export async function runNodeAsync(
             closure,
             program,
             providedPositionalArguments,
-            providedNamedArguments
+            providedNamedArguments,
+            ctx
           );
         } else {
           const func = ctx.getLocal(functionName) as NativeFunctionBinding;
@@ -409,6 +435,29 @@ export async function runNodeAsync(
           }
         }
         throw new Error('Unreachable');
+      }
+      case 'PROVIDE': {
+        const n = node as IRNode<'PROVIDE'>;
+        if (!('children' in n)) {
+          return null;
+        }
+        const keyIr = n.children[0];
+        const valueIr = n.children[1];
+        const bodyIr = n.children[2];
+
+        const key = await runNodeAsync(ctx, program, keyIr);
+        const value = await runNodeAsync(ctx, program, valueIr);
+
+        const childContext = ctx.createChildWithProvider(key, value);
+
+        return await runNodeAsync(childContext, program, bodyIr);
+      }
+      case 'PROVIDED': {
+        const n = node as IRNode<'PROVIDED'>;
+        if (!('children' in n)) {
+          return null;
+        }
+        return ctx.getProvidedValue(stack[0]);
       }
       case 'KINDED': {
         const n = node as IRNode<'KINDED'>;

@@ -139,6 +139,20 @@ export class Compiler {
             ...(value.catchBlock ? [this.compile(value.catchBlock)] : []),
           ],
         });
+      case 'Provide':
+        return value.entries.reduce((prev, entry) => {
+          return buildIRNode('PROVIDE', value.location, {
+            children: [
+              this.compile(entry.key),
+              this.compile(entry.value),
+              prev,
+            ],
+          });
+        }, this.compile(value.body));
+      case 'Provided':
+        return buildIRNode('PROVIDED', value.location, {
+          children: [this.compile(value.key)],
+        });
       case 'Pipe':
         let [previous, current, ...rest] = [
           value.first,

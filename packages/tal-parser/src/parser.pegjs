@@ -66,6 +66,8 @@ ExpressionLevel1
     / Boolean
     / If
     / Try
+    / Provide
+    / Provided
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -92,6 +94,18 @@ Try
             const catchBlock = catchBlockArray ? catchBlockArray[3] : undefined
             return { location: location(), kind: "Try", expr, catchBlock };
         }
+
+Provide
+    = 'provide' _  '(' _ entries:(ProvideKeyValuePair (_ ',')? _ )+ _ ')' _ body:BlockOfExpressions
+        { return { location: location(), kind: "Provide", entries: entries.map(entry => entry[0]), body }; }
+
+ProvideKeyValuePair
+    = key:Expression _ '=' _ value:Expression
+        { return { key, value}; }
+
+Provided
+    = '&' _ key:Expression
+        { return { location: location(), kind: "Provided", key }; }
 
 SubExpression
 	= '(' _ expr:Expression _ ')'

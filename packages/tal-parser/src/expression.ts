@@ -142,6 +142,17 @@ export type FunctionExpression = ExpressionMetadata & {
   body: Expression;
 };
 
+export type ProvideExpression = ExpressionMetadata & {
+  kind: 'Provide';
+  entries: { key: Expression; value: Expression }[];
+  body: BlockOfExpressionsExpression;
+};
+
+export type ProvidedExpression = ExpressionMetadata & {
+  kind: 'Provided';
+  key: Expression;
+};
+
 export type ExpressionLocation = ExpressionMetadata & {
   start: {
     offset: number;
@@ -191,7 +202,9 @@ export type Expression =
   | BinaryOperatorExpression
   | BlockOfExpressionsExpression
   | DeclareLocalExpression
-  | KindedObjectExpression;
+  | KindedObjectExpression
+  | ProvideExpression
+  | ProvidedExpression;
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
   expr: Expression,

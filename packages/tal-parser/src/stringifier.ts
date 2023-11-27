@@ -15,6 +15,8 @@ import {
   SubExpressionExpression,
   TryExpression,
   UnaryOperatorExpression,
+  ProvideExpression,
+  ProvidedExpression,
 } from './expression';
 
 export function stringify(value: Expression[]): string {
@@ -119,6 +121,10 @@ class Stringifier {
         return this.stringifyObject(obj);
       case 'KindedObject':
         return this.stringifyKindedObject(obj);
+      case 'Provide':
+        return this.stringifyProvide(obj);
+      case 'Provided':
+        return this.stringifyProvided(obj);
       default:
         return this.stringifyCustomKind(obj);
     }
@@ -282,6 +288,43 @@ class Stringifier {
     return (
       'set ' + this.stringify(obj.address) + ' = ' + this.stringify(obj.value)
     );
+  }
+
+  stringifyProvide(obj: ProvideExpression): string {
+    if (obj.entries.length > 1) {
+      return this.stringifyProvideMultiline(obj);
+    }
+    const result = this.stringifyProvideSingleline(obj);
+    if (result.length > 80 || result.includes('\n')) {
+      return this.stringifyProvideMultiline(obj);
+    }
+    return result;
+  }
+
+  stringifyProvideSingleline(obj: ProvideExpression): string {
+    return (
+      'provide (' +
+      this.stringify(obj.entries[0].key) +
+      ' = ' +
+      this.stringify(obj.entries[0].value) +
+      ') ' +
+      this.stringify(obj.body)
+    );
+  }
+
+  stringifyProvideMultiline(obj: ProvideExpression): string {
+    let result = 'provide (\n';
+    this.incrementDepth();
+    for (let entry of obj.entries) {
+      result += this.depthSpace() + this.stringify(entry.key) + ' = ' + this.stringify(entry.value) + '\n';
+    }
+    this.decrementDepth();
+    result += this.depthSpace() + ') ' + this.stringifyBlockOfExpressionsMultiLine(obj.body);
+    return result;
+  }
+
+  stringifyProvided(obj: ProvidedExpression): string {
+    return '&' + this.stringify(obj.key);
   }
 
   // TODO: Deprecated

@@ -1,0 +1,11 @@
+fun usingProvidedValue() {
+    log(& "http.timeoutMs")
+    log(& "http.useCookies")
+}
+
+provide (
+    "http.timeoutMs" = 250
+    "http.useCookies" = false
+) {
+    usingProvidedValue()
+}

@@ -1,49 +1,34 @@
 [
   {
-    "kind": "Quote",
-    "children": [
-      42
-    ]
+    "kind": "Function",
+    "body": 42,
+    "parameters": []
   },
   {
-    "kind": "Quote",
-    "children": [
-      {
-        "kind": "BinaryOperator",
-        "operator": "+",
-        "right": {
-          "kind": "Local",
-          "name": "b"
-        },
-        "left": {
-          "kind": "Local",
-          "name": "a"
-        }
+    "kind": "Function",
+    "body": {
+      "kind": "BinaryOperator",
+      "operator": "+",
+      "right": {
+        "kind": "Local",
+        "name": "b"
+      },
+      "left": {
+        "kind": "Local",
+        "name": "a"
       }
-    ]
+    },
+    "parameters": []
   },
   {
-    "kind": "Quote",
-    "children": [
-      {
-        "kind": "Call",
-        "args": [
-          {
-            "argKind": "Positional",
-            "value": {
-              "kind": "Local",
-              "name": "a"
-            }
-          }
-        ],
-        "value": {
-          "kind": "BlockOfExpressions",
-          "children": [
-            "A",
-            42
-          ]
-        }
-      }
-    ]
+    "kind": "Function",
+    "body": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        "A",
+        42
+      ]
+    },
+    "parameters": []
   }
 ]

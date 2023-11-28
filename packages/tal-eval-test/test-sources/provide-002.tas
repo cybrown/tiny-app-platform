@@ -6,6 +6,6 @@ fun func_2() {
     & "http.timeoutMs"
 }
 
-provide ("http.timeoutMs" = 250) {
+with ("http.timeoutMs" = 250) {
     func_1()
 }

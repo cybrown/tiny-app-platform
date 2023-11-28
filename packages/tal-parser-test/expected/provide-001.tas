@@ -1,3 +1,3 @@
 fun usingProvidedValue() { log(&"http.timeoutMs") }
 
-provide ("http.timeoutMs" = 250) { usingProvidedValue() }
+with ("http.timeoutMs" = 250) { usingProvidedValue() }

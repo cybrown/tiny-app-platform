@@ -303,7 +303,7 @@ class Stringifier {
 
   stringifyProvideSingleline(obj: ProvideExpression): string {
     return (
-      'provide (' +
+      'with (' +
       this.stringify(obj.entries[0].key) +
       ' = ' +
       this.stringify(obj.entries[0].value) +
@@ -313,7 +313,7 @@ class Stringifier {
   }
 
   stringifyProvideMultiline(obj: ProvideExpression): string {
-    let result = 'provide (\n';
+    let result = 'with (\n';
     this.incrementDepth();
     for (let entry of obj.entries) {
       result += this.depthSpace() + this.stringify(entry.key) + ' = ' + this.stringify(entry.value) + '\n';

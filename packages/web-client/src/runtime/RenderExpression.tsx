@@ -113,23 +113,25 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
       });
     }
     return (
-      <CustomWidgetHost widget={widget} props={props} children={children} />
+      <CustomWidgetHost ctx={ui.ctx} widget={widget} props={props} children={children} />
     );
   }
   return <Debug ctx={null as any} value={ui} />;
 }
 
 function CustomWidgetHost({
+  ctx,
   widget,
   props,
   children,
 }: {
+  ctx: RuntimeContext;
   widget: Closure;
   props: Record<string, unknown>;
   children: unknown[];
 }) {
   const state = useRef({
-    childCtx: widget.ctx.createChildForWidget({ ...props, children }),
+    childCtx: ctx.createChildForWidget({ ...props, children }),
     name: widget.name,
     oldProps: props,
     oldChildren: children,
@@ -137,7 +139,7 @@ function CustomWidgetHost({
 
   if (widget.name !== state.current.name) {
     state.current = {
-      childCtx: widget.ctx.createChildForWidget({ ...props, children }),
+      childCtx: ctx.createChildForWidget({ ...props, children }),
       name: widget.name,
       oldProps: props,
       oldChildren: children,

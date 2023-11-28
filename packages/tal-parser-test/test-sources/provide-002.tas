@@ -3,7 +3,7 @@ fun usingProvidedValue() {
     log(& "http.useCookies")
 }
 
-provide (
+with (
     "http.timeoutMs" = 250
     "http.useCookies" = false
 ) {

@@ -96,7 +96,7 @@ Try
         }
 
 Provide
-    = 'provide' _  '(' _ entries:(ProvideKeyValuePair (_ ',')? _ )+ _ ')' _ body:BlockOfExpressions
+    = 'with' _  '(' _ entries:(ProvideKeyValuePair (_ ',')? _ )+ _ ')' _ body:BlockOfExpressions
         { return { location: location(), kind: "Provide", entries: entries.map(entry => entry[0]), body }; }
 
 ProvideKeyValuePair

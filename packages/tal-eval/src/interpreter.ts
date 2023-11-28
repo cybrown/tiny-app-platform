@@ -216,7 +216,7 @@ export function runNode(
 
         const childContext = ctx.createChildWithProvider(key, value);
 
-        return runNode(childContext, program, bodyIr);
+        return runNode(childContext, program, bodyIr, returnArrayFromBlock);
       }
       case 'PROVIDED': {
         const n = node as IRNode<'PROVIDED'>;

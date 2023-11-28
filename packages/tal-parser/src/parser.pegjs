@@ -33,8 +33,8 @@ MultiplicationOperators
     	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
 
 UnaryPrefixOperatorExpression
-	= operator:("-" / "+" / "!")? _ operand:ExpressionLevel2
-     	{ return operator == null ? operand : { location: location(), kind: "UnaryOperator", operator, operand }; }
+	= operator:("-" / "+" / "!" / "&")? _ operand:ExpressionLevel2
+     	{ return operator == null ? operand : (operator == "&" ? { location: location(), kind: "Provided", key: operand } : { location: location(), kind: "UnaryOperator", operator, operand }); }
 
 ExpressionLevel2 // Dotted and indexed expression
 	= expr:ExpressionLevel1 field:ExpressionLevel2Right*
@@ -67,7 +67,6 @@ ExpressionLevel1
     / If
     / Try
     / Provide
-    / Provided
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -102,10 +101,6 @@ Provide
 ProvideKeyValuePair
     = key:Expression _ '=' _ value:Expression
         { return { key, value}; }
-
-Provided
-    = '&' _ key:Expression
-        { return { location: location(), kind: "Provided", key }; }
 
 SubExpression
 	= '(' _ expr:Expression _ ')'

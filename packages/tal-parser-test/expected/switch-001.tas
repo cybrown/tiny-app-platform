@@ -1,0 +1,11 @@
+switch (state.name) {
+  "list"    => List {
+      propA: "value A"
+      propB: "value B"
+      propC: "value C"
+      propD: "value D"
+    }
+  "editor"  => Editor {}
+  "contact" => Contact {}
+  *         => NotFound {}
+}

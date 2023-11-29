@@ -132,6 +132,44 @@ export class Compiler {
             ...(value.ifFalse ? [this.compile(value.ifFalse)] : []),
           ],
         });
+      case 'Switch': {
+        const valueIRNode = this.compile(value.value);
+        let node: IRNode;
+        if (value.defaultBranch) {
+          node = this.compile(value.defaultBranch.value);
+        } else {
+          node = buildIRNode('CONDITION', value.location, {
+            children: [
+              buildIRNode('INTRINSIC', value.location, {
+                operation: 'INTRINSIC_EQUAL_STRICT',
+                children: [
+                  valueIRNode,
+                  this.compile(
+                    value.branches[value.branches.length - 1].comparator
+                  ),
+                ],
+              }),
+              this.compile(value.branches[value.branches.length - 1].value),
+            ],
+          });
+        }
+        return value.branches
+          .slice()
+          .reverse()
+          .slice(value.defaultBranch ? 0 : 1)
+          .reduce((elseClause, branch) => {
+            return buildIRNode('CONDITION', value.location, {
+              children: [
+                buildIRNode('INTRINSIC', value.location, {
+                  operation: 'INTRINSIC_EQUAL_STRICT',
+                  children: [valueIRNode, this.compile(branch.comparator)],
+                }),
+                this.compile(branch.value),
+                elseClause,
+              ],
+            });
+          }, node);
+      }
       case 'Try':
         return buildIRNode('TRY', value.location, {
           children: [

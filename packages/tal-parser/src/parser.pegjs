@@ -65,6 +65,7 @@ ExpressionLevel1
     = Null
     / Boolean
     / If
+    / Switch
     / Try
     / Provide
     / Assignement
@@ -86,6 +87,20 @@ If
             const ifFalse = ifFalseArray ? ifFalseArray[3] : undefined
             return { location: location(), kind: "If", condition, ifTrue, ifFalse };
         }
+
+Switch
+    = 'switch' _ '(' _ value:Expression _ ')' _ '{' _ branches:(SwitchBranch _)* defaultBranch:SwitchDefaultBranch? _ '}'
+        {
+            return { location: location(), kind: "Switch", value, branches: branches.map(e => e[0]), defaultBranch };
+        }
+
+SwitchBranch
+    = comparator:Expression _ '=>' _ value:Expression
+        { return { comparator, value }; }
+
+SwitchDefaultBranch
+    = '*' _ '=>' _ value: Expression
+        { return { value }; }
 
 Try
     = 'try' _ expr:BlockOfExpressions catchBlockArray:(_ 'catch' _ BlockOfExpressions)?

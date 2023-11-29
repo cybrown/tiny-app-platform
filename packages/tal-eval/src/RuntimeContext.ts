@@ -297,7 +297,7 @@ export class RuntimeContext {
 
   createChild(
     initialValues: { [x: string]: unknown },
-    extendable?: boolean,
+    extendable?: boolean
   ): RuntimeContext {
     return new RuntimeContext(
       () => this.triggerStateChangedListeners(),
@@ -307,7 +307,10 @@ export class RuntimeContext {
     );
   }
 
-  createChildWithProvideParent(initialValue: Record<string, unknown>, parentCtx: RuntimeContext) {
+  createChildWithProvideParent(
+    initialValue: Record<string, unknown>,
+    parentCtx: RuntimeContext
+  ) {
     const childCtx = this.createChild(initialValue);
     childCtx.providedParent = parentCtx;
     return childCtx;
@@ -374,6 +377,7 @@ export class RuntimeContext {
 
 type ParameterDeclaration<T extends string> = {
   name: T;
+  onlyNamed?: boolean;
 };
 
 export function defineFunction<T extends string>(

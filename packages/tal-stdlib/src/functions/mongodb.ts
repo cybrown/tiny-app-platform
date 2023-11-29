@@ -1,61 +1,61 @@
-import { customRpc } from "../util/custom-rpc";
-import { defineFunction, RuntimeContext } from "tal-eval";
+import { customRpc } from '../util/custom-rpc';
+import { defineFunction, RuntimeContext } from 'tal-eval';
 
 export const mongodb_find = defineFunction(
-  "mongodb_find",
+  'mongodb_find',
   [
-    { name: "uri" },
-    { name: "collection" },
-    { name: "query" },
-    { name: "options" },
+    { name: 'uri', onlyNamed: true },
+    { name: 'collection', onlyNamed: true },
+    { name: 'query' },
+    { name: 'options' },
   ],
   undefined,
   mongodb_find_impl
 );
 
 export const mongodb_insert_one = defineFunction(
-  "mongodb_insert_one",
+  'mongodb_insert_one',
   [
-    { name: "uri" },
-    { name: "collection" },
-    { name: "data" },
-    { name: "options" },
+    { name: 'uri', onlyNamed: true },
+    { name: 'collection', onlyNamed: true },
+    { name: 'data' },
+    { name: 'options' },
   ],
   undefined,
   mongodb_insert_one_impl
 );
 
 export const mongodb_update_one = defineFunction(
-  "mongodb_update_one",
+  'mongodb_update_one',
   [
-    { name: "uri" },
-    { name: "collection" },
-    { name: "query" },
-    { name: "data" },
-    { name: "options" },
+    { name: 'uri', onlyNamed: true },
+    { name: 'collection', onlyNamed: true },
+    { name: 'query' },
+    { name: 'data' },
+    { name: 'options' },
   ],
   undefined,
   mongodb_update_one_impl
 );
 
 export const mongodb_delete_one = defineFunction(
-  "mongodb_delete_one",
+  'mongodb_delete_one',
   [
-    { name: "uri" },
-    { name: "collection" },
-    { name: "query" },
-    { name: "options" },
+    { name: 'uri', onlyNamed: true },
+    { name: 'collection', onlyNamed: true },
+    { name: 'query' },
+    { name: 'options' },
   ],
   undefined,
   mongodb_delete_one_impl
 );
 
 function getUri(uri: string, ctx: RuntimeContext) {
-  return uri ?? ctx.getProvidedValue("mongodb.uri")
+  return uri ?? ctx.getProvidedValue('mongodb.uri');
 }
 
 function getCollection(collection: string, ctx: RuntimeContext) {
-  return collection ?? ctx.getProvidedValue("mongodb.collection")
+  return collection ?? ctx.getProvidedValue('mongodb.collection');
 }
 
 async function mongodb_delete_one_impl(
@@ -77,7 +77,7 @@ async function mongodbDeleteOne(params: {
   query: unknown;
   options: unknown;
 }) {
-  const response = await customRpc("mongodb-delete-one", params);
+  const response = await customRpc('mongodb-delete-one', params);
   if (response.status === 500) {
     const errorJson = await response.json();
     throw new Error(errorJson.message);
@@ -104,7 +104,7 @@ async function mongodbQuery(params: {
   query: unknown;
   options: unknown;
 }) {
-  const response = await customRpc("mongodb-find", params);
+  const response = await customRpc('mongodb-find', params);
   if (response.status === 500) {
     const errorJson = await response.json();
     throw new Error(errorJson.message);
@@ -131,7 +131,7 @@ async function mongodbInsertOne(params: {
   data: unknown;
   options: unknown;
 }) {
-  const response = await customRpc("mongodb-insert-one", params);
+  const response = await customRpc('mongodb-insert-one', params);
   if (response.status === 500) {
     const errorJson = await response.json();
     throw new Error(errorJson.message);
@@ -160,7 +160,7 @@ async function mongodbUpdateOne(params: {
   data: unknown;
   options: unknown;
 }) {
-  const response = await customRpc("mongodb-update-one", params);
+  const response = await customRpc('mongodb-update-one', params);
   if (response.status === 500) {
     const errorJson = await response.json();
     throw new Error(errorJson.message);

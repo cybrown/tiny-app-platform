@@ -1,0 +1,54 @@
+[
+  {
+    "kind": "Switch",
+    "value": {
+      "kind": "Attribute",
+      "key": "name",
+      "value": {
+        "kind": "Local",
+        "name": "state"
+      }
+    },
+    "branches": [
+      {
+        "comparator": "list",
+        "value": {
+          "kind": "KindedObject",
+          "value": {
+            "kind": "List",
+            "propA": "value A",
+            "propB": "value B",
+            "propC": "value C",
+            "propD": "value D"
+          }
+        }
+      },
+      {
+        "comparator": "editor",
+        "value": {
+          "kind": "KindedObject",
+          "value": {
+            "kind": "Editor"
+          }
+        }
+      },
+      {
+        "comparator": "contact",
+        "value": {
+          "kind": "KindedObject",
+          "value": {
+            "kind": "Contact"
+          }
+        }
+      }
+    ],
+    "defaultBranch": {
+      "value": {
+        "kind": "KindedObject",
+        "value": {
+          "kind": "NotFound"
+        }
+      }
+    }
+  }
+]

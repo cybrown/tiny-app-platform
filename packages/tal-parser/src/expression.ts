@@ -57,6 +57,18 @@ export type IfExpression = ExpressionMetadata & {
   ifFalse: Expression | undefined;
 };
 
+export type SwitchExpression = ExpressionMetadata & {
+  kind: 'Switch';
+  value: Expression;
+  branches: {
+    comparator: Expression;
+    value: Expression;
+  }[];
+  defaultBranch: {
+    value: Expression;
+  };
+};
+
 export type TryExpression = ExpressionMetadata & {
   kind: 'Try';
   expr: Expression;
@@ -192,6 +204,7 @@ export type Expression =
   | ArrayExpression
   | ObjectExpression
   | IfExpression
+  | SwitchExpression
   | TryExpression
   | AssignExpression
   | FunctionExpression

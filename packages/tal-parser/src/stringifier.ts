@@ -17,6 +17,7 @@ import {
   UnaryOperatorExpression,
   ProvideExpression,
   ProvidedExpression,
+  SwitchExpression,
 } from './expression';
 
 export function stringify(value: Expression[]): string {
@@ -95,6 +96,8 @@ class Stringifier {
         return this.stringifyCall(obj);
       case 'If':
         return this.stringifyIf(obj);
+      case 'Switch':
+        return this.stringifySwitch(obj);
       case 'Try':
         return this.stringifyTry(obj);
       case 'SubExpression':
@@ -316,10 +319,18 @@ class Stringifier {
     let result = 'with (\n';
     this.incrementDepth();
     for (let entry of obj.entries) {
-      result += this.depthSpace() + this.stringify(entry.key) + ' = ' + this.stringify(entry.value) + '\n';
+      result +=
+        this.depthSpace() +
+        this.stringify(entry.key) +
+        ' = ' +
+        this.stringify(entry.value) +
+        '\n';
     }
     this.decrementDepth();
-    result += this.depthSpace() + ') ' + this.stringifyBlockOfExpressionsMultiLine(obj.body);
+    result +=
+      this.depthSpace() +
+      ') ' +
+      this.stringifyBlockOfExpressionsMultiLine(obj.body);
     return result;
   }
 
@@ -521,6 +532,47 @@ class Stringifier {
         throw new Error('Unreachable');
       }
     }
+    return result;
+  }
+
+  stringifyWithIndent(obj: Expression) {
+    this.incrementDepth();
+    const result = this.stringify(obj);
+    this.decrementDepth();
+    return result;
+  }
+
+  stringifySwitch(obj: SwitchExpression) {
+    let result = 'switch (';
+    result += this.stringify(obj.value);
+    result += ') {\n';
+    this.incrementDepth();
+    const stringifiedBranches = obj.branches.map(
+      branch =>
+        [
+          this.stringify(branch.comparator),
+          this.stringifyWithIndent(branch.value),
+        ] as const
+    );
+    const longestComparator = stringifiedBranches
+      .map(([comparator]) => comparator.length)
+      .reduce((prev, longest) => Math.max(prev, longest), 0);
+    if (obj.defaultBranch) {
+      stringifiedBranches.push([
+        '*',
+        this.stringifyWithIndent(obj.defaultBranch.value),
+      ]);
+    }
+    stringifiedBranches.forEach(([comparator, value]) => {
+      result += this.depthSpace() + comparator;
+      result += padSpaces(longestComparator - comparator.length);
+      result += ' => ';
+      this.incrementDepth();
+      result += value + '\n';
+      this.decrementDepth();
+    });
+    this.decrementDepth();
+    result += this.depthSpace() + '}';
     return result;
   }
 

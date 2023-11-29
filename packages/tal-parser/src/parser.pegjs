@@ -207,7 +207,7 @@ Assignement
         { return { location: location(), kind: "Assign", address, value }; }
 
 LocalDeclaration
-    = keyword:("let" / "var") _ name:Identifier value:(_ '=' _ Expression)?
+    = keyword:("let" / "var") ! IdentifierTailCharacters _ name:Identifier value:(_ '=' _ Expression)?
         { return { location: location(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
 
 BlockOfExpressions

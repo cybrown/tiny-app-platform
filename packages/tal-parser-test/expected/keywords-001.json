@@ -1,0 +1,38 @@
+[
+  {
+    "kind": "BlockOfExpressions",
+    "children": [
+      {
+        "kind": "Local",
+        "name": "letwww"
+      }
+    ]
+  },
+  {
+    "kind": "BlockOfExpressions",
+    "children": [
+      {
+        "kind": "Local",
+        "name": "setwww"
+      }
+    ]
+  },
+  {
+    "kind": "BlockOfExpressions",
+    "children": [
+      {
+        "kind": "Local",
+        "name": "ifwww"
+      }
+    ]
+  },
+  {
+    "kind": "BlockOfExpressions",
+    "children": [
+      {
+        "kind": "Local",
+        "name": "varwww"
+      }
+    ]
+  }
+]

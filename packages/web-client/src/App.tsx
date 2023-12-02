@@ -24,6 +24,7 @@ import Row, { RowDocumentation } from "./widgets/Row";
 import Image, { ImageDocumentation } from "./widgets/Image";
 import Column, { ColumnDocumentation } from "./widgets/Column";
 import Loader, { LoaderDocumentation } from "./widgets/Loader";
+import Html, { HtmlDocumentation } from "./widgets/Html";
 import { backendUrl } from "./runtime/configuration";
 import Debug, { DebugDocumentation } from "./widgets/Debug";
 import { APP_DEBUG_MODE_ENV } from "./constants";
@@ -113,6 +114,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Link", Link, LinkDocumentation);
   ctx.registerWidget("ListLayout", ListLayout, ListLayoutDocumentation);
   ctx.registerWidget("Loader", Loader, LoaderDocumentation);
+  ctx.registerWidget("Html", Html, HtmlDocumentation);
   ctx.registerWidget("Pager", Pager, PagerDocumentation);
   ctx.registerWidget("Row", Row, RowDocumentation);
   ctx.registerWidget("Select", Select, SelectDocumentation);

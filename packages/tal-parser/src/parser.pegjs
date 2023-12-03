@@ -1,5 +1,10 @@
 Document
-	= _ expr:(Expression _)* { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
+	= _ expr:(TopLevelExpression _)* { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
+
+TopLevelExpression
+    = 'export' _ expr:Expression
+        { return { kind: 'Export', expr }; }
+    / Expression
 
 Expression
     = PipeExpression

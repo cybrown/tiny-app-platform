@@ -1,0 +1,25 @@
+func_0: text
+  BLOCK
+    KINDED
+      LOCAL {"name":"Text"}
+      MAKE_ARRAY
+      MAKE_OBJECT
+        LITERAL {"value":"text"}
+        LOCAL {"name":"text"}
+func_1: 
+  LITERAL {"value":null}
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"TOKEN","mutable":false}
+      LITERAL {"value":"token"}
+    DECLARE_LOCAL {"name":"t","mutable":false}
+      FUNCTION_REF {"name":"func_0"}
+    DECLARE_LOCAL {"name":"funcAsValue","mutable":false}
+      FUNCTION_REF {"name":"func_1"}
+    MAKE_OBJECT
+      LITERAL {"value":"TOKEN"}
+      LOCAL {"name":"TOKEN"}
+      LITERAL {"value":"t"}
+      LOCAL {"name":"t"}
+      LITERAL {"value":"funcAsValue"}
+      LOCAL {"name":"funcAsValue"}

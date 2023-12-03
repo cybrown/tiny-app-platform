@@ -1,0 +1,14 @@
+<void>
+<void>
+<void>
+{
+  "TOKEN": "token",
+  "t": {
+    "name": "func_0",
+    "ctx": "<RuntimeContext>"
+  },
+  "funcAsValue": {
+    "name": "func_1",
+    "ctx": "<RuntimeContext>"
+  }
+}

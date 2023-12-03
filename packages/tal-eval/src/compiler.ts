@@ -10,18 +10,42 @@ import {
 export class Compiler {
   private functions: Program = {};
 
+  private namesToExport: Set<string> = new Set();
+
   constructor(private prefix: string) {}
 
   compileMain(value: Expression | Expression[]): Program {
+    const expressionToCompile = Array.isArray(value) ? value : [value];
+    const body = buildIRNode(
+      'BLOCK',
+      expressionToCompile.length ? expressionToCompile[0].location : undefined,
+      {
+        children: [
+          ...expressionToCompile.map(a => this.compile(a)),
+          ...(this.namesToExport.size
+            ? [
+                buildIRNode('MAKE_OBJECT', expressionToCompile[0].location, {
+                  children: Array.from(this.namesToExport).flatMap(name => {
+                    return [
+                      buildIRNode('LITERAL', expressionToCompile[0].location, {
+                        value: name,
+                      }),
+                      buildIRNode('LOCAL', expressionToCompile[0].location, {
+                        name,
+                      }),
+                    ];
+                  }),
+                }),
+              ]
+            : []),
+        ],
+      }
+    );
     return {
       ...this.functions,
       main: {
         parameters: [],
-        body: Array.isArray(value)
-          ? buildIRNode('BLOCK', value.length ? value[0].location : undefined, {
-              children: value.map(a => this.compile(a)),
-            })
-          : this.compile(value),
+        body,
       },
     };
   }
@@ -377,6 +401,21 @@ export class Compiler {
         return buildIRNode('IMPORT', value.location, {
           path: value.path,
         });
+      }
+      case 'Export': {
+        switch (value.expr.kind) {
+          case 'DeclareLocal': {
+            if (value.expr.mutable) {
+              throw new Error('Mutable variables can not be exported');
+            }
+            this.namesToExport.add(value.expr.name);
+            return this.compile(value.expr);
+          }
+          default:
+            throw new Error(
+              'Only immutable values and function definitions can be exported'
+            );
+        }
       }
       default: {
         throw new Error(

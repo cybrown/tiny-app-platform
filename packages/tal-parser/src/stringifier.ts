@@ -19,6 +19,7 @@ import {
   ProvidedExpression,
   SwitchExpression,
   ImportExpression,
+  ExportExpression,
 } from './expression';
 
 export function stringify(value: Expression[]): string {
@@ -131,6 +132,8 @@ class Stringifier {
         return this.stringifyProvided(obj);
       case 'Import':
         return this.stringifyImport(obj);
+      case 'Export':
+        return this.stringifyExport(obj);
       default:
         return this.stringifyCustomKind(obj);
     }
@@ -347,6 +350,10 @@ class Stringifier {
 
   stringifyImport(obj: ImportExpression): string {
     return 'import ' + this.stringifyRawString(obj.path);
+  }
+
+  stringifyExport(obj: ExportExpression): string {
+    return 'export ' + this.stringify(obj.expr);
   }
 
   // TODO: Deprecated

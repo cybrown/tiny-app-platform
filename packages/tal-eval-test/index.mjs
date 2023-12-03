@@ -1,3 +1,5 @@
+import * as fs from "fs";
+import { join } from "path";
 import * as tal from "tal-parser";
 import { RuntimeContext, run, runAsync, compile } from "tal-eval";
 
@@ -24,6 +26,22 @@ const source = await new Promise((resolve, reject) => {
 
 const expressions = tal.parse(source);
 const ctx = new RuntimeContext(() => {});
+
+ctx.getSource = (sourcePath) => {
+  const absolutePath = join(process.cwd(), sourcePath);
+  return new Promise((resolve, reject) => {
+    fs.readFile(
+      absolutePath,
+      {
+        encoding: "utf-8",
+      },
+      (err, data) => {
+        if (err) return reject(err);
+        return resolve(data);
+      }
+    );
+  });
+};
 
 ctx.defineFunction(
   "give_hello",
@@ -62,14 +80,16 @@ ctx.defineFunction(
 );
 
 try {
+  const program = compile(expressions);
+  ctx.program = program;
   const evaluationResult = forceSync
-    ? run(ctx, compile(expressions), "main", true)
-    : await runAsync(ctx, compile(expressions), "main", true);
+    ? run(ctx, program, "main", true)
+    : await runAsync(ctx, program, "main", true);
   evaluationResult.forEach((result, index) => {
     if (result instanceof Error) {
       process.stdout.write("<error: '" + result.message + "'>");
     } else {
-      const jsonResult = JSON.stringify(result, null, "  ");
+      const jsonResult = JSON.stringify(result, jsonStringifyReplacer, "  ");
       process.stdout.write(jsonResult ?? "<void>");
     }
     if (index < evaluationResult.length - 1) {
@@ -80,3 +100,10 @@ try {
   process.stdout.write("<error: '" + err + "'>");
 }
 process.stdout.write("\n");
+
+function jsonStringifyReplacer(key, value) {
+  if (value instanceof RuntimeContext) {
+    return "<RuntimeContext>";
+  }
+  return value;
+}

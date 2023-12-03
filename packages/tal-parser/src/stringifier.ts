@@ -18,6 +18,7 @@ import {
   ProvideExpression,
   ProvidedExpression,
   SwitchExpression,
+  ImportExpression,
 } from './expression';
 
 export function stringify(value: Expression[]): string {
@@ -128,6 +129,8 @@ class Stringifier {
         return this.stringifyProvide(obj);
       case 'Provided':
         return this.stringifyProvided(obj);
+      case 'Import':
+        return this.stringifyImport(obj);
       default:
         return this.stringifyCustomKind(obj);
     }
@@ -141,14 +144,18 @@ class Stringifier {
     } else if (typeof obj.value === 'number') {
       return String(obj.value);
     } else if (typeof obj.value === 'string') {
-      // TODO: find a better way to escape quotes
-      if (obj.value.includes('"')) {
-        return "'" + this.escapeString(obj.value) + "'";
-      }
-      return '"' + this.escapeString(obj.value) + '"';
+      return this.stringifyRawString(obj.value);
     } else {
       throw new Error('Literal type not handled: ' + typeof obj.value);
     }
+  }
+
+  stringifyRawString(str: string): string {
+    // TODO: find a better way to escape quotes
+    if (str.includes('"')) {
+      return "'" + this.escapeString(str) + "'";
+    }
+    return '"' + this.escapeString(str) + '"';
   }
 
   stringifyUnaryOperator(obj: UnaryOperatorExpression): string {
@@ -336,6 +343,10 @@ class Stringifier {
 
   stringifyProvided(obj: ProvidedExpression): string {
     return '&' + this.stringify(obj.key);
+  }
+
+  stringifyImport(obj: ImportExpression): string {
+    return 'import ' + this.stringifyRawString(obj.path);
   }
 
   // TODO: Deprecated

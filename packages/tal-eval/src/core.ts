@@ -83,6 +83,9 @@ export type IRNodes = {
   PROVIDED: {
     children: IRNode[];
   };
+  IMPORT: {
+    path: string;
+  };
 };
 
 export type IRIntrinsicOperator =

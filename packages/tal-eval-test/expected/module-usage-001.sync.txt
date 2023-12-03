@@ -1,0 +1,2 @@
+<error: 'import not allowed in synchronous expression'>
+<error: 'Local not found: mylib'>

@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto",
+    "value": {
+      "kind": "Import",
+      "path": "toto"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [],
+    "value": {
+      "kind": "Attribute",
+      "key": "useExportedFunction",
+      "value": {
+        "kind": "Local",
+        "name": "toto"
+      }
+    }
+  }
+]

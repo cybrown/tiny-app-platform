@@ -1,3 +1,4 @@
+import { parse } from 'tal-parser';
 import { RuntimeContext } from './RuntimeContext';
 import {
   Closure,
@@ -6,6 +7,7 @@ import {
   ParameterDef,
   Program,
 } from './core';
+import { compile } from './compiler';
 
 export function run(
   ctx: RuntimeContext,
@@ -243,6 +245,12 @@ export function runNode(
       case 'CTX_RENDER':
         ctx.forceRefresh();
         return;
+      case 'IMPORT':
+        throw new EvaluationError(
+          'import not allowed in synchronous expression',
+          node,
+          null
+        );
       default:
         throw new Error('Unknown node kind: ' + node.kind);
     }
@@ -477,6 +485,10 @@ export async function runNodeAsync(
       case 'CTX_RENDER':
         ctx.forceRefresh();
         return;
+      case 'IMPORT': {
+        const n = node as IRNode<'IMPORT'>;
+        return await resolveModule(ctx, n.path);
+      }
       default:
         throw new Error('Unknown node kind: ' + node.kind);
     }
@@ -562,4 +574,22 @@ function resolveArgumentNames(
       }
     });
   return [namedArgs, args];
+}
+
+async function resolveModule(
+  ctx: RuntimeContext,
+  path: string
+): Promise<unknown> {
+  if (!ctx.getSource) throw new Error('getSource not defined on context');
+  const moduleSource = await ctx.getSource(path);
+  const ast = parse(moduleSource);
+  const module = compile(ast, path);
+  Object.entries(module).forEach(([name, func]) => {
+    if (name != 'main' && ctx.program) {
+      ctx.program[name] = func;
+    }
+  });
+  const moduleContext = ctx.createWithSameRootLocals();
+  moduleContext.program = module;
+  return await runAsync(moduleContext, module, 'main', false);
 }

@@ -1,0 +1,3 @@
+let toto = import "toto"
+
+toto.useExportedFunction()

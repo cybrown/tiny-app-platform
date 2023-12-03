@@ -67,6 +67,7 @@ ExpressionLevel1
     / If
     / Switch
     / Try
+    / Import
     / Provide
     / Assignement
     / LocalDeclaration
@@ -80,6 +81,10 @@ ExpressionLevel1
     / Number
     / Array
     / SubExpression
+
+Import
+    = 'import' _ path:RawString
+        { return { location: location(), kind: "Import", path }; }
 
 If
     = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:BlockOfExpressions ifFalseArray:(_ 'else' _ (BlockOfExpressions / If))?
@@ -183,11 +188,15 @@ Local
     = id:Identifier
     	{ return { location: location(), kind: 'Local', name: id}; }
 
-String
+RawString
 	= "\"" str:([^"\\] / '\\n' )* "\""
-    	{ return { kind: "Literal", value: str.map(a => a == '\\n' ? '\n' : a).join('') }; }
+    	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
 	/ "'" str:[^']* "'"
-    	{ return { kind: "Literal", value: str.map(a => a == '\\n' ? '\n' : a).join('') }; }
+    	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
+
+String
+	= rawString:RawString
+    	{ return { kind: "Literal", value: rawString }; }
 
 Number
 	= num:[0-9]+ '.' num2:[0-9]*

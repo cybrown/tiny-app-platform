@@ -10,6 +10,8 @@ import {
 export class Compiler {
   private functions: Program = {};
 
+  constructor(private prefix: string) {}
+
   compileMain(value: Expression | Expression[]): Program {
     return {
       ...this.functions,
@@ -373,6 +375,11 @@ export class Compiler {
           ],
         });
       }
+      case 'Import': {
+        return buildIRNode('IMPORT', value.location, {
+          path: value.path,
+        });
+      }
       default: {
         throw new Error(
           'Failed to compile node with kind: ' + (value as AnyForNever).kind
@@ -391,13 +398,14 @@ export class Compiler {
   }
 
   private createFunction(parameters: ParameterDef[], body: IRNode): string {
-    const name = 'func_' + (this.functionIndexCounter++).toString(16);
+    const name =
+      this.prefix + 'func_' + (this.functionIndexCounter++).toString(16);
     this.functions[name] = { parameters, body };
     return name;
   }
 }
 
-export function compile(expr: Expression | Expression[]): Program {
-  const c = new Compiler();
+export function compile(expr: Expression | Expression[], prefix = ''): Program {
+  const c = new Compiler(prefix);
   return c.compileMain(expr);
 }

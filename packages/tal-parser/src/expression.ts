@@ -178,6 +178,11 @@ export type ExpressionLocation = ExpressionMetadata & {
   };
 };
 
+export type ImportExpression = ExpressionMetadata & {
+  kind: 'Import';
+  path: string;
+};
+
 export type ExpressionByKind = {
   Literal: LiteralExpression;
   Local: LocalExpression;
@@ -196,6 +201,7 @@ export type ExpressionByKind = {
   BlockOfExpressions: BlockOfExpressionsExpression;
   DeclareLocal: DeclareLocalExpression;
   KindedObject: KindedObjectExpression;
+  Import: ImportExpression;
 };
 
 export type Expression =
@@ -217,7 +223,8 @@ export type Expression =
   | DeclareLocalExpression
   | KindedObjectExpression
   | ProvideExpression
-  | ProvidedExpression;
+  | ProvidedExpression
+  | ImportExpression;
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
   expr: Expression,

@@ -1,0 +1,12 @@
+func_0: a, b
+  BLOCK
+    INTRINSIC {"operation":"INTRINSIC_ADD"}
+      LOCAL {"name":"a"}
+      LOCAL {"name":"b"}
+main: 
+  BLOCK
+    DECLARE_LOCAL {"name":"add","mutable":false}
+      FUNCTION_REF {"name":"func_0"}
+    MAKE_OBJECT
+      LITERAL {"value":"add"}
+      LOCAL {"name":"add"}

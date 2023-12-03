@@ -72,6 +72,10 @@ async function getApp(name: string) {
   return await response.text();
 }
 
+async function getSource(sourcePath: string) {
+  return getApp(sourcePath);
+}
+
 async function saveApp(name: string, source: string) {
   const response = await fetch(backendUrl + "/apps/write/" + name, {
     method: "POST",
@@ -96,6 +100,7 @@ try {
 
 function buildContext(onStateChange: () => void): RuntimeContext {
   const ctx = new RuntimeContext(onStateChange);
+  ctx.getSource = getSource;
   importStdlibInContext(ctx);
 
   ctx.registerWidget("Box", Box, BoxDocumentation);

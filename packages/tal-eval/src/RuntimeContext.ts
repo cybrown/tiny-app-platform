@@ -35,6 +35,8 @@ export class RuntimeContext {
     this.stateChangedListeners.add(onStateChange);
   }
 
+  public getSource?: (path: string) => Promise<string>;
+
   private _program?: Program;
 
   public get program(): Program | undefined {
@@ -327,6 +329,22 @@ export class RuntimeContext {
     );
     ctx.isWidgetState = true;
     return ctx;
+  }
+
+  createWithSameRootLocals(): RuntimeContext {
+    return new RuntimeContext(
+      () => null,
+      this.rootParent._locals,
+      undefined,
+      false
+    );
+  }
+
+  get rootParent(): RuntimeContext {
+    if (this.parent) {
+      return this.parent.rootParent;
+    }
+    return this;
   }
 
   listLocals(): [string, unknown][] {

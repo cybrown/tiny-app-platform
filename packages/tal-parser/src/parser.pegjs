@@ -189,8 +189,7 @@ ObjectKeyValuePair
 
 ObjectKey
     = Identifier
-    / str:String
-        { return str.value; }
+    / RawString
 
 Array
 	= '[' _ expressions:(Expression _ ','? _ )* ']'
@@ -207,8 +206,8 @@ RawString
     	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
 
 String
-	= rawString:RawString
-    	{ return { kind: "Literal", value: rawString }; }
+	= value:RawString
+    	{ return { kind: "Literal", value }; }
 
 Number
 	= num:[0-9]+ '.' num2:[0-9]*
@@ -229,8 +228,8 @@ Null
 Identifier
     = head:IdentifierHeadCharacters tail:IdentifierTailCharacters*
     	{ return head + tail.join(''); }
-    / '@' str:String
-    	{ return str.value;}
+    / '@' str:RawString
+    	{ return str; }
 
 IdentifierHeadCharacters
     = [A-Za-z_$]

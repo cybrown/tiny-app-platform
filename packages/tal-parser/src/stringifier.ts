@@ -351,7 +351,7 @@ class Stringifier {
 
   // TODO: Deprecated
   stringifyKindedObject(obj: KindedObjectExpression): string {
-    const result = obj.value.kind + ' ';
+    const result = this.stringify(obj.value.kind) + ' ';
     let bodyResult = this.stringifyKindedObjectBodySingleline(obj);
     if (bodyResult.includes('\n') || bodyResult.length > 40) {
       bodyResult = this.stringifyKindedObjectBodyMultiline(obj);

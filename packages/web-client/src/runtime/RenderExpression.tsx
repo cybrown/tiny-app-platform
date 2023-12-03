@@ -91,7 +91,7 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
     "ctx" in ui &&
     ui.ctx instanceof RuntimeContext
   ) {
-    const kind = ui.ctx.evaluate(ui.kind as any) as string;
+    const widget = ui.ctx.evaluate(ui.kind as any) as TODO_ANY;
     const children =
       "children" in ui && ui.children
         ? (ui.ctx.evaluate(ui.children as any, true) as unknown[])
@@ -101,7 +101,6 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
         ? (ui.ctx.evaluate(ui.props as any) as any)
         : {};
 
-    const widget = ui.ctx.getLocal(kind) as TODO_ANY;
     if (widget == null) {
       throw new Error("Widget is null");
     }
@@ -113,7 +112,12 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
       });
     }
     return (
-      <CustomWidgetHost ctx={ui.ctx} widget={widget} props={props} children={children} />
+      <CustomWidgetHost
+        ctx={ui.ctx}
+        widget={widget}
+        props={props}
+        children={children}
+      />
     );
   }
   return <Debug ctx={null as any} value={ui} />;
@@ -224,8 +228,8 @@ export function RenderError({
 }
 
 function nameKindOfExpression(expr: IRNode) {
-  if (expr.kind === "LITERAL") {
-    return (expr as IRNode<"LITERAL">).value;
+  if (expr.kind === "LOCAL") {
+    return (expr as IRNode<"LOCAL">).name;
   }
   if (expr && typeof expr == "object") {
     if (

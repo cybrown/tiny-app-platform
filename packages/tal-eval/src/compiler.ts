@@ -367,9 +367,7 @@ export class Compiler {
 
         return buildIRNode('KINDED', value.location, {
           children: [
-            buildIRNode('LITERAL', value.location, {
-              value: valueAsUiWidget.kind,
-            }),
+            this.compile(valueAsUiWidget.kind),
             childrenArray,
             propsObjectIr,
           ],

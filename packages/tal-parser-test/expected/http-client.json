@@ -351,22 +351,34 @@
   {
     "kind": "KindedObject",
     "value": {
-      "kind": "Column",
+      "kind": {
+        "kind": "Local",
+        "name": "Column"
+      },
       "children": [
         {
           "kind": "KindedObject",
           "value": {
-            "kind": "Row",
+            "kind": {
+              "kind": "Local",
+              "name": "Row"
+            },
             "children": [
               {
                 "kind": "KindedObject",
                 "value": {
-                  "kind": "Box",
+                  "kind": {
+                    "kind": "Local",
+                    "name": "Box"
+                  },
                   "children": [
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "Select",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "Select"
+                        },
                         "bindTo": {
                           "kind": "Local",
                           "name": "method"
@@ -394,12 +406,18 @@
               {
                 "kind": "KindedObject",
                 "value": {
-                  "kind": "Box",
+                  "kind": {
+                    "kind": "Local",
+                    "name": "Box"
+                  },
                   "children": [
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "InputText",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "InputText"
+                        },
                         "bindTo": {
                           "kind": "Local",
                           "name": "url"
@@ -439,17 +457,26 @@
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "Row",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "Row"
+                        },
                         "children": [
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Box",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Box"
+                              },
                               "children": [
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "InputText",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "InputText"
+                                    },
                                     "placeholder": "Header name",
                                     "bindTo": {
                                       "kind": "Index",
@@ -468,12 +495,18 @@
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Box",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Box"
+                              },
                               "children": [
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "InputText",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "InputText"
+                                    },
                                     "placeholder": "Header value",
                                     "bindTo": {
                                       "kind": "Index",
@@ -492,12 +525,18 @@
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Box",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Box"
+                              },
                               "children": [
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "Button",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "Button"
+                                    },
                                     "text": "Remove",
                                     "onClick": {
                                       "kind": "Function",
@@ -559,7 +598,10 @@
         {
           "kind": "KindedObject",
           "value": {
-            "kind": "Button",
+            "kind": {
+              "kind": "Local",
+              "name": "Button"
+            },
             "onClick": {
               "kind": "Function",
               "body": {
@@ -603,7 +645,10 @@
         {
           "kind": "KindedObject",
           "value": {
-            "kind": "Button",
+            "kind": {
+              "kind": "Local",
+              "name": "Button"
+            },
             "text": "New header",
             "onClick": {
               "kind": "BlockOfExpressions",
@@ -652,7 +697,10 @@
         {
           "kind": "KindedObject",
           "value": {
-            "kind": "InputText",
+            "kind": {
+              "kind": "Local",
+              "name": "InputText"
+            },
             "bindTo": {
               "kind": "Local",
               "name": "body"
@@ -664,7 +712,10 @@
         {
           "kind": "KindedObject",
           "value": {
-            "kind": "Button",
+            "kind": {
+              "kind": "Local",
+              "name": "Button"
+            },
             "text": "Execute HTTP Request",
             "onClick": {
               "kind": "Local",
@@ -763,7 +814,10 @@
                       {
                         "kind": "KindedObject",
                         "value": {
-                          "kind": "Text",
+                          "kind": {
+                            "kind": "Local",
+                            "name": "Text"
+                          },
                           "copy": true,
                           "text": {
                             "kind": "Pipe",
@@ -917,7 +971,10 @@
                       {
                         "kind": "KindedObject",
                         "value": {
-                          "kind": "Text",
+                          "kind": {
+                            "kind": "Local",
+                            "name": "Text"
+                          },
                           "copy": true,
                           "text": {
                             "kind": "Pipe",
@@ -1088,17 +1145,26 @@
               {
                 "kind": "KindedObject",
                 "value": {
-                  "kind": "Column",
+                  "kind": {
+                    "kind": "Local",
+                    "name": "Column"
+                  },
                   "children": [
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "Row",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "Row"
+                        },
                         "children": [
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Text",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Text"
+                              },
                               "text": {
                                 "kind": "Call",
                                 "args": [
@@ -1136,19 +1202,28 @@
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "Row",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "Row"
+                        },
                         "children": [
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Text",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Text"
+                              },
                               "text": "Show headers"
                             }
                           },
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Switch",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Switch"
+                              },
                               "bindTo": {
                                 "kind": "Local",
                                 "name": "doShowHeaders"
@@ -1170,19 +1245,28 @@
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Column",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Column"
+                              },
                               "children": [
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "Text",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "Text"
+                                    },
                                     "text": "Headers:"
                                   }
                                 },
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "Table",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "Table"
+                                    },
                                     "columns": {
                                       "kind": "Array",
                                       "value": [
@@ -1195,7 +1279,10 @@
                                               "body": {
                                                 "kind": "KindedObject",
                                                 "value": {
-                                                  "kind": "Text",
+                                                  "kind": {
+                                                    "kind": "Local",
+                                                    "name": "Text"
+                                                  },
                                                   "text": {
                                                     "kind": "Attribute",
                                                     "key": "key",
@@ -1222,7 +1309,10 @@
                                               "body": {
                                                 "kind": "KindedObject",
                                                 "value": {
-                                                  "kind": "Text",
+                                                  "kind": {
+                                                    "kind": "Local",
+                                                    "name": "Text"
+                                                  },
                                                   "text": {
                                                     "kind": "Attribute",
                                                     "key": "value",
@@ -1316,19 +1406,28 @@
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "Row",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "Row"
+                        },
                         "children": [
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Text",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Text"
+                              },
                               "text": "Language syntax to highlight"
                             }
                           },
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Select",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Select"
+                              },
                               "options": {
                                 "kind": "Array",
                                 "value": [
@@ -1349,14 +1448,20 @@
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Text",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Text"
+                              },
                               "text": "Format code (when possible)"
                             }
                           },
                           {
                             "kind": "KindedObject",
                             "value": {
-                              "kind": "Switch",
+                              "kind": {
+                                "kind": "Local",
+                                "name": "Switch"
+                              },
                               "bindTo": {
                                 "kind": "Local",
                                 "name": "doFormat"
@@ -1369,7 +1474,10 @@
                     {
                       "kind": "KindedObject",
                       "value": {
-                        "kind": "Box",
+                        "kind": {
+                          "kind": "Local",
+                          "name": "Box"
+                        },
                         "children": [
                           {
                             "kind": "If",
@@ -1396,7 +1504,10 @@
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "Debug",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "Debug"
+                                    },
                                     "value": {
                                       "kind": "Pipe",
                                       "first": {
@@ -1424,7 +1535,10 @@
                                 {
                                   "kind": "KindedObject",
                                   "value": {
-                                    "kind": "Snippet",
+                                    "kind": {
+                                      "kind": "Local",
+                                      "name": "Snippet"
+                                    },
                                     "text": {
                                       "kind": "Local",
                                       "name": "responseBodyString"

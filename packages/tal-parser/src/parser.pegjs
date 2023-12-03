@@ -41,8 +41,7 @@ ExpressionLevel2 // Dotted and indexed expression
         { return field.reduce((prev, cur) => ({ ...cur, value: prev }), expr); }
 
 ExpressionLevel2Right
-	= _ '.' _ key:Identifier
-    	{ return { location: location(), kind: 'Attribute', key }; }
+	= DottedExpressionTail
     / _ '[' _ index:Expression _ ']'
     	{ return { location: location(), kind: 'Index', index }; }
     / _ "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
@@ -135,7 +134,7 @@ Function
         { return { location: location(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
 
 ObjectWithKind
-    = kind:Identifier _ "{" _ values:((ObjectWithKindKeyValuePair / Expression) _ ','? _)* "}"
+    = kind:DottedExpression _ "{" _ values:((ObjectWithKindKeyValuePair / Expression) _ ','? _)* "}"
         {
             const children = values.filter(a => !Array.isArray(a[0]))
                 .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
@@ -154,6 +153,14 @@ ObjectWithKind
                 }
             };
         }
+
+DottedExpression
+    = first:Local tail:DottedExpressionTail*
+        { return tail.reduce((prev, cur) => ({ ...cur, value: prev }), first); }
+
+DottedExpressionTail
+	= _ '.' _ key:Identifier
+    	{ return { location: location(), kind: 'Attribute', key }; }
 
 ObjectWithKindKeyValuePair
     = key:ObjectKey _ ":" _ value:Expression

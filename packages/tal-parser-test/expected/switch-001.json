@@ -15,7 +15,10 @@
         "value": {
           "kind": "KindedObject",
           "value": {
-            "kind": "List",
+            "kind": {
+              "kind": "Local",
+              "name": "List"
+            },
             "propA": "value A",
             "propB": "value B",
             "propC": "value C",
@@ -28,7 +31,10 @@
         "value": {
           "kind": "KindedObject",
           "value": {
-            "kind": "Editor"
+            "kind": {
+              "kind": "Local",
+              "name": "Editor"
+            }
           }
         }
       },
@@ -37,7 +43,10 @@
         "value": {
           "kind": "KindedObject",
           "value": {
-            "kind": "Contact"
+            "kind": {
+              "kind": "Local",
+              "name": "Contact"
+            }
           }
         }
       }
@@ -46,7 +55,10 @@
       "value": {
         "kind": "KindedObject",
         "value": {
-          "kind": "NotFound"
+          "kind": {
+            "kind": "Local",
+            "name": "NotFound"
+          }
         }
       }
     }

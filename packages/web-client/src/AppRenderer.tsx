@@ -32,7 +32,7 @@ function AppRenderer({
         setAppUi({
           kind: "KINDED",
           children: [
-            buildIRNode("LITERAL", lastExpr?.location, { value: "Column" }),
+            buildIRNode("LOCAL", lastExpr?.location, { name: "Column" }),
             buildIRNode("MAKE_ARRAY", lastExpr?.location, {
               children: lastExpr ? [lastExpr] : [],
             }),

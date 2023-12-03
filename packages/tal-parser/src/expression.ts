@@ -140,7 +140,7 @@ export type DeclareLocalExpression = ExpressionMetadata & {
 
 export type KindedObjectExpression = ExpressionMetadata & {
   kind: 'KindedObject';
-  value: { [key: string]: unknown };
+  value: { kind: Expression; [key: string]: unknown };
 };
 
 export type ArrayExpression = ExpressionMetadata & {

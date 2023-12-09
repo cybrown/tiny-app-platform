@@ -1,0 +1,34 @@
+[
+  {
+    "kind": "Switch",
+    "value": true,
+    "branches": [
+      {
+        "comparator": {
+          "kind": "Local",
+          "name": "expr1"
+        },
+        "value": {
+          "kind": "Local",
+          "name": "value1"
+        }
+      },
+      {
+        "comparator": {
+          "kind": "Local",
+          "name": "expr2"
+        },
+        "value": {
+          "kind": "Local",
+          "name": "value2"
+        }
+      }
+    ],
+    "defaultBranch": {
+      "value": {
+        "kind": "Local",
+        "name": "defaultValue"
+      }
+    }
+  }
+]

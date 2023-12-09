@@ -561,9 +561,11 @@ class Stringifier {
   }
 
   stringifySwitch(obj: SwitchExpression) {
-    let result = 'switch (';
-    result += this.stringify(obj.value);
-    result += ') {\n';
+    let result = 'switch';
+    if (obj.value) {
+      result += ' (' + this.stringify(obj.value) + ')';
+    }
+    result += ' {\n';
     this.incrementDepth();
     const stringifiedBranches = obj.branches.map(
       branch =>

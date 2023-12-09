@@ -1,0 +1,13 @@
+main: 
+  BLOCK
+    CONDITION
+      INTRINSIC {"operation":"INTRINSIC_EQUAL_STRICT"}
+        LITERAL {"value":true}
+        LITERAL {"value":true}
+      LITERAL {"value":"ok"}
+      CONDITION
+        INTRINSIC {"operation":"INTRINSIC_EQUAL_STRICT"}
+          LITERAL {"value":true}
+          LITERAL {"value":false}
+        LITERAL {"value":"ko"}
+        LITERAL {"value":"default"}

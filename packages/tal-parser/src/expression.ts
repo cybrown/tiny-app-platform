@@ -59,7 +59,7 @@ export type IfExpression = ExpressionMetadata & {
 
 export type SwitchExpression = ExpressionMetadata & {
   kind: 'Switch';
-  value: Expression;
+  value: Expression | null;
   branches: {
     comparator: Expression;
     value: Expression;

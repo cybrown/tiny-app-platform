@@ -159,7 +159,11 @@ export class Compiler {
           ],
         });
       case 'Switch': {
-        const valueIRNode = this.compile(value.value);
+        const valueIRNode = value.value
+          ? this.compile(value.value)
+          : buildIRNode('LITERAL', value.location, {
+              value: true,
+            });
         let node: IRNode;
         if (value.defaultBranch) {
           node = this.compile(value.defaultBranch.value);

@@ -5,6 +5,7 @@ import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 import "prismjs/components/prism-json.min";
 import usePressEscape from "./internal/usePressEscape";
+import { useTheme } from "../theme";
 
 type SnippetProps = {
   ctx: RuntimeContext;
@@ -60,6 +61,8 @@ export default function Snippet({
     setViewMore(!viewMore);
   }, [viewMore]);
 
+  const theme = useTheme();
+
   return (
     <div
       className={[
@@ -71,13 +74,14 @@ export default function Snippet({
       {fullScreen ? (
         <div className={styles.fullScreen}>
           <div className={styles.floatingFullscreenToolbar}>
-            <button onClick={copyClickHandler}>Copy</button>
+            <theme.Button onClick={copyClickHandler} text="Copy" />
             {format ? (
-              <button onClick={copyFormattedClickHandler}>
-                Copy formatted
-              </button>
+              <theme.Button
+                onClick={copyFormattedClickHandler}
+                text="Copy formatted"
+              />
             ) : null}
-            <button onClick={toggleFullScreen}>Close</button>
+            <theme.Button onClick={toggleFullScreen} text="Close" />
           </div>
           <div className={styles.scroller}>
             {htmlToRender ? (
@@ -93,14 +97,15 @@ export default function Snippet({
       ) : (
         <>
           <div className={styles.floatingToolBar}>
-            <button onClick={copyClickHandler}>Copy</button>
+            <theme.Button onClick={copyClickHandler} text="Copy" />
             {format ? (
-              <button onClick={copyFormattedClickHandler}>
-                Copy formatted
-              </button>
+              <theme.Button
+                onClick={copyFormattedClickHandler}
+                text="Copy formatted"
+              />
             ) : null}
-            <button onClick={viewMoreHandler}>View more</button>
-            <button onClick={toggleFullScreen}>Fullscreen</button>
+            <theme.Button onClick={viewMoreHandler} text="View more" />
+            <theme.Button onClick={toggleFullScreen} text="Fullscreen" />
           </div>
           <div className={styles.preContainer}>
             {htmlToRender ? (

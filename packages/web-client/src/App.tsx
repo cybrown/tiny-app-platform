@@ -33,9 +33,10 @@ import Pager, { PagerDocumentation } from "./widgets/Pager";
 import Documentation from "./editor/Documentation";
 import ToolBar from "./editor/Toolbar";
 import { importStdlibInContext } from "tal-stdlib";
-import { THEME_CONTEXT } from "./theme";
+import { THEME_CONTEXT, Theme } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
+import twbsTheme from "./themes/twbs";
 
 const queryParams = window.location.search
   .slice(1)
@@ -168,7 +169,7 @@ Column {
 }
 `;
 
-const themes = [htmlTheme, toyBoxTheme];
+const themes = [htmlTheme, toyBoxTheme, twbsTheme];
 
 function App() {
   const currentAppName = "latestSource";
@@ -345,6 +346,20 @@ function App() {
     [editorApi, onFormatHandler]
   );
 
+  const applyTheme = useCallback(
+    (newTheme: Theme) => {
+      theme.onUnload && theme.onUnload();
+      newTheme.onLoad && newTheme.onLoad();
+      setTheme(newTheme);
+    },
+    [theme]
+  );
+
+  useEffect(() => {
+    theme.onLoad && theme.onLoad();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <THEME_CONTEXT.Provider value={theme}>
       <>
@@ -372,7 +387,7 @@ function App() {
                   {themes.map((theme) => (
                     <theme.Button
                       text={theme.name}
-                      onClick={() => setTheme(theme)}
+                      onClick={() => applyTheme(theme)}
                     ></theme.Button>
                   ))}
                 </div>

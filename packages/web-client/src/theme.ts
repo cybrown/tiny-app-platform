@@ -64,6 +64,8 @@ export interface Theme {
   InputFile(props: InputFileProps): any;
   Select(props: SelectProps): any;
   Text(props: TextProps): any;
+  onLoad?(): void;
+  onUnload?(): void;
 }
 
 export const THEME_CONTEXT = React.createContext<null | Theme>(null);

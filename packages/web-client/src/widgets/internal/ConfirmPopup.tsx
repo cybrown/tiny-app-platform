@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import usePressEscape from "./usePressEscape";
 import styles from "./ConfirmPopup.module.css";
-import StyledButton from "./StyledButton";
+import StyledButton from "../../themes/toy-box/Button";
 
 type ConfirmPopupProps = {
   show: boolean;

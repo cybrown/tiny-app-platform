@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import styles from "./Select.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
+import { useTheme } from "../theme";
 
 type SelectProps = {
   ctx: RuntimeContext;
@@ -28,10 +28,9 @@ export default function Select({
       .includes(value ?? "");
 
   const onChangeHandler = useCallback(
-    async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    async (newSelectedIndex: number) => {
       try {
-        const optionToSet =
-          options[e.target.selectedIndex - (showEmpty ? 1 : 0)];
+        const optionToSet = options[newSelectedIndex - (showEmpty ? 1 : 0)];
         const valueToSet =
           typeof optionToSet === "string" ? optionToSet : optionToSet.value;
         if (onChange) {
@@ -44,35 +43,18 @@ export default function Select({
     [ctx, options, showEmpty, onChange]
   );
 
+  const theme = useTheme();
+
   return (
     <>
-      <select
-        className={[styles.Select, showEmpty ? styles.selectDisabled : ""].join(
-          " "
-        )}
-        onChange={onChangeHandler}
-        value={value ?? ""}
+      <theme.Select
+        options={options.map((o) => (typeof o == "string" ? o : o.label))}
         disabled={disabled}
-      >
-        {showEmpty ? (
-          <option className={styles.optionDisabled}>{placeholder}</option>
-        ) : null}
-        {options.map((option) =>
-          typeof option === "string" ? (
-            <option className={styles.option} key={option} value={option}>
-              {option}
-            </option>
-          ) : (
-            <option
-              className={styles.option}
-              key={option.value}
-              value={option.value}
-            >
-              {option.label}
-            </option>
-          )
-        )}
-      </select>
+        onChange={onChangeHandler}
+        placeholder={placeholder}
+        showEmpty={showEmpty}
+        value={value ?? ""}
+      />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );
@@ -81,7 +63,8 @@ export default function Select({
 export const SelectDocumentation: WidgetDocumentation<SelectProps> = {
   description: "Pick a string value from a predefined list",
   props: {
-    options: "List of all possible values as string | {value: string, label: string}",
+    options:
+      "List of all possible values as string | {value: string, label: string}",
     placeholder: "Message to show when the widget is empty",
     ...InputPropsDocs,
   },

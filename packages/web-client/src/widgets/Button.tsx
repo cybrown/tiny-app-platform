@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
 import ErrorPopin from "./internal/ErrorPopin";
-import StyledButton from "./internal/StyledButton";
+import { useTheme } from "../theme";
 
 type ButtonProps = {
   ctx: RuntimeContext;
@@ -53,6 +53,8 @@ export default function Button({
 
   const [lastError, setLastError] = useState(null as any);
 
+  const theme = useTheme();
+
   return (
     <>
       <ConfirmPopup
@@ -61,7 +63,7 @@ export default function Button({
         confirm={confirm}
         onOk={doClickAction}
       />
-      <StyledButton
+      <theme.Button
         onClick={clickHandler}
         disabled={disabled || isLoading}
         text={text}

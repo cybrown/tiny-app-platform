@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import styles from "./CheckBox.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
+import { useTheme } from "../theme";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
@@ -18,10 +18,10 @@ export default function CheckBox({
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (value: boolean) => {
       try {
         if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [e.target.checked]);
+          await ctx.callFunctionAsync(onChange as Closure, [value]);
         }
       } catch (err) {
         setLastError(err);
@@ -30,17 +30,15 @@ export default function CheckBox({
     [ctx, onChange]
   );
 
+  const theme = useTheme();
+
   return (
     <>
-      <div className={styles.CheckBox + (disabled ? ' ' + styles.disabled : '')}>
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={handleChange}
-          disabled={disabled}
-        />
-        <div className={styles.checkMark}></div>
-      </div>
+      <theme.CheckBox
+        onChange={handleChange}
+        value={value}
+        disabled={disabled}
+      />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );

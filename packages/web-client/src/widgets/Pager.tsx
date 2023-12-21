@@ -1,9 +1,9 @@
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import StyledButton from "./internal/StyledButton";
 import { useCallback, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import ErrorPopin from "./internal/ErrorPopin";
 import { Closure } from "tal-eval";
+import { useTheme } from "../theme";
 
 type PagerProps = {
   ctx: RuntimeContext;
@@ -44,35 +44,37 @@ export default function Pager({
     [ctx, onChange]
   );
 
+  const theme = useTheme();
+
   return (
     <div>
-      <StyledButton
+      <theme.Button
         text="<<"
         secondary
         disabled={currentPage === 1}
         onClick={() => updateValue(1)}
       />
-      <StyledButton
+      <theme.Button
         text="<"
         secondary
         disabled={currentPage === 1}
         onClick={() => updateValue(Math.max(1, currentPage - 1))}
       />
       {pages.map((index) => (
-        <StyledButton
+        <theme.Button
           key={index}
           text={index + ""}
           secondary={currentPage !== index}
           onClick={() => updateValue(index)}
         />
       ))}
-      <StyledButton
+      <theme.Button
         text=">"
         secondary
         disabled={currentPage === maxPage}
         onClick={() => updateValue(Math.min(maxPage, currentPage + 1))}
       />
-      <StyledButton
+      <theme.Button
         text=">>"
         secondary
         disabled={currentPage === maxPage}

@@ -4,6 +4,7 @@
   border-style: solid;
   border-width: 1px;
   outline: none;
+  font-family: Proxima Nova Rg;
 
   transition-property: background-color;
   transition-duration: 250ms;

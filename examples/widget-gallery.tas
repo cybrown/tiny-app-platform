@@ -1,0 +1,146 @@
+fun Title(text) {
+  Text {
+    text:   text
+    align:  "center"
+    weight: "light"
+    size:   2
+  }
+}
+
+fun GaleryText() {
+  Column {
+    Title { text: "Text" }
+
+    Text { text: "Simple text" }
+
+    Text { text: "A little bigger", size: 1.1 }
+
+    Text {
+      text:   "And bold"
+      size:   1.1
+      weight: "bold"
+    }
+
+    Text {
+      text:   "Bigger and light"
+      size:   1.5
+      weight: "light"
+    }
+
+    Text {
+      text:   "With a different color"
+      size:   1.5
+      weight: "light"
+      color:  "teal"
+    }
+
+    Text {
+      text:   "Centered !"
+      size:   1.5
+      weight: "light"
+      color:  "teal"
+      align:  "center"
+    }
+
+    Text {
+      text:         "Preformated !"
+      preformatted: true
+    }
+  }
+}
+
+fun GaleryInputText() {
+  var value = ""
+
+  Column {
+    Title { text: "InputText" }
+
+    InputText { bindTo: value }
+
+    InputText {
+      bindTo:      value
+      placeholder: "With placeholder"
+    }
+  }
+}
+
+fun GaleryCheckbox() {
+  var value = false
+
+  Title { text: "CheckBox Switch" }
+  Row { CheckBox { bindTo: value } }
+  Row { Switch { bindTo: value } }
+  Row {
+    CheckBox { bindTo: value, disabled: true }
+  }
+  Row {
+    Switch { bindTo: value, disabled: true }
+  }
+}
+
+fun GaleryButton() {
+  var value = false
+
+  Title { text: "Button" }
+  Button { text: "Click me" }
+  Button { text: "Click me", secondary: true }
+  Button { text: "Click me", disabled: true }
+  Button {
+    text:      "Click me"
+    secondary: true
+    disabled:  true
+  }
+}
+
+fun GaleryLink() {
+  var value = false
+
+  Title { text: "Link" }
+  Link { url: "https://www.example.com" }
+}
+
+fun GaleryPager() {
+  var currentPage = 1
+
+  Title { text: "Pager" }
+  Pager {
+    max:     100
+    perPage: 10
+    bindTo:  currentPage
+  }
+}
+
+fun GalerySelect() {
+  var values = ["Red", "Green", {value: "#00F", label: "Blue"}]
+  var value = "Red"
+  var value2
+
+  Title { text: "Select" }
+  Select {
+    options:     values
+    placeholder: "Color"
+    bindTo:      value
+  }
+  Text { text: "Selected: " + value }
+  Select {
+    options:     values
+    placeholder: "Color"
+    bindTo:      value
+    disabled:    true
+  }
+  Select {
+    options:     values
+    placeholder: "Color"
+    bindTo:      value2
+  }
+}
+
+Row {
+  Box { width: "360px", GaleryInputText {} }
+  Box { width: "360px", GaleryText {} }
+  Box { width: "360px", GaleryCheckbox {} }
+  Box { width: "360px", GaleryButton {} }
+  Box { width: "360px", GaleryLink {} }
+  Box { width: "360px", GaleryPager {} }
+  Box { width: "360px", GalerySelect {} }
+}

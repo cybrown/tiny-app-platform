@@ -1,0 +1,20 @@
+.Select {
+  height: 28px;
+  background-color: rgb(248, 250, 249);
+  border-style: solid;
+  border-width: 1px;
+  outline: none;
+  font-family: Proxima Nova Rg;
+}
+
+.selectDisabled {
+  color: gray;
+}
+
+.optionDisabled {
+  color: gray;
+}
+
+.option {
+  color: black;
+}

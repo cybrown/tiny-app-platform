@@ -1,9 +1,9 @@
-import { ChangeEvent, DragEventHandler, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import styles from "./InputFile.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
+import { useTheme } from "../theme";
 
 type InputFileProps = {
   ctx: RuntimeContext;
@@ -11,9 +11,6 @@ type InputFileProps = {
 } & InputProps<string>;
 
 // TODO: find a solution out of Electron
-
-const onDragOverHandler: DragEventHandler<HTMLInputElement> = (event) =>
-  event.preventDefault();
 
 export default function InputFile({
   ctx,
@@ -24,20 +21,11 @@ export default function InputFile({
 }: InputFileProps) {
   const [lastError, setLastError] = useState(null as any);
 
-  const onDropHandler: DragEventHandler<HTMLInputElement> = useCallback(
-    async (event) => {
+  const onChangeHandler = useCallback(
+    async (newFile: string) => {
       try {
-        const files = event.dataTransfer.files;
-        if (files.length) {
-          const file = files[0];
-          if ((file as any).path) {
-            if (onChange) {
-              await ctx.callFunctionAsync(onChange as Closure, [
-                (file as any).path,
-              ]);
-            }
-            event.preventDefault();
-          }
+        if (onChange) {
+          await ctx.callFunctionAsync(onChange as Closure, [newFile]);
         }
       } catch (err) {
         setLastError(err);
@@ -46,30 +34,15 @@ export default function InputFile({
     [ctx, onChange]
   );
 
-  const onInputChangeHandler = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>) => {
-      try {
-        if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [e.target.value]);
-        }
-      } catch (err) {
-        setLastError(err);
-      }
-    },
-    [ctx, onChange]
-  );
+  const theme = useTheme();
 
   return (
     <>
-      <input
-        className={styles.InputFile}
-        placeholder={placeholder}
-        type="text"
-        onChange={onInputChangeHandler}
-        value={value}
-        onDrop={onDropHandler}
-        onDragOver={onDragOverHandler}
+      <theme.InputFile
         disabled={disabled}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChangeHandler}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>

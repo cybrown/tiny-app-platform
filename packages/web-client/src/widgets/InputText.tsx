@@ -1,8 +1,8 @@
-import { ChangeEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
-import styles from "./InputText.module.css";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import { useTheme } from "../theme";
 
 type InputTextProps = {
   ctx: RuntimeContext;
@@ -30,24 +30,20 @@ export default function InputText({
 
   const [lastError, setLastError] = useState(null as any);
 
-  const onKeyDownHandler = useCallback(
-    async (e: React.KeyboardEvent<HTMLInputElement>) => {
-      try {
-        if (e.key === "Enter" && onSubmit) {
-          await ctx.callFunctionAsync(onSubmit, []);
-        }
-      } catch (err) {
-        setLastError(err);
-      }
-    },
-    [ctx, onSubmit]
-  );
+  const onSubmitHandler = useCallback(async () => {
+    if (!onSubmit) return;
+    try {
+      await ctx.callFunctionAsync(onSubmit, []);
+    } catch (err) {
+      setLastError(err);
+    }
+  }, [ctx, onSubmit]);
 
-  const onInputChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = useCallback(
+    (newValue: string) => {
       try {
         if (onChange) {
-          ctx.callFunction(onChange as Closure, [e.currentTarget.value]);
+          ctx.callFunction(onChange as Closure, [newValue]);
         }
       } catch (err) {
         setLastError(err);
@@ -56,40 +52,19 @@ export default function InputText({
     [ctx, onChange]
   );
 
-  const onTextareaChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      try {
-        if (onChange) {
-          ctx.callFunction(onChange as Closure, [e.currentTarget.value]);
-        }
-      } catch (err) {
-        setLastError(err);
-      }
-    },
-    [ctx, onChange]
-  );
+  const theme = useTheme();
 
   return (
     <>
-      {multiline ? (
-        <textarea
-          className={styles.InputText}
-          placeholder={placeholder}
-          onChange={onTextareaChangeHandler}
-          disabled={disabled}
-          value={value ?? ""}
-        />
-      ) : (
-        <input
-          className={styles.InputText}
-          placeholder={placeholder}
-          type={type ?? "text"}
-          onChange={onInputChangeHandler}
-          onKeyDown={onKeyDownHandler}
-          disabled={disabled}
-          value={value ?? ""}
-        />
-      )}
+      <theme.InputText
+        multiline={multiline}
+        placeholder={placeholder}
+        disabled={disabled}
+        onChange={onChangeHandler}
+        onSubmit={onSubmitHandler}
+        type={type}
+        value={value ?? ""}
+      />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );

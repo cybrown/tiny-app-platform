@@ -33,6 +33,9 @@ import Pager, { PagerDocumentation } from "./widgets/Pager";
 import Documentation from "./editor/Documentation";
 import ToolBar from "./editor/Toolbar";
 import { importStdlibInContext } from "tal-stdlib";
+import { THEME_CONTEXT } from "./theme";
+import toyBoxTheme from "./themes/toy-box";
+import htmlTheme from "./themes/html";
 
 const queryParams = window.location.search
   .slice(1)
@@ -165,6 +168,8 @@ Column {
 }
 `;
 
+const themes = [htmlTheme, toyBoxTheme];
+
 function App() {
   const currentAppName = "latestSource";
 
@@ -173,6 +178,7 @@ function App() {
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
   const [app, setApp] = useState<Program | null>(null);
+  const [theme, setTheme] = useState(toyBoxTheme);
 
   const executeSource = useCallback((newSource: string) => {
     if (newSource == null) {
@@ -340,79 +346,90 @@ function App() {
   );
 
   return (
-    <>
-      <div
-        className={[
-          sourceFromFile && !isDebugMode ? styles.electron : "",
-          styles.App,
-          isDebugMode ? styles.hasEditor : "",
-        ].join(" ")}
-      >
-        {!isDebugMode ? (
-          <button
-            className={styles.BtnEdit}
-            type="button"
-            onClick={openEditorHandler}
-          >
-            Edit
-          </button>
-        ) : null}
-        {isDebugMode ? (
-          <div className={styles.EditorContainer}>
-            <div className={styles.ToolBarContainer}>
-              <ToolBar
-                onApply={onApplyHandler}
-                onFormat={onFormatHandler}
-                onApplyAndFormat={onApplyAndFormatHandler}
-                onClose={onCloseHandler}
-                onSaveAndFormatAndClose={onSaveAndFormatAndCloseHandler}
-                onShowDocumentation={toggleShowDocumentationHandler}
-                appDebugMode={
-                  ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
-                }
-                setAppDebugMode={setAppDebutModeHandler}
-              />
-            </div>
-            {source ? (
-              <Editor
-                source={source}
-                grabSetSource={setUpdateSource}
-                onApiReady={setEditorApi}
-              />
-            ) : null}
-          </div>
-        ) : null}
-        <div className={styles.AppRendererContainer}>
-          {app ? (
-            <AppRenderer ctx={ctx} app={app} />
-          ) : parseError ? (
-            <div className={errorStyles.RenderError}>
-              <div>Error parsing source: {parseError.message}</div>
-              <div>
-                At line {(parseError as any)?.location?.start?.line} column{" "}
-                {(parseError as any)?.location?.start?.column}
+    <THEME_CONTEXT.Provider value={theme}>
+      <>
+        <div
+          className={[
+            sourceFromFile && !isDebugMode ? styles.electron : "",
+            styles.App,
+            isDebugMode ? styles.hasEditor : "",
+          ].join(" ")}
+        >
+          {!isDebugMode ? (
+            <button
+              className={styles.BtnEdit}
+              type="button"
+              onClick={openEditorHandler}
+            >
+              Edit
+            </button>
+          ) : null}
+          {isDebugMode ? (
+            <div className={styles.EditorContainer}>
+              <div className={styles.ToolBarContainer}>
+                <div>
+                  Change theme:
+                  {themes.map((theme) => (
+                    <theme.Button
+                      text={theme.name}
+                      onClick={() => setTheme(theme)}
+                    ></theme.Button>
+                  ))}
+                </div>
+                <ToolBar
+                  onApply={onApplyHandler}
+                  onFormat={onFormatHandler}
+                  onApplyAndFormat={onApplyAndFormatHandler}
+                  onClose={onCloseHandler}
+                  onSaveAndFormatAndClose={onSaveAndFormatAndCloseHandler}
+                  onShowDocumentation={toggleShowDocumentationHandler}
+                  appDebugMode={
+                    ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
+                  }
+                  setAppDebugMode={setAppDebutModeHandler}
+                />
               </div>
-              <button onClick={() => console.error(parseError)}>
-                Click to console.error
-              </button>
+              {source ? (
+                <Editor
+                  source={source}
+                  grabSetSource={setUpdateSource}
+                  onApiReady={setEditorApi}
+                />
+              ) : null}
             </div>
-          ) : isLoadingApp ? (
-            <div>Loading app...</div>
-          ) : isLoadError ? (
-            <div>Error while loading app</div>
-          ) : (
-            <div>Unknown failure</div>
-          )}
+          ) : null}
+          <div className={styles.AppRendererContainer}>
+            {app ? (
+              <AppRenderer ctx={ctx} app={app} />
+            ) : parseError ? (
+              <div className={errorStyles.RenderError}>
+                <div>Error parsing source: {parseError.message}</div>
+                <div>
+                  At line {(parseError as any)?.location?.start?.line} column{" "}
+                  {(parseError as any)?.location?.start?.column}
+                </div>
+                <button onClick={() => console.error(parseError)}>
+                  Click to console.error
+                </button>
+              </div>
+            ) : isLoadingApp ? (
+              <div>Loading app...</div>
+            ) : isLoadError ? (
+              <div>Error while loading app</div>
+            ) : (
+              <div>Unknown failure</div>
+            )}
+          </div>
         </div>
-      </div>
-      {showDocumentation ? (
-        <Documentation
-          ctx={ctx}
-          onClose={toggleShowDocumentationHandler}
-          onWriteInEditor={onWriteInEditorHandler}
-        />
-      ) : null}
-    </>
+        {showDocumentation ? (
+          <Documentation
+            ctx={ctx}
+            onClose={toggleShowDocumentationHandler}
+            onWriteInEditor={onWriteInEditorHandler}
+          />
+        ) : null}
+      </>
+    </THEME_CONTEXT.Provider>
   );
 }
 

@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation, Closure } from "tal-eval";
-import styles from "./Switch.module.css";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import { useTheme } from "../theme";
 
 type SwitchProps = {
   ctx: RuntimeContext;
@@ -17,10 +17,10 @@ export default function Switch({
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (value: boolean) => {
       try {
         if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [e.target.checked]);
+          await ctx.callFunctionAsync(onChange as Closure, [value]);
         }
       } catch (err) {
         setLastError(err);
@@ -29,19 +29,11 @@ export default function Switch({
     [ctx, onChange]
   );
 
+  const theme = useTheme();
+
   return (
     <>
-      <div className={styles.SwitchContainer}>
-        <input
-          className={styles.Switch}
-          type="checkbox"
-          checked={value}
-          onChange={handleChange}
-          disabled={disabled}
-        />
-        <div className={styles.background + (disabled ? ' ' + styles.backgroundDisabled : '')}></div>
-        <div className={styles.switch + (disabled ? ' ' + styles.switchDisabled : '')}></div>
-      </div>
+      <theme.Switch disabled={disabled} onChange={handleChange} value={value} />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );

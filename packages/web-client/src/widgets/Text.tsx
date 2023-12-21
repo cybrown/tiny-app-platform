@@ -1,6 +1,7 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Text.module.css";
+import { useTheme } from "../theme";
 
 export type TextProps = {
   ctx: RuntimeContext;
@@ -44,32 +45,24 @@ export default function Text({
     navigator.clipboard.writeText(text);
   }, [text]);
 
-  const style = useMemo<React.CSSProperties>(
-    () => ({
-      fontSize: (size ?? 1) + "em",
-      textAlign: align ?? "left",
-      fontFamily: weight === "light" ? "Proxima Nova Lt" : "Proxima Nova Rg",
-      fontWeight: weight ?? "normal",
-      whiteSpace: wrap ? undefined : "nowrap",
-      color: color,
-    }),
-    [align, size, weight, wrap, color]
-  );
+  const theme = useTheme();
 
   return (
     <div className={styles.Text}>
       {showCopyButton ? (
-        <button className={styles.buttonCopy} onClick={copyClickHandler}>
-          copy
-        </button>
-      ) : null}
-      {preformatted ? (
-        <pre>{text}</pre>
-      ) : (
-        <div className={styles.Text} style={style}>
-          {text}
+        <div className={styles.buttonCopy}>
+          <theme.Button text="Copy" onClick={copyClickHandler} />
         </div>
-      )}
+      ) : null}
+      <theme.Text
+        text={text}
+        align={align}
+        color={color}
+        preformatted={preformatted}
+        size={size}
+        weight={weight}
+        wrap={wrap}
+      />
     </div>
   );
 }

@@ -1,18 +1,12 @@
-import styles from "./StyledButton.module.css";
+import { ButtonProps } from "../../theme";
+import styles from "./Button.module.css";
 
-type StyledButtonProps = {
-  text: string;
-  disabled?: boolean;
-  onClick: () => void;
-  secondary?: boolean;
-};
-
-export default function StyledButton({
+export default function Button({
   onClick,
   disabled,
   text,
   secondary,
-}: StyledButtonProps) {
+}: ButtonProps) {
   return (
     <button
       className={[styles.Button, secondary ? styles.secondary : ""].join(" ")}

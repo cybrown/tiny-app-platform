@@ -67,6 +67,21 @@ export interface TextProps {
   color?: string;
 }
 
+export type PagerButtonState = "HIDDEN" | "DISABLED" | "ENABLED";
+
+export type PagerOnChangeAction = "FIRST" | "PREVIOUS" | "NEXT" | "LAST" | number;
+
+export interface PagerProps {
+  firstState?: PagerButtonState;
+  lastState?: PagerButtonState;
+  previousState?: PagerButtonState;
+  nextState?: PagerButtonState;
+  values?: number[];
+  value?: number;
+  onChange?(action: PagerOnChangeAction): void;
+  disabled?: boolean;
+}
+
 export interface Theme {
   name: string;
   Button(props: ButtonProps): any;
@@ -76,6 +91,7 @@ export interface Theme {
   InputFile(props: InputFileProps): any;
   Select(props: SelectProps): any;
   Text(props: TextProps): any;
+  Pager(props: PagerProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -113,4 +129,9 @@ export function CheckBox(props: CheckBoxProps) {
 export function Select(props: SelectProps) {
   const theme = useTheme();
   return <theme.Select {...props} />;
+}
+
+export function Pager(props: PagerProps) {
+  const theme = useTheme();
+  return <theme.Pager {...props} />;
 }

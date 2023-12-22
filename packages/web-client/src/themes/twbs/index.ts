@@ -6,6 +6,7 @@ import InputText from "./InputText";
 import InputFile from "./InputFile";
 import Select from "./Select";
 import Text from "./Text";
+import Pager from "./Pager";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -28,6 +29,7 @@ const twbsTheme: Theme = {
   InputFile,
   Select,
   Text,
+  Pager,
   onLoad() {
     document.body.appendChild(cssLink);
   },

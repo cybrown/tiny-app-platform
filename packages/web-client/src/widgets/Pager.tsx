@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import ErrorPopin from "./internal/ErrorPopin";
 import { Closure } from "tal-eval";
-import { Button } from "../theme";
+import { PagerOnChangeAction, Pager as ThemedPager } from "../theme";
 
 type PagerProps = {
   ctx: RuntimeContext;
@@ -17,6 +17,7 @@ export default function Pager({
   perPage,
   onChange,
   value,
+  disabled,
 }: PagerProps) {
   const currentPage = value;
   const pages = [];
@@ -44,39 +45,40 @@ export default function Pager({
     [ctx, onChange]
   );
 
+  const onChangeHandler = useCallback(
+    (change: PagerOnChangeAction) => {
+      switch (change) {
+        case "FIRST":
+          updateValue(1);
+          break;
+        case "PREVIOUS":
+          updateValue(Math.max(1, currentPage - 1));
+          break;
+        case "NEXT":
+          updateValue(Math.min(maxPage, currentPage + 1));
+          break;
+        case "LAST":
+          updateValue(maxPage);
+          break;
+        default:
+          updateValue(change);
+          break;
+      }
+    },
+    [currentPage, maxPage, updateValue]
+  );
+
   return (
     <div>
-      <Button
-        text="<<"
-        secondary
-        disabled={currentPage === 1}
-        onClick={() => updateValue(1)}
-      />
-      <Button
-        text="<"
-        secondary
-        disabled={currentPage === 1}
-        onClick={() => updateValue(Math.max(1, currentPage - 1))}
-      />
-      {pages.map((index) => (
-        <Button
-          key={index}
-          text={index + ""}
-          secondary={currentPage !== index}
-          onClick={() => updateValue(index)}
-        />
-      ))}
-      <Button
-        text=">"
-        secondary
-        disabled={currentPage === maxPage}
-        onClick={() => updateValue(Math.min(maxPage, currentPage + 1))}
-      />
-      <Button
-        text=">>"
-        secondary
-        disabled={currentPage === maxPage}
-        onClick={() => updateValue(maxPage)}
+      <ThemedPager
+        firstState={currentPage === 1 ? "DISABLED" : "ENABLED"}
+        previousState={currentPage === 1 ? "DISABLED" : "ENABLED"}
+        disabled={disabled}
+        lastState={currentPage === maxPage ? "DISABLED" : "ENABLED"}
+        nextState={currentPage === maxPage ? "DISABLED" : "ENABLED"}
+        values={pages}
+        value={currentPage}
+        onChange={onChangeHandler}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </div>

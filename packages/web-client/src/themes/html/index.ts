@@ -6,6 +6,7 @@ import InputText from "./InputText";
 import InputFile from "./InputFile";
 import Select from "./Select";
 import Text from "./Text";
+import Pager from "./Pager";
 
 const htmlTheme: Theme = {
   name: "HTML",
@@ -16,6 +17,7 @@ const htmlTheme: Theme = {
   InputFile,
   Select,
   Text,
+  Pager,
 };
 
 export default htmlTheme;

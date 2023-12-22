@@ -183,6 +183,10 @@ fun GalleryThemeSelector() {
       text:    "Bootstrap"
       onClick: () => set_system_property("theme", "Bootstrap")
     }
+    Button {
+      text:    "Bootstrap Dark"
+      onClick: () => set_system_property("theme", "Bootstrap Dark")
+    }
   }
 }
 

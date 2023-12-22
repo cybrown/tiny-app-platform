@@ -38,6 +38,7 @@ import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
 import { Select as ThemedSelect } from "./theme";
+import twbsDarkTheme from "./themes/twbs-dark";
 
 const queryParams = window.location.search
   .slice(1)
@@ -170,7 +171,7 @@ Column {
 }
 `;
 
-const themes = [htmlTheme, toyBoxTheme, twbsTheme];
+const themes = [htmlTheme, toyBoxTheme, twbsTheme, twbsDarkTheme];
 
 function App() {
   const currentAppName = "latestSource";

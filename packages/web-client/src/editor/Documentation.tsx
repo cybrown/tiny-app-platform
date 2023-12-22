@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { FunctionDef } from "tal-eval/dist/core";
+import { Button, InputText, Text } from "../theme";
 
 export default function Documentation({
   ctx,
@@ -33,12 +34,9 @@ export default function Documentation({
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const onSearchChange = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      setSearchTerm((e.target as any).value);
-    },
-    []
-  );
+  const onSearchChange = useCallback((searchString: string) => {
+    setSearchTerm(searchString);
+  }, []);
 
   return (
     <div
@@ -53,9 +51,10 @@ export default function Documentation({
         flexDirection: "column",
       }}
     >
-      <div>
-        Search: <input onInput={onSearchChange} />
-        <button onClick={onClose}>Close</button>
+      <div style={{ display: "flex" }}>
+        <Text text="Search :" />
+        <InputText value={searchTerm} onChange={onSearchChange} />
+        <Button onClick={onClose} text="Close" />
       </div>
       <div style={{ overflow: "auto" }}>
         <h2>Functions</h2>

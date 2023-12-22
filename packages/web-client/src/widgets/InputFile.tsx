@@ -3,7 +3,7 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
-import { useTheme } from "../theme";
+import { InputFile as ThemedInputFile } from "../theme";
 
 type InputFileProps = {
   ctx: RuntimeContext;
@@ -34,11 +34,9 @@ export default function InputFile({
     [ctx, onChange]
   );
 
-  const theme = useTheme();
-
   return (
     <>
-      <theme.InputFile
+      <ThemedInputFile
         disabled={disabled}
         placeholder={placeholder}
         value={value}

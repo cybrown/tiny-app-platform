@@ -33,10 +33,11 @@ import Pager, { PagerDocumentation } from "./widgets/Pager";
 import Documentation from "./editor/Documentation";
 import ToolBar from "./editor/Toolbar";
 import { importStdlibInContext } from "tal-stdlib";
-import { THEME_CONTEXT, Theme } from "./theme";
+import { ThemeProvider, Theme } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
+import { Select as ThemedSelect } from "./theme";
 
 const queryParams = window.location.search
   .slice(1)
@@ -356,12 +357,21 @@ function App() {
   );
 
   useEffect(() => {
+    (window as any).setTheme = (themeName: string) => {
+      const theme = themes.find((theme) => theme.name === themeName);
+      if (theme) {
+        applyTheme(theme);
+      }
+    };
+  }, [applyTheme]);
+
+  useEffect(() => {
     theme.onLoad && theme.onLoad();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <THEME_CONTEXT.Provider value={theme}>
+    <ThemeProvider value={theme}>
       <>
         <div
           className={[
@@ -382,15 +392,6 @@ function App() {
           {isDebugMode ? (
             <div className={styles.EditorContainer}>
               <div className={styles.ToolBarContainer}>
-                <div>
-                  Change theme:
-                  {themes.map((theme) => (
-                    <theme.Button
-                      text={theme.name}
-                      onClick={() => applyTheme(theme)}
-                    ></theme.Button>
-                  ))}
-                </div>
                 <ToolBar
                   onApply={onApplyHandler}
                   onFormat={onFormatHandler}
@@ -402,6 +403,11 @@ function App() {
                     ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
                   }
                   setAppDebugMode={setAppDebutModeHandler}
+                />
+                <ThemedSelect
+                  options={themes.map((theme) => theme.name)}
+                  value={theme.name}
+                  onChange={(newIndex) => applyTheme(themes[newIndex])}
                 />
               </div>
               {source ? (
@@ -444,7 +450,7 @@ function App() {
           />
         ) : null}
       </>
-    </THEME_CONTEXT.Provider>
+    </ThemeProvider>
   );
 }
 

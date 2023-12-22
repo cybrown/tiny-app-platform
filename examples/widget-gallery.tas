@@ -7,7 +7,7 @@ fun Title(text) {
   }
 }
 
-fun GaleryText() {
+fun GalleryText() {
   Column {
     Title { text: "Text" }
 
@@ -50,7 +50,7 @@ fun GaleryText() {
   }
 }
 
-fun GaleryInputText() {
+fun GalleryInputText() {
   var value = ""
 
   Column {
@@ -68,7 +68,7 @@ fun GaleryInputText() {
   }
 }
 
-fun GaleryCheckbox() {
+fun GalleryCheckbox() {
   var value = false
 
   Title { text: "CheckBox Switch" }
@@ -82,11 +82,15 @@ fun GaleryCheckbox() {
   }
 }
 
-fun GaleryButton() {
+fun GalleryButton() {
   var value = false
 
   Title { text: "Button" }
   Button { text: "Click me" }
+  Button {
+    text:    "Confirm"
+    confirm: "Are you sure ?"
+  }
   Button { text: "Click me", secondary: true }
   Button { text: "Click me", disabled: true }
   Button {
@@ -96,14 +100,14 @@ fun GaleryButton() {
   }
 }
 
-fun GaleryLink() {
+fun GalleryLink() {
   var value = false
 
   Title { text: "Link" }
   Link { url: "https://www.example.com" }
 }
 
-fun GaleryPager() {
+fun GalleryPager() {
   var currentPage = 1
 
   Title { text: "Pager" }
@@ -114,7 +118,7 @@ fun GaleryPager() {
   }
 }
 
-fun GalerySelect() {
+fun GallerySelect() {
   var values = ["Red", "Green", {value: "#00F", label: "Blue"}]
   var value = "Red"
   var value2
@@ -139,12 +143,64 @@ fun GalerySelect() {
   }
 }
 
-Row {
-  Box { width: "360px", GaleryInputText {} }
-  Box { width: "360px", GaleryText {} }
-  Box { width: "360px", GaleryCheckbox {} }
-  Box { width: "360px", GaleryButton {} }
-  Box { width: "360px", GaleryLink {} }
-  Box { width: "360px", GaleryPager {} }
-  Box { width: "360px", GalerySelect {} }
+fun GalleryTable() {
+  Title { text: "Table" }
+
+  Table {
+    _key:    (row) => row.name
+    columns: [
+      {
+        description: "Name"
+        display:     (row) => Text { text: row.name }
+      }
+      {
+        description: "Age"
+        display:     (row) => Text { text: row.age }
+      }
+    ]
+    values:  [
+      {name: "Toto", age: "32"}
+      {name: "Tata", age: "40"}
+      {name: "Titi", age: "13"}
+      {name: "Tutu", age: "132"}
+    ]
+  }
+}
+
+fun GalleryThemeSelector() {
+  Title { text: "Theme selector" }
+
+  Column {
+    Button {
+      text:    "HTML"
+      onClick: () => set_system_property("theme", "HTML")
+    }
+    Button {
+      text:    "Toy Box"
+      onClick: () => set_system_property("theme", "Toy Box")
+    }
+    Button {
+      text:    "Bootstrap"
+      onClick: () => set_system_property("theme", "Bootstrap")
+    }
+  }
+}
+
+Column {
+  Debug { value: "Debug enabled !" }
+  Row {
+    Box { width: "360px", GalleryInputText {} }
+    Box { width: "360px", GalleryText {} }
+    Box { width: "360px", GalleryCheckbox {} }
+    Box { width: "360px", GalleryButton {} }
+    Box { width: "360px", GalleryLink {} }
+    Box { width: "360px", GalleryPager {} }
+    Box { width: "360px", GallerySelect {} }
+    Box { width: "360px", GalleryTable {} }
+    Box {
+      width: "360px"
+
+      GalleryThemeSelector {}
+    }
+  }
 }

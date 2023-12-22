@@ -1,5 +1,17 @@
 import React, { useContext } from "react";
 
+const THEME_CONTEXT = React.createContext<null | Theme>(null);
+
+function useTheme() {
+  const theme = useContext(THEME_CONTEXT);
+  if (!theme) {
+    throw new Error("No theme defined !");
+  }
+  return theme;
+}
+
+export const ThemeProvider = THEME_CONTEXT.Provider;
+
 export interface ButtonProps {
   text: string;
   disabled?: boolean;
@@ -15,13 +27,13 @@ export interface CheckBoxProps {
 
 export interface SwitchProps {
   disabled?: boolean;
-  onChange?(newValue: boolean): Promise<void>;
+  onChange?(newValue: boolean): Promise<void> | void;
   value?: boolean;
 }
 
 export interface InputTextProps {
-  multiline: boolean;
-  placeholder: string;
+  multiline?: boolean;
+  placeholder?: string;
   onSubmit?(): Promise<void>;
   type?: "text" | "email" | "url" | "password";
   onChange?(newValue: string): void;
@@ -68,12 +80,37 @@ export interface Theme {
   onUnload?(): void;
 }
 
-export const THEME_CONTEXT = React.createContext<null | Theme>(null);
+export function Button(props: ButtonProps) {
+  const theme = useTheme();
+  return <theme.Button {...props} />;
+}
 
-export function useTheme() {
-  const theme = useContext(THEME_CONTEXT);
-  if (!theme) {
-    throw new Error("No theme defined !");
-  }
-  return theme;
+export function Switch(props: SwitchProps) {
+  const theme = useTheme();
+  return <theme.Switch {...props} />;
+}
+
+export function Text(props: TextProps) {
+  const theme = useTheme();
+  return <theme.Text {...props} />;
+}
+
+export function InputText(props: InputTextProps) {
+  const theme = useTheme();
+  return <theme.InputText {...props} />;
+}
+
+export function InputFile(props: InputFileProps) {
+  const theme = useTheme();
+  return <theme.InputFile {...props} />;
+}
+
+export function CheckBox(props: CheckBoxProps) {
+  const theme = useTheme();
+  return <theme.CheckBox {...props} />;
+}
+
+export function Select(props: SelectProps) {
+  const theme = useTheme();
+  return <theme.Select {...props} />;
 }

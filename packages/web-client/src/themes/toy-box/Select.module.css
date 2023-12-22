@@ -1,5 +1,6 @@
 .Select {
   height: 28px;
+  width: 100%;
   background-color: rgb(248, 250, 249);
   border-style: solid;
   border-width: 1px;

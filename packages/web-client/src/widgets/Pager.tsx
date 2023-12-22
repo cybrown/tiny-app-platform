@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import ErrorPopin from "./internal/ErrorPopin";
 import { Closure } from "tal-eval";
-import { useTheme } from "../theme";
+import { Button } from "../theme";
 
 type PagerProps = {
   ctx: RuntimeContext;
@@ -44,37 +44,35 @@ export default function Pager({
     [ctx, onChange]
   );
 
-  const theme = useTheme();
-
   return (
     <div>
-      <theme.Button
+      <Button
         text="<<"
         secondary
         disabled={currentPage === 1}
         onClick={() => updateValue(1)}
       />
-      <theme.Button
+      <Button
         text="<"
         secondary
         disabled={currentPage === 1}
         onClick={() => updateValue(Math.max(1, currentPage - 1))}
       />
       {pages.map((index) => (
-        <theme.Button
+        <Button
           key={index}
           text={index + ""}
           secondary={currentPage !== index}
           onClick={() => updateValue(index)}
         />
       ))}
-      <theme.Button
+      <Button
         text=">"
         secondary
         disabled={currentPage === maxPage}
         onClick={() => updateValue(Math.min(maxPage, currentPage + 1))}
       />
-      <theme.Button
+      <Button
         text=">>"
         secondary
         disabled={currentPage === maxPage}

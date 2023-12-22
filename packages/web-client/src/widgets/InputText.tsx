@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { useTheme } from "../theme";
+import { InputText as ThemedInputText } from "../theme";
 
 type InputTextProps = {
   ctx: RuntimeContext;
@@ -52,11 +52,9 @@ export default function InputText({
     [ctx, onChange]
   );
 
-  const theme = useTheme();
-
   return (
     <>
-      <theme.InputText
+      <ThemedInputText
         multiline={multiline}
         placeholder={placeholder}
         disabled={disabled}

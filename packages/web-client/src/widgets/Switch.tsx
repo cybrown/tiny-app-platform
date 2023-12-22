@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation, Closure } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { useTheme } from "../theme";
+import { Switch as ThemedSwitch } from "../theme";
 
 type SwitchProps = {
   ctx: RuntimeContext;
@@ -29,11 +29,9 @@ export default function Switch({
     [ctx, onChange]
   );
 
-  const theme = useTheme();
-
   return (
     <>
-      <theme.Switch disabled={disabled} onChange={handleChange} value={value} />
+      <ThemedSwitch disabled={disabled} onChange={handleChange} value={value} />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );

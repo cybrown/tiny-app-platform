@@ -3,7 +3,7 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
-import { useTheme } from "../theme";
+import { CheckBox as ThemedCheckBox } from "../theme";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
@@ -30,11 +30,9 @@ export default function CheckBox({
     [ctx, onChange]
   );
 
-  const theme = useTheme();
-
   return (
     <>
-      <theme.CheckBox
+      <ThemedCheckBox
         onChange={handleChange}
         value={value}
         disabled={disabled}

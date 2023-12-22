@@ -1,4 +1,5 @@
-import { useCallback, ChangeEvent, useMemo } from "react";
+import { useCallback } from "react";
+import { Button, Switch, Text } from "../theme";
 
 export default function ToolBar({
   onApply,
@@ -20,29 +21,30 @@ export default function ToolBar({
   setAppDebugMode(debugModeEnabled: boolean): void;
 }) {
   const onAppDebugModeChangeHandler = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAppDebugMode(e.target.checked);
+    (newValue: boolean) => {
+      setAppDebugMode(newValue);
     },
     [setAppDebugMode]
   );
 
-  const inputDebugId = useMemo(() => Math.random().toString(), []);
-
   return (
     <div>
-      <button onClick={onApply}>Apply</button>
-      <button onClick={onFormat}>Format</button>
-      <button onClick={onApplyAndFormat}>Apply & format</button>
-      <button onClick={onSaveAndFormatAndClose}>Save & format & Close</button>
-      <button onClick={onClose}>Close</button>
-      <button onClick={onShowDocumentation}>Reference documentation</button>
-      <input
-        type="checkbox"
-        id={inputDebugId}
-        checked={appDebugMode ?? false}
-        onChange={onAppDebugModeChangeHandler}
-      ></input>
-      <label htmlFor={inputDebugId}>Debug</label>
+      <div style={{ display: "flex" }}>
+        <Button onClick={onApply} text="Apply" />
+        <Button onClick={onFormat} text="Format" />
+        <Button onClick={onApplyAndFormat} text="Apply & format" />
+        <Button
+          onClick={onSaveAndFormatAndClose}
+          text="Save & format & Close"
+        />
+        <Button onClick={onClose} text="Close" />
+        <Button onClick={onShowDocumentation} text="Reference documentation" />
+        <Switch
+          value={appDebugMode ?? false}
+          onChange={onAppDebugModeChangeHandler}
+        />
+        <Text text="Debug" />
+      </div>
     </div>
   );
 }

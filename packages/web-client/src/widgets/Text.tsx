@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Text.module.css";
-import { useTheme } from "../theme";
+import { Button, Text as ThemedText } from "../theme";
 
 export type TextProps = {
   ctx: RuntimeContext;
@@ -45,16 +45,14 @@ export default function Text({
     navigator.clipboard.writeText(text);
   }, [text]);
 
-  const theme = useTheme();
-
   return (
     <div className={styles.Text}>
       {showCopyButton ? (
         <div className={styles.buttonCopy}>
-          <theme.Button text="Copy" onClick={copyClickHandler} />
+          <Button text="Copy" onClick={copyClickHandler} />
         </div>
       ) : null}
-      <theme.Text
+      <ThemedText
         text={text}
         align={align}
         color={color}

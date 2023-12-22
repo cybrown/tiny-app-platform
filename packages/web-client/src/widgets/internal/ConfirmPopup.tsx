@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import usePressEscape from "./usePressEscape";
 import styles from "./ConfirmPopup.module.css";
-import StyledButton from "../../themes/toy-box/Button";
+import { Button } from "../../theme";
 
 type ConfirmPopupProps = {
   show: boolean;
@@ -41,8 +41,8 @@ export default function ConfirmPopup({
           {typeof confirm === "boolean" ? "Are you sure ?" : confirm}
         </div>
         <div className={styles.buttons}>
-          <StyledButton text="Cancel" onClick={clickCancelHandler} secondary />
-          <StyledButton text="Ok" onClick={clickOkHandler} />
+          <Button text="Cancel" onClick={clickCancelHandler} secondary />
+          <Button text="Ok" onClick={clickOkHandler} />
         </div>
       </div>
     </div>

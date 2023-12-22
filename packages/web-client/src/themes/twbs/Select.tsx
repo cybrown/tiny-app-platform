@@ -10,7 +10,7 @@ export default function Select({
 }: SelectProps) {
   return (
     <select
-      className="form-select"
+      className="form-select form-select-sm"
       onChange={(e) => onChange && onChange(e.target.selectedIndex)}
       value={value}
       disabled={disabled}

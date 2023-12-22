@@ -3,7 +3,7 @@
   font-weight: 800;
   color: rgb(186, 231, 220);
 
-  height: 28px;
+  min-height: 28px;
 
   border-style: solid;
   border-color: rgb(28, 95, 78);

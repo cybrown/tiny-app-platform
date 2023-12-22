@@ -1,0 +1,65 @@
+var user
+var password
+
+let Spacer_1 = Box { flex: 1 }
+
+Box {
+  height: "100dvh"
+
+  Row {
+    Spacer_1
+
+    Box {
+      width: "360px"
+
+      Column {
+        Box { flex: 0.2 }
+
+        Text {
+          text:   "Login Screen"
+          size:   2
+          align:  "center"
+          weight: "light"
+          color:  "#566"
+        }
+
+        Spacer_1
+
+        Column {
+          Text { text: "Username:" }
+          InputText { bindTo: user }
+
+          Text { text: "Password:" }
+          InputText { bindTo: password, type: "password" }
+
+          Box { Text { text: "" } }
+
+          Button {
+            text:    "Login"
+            onClick: () => http_request(method: "get", url: "https://www.google.com")
+          }
+
+          Row {
+            Spacer_1
+
+            Link {
+              text: "Forgot password ?"
+              url:  "https://www.google.com"
+            }
+          }
+        }
+
+        Spacer_1
+
+        Text {
+          text:  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean felis magna, consectetur ut dolor at, ultricies laoreet lectus. Vestibulum eu eros ac nulla lobortis aliquet id ut justo. Suspendisse nec velit sapien. Mauris congue vitae magna et posuere. Proin vestibulum ultrices magna, non consectetur turpis condimentum ut. Nulla mattis sapien in metus congue ultricies. Sed efficitur, sapien quis aliquam porta, libero ligula elementum dolor, ut tempus quam leo ac purus. Sed vel dui purus."
+          wrap:  true
+          size:  0.6
+          color: "#444"
+        }
+      }
+    }
+
+    Spacer_1
+  }
+}

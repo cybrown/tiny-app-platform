@@ -9,7 +9,7 @@ export default function Button({
   return (
     <button
       type="button"
-      className={"btn " + (secondary ? "btn-secondary" : "btn-primary")}
+      className={"btn btn-sm " + (secondary ? "btn-secondary" : "btn-primary")}
       onClick={onClick}
       disabled={disabled}
     >

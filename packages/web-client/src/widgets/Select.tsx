@@ -3,7 +3,7 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
-import { useTheme } from "../theme";
+import { Select as ThemedSelect } from "../theme";
 
 type SelectProps = {
   ctx: RuntimeContext;
@@ -43,11 +43,9 @@ export default function Select({
     [ctx, options, showEmpty, onChange]
   );
 
-  const theme = useTheme();
-
   return (
     <>
-      <theme.Select
+      <ThemedSelect
         options={options.map((o) => (typeof o == "string" ? o : o.label))}
         disabled={disabled}
         onChange={onChangeHandler}

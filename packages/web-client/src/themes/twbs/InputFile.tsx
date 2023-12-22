@@ -32,6 +32,7 @@ export default function InputFile({
     <input
       placeholder={placeholder}
       type="text"
+      className="form-control form-control-sm"
       onChange={(e) => onChange && onChange(e.target.value)}
       value={value}
       onDrop={onDropHandler}

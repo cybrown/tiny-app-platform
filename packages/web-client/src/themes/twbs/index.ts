@@ -7,6 +7,7 @@ import InputFile from "./InputFile";
 import Select from "./Select";
 import Text from "./Text";
 import Pager from "./Pager";
+import Table from "./Table";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -30,6 +31,7 @@ const twbsTheme: Theme = {
   Select,
   Text,
   Pager,
+  Table,
   onLoad() {
     document.body.appendChild(cssLink);
   },

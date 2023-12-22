@@ -2,6 +2,7 @@ import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
+import { Table as ThemedTable } from "../theme";
 
 type TableModelColumn =
   | ({
@@ -88,62 +89,32 @@ export default function Table({
           Warning: No _key prop on Table widget, behavior may be undefined
         </div>
       ) : null}
-      <table
-        className={`${styles.Table} ${bordered ? styles.bordered : ""} ${
-          striped ? styles.striped : ""
-        } ${noHighlight ? "" : styles["highlight-on-hover"]}`}
-      >
-        <colgroup>
-          {effectiveColumns.map((col) => (
-            <col
-              key={col.description}
-              span={1}
-              style={{
-                ...(col.width
-                  ? {
-                      minWidth: col.width,
-                      width: col.width,
-                    }
-                  : {}),
-                ...(col.useRemaining
-                  ? {
-                      width: remainingPercent,
-                    }
-                  : {}),
-              }}
-            />
-          ))}
-        </colgroup>
-        {noHeader ? null : (
-          <thead>
-            <tr>
-              {effectiveColumns.map((col) => (
-                <th key={col.description}>{col.description}</th>
-              ))}
-            </tr>
-          </thead>
-        )}
-        <tbody>
-          {(values ?? []).map((value, index) => {
-            return (
-              <tr key={_key ? (ctx.callFunction(_key, [value]) as any) : index}>
-                {(effectiveColumns ?? []).map((col) => (
-                  <td key={col.description}>
-                    {col.display ? (
-                      <RenderExpression
-                        ctx={ctx}
-                        evaluatedUI={ctx.callFunction(col.display, [value])}
-                      />
-                    ) : (value as any)[col.description] !== undefined ? (
-                      <Debug value={(value as any)[col.description]} />
-                    ) : null}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <ThemedTable
+        bordered={bordered}
+        noHeader={noHeader}
+        noHighlight={noHighlight}
+        striped={striped}
+        titles={effectiveColumns.map((col) => ({
+          text: col.description,
+          width: col.width,
+          remainingPercent: col.useRemaining ? remainingPercent : null
+        }))}
+        rows={(values ?? []).map((value, index) => {
+          return {
+            key: _key ? (ctx.callFunction(_key, [value]) as any) : index,
+            cells: (effectiveColumns ?? []).map((col) => ({
+              content: col.display ? (
+                <RenderExpression
+                  ctx={ctx}
+                  evaluatedUI={ctx.callFunction(col.display, [value])}
+                />
+              ) : (value as any)[col.description] !== undefined ? (
+                <Debug value={(value as any)[col.description]} />
+              ) : null,
+            })),
+          };
+        })}
+      />
     </div>
   );
 }

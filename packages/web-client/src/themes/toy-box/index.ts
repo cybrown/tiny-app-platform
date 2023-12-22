@@ -21,6 +21,7 @@ const toyBoxTheme: Theme = {
   InputFile,
   Text,
   Pager: htmlTheme.Pager,
+  Table: htmlTheme.Table,
   onLoad() {
     document.body.appendChild(styleElement);
   },

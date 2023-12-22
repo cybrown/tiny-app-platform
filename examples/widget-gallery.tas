@@ -144,26 +144,89 @@ fun GallerySelect() {
 }
 
 fun GalleryTable() {
+  var useRemaining = false
+  var noHeader = false
+  var striped = true
+  var noHighlight = false
+  var bordered = false
+
+  let data = [
+    {name: "Toto", age: "32"}
+    {name: "Tata", age: "40"}
+    {name: "Titi", age: "13"}
+    {name: "Tutu", age: "132", secret: true}
+  ]
+
   Title { text: "Table" }
 
+  Row {
+    CheckBox { bindTo: useRemaining }
+    Text {
+      text: "Name column must use remaining space"
+    }
+  }
+
+  Row {
+    CheckBox { bindTo: noHeader }
+    Text { text: "No header" }
+  }
+
+  Row {
+    CheckBox { bindTo: striped }
+    Text { text: "Striped" }
+  }
+
+  Row {
+    CheckBox { bindTo: noHighlight }
+    Text { text: "No Highlight" }
+  }
+
+  Row {
+    CheckBox { bindTo: bordered }
+    Text { text: "Bordered" }
+  }
+
   Table {
-    _key:    (row) => row.name
-    columns: [
+    _key:        (row) => row.name
+    noHeader:    noHeader
+    striped:     striped
+    noHighlight: noHighlight
+    bordered:    bordered
+    columns:     [
       {
-        description: "Name"
-        display:     (row) => Text { text: row.name }
+        description:  "Name"
+        display:      (row) => Text { text: row.name }
+        useRemaining: useRemaining
       }
       {
         description: "Age"
         display:     (row) => Text { text: row.age }
       }
     ]
-    values:  [
-      {name: "Toto", age: "32"}
-      {name: "Tata", age: "40"}
-      {name: "Titi", age: "13"}
-      {name: "Tutu", age: "132"}
+    values:      data
+  }
+
+  Table {
+    values:      data
+    noHeader:    noHeader
+    noHighlight: noHighlight
+    bordered:    bordered
+    striped:     striped
+  }
+
+  Table {
+    noHeader:    noHeader
+    noHighlight: noHighlight
+    striped:     striped
+    bordered:    bordered
+    columns:     [
+      "name"
+      {
+        description: "Age"
+        display:     (row) => Text { text: row.age + " years old" }
+      }
     ]
+    values:      data
   }
 }
 

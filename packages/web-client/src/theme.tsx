@@ -111,6 +111,13 @@ export interface PagerProps {
   disabled?: boolean;
 }
 
+export interface ModalProps {
+  header: any;
+  body: any;
+  footer: any;
+  onClose(): void;
+}
+
 export interface Theme {
   name: string;
   Button(props: ButtonProps): any;
@@ -122,6 +129,7 @@ export interface Theme {
   Text(props: TextProps): any;
   Pager(props: PagerProps): any;
   Table(props: TableProps): any;
+  Modal(props: ModalProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -169,4 +177,9 @@ export function Pager(props: PagerProps) {
 export function Table(props: TableProps) {
   const theme = useTheme();
   return <theme.Table {...props} />;
+}
+
+export function Modal(props: ModalProps) {
+  const theme = useTheme();
+  return <theme.Modal {...props} />;
 }

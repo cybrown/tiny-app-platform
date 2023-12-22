@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import usePressEscape from "./usePressEscape";
-import styles from "./ConfirmPopup.module.css";
-import { Button } from "../../theme";
+import { Button, Modal } from "../../theme";
 
 type ConfirmPopupProps = {
   show: boolean;
@@ -32,19 +31,16 @@ export default function ConfirmPopup({
   usePressEscape(cancelPopup);
 
   return show ? (
-    <div
-      className={styles.confirmPopupBackgroundMask}
-      onClick={clickCancelHandler}
-    >
-      <div className={styles.confirmPopupFrame}>
-        <div className={styles.confirmPopupContent}>
-          {typeof confirm === "boolean" ? "Are you sure ?" : confirm}
-        </div>
-        <div className={styles.buttons}>
+    <Modal
+      header="Confirmation"
+      body={typeof confirm === "boolean" ? "Are you sure ?" : confirm}
+      footer={
+        <>
           <Button text="Cancel" onClick={clickCancelHandler} secondary />
           <Button text="Ok" onClick={clickOkHandler} />
-        </div>
-      </div>
-    </div>
+        </>
+      }
+      onClose={clickCancelHandler}
+    />
   ) : null;
 }

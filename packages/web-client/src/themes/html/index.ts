@@ -8,6 +8,7 @@ import Select from "./Select";
 import Text from "./Text";
 import Pager from "./Pager";
 import Table from "./Table";
+import Modal from "./Modal";
 
 const htmlTheme: Theme = {
   name: "HTML",
@@ -20,6 +21,7 @@ const htmlTheme: Theme = {
   Text,
   Pager,
   Table,
+  Modal,
 };
 
 export default htmlTheme;

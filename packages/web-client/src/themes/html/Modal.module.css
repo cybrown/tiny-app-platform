@@ -1,4 +1,4 @@
-.confirmPopupBackgroundMask {
+.modalBackgroundMask {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -11,27 +11,18 @@
   z-index: 1;
 }
 
-.confirmPopupFrame {
+.modalFrame {
   background-color: rgb(218, 218, 218);
   min-width: 50%;
 }
 
-.confirmPopupContent {
+.modalBody {
   padding: 8px;
 }
 
-.buttons {
+.modalButtons {
   display: flex;
   flex-direction: row;
   padding: 8px;
   justify-content: right;
-}
-
-.buttons > button {
-  width: 64px;
-  margin-left: 8px;
-}
-
-.buttons > button:first-child {
-  margin-left: 0;
 }

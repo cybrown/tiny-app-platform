@@ -1,9 +1,3 @@
-.TableContainer {
-  overflow-x: auto;
-  overflow-y: hidden;
-  max-width: 100%;
-}
-
 .Table {
   border-collapse: collapse;
   width: 100%;

@@ -1,4 +1,4 @@
-import { TableProps } from "../../theme";
+import { TableProps, Text } from "../../theme";
 import styles from "./Table.module.css";
 
 export default function Table({
@@ -40,7 +40,9 @@ export default function Table({
         <thead>
           <tr>
             {titles.map((title) => (
-              <th key={title.text}>{title.text}</th>
+              <th key={title.text}>
+                <Text text={title.text} weight="bold" />
+              </th>
             ))}
           </tr>
         </thead>

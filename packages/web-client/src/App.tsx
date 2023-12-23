@@ -39,6 +39,7 @@ import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
 import { Select as ThemedSelect } from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
+import nesCssTheme from "./themes/nes-css";
 
 const queryParams = window.location.search
   .slice(1)
@@ -171,7 +172,7 @@ Column {
 }
 `;
 
-const themes = [htmlTheme, toyBoxTheme, twbsTheme, twbsDarkTheme];
+const themes = [htmlTheme, toyBoxTheme, twbsTheme, twbsDarkTheme, nesCssTheme];
 
 function App() {
   const currentAppName = "latestSource";
@@ -181,7 +182,7 @@ function App() {
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
   const [app, setApp] = useState<Program | null>(null);
-  const [theme, setTheme] = useState(toyBoxTheme);
+  const [theme, setTheme] = useState(nesCssTheme);
 
   const executeSource = useCallback((newSource: string) => {
     if (newSource == null) {

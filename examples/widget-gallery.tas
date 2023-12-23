@@ -65,6 +65,20 @@ fun GalleryInputText() {
 
     InputText { bindTo: value, multiline: true }
 
+    InputText { bindTo: value, disabled: true }
+
+    InputText {
+      bindTo:      value
+      placeholder: "With placeholder"
+      disabled:    true
+    }
+
+    InputText {
+      bindTo:    value
+      multiline: true
+      disabled:  true
+    }
+
   }
 }
 
@@ -90,6 +104,7 @@ fun GalleryButton() {
   Button {
     text:    "Confirm"
     confirm: "Are you sure ?"
+    onClick: () => log("Confirmed !")
   }
   Button { text: "Click me", secondary: true }
   Button { text: "Click me", disabled: true }
@@ -249,6 +264,10 @@ fun GalleryThemeSelector() {
     Button {
       text:    "Bootstrap Dark"
       onClick: () => set_system_property("theme", "Bootstrap Dark")
+    }
+    Button {
+      text:    "NES.css"
+      onClick: () => set_system_property("theme", "NES.css")
     }
   }
 }

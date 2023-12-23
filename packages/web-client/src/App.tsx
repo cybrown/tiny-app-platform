@@ -182,7 +182,7 @@ function App() {
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
   const [app, setApp] = useState<Program | null>(null);
-  const [theme, setTheme] = useState(nesCssTheme);
+  const [theme, setTheme] = useState(toyBoxTheme);
 
   const executeSource = useCallback((newSource: string) => {
     if (newSource == null) {

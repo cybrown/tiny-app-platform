@@ -2,19 +2,15 @@ import { useCallback } from "react";
 import { Button, Switch, Text } from "../theme";
 
 export default function ToolBar({
-  onApply,
   onFormat,
   onApplyAndFormat,
   onClose,
-  onSaveAndFormatAndClose,
   onShowDocumentation,
   appDebugMode,
   setAppDebugMode,
 }: {
-  onApply(): void;
   onFormat(): void;
   onApplyAndFormat(): void;
-  onSaveAndFormatAndClose(): void;
   onClose(): void;
   onShowDocumentation(): void;
   appDebugMode: boolean;
@@ -30,15 +26,10 @@ export default function ToolBar({
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <Button onClick={onApply} text="Apply" />
         <Button onClick={onFormat} text="Format" />
-        <Button onClick={onApplyAndFormat} text="Apply & format" />
-        <Button
-          onClick={onSaveAndFormatAndClose}
-          text="Save & format & Close"
-        />
+        <Button onClick={onApplyAndFormat} text="Save" />
         <Button onClick={onClose} text="Close" />
-        <Button onClick={onShowDocumentation} text="Reference documentation" />
+        <Button onClick={onShowDocumentation} text="Docs" />
         <Switch
           value={appDebugMode ?? false}
           onChange={onAppDebugModeChangeHandler}

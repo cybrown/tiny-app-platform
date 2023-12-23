@@ -291,15 +291,6 @@ function App() {
 
   const [editorApi, setEditorApi] = useState<EditorApi>();
 
-  const onApplyHandler = useCallback(() => {
-    if (updateSourceFunc) {
-      const source = updateSourceFunc();
-      persistSource(source);
-      setSource(source);
-      executeSource(source);
-    }
-  }, [executeSource, persistSource, updateSourceFunc]);
-
   const onFormatHandler = useCallback(() => {
     if (!updateSourceFunc) return;
     let sourceToFormat = updateSourceFunc();
@@ -332,11 +323,6 @@ function App() {
       closeEditorHandle();
     }
   }, [closeEditorHandle]);
-
-  const onSaveAndFormatAndCloseHandler = useCallback(() => {
-    onApplyAndFormatHandler();
-    closeEditorHandle();
-  }, [closeEditorHandle, onApplyAndFormatHandler]);
 
   const onWriteInEditorHandler = useCallback(
     (text: string) => {
@@ -395,11 +381,9 @@ function App() {
             <div className={styles.EditorContainer}>
               <div className={styles.ToolBarContainer}>
                 <ToolBar
-                  onApply={onApplyHandler}
                   onFormat={onFormatHandler}
                   onApplyAndFormat={onApplyAndFormatHandler}
                   onClose={onCloseHandler}
-                  onSaveAndFormatAndClose={onSaveAndFormatAndCloseHandler}
                   onShowDocumentation={toggleShowDocumentationHandler}
                   appDebugMode={
                     ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean

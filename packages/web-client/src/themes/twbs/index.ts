@@ -24,6 +24,9 @@ cssLink.setAttribute("crossorigin", "anonymous");
 
 const twbsTheme: Theme = {
   name: "Bootstrap",
+  colors: {
+    background: "white",
+  },
   Button,
   CheckBox,
   Switch,

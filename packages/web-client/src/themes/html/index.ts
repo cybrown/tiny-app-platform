@@ -12,6 +12,9 @@ import Modal from "./Modal";
 
 const htmlTheme: Theme = {
   name: "HTML",
+  colors: {
+    background: "white",
+  },
   Button,
   CheckBox,
   Switch,

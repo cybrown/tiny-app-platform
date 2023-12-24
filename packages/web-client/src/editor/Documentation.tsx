@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { FunctionDef } from "tal-eval/dist/core";
-import { Button, InputText, Text } from "../theme";
+import { Button, InputText, Text, useTheme } from "../theme";
 
 export default function Documentation({
   ctx,
@@ -38,6 +38,8 @@ export default function Documentation({
     setSearchTerm(searchString);
   }, []);
 
+  const theme = useTheme();
+
   return (
     <div
       style={{
@@ -46,7 +48,7 @@ export default function Documentation({
         bottom: 0,
         left: "50%",
         right: 0,
-        background: "rgb(218, 218, 218)",
+        background: theme.colors.background,
         display: "flex",
         flexDirection: "column",
       }}
@@ -57,10 +59,8 @@ export default function Documentation({
         <Button onClick={onClose} text="Close" />
       </div>
       <div style={{ overflow: "auto" }}>
-        <h2>Functions</h2>
-        <em style={{ display: "block", paddingBottom: 16 }}>
-          Click on any function to copy a code snippet
-        </em>
+        <Text text="Functions" size={1.4} />
+        <Text text="Click on any function to copy a code snippet" />
         {functionsData
           .filter(
             ([name]) =>
@@ -73,20 +73,18 @@ export default function Documentation({
               key={name}
               onClick={() => copyFunctionSnippet(writeInEditor, name, doc)}
             >
-              <div>
-                <strong>{name}</strong>
-              </div>
+              <Text text={name} weight="bold" />
               <ul style={{ paddingLeft: 16 }}>
                 {doc.map((d) => (
-                  <li key={d.name}>{d.name}</li>
+                  <li key={d.name}>
+                    <Text text={d.name} />
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
-        <h2>Widgets</h2>
-        <em style={{ display: "block", paddingBottom: 16 }}>
-          Click on any widget to copy a code snippet
-        </em>
+        <Text text="Widgets" size={1.4} />
+        <Text text="Click on any widget to copy a code snippet" />
         {Object.entries(widgetsData)
           .filter(
             ([name]) =>
@@ -101,15 +99,18 @@ export default function Documentation({
                 copyWidgetSnippet(writeInEditor, name, documentation)
               }
             >
-              <div>
-                <strong>{name}</strong>: {documentation.description}
+              <div style={{ display: "flex" }}>
+                <Text text={name + ":\u00A0"} weight="bold" size={1.1} />
+                <Text text={documentation.description} />
               </div>
               <ul style={{ paddingLeft: 16 }}>
                 {Object.entries(documentation.props).map(
                   ([name, description]) => (
                     <li key={name}>
-                      {name}
-                      {description ? `: ${description}` : null}
+                      <div style={{ display: "flex" }}>
+                        <Text text={name + ":\u00A0"} weight="bold" />
+                        <Text text={description} weight="light" />
+                      </div>
                     </li>
                   )
                 )}

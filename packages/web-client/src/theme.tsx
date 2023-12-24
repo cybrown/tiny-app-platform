@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 
 const THEME_CONTEXT = React.createContext<null | Theme>(null);
 
-function useTheme() {
+export function useTheme(): Theme {
   const theme = useContext(THEME_CONTEXT);
   if (!theme) {
     throw new Error("No theme defined !");
@@ -120,6 +120,9 @@ export interface ModalProps {
 
 export interface Theme {
   name: string;
+  colors: {
+    background: string;
+  };
   Button(props: ButtonProps): any;
   CheckBox(props: CheckBoxProps): any;
   Switch(props: SwitchProps): any;

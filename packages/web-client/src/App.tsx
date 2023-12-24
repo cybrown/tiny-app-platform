@@ -174,6 +174,10 @@ Column {
 
 const themes = [htmlTheme, toyBoxTheme, twbsTheme, twbsDarkTheme, nesCssTheme];
 
+const selectedThemeFromQueryString = themes.find(
+  (theme) => theme.id === queryParams.theme?.[0]
+);
+
 function App() {
   const currentAppName = "latestSource";
 
@@ -183,7 +187,7 @@ function App() {
   const [isLoadError, setIsLoadError] = useState(false);
   const [app, setApp] = useState<Program | null>(null);
   const [theme, setTheme] = useState(
-    themes.find((theme) => theme.id === queryParams.theme?.[0]) ?? toyBoxTheme
+    selectedThemeFromQueryString ?? toyBoxTheme
   );
 
   const executeSource = useCallback((newSource: string) => {
@@ -348,6 +352,9 @@ function App() {
 
   useEffect(() => {
     (window as any).setTheme = (themeId: string) => {
+      if (selectedThemeFromQueryString) {
+        return;
+      }
       const theme = themes.find((theme) => theme.id === themeId);
       if (theme) {
         applyTheme(theme);

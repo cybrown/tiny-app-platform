@@ -30,6 +30,8 @@ export default function ToolBar({
         <Button onClick={onApplyAndFormat} text="Save" />
         <Button onClick={onClose} text="Close" />
         <Button onClick={onShowDocumentation} text="Docs" />
+      </div>
+      <div style={{ display: "flex" }}>
         <Switch
           value={appDebugMode ?? false}
           onChange={onAppDebugModeChangeHandler}

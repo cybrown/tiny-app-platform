@@ -29,6 +29,7 @@ cssLink.setAttribute("crossorigin", "anonymous");
 
 const nesCssTheme: Theme = {
   ...htmlTheme,
+  id: "nes-css",
   name: "NES.css",
   Button,
   CheckBox,

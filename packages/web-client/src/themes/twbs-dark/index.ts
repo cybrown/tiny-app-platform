@@ -3,6 +3,7 @@ import twbsTheme from "../twbs";
 
 const twbsDarkTheme: Theme = {
   ...twbsTheme,
+  id: "twbs-dark",
   name: "Bootstrap Dark",
   colors: {
     background: "#212529",

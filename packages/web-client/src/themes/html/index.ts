@@ -11,6 +11,7 @@ import Table from "./Table";
 import Modal from "./Modal";
 
 const htmlTheme: Theme = {
+  id: "html",
   name: "HTML",
   colors: {
     background: "white",

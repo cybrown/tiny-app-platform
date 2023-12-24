@@ -119,6 +119,7 @@ export interface ModalProps {
 }
 
 export interface Theme {
+  id: string;
   name: string;
   colors: {
     background: string;

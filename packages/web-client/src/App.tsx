@@ -182,7 +182,9 @@ function App() {
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
   const [app, setApp] = useState<Program | null>(null);
-  const [theme, setTheme] = useState(toyBoxTheme);
+  const [theme, setTheme] = useState(
+    themes.find((theme) => theme.id === queryParams.theme?.[0]) ?? toyBoxTheme
+  );
 
   const executeSource = useCallback((newSource: string) => {
     if (newSource == null) {
@@ -345,8 +347,8 @@ function App() {
   );
 
   useEffect(() => {
-    (window as any).setTheme = (themeName: string) => {
-      const theme = themes.find((theme) => theme.name === themeName);
+    (window as any).setTheme = (themeId: string) => {
+      const theme = themes.find((theme) => theme.id === themeId);
       if (theme) {
         applyTheme(theme);
       }

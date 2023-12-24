@@ -23,6 +23,7 @@ cssLink.setAttribute(
 cssLink.setAttribute("crossorigin", "anonymous");
 
 const twbsTheme: Theme = {
+  id: "twbs",
   name: "Bootstrap",
   colors: {
     background: "white",

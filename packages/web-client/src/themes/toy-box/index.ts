@@ -12,6 +12,7 @@ const styleElement = document.createElement("style");
 styleElement.textContent = "body {background-color: rgb(218, 218, 218);}";
 
 const toyBoxTheme: Theme = {
+  id: "toy-box",
   name: "Toy Box",
   colors: {
     background: "rgb(218, 218, 218)",

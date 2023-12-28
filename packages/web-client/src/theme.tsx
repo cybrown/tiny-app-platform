@@ -118,6 +118,11 @@ export interface ModalProps {
   onClose(): void;
 }
 
+export type LinkProps = Omit<TextProps, "text"> & {
+  url?: string;
+  text?: string;
+};
+
 export interface Theme {
   id: string;
   name: string;
@@ -134,6 +139,7 @@ export interface Theme {
   Pager(props: PagerProps): any;
   Table(props: TableProps): any;
   Modal(props: ModalProps): any;
+  Link(props: LinkProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -186,4 +192,9 @@ export function Table(props: TableProps) {
 export function Modal(props: ModalProps) {
   const theme = useTheme();
   return <theme.Modal {...props} />;
+}
+
+export function Link(props: LinkProps) {
+  const theme = useTheme();
+  return <theme.Link {...props} />;
 }

@@ -9,6 +9,7 @@ import Text from "./Text";
 import Pager from "./Pager";
 import Table from "./Table";
 import Modal from "./Modal";
+import htmlTheme from "../html";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -38,6 +39,7 @@ const twbsTheme: Theme = {
   Pager,
   Table,
   Modal,
+  Link: htmlTheme.Link,
   onLoad() {
     document.body.appendChild(cssLink);
   },

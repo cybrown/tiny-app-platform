@@ -1,17 +1,12 @@
 import { WidgetDocumentation } from "tal-eval";
-import Text, { TextProps, TextDocumentation } from "./Text";
+import { TextDocumentation } from "./Text";
+import { LinkProps, Link as ThemedLink } from "../theme";
 
-type LinkProps = Omit<TextProps, "text"> & { url?: string; text?: string };
-
-export default function Link({ url, text, ...rest }: LinkProps) {
-  if (!text && !url) {
+export default function Link(props: LinkProps) {
+  if (!props.text && !props.url) {
     throw new Error("text or url is mandatory for Link widget");
   }
-  return (
-    <a href={url} target="_blank" rel="noreferrer">
-      <Text {...rest} text={text ?? url ?? ""} />
-    </a>
-  );
+  return <ThemedLink {...props} />;
 }
 
 export const LinkDocumentation: WidgetDocumentation<LinkProps> = {

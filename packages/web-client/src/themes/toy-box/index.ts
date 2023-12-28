@@ -27,6 +27,7 @@ const toyBoxTheme: Theme = {
   Pager: htmlTheme.Pager,
   Table: htmlTheme.Table,
   Modal: htmlTheme.Modal,
+  Link: htmlTheme.Link,
   onLoad() {
     document.body.appendChild(styleElement);
   },

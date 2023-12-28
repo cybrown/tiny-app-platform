@@ -9,6 +9,7 @@ import Text from "./Text";
 import Pager from "./Pager";
 import Table from "./Table";
 import Modal from "./Modal";
+import Link from "./Link";
 
 const htmlTheme: Theme = {
   id: "html",
@@ -26,6 +27,7 @@ const htmlTheme: Theme = {
   Pager,
   Table,
   Modal,
+  Link,
 };
 
 export default htmlTheme;

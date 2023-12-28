@@ -40,6 +40,7 @@ import twbsTheme from "./themes/twbs";
 import { Select as ThemedSelect } from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
+import darkOrangeTheme from "./themes/dark-orange";
 
 const queryParams = window.location.search
   .slice(1)
@@ -172,7 +173,14 @@ Column {
 }
 `;
 
-const themes = [htmlTheme, toyBoxTheme, twbsTheme, twbsDarkTheme, nesCssTheme];
+const themes = [
+  htmlTheme,
+  toyBoxTheme,
+  twbsTheme,
+  twbsDarkTheme,
+  nesCssTheme,
+  darkOrangeTheme,
+];
 
 const selectedThemeFromQueryString = themes.find(
   (theme) => theme.id === queryParams.theme?.[0]

@@ -42,6 +42,7 @@ export default function InputText({
     <>
       {multiline ? (
         <textarea
+          className="tap-input-text"
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
           disabled={disabled}
@@ -49,6 +50,7 @@ export default function InputText({
         />
       ) : (
         <input
+          className="tap-input-text"
           placeholder={placeholder}
           type={type ?? "text"}
           onChange={onInputChangeHandler}

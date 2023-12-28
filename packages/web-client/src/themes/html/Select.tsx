@@ -11,7 +11,7 @@ export default function Select({
 }: SelectProps) {
   return (
     <select
-      className={styles.Select}
+      className={`tap-input-text ${styles.Select}`}
       onChange={(e) => onChange && onChange(e.target.selectedIndex)}
       value={value}
       disabled={disabled}

@@ -30,6 +30,7 @@ export default function InputFile({
 
   return (
     <input
+      className="tap-input-text"
       placeholder={placeholder}
       type="text"
       onChange={(e) => onChange && onChange(e.target.value)}

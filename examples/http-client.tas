@@ -19,84 +19,73 @@ fun executeHttpRequest() {
   )
   try {
     let contentType = string_split(response.headers["content-type"], ";")[0] | string_trim
-    if (contentType == "text/html") {
-      set language = "html"
-    } else if (contentType == "application/json") {
-      set language = "json"
-      set doFormat = true
-    } else if (contentType == "text/javascript") {
-      set language = "javascript"
+    set language = switch (contentType) {
+      "text/html"        => "html"
+      "application/json" => "json"
+      "text/javascript"  => "javascript"
     }
+    if (language == "json") { set doFormat = true }
   }
   set responseBodyString = bytes_to_string(response.body)
 }
 
 Column {
+  padding: 0.5
+
   Row {
-    Box {
-      flex: 0
-
-      Select {
-        bindTo:      method
-        placeholder: "Method"
-        options:     [
-          "GET"
-          "POST"
-          "PUT"
-          "PATCH"
-          "DELETE"
-          "LIST"
-          "HEAD"
-          "OPTIONS"
-        ]
-      }
+    Select {
+      bindTo:      method
+      placeholder: "Method"
+      options:     [
+        "GET"
+        "POST"
+        "PUT"
+        "PATCH"
+        "DELETE"
+        "LIST"
+        "HEAD"
+        "OPTIONS"
+      ]
     }
 
-    Box {
-      flex: 1
-
-      InputText {
-        bindTo:      url
-        placeholder: "URL"
-        type:        "url"
-        onSubmit:    executeHttpRequest
-      }
-    }
+    InputText {
+          bindTo:      url
+          placeholder: "URL"
+          type:        "url"
+          onSubmit:    executeHttpRequest
+        }
+      |  flex(1)
   }
 
-  array_map(
-    headers
-    (it, index) => [
-      Row {
-        Box {
-          flex: 1
+  if (array_length(headers) > 0) {
+    Column {
+      array_map(
+        headers
+        (it, index) => [
+          Row {
+            InputText {
+              placeholder: "Header name"
+              bindTo:      it[0]
+            }
 
-          InputText {
-            placeholder: "Header name"
-            bindTo:      it[0]
+
+            InputText {
+                  placeholder: "Header value"
+                  bindTo:      it[1]
+                }
+              |  flex(2)
+
+
+            Button {
+              text:    "Remove"
+              onClick: () => set headers = array_remove(headers, index)
+            }
+
           }
-        }
-
-        Box {
-          flex: 3
-
-          InputText {
-            placeholder: "Header value"
-            bindTo:      it[1]
-          }
-        }
-
-        Box {
-          flex: 0
-
-          Button {
-            text:    "Remove"
-            onClick: () => set headers = array_remove(headers, index)
-          }
-        }
-      }
-    ]
-  )
+        ]
+      )
+    }
+  }
 
   Button {
     onClick: () => set headers = array_append(
@@ -128,121 +117,113 @@ Column {
   {
     let validHeaders = headers | array_filter((it) => it[0] && it[1])
 
-    [
-      if (method != null && url != null) {
-        Text {
-          copy: true
-          text: "curl -X $method $headers '$url'"
-            |  string_format({
-                method:  method
-                url:     url
-                headers: validHeaders
-                  |  array_map((it) => string_format(
-                      "-H '$name: $value'"
-                      {name: it[0], value: it[1]}
-                    ))
-                  |  array_join(" ")
-              })
-        }
+    if (method != null && url != null) {
+      Text {
+        copy: true
+        text: "curl -X $method $headers '$url'"
+          |  string_format({
+              method:  method
+              url:     url
+              headers: validHeaders
+                |  array_map((it) => string_format(
+                    "-H '$name: $value'"
+                    {name: it[0], value: it[1]}
+                  ))
+                |  array_join(" ")
+            })
       }
+    }
 
-      if (method != null && url != null) {
-        Text {
-          copy: true
-          text: 'http_request(method: "$method", url: "$url" $headers $body)'
-            |  string_format({
-                method:  method
-                url:     url
-                body:    if (body != null && body != "") {
-                  ', body: "' + body + '"'
-                } else {
-                  " "
-                }
-                headers: if (array_length(validHeaders) > 0) {
-                  ", headers:" + (validHeaders | json_stringify)
-                } else {
-                  " "
-                }
-              })
-        }
+    if (method != null && url != null) {
+      Text {
+        copy: true
+        text: 'http_request(method: "$method", url: "$url" $headers $body)'
+          |  string_format({
+              method:  method
+              url:     url
+              body:    if (body != null && body != "") {
+                ', body: "' + body + '"'
+              } else {
+                " "
+              }
+              headers: if (array_length(validHeaders) > 0) {
+                ", headers:" + (validHeaders | json_stringify)
+              } else {
+                " "
+              }
+            })
       }
-    ]
+    }
   }
 
   if (response != null) {
-    Column {
-      Row {
-        Text {
-          text: string_format(
-            "Status code: $status"
-            {status: response.status}
-          )
-        }
+    Row {
+      Text {
+        text: string_format(
+          "Status code: $status"
+          {status: response.status}
+        )
       }
+    }
 
-      Row {
-        Text { text: "Show headers" }
-        Switch { bindTo: doShowHeaders }
-      }
+    Row {
+      Text { text: "Show headers" }
+      Switch { bindTo: doShowHeaders }
+    }
 
-      if (doShowHeaders) {
-        Column {
-          flexShrink: 0
+    if (doShowHeaders) {
+      Text { text: "Headers:" }
 
-          Text { text: "Headers:" }
-
-          Table {
-            columns: [
-              {
-                description: "Name"
-                display:     (row) => Text { text: row.key, copy: true }
-              }
-
-              {
-                description: "Value"
-                display:     (row) => Text { text: row.value, copy: true }
-              }
-            ]
-            values:  response.headers
-              |  object_entries
-              |  array_map((it) => {key: it[0], value: it[1]})
+      Table {
+        columns: [
+          {
+            description: "Name"
+            display:     (row) => Text { text: row.key, copy: true }
           }
-        }
+
+          {
+            description: "Value"
+            display:     (row) => Text { text: row.value, copy: true }
+          }
+        ]
+        values:  response.headers
+          |  object_entries
+          |  array_map((it) => {key: it[0], value: it[1]})
+      }
+    }
+
+    Row {
+      Text { text: "Language syntax to highlight" }
+
+      Select {
+        options: [
+          "text"
+          "json"
+          "html"
+          "xml"
+          "javascript"
+          "css"
+        ]
+        bindTo:  language
       }
 
-      Row {
-        Text { text: "Language syntax to highlight" }
+      Text { text: "Format code (when possible)" }
+      Switch { bindTo: doFormat }
+    }
 
-        Select {
-          options: [
-            "text"
-            "json"
-            "html"
-            "xml"
-            "javascript"
-            "css"
-          ]
-          bindTo:  language
+    Box {
+      scroll: true
+
+      if (language == "json" && doFormat) {
+        Debug {
+          value: responseBodyString | json_parse
+          force: true
         }
-
-        Text { text: "Format code (when possible)" }
-        Switch { bindTo: doFormat }
-      }
-
-      Box {
-        scroll: true
-
-        if (language == "json" && doFormat) {
-          Debug {
-            value: responseBodyString | json_parse
-            force: true
-          }
-        } else {
-          Snippet {
-            text:     responseBodyString
-            language: language
-            format:   doFormat
-          }
+      } else {
+        Snippet {
+          text:     responseBodyString
+          language: language
+          format:   doFormat
         }
       }
     }

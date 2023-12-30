@@ -78,7 +78,7 @@ body {
 
 .tap-checkbox > input:checked + div::after {
   position: absolute;
-  top: 4px;
+  top: -1px;
   left: 8px;
   border-bottom: black 2px solid;
   border-right: black 2px solid;

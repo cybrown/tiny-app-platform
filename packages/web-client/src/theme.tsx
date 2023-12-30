@@ -129,6 +129,7 @@ export interface Theme {
   colors: {
     background: string;
   };
+  baseSize?: number;
   Button(props: ButtonProps): any;
   CheckBox(props: CheckBoxProps): any;
   Switch(props: SwitchProps): any;

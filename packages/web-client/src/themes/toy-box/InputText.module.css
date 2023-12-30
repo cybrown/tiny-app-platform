@@ -1,5 +1,5 @@
 .InputText {
-  height: 28px;
+  height: 24px;
   background-color: rgb(248, 250, 249);
   border-style: solid;
   border-width: 1px;
@@ -20,5 +20,5 @@
 }
 
 textarea.InputText {
-  height: 140px;
+  height: 120px;
 }

@@ -31,6 +31,7 @@ const nesCssTheme: Theme = {
   ...htmlTheme,
   id: "nes-css",
   name: "NES.css",
+  baseSize: 28,
   Button,
   CheckBox,
   Switch,

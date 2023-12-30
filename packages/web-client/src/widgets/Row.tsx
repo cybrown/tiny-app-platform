@@ -1,33 +1,15 @@
-import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
-import RenderExpression from "../runtime/RenderExpression";
-import styles from "./Row.module.css";
-import React from "react";
+import { WidgetDocumentation } from "tal-eval";
+import Layout, { LayoutDocumentation, LayoutProps } from "./Layout";
 
-type RowProps = {
-  ctx: RuntimeContext;
-  children: IRNode[];
-  noWrap?: boolean;
-};
+type RowProps = Omit<LayoutProps, "direction">;
 
-export default function Row({ ctx, children, noWrap }: RowProps) {
-  const childContext = ctx.createChild({});
-  return (
-    <div className={`${styles.Row} ${noWrap ? "" : styles.wrap}`}>
-      {children
-        .flatMap((child) => (
-          <RenderExpression ctx={childContext} evaluatedUI={child} />
-        ))
-        .map((child, index) => (
-          <React.Fragment key={index}>{child}</React.Fragment>
-        ))}
-    </div>
-  );
+export default function Row(props: Exclude<LayoutProps, "direction">) {
+  return <Layout {...props} direction="row" />;
 }
+
+const { direction, ...propsDocumentation } = LayoutDocumentation.props;
 
 export const RowDocumentation: WidgetDocumentation<RowProps> = {
   description: "Show content in a horizontal layout",
-  props: {
-    children: "Widgets to render in line",
-    noWrap: "Do not wrap elements",
-  },
+  props: propsDocumentation,
 };

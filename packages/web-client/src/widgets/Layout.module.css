@@ -1,0 +1,13 @@
+.directionColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.directionRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.child > * {
+  width: 100%;
+}

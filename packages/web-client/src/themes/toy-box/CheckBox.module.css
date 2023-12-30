@@ -1,14 +1,14 @@
 .CheckBox {
-  height: 28px;
-  width: 28px;
+  height: 24px;
+  width: 24px;
   position: relative;
   background-color: white;
   border: rgb(73, 73, 73) 2px solid;
 }
 
 .CheckBox > input {
-  height: 28px;
-  width: 28px;
+  height: 24px;
+  width: 24px;
   opacity: 0;
 }
 

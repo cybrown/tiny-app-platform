@@ -104,6 +104,8 @@ import {
   date_to_timezone,
   date_year,
 } from './functions/date';
+import { metadata_set, metadata_get } from './functions/metadata';
+import { flex } from './functions/widget';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -203,4 +205,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(time_parse);
   ctx.registerFunction(time_day_of_week);
   ctx.registerFunction(uuid_v4);
+
+  ctx.registerFunction(metadata_set);
+  ctx.registerFunction(metadata_get);
+  ctx.registerFunction(flex);
 }

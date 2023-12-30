@@ -1,12 +1,12 @@
 .SwitchContainer {
   position: relative;
-  height: 28px;
+  height: 24px;
 }
 
 .Switch,
 .background {
-  width: 52px;
-  height: 28px;
+  width: 44px;
+  height: 24px;
 }
 
 .Switch {
@@ -19,7 +19,7 @@
   left: 0;
   background-color: rgb(192, 192, 192);
   transition: background-color 100ms linear;
-  border-radius: 14px;
+  border-radius: 12px;
 }
 
 .backgroundDisabled {
@@ -28,14 +28,14 @@
 
 .switch {
   display: block;
-  height: 24px;
-  width: 24px;
+  height: 20px;
+  width: 20px;
   background-color: white;
   top: 2px;
   left: 2px;
   pointer-events: none;
   transition: transform 100ms linear;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .switchDisabled {
@@ -56,5 +56,5 @@
 }
 
 .Switch:checked + .background + .switch {
-  transform: translateX(24px);
+  transform: translateX(20px);
 }

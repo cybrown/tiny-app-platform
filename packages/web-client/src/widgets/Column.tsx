@@ -1,37 +1,15 @@
-import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
-import RenderExpression from "../runtime/RenderExpression";
-import styles from "./Column.module.css";
-import React from "react";
+import { WidgetDocumentation } from "tal-eval";
+import Layout, { LayoutDocumentation, LayoutProps } from "./Layout";
 
-type ColumnProps = {
-  ctx: RuntimeContext;
-  flexShrink?: number;
-  children: IRNode[];
-};
+type ColumnProps = Omit<LayoutProps, "direction">;
 
-export default function Column({
-  ctx,
-  flexShrink,
-  children = [],
-}: ColumnProps) {
-  const childContext = ctx.createChild({});
-  return (
-    <div className={styles.Column} style={{ flexShrink }}>
-      {children
-        .flatMap((child) => (
-          <RenderExpression ctx={childContext} evaluatedUI={child} />
-        ))
-        .map((child, index) => (
-          <React.Fragment key={index}>{child}</React.Fragment>
-        ))}
-    </div>
-  );
+export default function Column(props: Exclude<LayoutProps, "direction">) {
+  return <Layout {...props} direction="column" />;
 }
 
+const { direction, ...propsDocumentation } = LayoutDocumentation.props;
+
 export const ColumnDocumentation: WidgetDocumentation<ColumnProps> = {
-  description: "Show many widgets in a vertical layout",
-  props: {
-    children: "Widgets to render inside this column",
-    flexShrink: "Allow this widget to take less space verticaly",
-  },
+  description: "Show content in a vertical layout",
+  props: propsDocumentation,
 };

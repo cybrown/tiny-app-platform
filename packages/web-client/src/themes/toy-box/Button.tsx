@@ -6,10 +6,15 @@ export default function Button({
   disabled,
   text,
   secondary,
+  outline,
 }: ButtonProps) {
   return (
     <button
-      className={[styles.Button, secondary ? styles.secondary : ""].join(" ")}
+      className={[
+        styles.Button,
+        secondary ? styles.secondary : "",
+        outline ? styles.outline : "",
+      ].join(" ")}
       type="button"
       onClick={onClick}
       disabled={disabled}

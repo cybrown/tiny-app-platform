@@ -17,6 +17,7 @@ export interface ButtonProps {
   disabled?: boolean;
   onClick?: () => void;
   secondary?: boolean;
+  outline?: boolean;
 }
 
 export interface CheckBoxProps {
@@ -100,6 +101,20 @@ export type PagerOnChangeAction =
   | "LAST"
   | number;
 
+export type PagerButtonProps = {
+  p: PagerProps;
+  lastIndex: number;
+  updateValue: (value: PagerOnChangeAction) => void;
+} & (
+  | {
+      pos: "FIRST" | "PREVIOUS" | "NEXT" | "LAST";
+    }
+  | {
+      pos: "PAGE";
+      index: number;
+    }
+);
+
 export interface PagerProps {
   firstState?: PagerButtonState;
   lastState?: PagerButtonState;
@@ -109,6 +124,9 @@ export interface PagerProps {
   value?: number;
   onChange?(action: PagerOnChangeAction): void;
   disabled?: boolean;
+  lastIndex: number;
+  size: number;
+  PagerButtonComponent?(props: PagerButtonProps): JSX.Element | null;
 }
 
 export interface ModalProps {

@@ -7,6 +7,7 @@ import Select from "./Select";
 import InputFile from "./InputFile";
 import Text from "./Text";
 import htmlTheme from "../html";
+import Pager from "./Pager";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = "body {background-color: rgb(218, 218, 218);}";
@@ -24,7 +25,7 @@ const toyBoxTheme: Theme = {
   Select,
   InputFile,
   Text,
-  Pager: htmlTheme.Pager,
+  Pager,
   Table: htmlTheme.Table,
   Modal: htmlTheme.Modal,
   Link: htmlTheme.Link,

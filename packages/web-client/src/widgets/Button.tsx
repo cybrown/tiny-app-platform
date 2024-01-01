@@ -11,6 +11,7 @@ type ButtonProps = {
   confirm?: string | boolean;
   secondary?: boolean;
   disabled?: boolean;
+  outline?: boolean;
 };
 
 export default function Button({
@@ -20,6 +21,7 @@ export default function Button({
   confirm,
   secondary,
   disabled,
+  outline,
 }: ButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,6 +68,7 @@ export default function Button({
         disabled={disabled || isLoading}
         text={text}
         secondary={secondary}
+        outline={outline}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
@@ -80,5 +83,6 @@ export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {
     onClick: "Expression to evaluate on click",
     secondary: "Give the secondary style",
     text: "Message to show inside the button",
+    outline: "Give an outlined style",
   },
 };

@@ -5,11 +5,14 @@ export default function Button({
   disabled,
   text,
   secondary,
+  outline,
 }: ButtonProps) {
   return (
     <button
       type="button"
-      className={`tap-button ${secondary ? "is-secondary" : ""}`}
+      className={`tap-button ${secondary ? "is-secondary" : ""} ${
+        outline ? "is-outline" : ""
+      }`}
       onClick={onClick}
       disabled={disabled}
     >

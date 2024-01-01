@@ -9,6 +9,8 @@ type PagerProps = {
   ctx: RuntimeContext;
   max: number;
   perPage: number;
+  showPrevNext?: boolean;
+  size?: number;
 } & InputProps<number>;
 
 export default function Pager({
@@ -18,10 +20,12 @@ export default function Pager({
   onChange,
   value,
   disabled,
+  showPrevNext,
+  size,
 }: PagerProps) {
   const currentPage = value;
   const pages = [];
-  const difference = 3;
+  const difference = size ?? 3;
   const maxPage = Math.ceil(max / perPage);
   let minToShow = Math.max(1, currentPage - difference);
   const maxToShow = Math.min(minToShow + difference * 2, maxPage);
@@ -72,13 +76,23 @@ export default function Pager({
     <div>
       <ThemedPager
         firstState={currentPage === 1 ? "DISABLED" : "ENABLED"}
-        previousState={currentPage === 1 ? "DISABLED" : "ENABLED"}
+        previousState={
+          showPrevNext ? (currentPage === 1 ? "DISABLED" : "ENABLED") : "HIDDEN"
+        }
         disabled={disabled}
         lastState={currentPage === maxPage ? "DISABLED" : "ENABLED"}
-        nextState={currentPage === maxPage ? "DISABLED" : "ENABLED"}
+        nextState={
+          showPrevNext
+            ? currentPage === maxPage
+              ? "DISABLED"
+              : "ENABLED"
+            : "HIDDEN"
+        }
         values={pages}
         value={currentPage}
         onChange={onChangeHandler}
+        lastIndex={maxPage}
+        size={difference}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </div>
@@ -90,6 +104,8 @@ export const PagerDocumentation: WidgetDocumentation<PagerProps> = {
   props: {
     max: "Maximum page number",
     perPage: "Elements fetched per page",
+    showPrevNext: "Show previous and next buttons",
+    size: "Number of pages to show before and after current",
     ...InputPropsDocs,
   },
 };

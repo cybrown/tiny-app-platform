@@ -9,6 +9,7 @@ export default function Pager({
   values,
   onChange,
   value,
+  disabled,
 }: PagerProps) {
   const currentPage = value ?? 1;
 
@@ -26,7 +27,8 @@ export default function Pager({
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a
             className={
-              "page-link " + (firstState === "DISABLED" ? "disabled" : "")
+              "page-link " +
+              (firstState === "DISABLED" || disabled ? "disabled" : "")
             }
             href="#"
             onClick={(e) => {
@@ -43,7 +45,8 @@ export default function Pager({
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a
             className={
-              "page-link " + (previousState === "DISABLED" ? "disabled" : "")
+              "page-link " +
+              (previousState === "DISABLED" || disabled ? "disabled" : "")
             }
             href="#"
             onClick={(e) => {
@@ -56,7 +59,11 @@ export default function Pager({
         </li>
       ) : null}
       {(values ?? []).map((index) => (
-        <li className={"page-item " + (currentPage === index ? "active" : "")}>
+        <li
+          className={`page-item ${currentPage === index ? "active" : ""} ${
+            disabled ? "disabled" : ""
+          }`}
+        >
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a
             className={"page-link"}
@@ -74,7 +81,8 @@ export default function Pager({
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a
             className={
-              "page-link " + (nextState === "DISABLED" ? "disabled" : "")
+              "page-link " +
+              (nextState === "DISABLED" || disabled ? "disabled" : "")
             }
             href="#"
             onClick={(e) => {
@@ -91,7 +99,8 @@ export default function Pager({
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a
             className={
-              "page-link " + (lastState === "DISABLED" ? "disabled" : "")
+              "page-link " +
+              (lastState === "DISABLED" || disabled ? "disabled" : "")
             }
             href="#"
             onClick={(e) => {

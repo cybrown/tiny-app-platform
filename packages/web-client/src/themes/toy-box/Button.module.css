@@ -33,3 +33,29 @@
   border-color: rgb(145, 122, 103);
   background-color: rgb(190, 173, 161);
 }
+
+.Button.outline {
+  background-color: rgb(218, 218, 218);
+  color: rgb(27, 158, 125);
+}
+
+.Button.outline:disabled {
+  background-color: rgb(218, 218, 218);
+}
+
+.Button.outline.secondary {
+  color: rgb(128, 105, 90);
+}
+
+.Button.outline:disabled {
+  color: rgb(97, 197, 172);
+}
+
+.Button.outline.secondary:disabled {
+  color: rgb(190, 173, 161);
+}
+
+.Button.outline:active:enabled,
+.Button.outline.secondary:active:enabled {
+  color: rgb(186, 231, 220);
+}

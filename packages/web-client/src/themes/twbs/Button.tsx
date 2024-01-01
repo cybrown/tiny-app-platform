@@ -5,11 +5,14 @@ export default function Button({
   disabled,
   text,
   secondary,
+  outline,
 }: ButtonProps) {
   return (
     <button
       type="button"
-      className={"btn btn-sm " + (secondary ? "btn-secondary" : "btn-primary")}
+      className={`btn btn-sm btn${outline ? "-outline" : ""}-${
+        secondary ? "secondary" : "primary"
+      }`}
       onClick={onClick}
       disabled={disabled}
     >

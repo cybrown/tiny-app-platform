@@ -40,6 +40,7 @@ const twbsTheme: Theme = {
   Table,
   Modal,
   Link: htmlTheme.Link,
+  ModalBackdrop: htmlTheme.ModalBackdrop,
   onLoad() {
     document.body.appendChild(cssLink);
   },

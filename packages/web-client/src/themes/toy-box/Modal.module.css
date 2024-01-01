@@ -1,0 +1,14 @@
+.Modal {
+  width: 600px;
+  background-color: rgb(218, 218, 218);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ModalFooter {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

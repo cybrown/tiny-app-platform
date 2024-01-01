@@ -130,6 +130,10 @@ export interface PagerProps {
   PagerButtonComponent?(props: PagerButtonProps): JSX.Element | null;
 }
 
+export interface ModalBackdropProps extends React.PropsWithChildren {
+  onClose(): void;
+}
+
 export interface ModalProps {
   header: any;
   body: any;
@@ -162,6 +166,7 @@ export interface Theme {
   Pager(props: PagerProps): any;
   Table(props: TableProps): any;
   Modal(props: ModalProps): any;
+  ModalBackdrop(props: ModalBackdropProps): any;
   Link(props: LinkProps): any;
   onLoad?(): void;
   onUnload?(): void;
@@ -215,6 +220,11 @@ export function Table(props: TableProps) {
 export function Modal(props: ModalProps) {
   const theme = useTheme();
   return <theme.Modal {...props} />;
+}
+
+export function ModalBackdrop(props: ModalBackdropProps) {
+  const theme = useTheme();
+  return <theme.ModalBackdrop {...props} />;
 }
 
 export function Link(props: LinkProps) {

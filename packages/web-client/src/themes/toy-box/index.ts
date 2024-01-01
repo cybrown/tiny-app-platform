@@ -8,6 +8,7 @@ import InputFile from "./InputFile";
 import Text from "./Text";
 import htmlTheme from "../html";
 import Pager from "./Pager";
+import Modal from "./Modal";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -51,7 +52,8 @@ const toyBoxTheme: Theme = {
   Text,
   Pager,
   Table: htmlTheme.Table,
-  Modal: htmlTheme.Modal,
+  Modal,
+  ModalBackdrop: htmlTheme.ModalBackdrop,
   Link: htmlTheme.Link,
   onLoad() {
     document.body.appendChild(styleElement);

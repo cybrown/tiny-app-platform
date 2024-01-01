@@ -206,25 +206,51 @@ fun GallerySelect() {
   var values = ["Red", "Green", {value: "#00F", label: "Blue"}]
   var value = "Red"
   var value2
+  var disabled = false
 
   Column {
-    Title { text: "Select" }
+    Title { text: "Select Radio" }
+
+    Row {
+      Switch { bindTo: disabled }
+      Text { text: "Disabled" }
+    }
+
     Select {
       options:     values
       placeholder: "Color"
       bindTo:      value
+      disabled:    disabled
+    }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value
+      disabled:    disabled
     }
     Text { text: "Selected: " + value }
     Select {
       options:     values
       placeholder: "Color"
       bindTo:      value
-      disabled:    true
     }
     Select {
       options:     values
       placeholder: "Color"
       bindTo:      value2
+      disabled:    disabled
+    }
+
+    Row {
+      values
+        |  array_map((option) => Row {
+            Radio {
+              option:   option
+              bindTo:   value
+              disabled: disabled
+            }
+            Text { text: default(option.label, option) }
+          })
     }
   }
 }

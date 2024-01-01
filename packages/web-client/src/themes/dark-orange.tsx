@@ -3,6 +3,7 @@ import {
   CheckBoxProps,
   PagerButtonProps,
   PagerProps,
+  RadioProps,
   Theme,
 } from "../theme";
 import htmlTheme from "./html";
@@ -118,6 +119,40 @@ body {
   transform: rotate(45deg);
 }
 
+.tap-radio {
+  position: relative;
+}
+
+.tap-radio > input {
+  display: none;
+}
+
+.tap-radio > input + div {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  background-color: #2f2f2f;
+  border-radius: 10px;
+  content: 'a';
+  border: 1px solid rgba(107,107,107,.24);
+}
+
+.tap-radio > input:checked + div::after {
+  position: absolute;
+  top: -4px;
+  left: 2px;
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  display: block;
+  content: ' ';
+  background-color: #ffa41a;
+}
+
+.tap-radio > input:checked:disabled + div::after {
+  background-color: #f4b659;
+}
+
 .tap-link.is-disabled {
   color: #2f2f2f;
 }
@@ -131,6 +166,20 @@ function CheckBox(props: CheckBoxProps) {
         disabled={props.disabled}
         checked={props.value ?? false}
         onChange={(e) => props.onChange && props.onChange(e.target.checked)}
+      />
+      <div />
+    </label>
+  );
+}
+
+function Radio(props: RadioProps) {
+  return (
+    <label className="tap-radio">
+      <input
+        type="radio"
+        disabled={props.disabled}
+        checked={props.value === props.option}
+        onChange={() => props.onChange && props.onChange()}
       />
       <div />
     </label>
@@ -205,6 +254,7 @@ const darkOrangeTheme: Theme = {
   CheckBox,
   Switch: CheckBox,
   Pager,
+  Radio,
   colors: {
     background: "black",
   },

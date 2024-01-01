@@ -149,6 +149,13 @@ export type LinkProps = Omit<TextProps, "text"> & {
   secondary?: boolean;
 };
 
+export type RadioProps = {
+  option: string;
+  value?: string;
+  onChange?(): void;
+  disabled?: boolean;
+};
+
 export interface Theme {
   id: string;
   name: string;
@@ -168,6 +175,7 @@ export interface Theme {
   Modal(props: ModalProps): any;
   ModalBackdrop(props: ModalBackdropProps): any;
   Link(props: LinkProps): any;
+  Radio(props: RadioProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -230,4 +238,10 @@ export function ModalBackdrop(props: ModalBackdropProps) {
 export function Link(props: LinkProps) {
   const theme = useTheme();
   return <theme.Link {...props} />;
+}
+
+export function Radio(props: RadioProps) {
+  const theme = useTheme();
+  if (!theme.Radio) return null;
+  return <theme.Radio {...props} />;
 }

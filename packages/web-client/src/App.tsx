@@ -12,6 +12,7 @@ import HorizontalLayout, {
   HorizontalLayoutDocumentation,
 } from "./widgets/HorizontalLayout";
 import Text, { TextDocumentation } from "./widgets/Text";
+import Radio, { RadioDocumentation } from "./widgets/Radio";
 import Link, { LinkDocumentation } from "./widgets/Link";
 import ListLayout, { ListLayoutDocumentation } from "./widgets/ListLayout";
 import Select, { SelectDocumentation } from "./widgets/Select";
@@ -137,6 +138,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Switch", Switch, SwitchDocumentation);
   ctx.registerWidget("Table", Table, TableDocumentation);
   ctx.registerWidget("Text", Text, TextDocumentation);
+  ctx.registerWidget("Radio", Radio, RadioDocumentation);
 
   return ctx;
 }

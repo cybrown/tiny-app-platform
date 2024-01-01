@@ -10,6 +10,7 @@ import Pager from "./Pager";
 import Table from "./Table";
 import Modal from "./Modal";
 import htmlTheme from "../html";
+import Radio from "./Radio";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -39,6 +40,7 @@ const twbsTheme: Theme = {
   Pager,
   Table,
   Modal,
+  Radio,
   Link: htmlTheme.Link,
   ModalBackdrop: htmlTheme.ModalBackdrop,
   onLoad() {

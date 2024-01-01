@@ -11,6 +11,7 @@ import Table from "./Table";
 import Modal from "./Modal";
 import Link from "./Link";
 import ModalBackdrop from "./ModalBackdrop";
+import Radio from "./Radio";
 
 const htmlTheme: Theme = {
   id: "html",
@@ -30,6 +31,7 @@ const htmlTheme: Theme = {
   Modal,
   Link,
   ModalBackdrop,
+  Radio,
 };
 
 export default htmlTheme;

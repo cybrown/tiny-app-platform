@@ -8,6 +8,7 @@ import Select from "./Select";
 import Table from "./Table";
 import Modal from "./Modal";
 import htmlTheme from "../html";
+import Radio from "./Radio";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -40,6 +41,7 @@ const nesCssTheme: Theme = {
   Select,
   Table,
   Modal,
+  Radio,
   onLoad() {
     document.body.appendChild(cssLink);
     document.body.appendChild(styleElement);

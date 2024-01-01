@@ -19,8 +19,8 @@ export default function Select({
       >
         {showEmpty ? <option>{placeholder}</option> : null}
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>

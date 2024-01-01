@@ -44,7 +44,7 @@ export interface InputTextProps {
 }
 
 export interface SelectProps {
-  options: string[];
+  options: { value: string; label: string }[];
   placeholder?: string;
   value?: string;
   onChange?(newValueIndex: number): void;

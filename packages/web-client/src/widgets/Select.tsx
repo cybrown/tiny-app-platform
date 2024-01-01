@@ -46,7 +46,9 @@ export default function Select({
   return (
     <>
       <ThemedSelect
-        options={options.map((o) => (typeof o == "string" ? o : o.label))}
+        options={options.map((option) =>
+          typeof option === "string" ? { label: option, value: option } : option
+        )}
         disabled={disabled}
         onChange={onChangeHandler}
         placeholder={placeholder}

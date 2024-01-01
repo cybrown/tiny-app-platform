@@ -33,8 +33,12 @@ export default function Select({
           <option className={styles.optionDisabled}>{placeholder}</option>
         ) : null}
         {options.map((option) => (
-          <option className={styles.option} key={option} value={option}>
-            {option}
+          <option
+            className={styles.option}
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
           </option>
         ))}
       </select>

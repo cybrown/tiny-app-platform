@@ -410,7 +410,10 @@ function App() {
                   setAppDebugMode={setAppDebutModeHandler}
                 />
                 <ThemedSelect
-                  options={themes.map((theme) => theme.name)}
+                  options={themes.map((theme) => ({
+                    label: theme.name,
+                    value: theme.id,
+                  }))}
                   value={theme.name}
                   onChange={(newIndex) => applyTheme(themes[newIndex])}
                 />

@@ -414,7 +414,7 @@ function App() {
                     label: theme.name,
                     value: theme.id,
                   }))}
-                  value={theme.name}
+                  value={theme.id}
                   onChange={(newIndex) => applyTheme(themes[newIndex])}
                 />
               </div>

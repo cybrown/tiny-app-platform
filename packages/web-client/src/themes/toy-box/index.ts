@@ -10,7 +10,31 @@ import htmlTheme from "../html";
 import Pager from "./Pager";
 
 const styleElement = document.createElement("style");
-styleElement.textContent = "body {background-color: rgb(218, 218, 218);}";
+styleElement.textContent = `
+body {
+  background-color: rgb(218, 218, 218);
+}
+
+.tap-link {
+  color: rgb(26, 145, 115);
+  text-decoration-color: rgb(26, 145, 115);
+}
+
+.tap-link.is-disabled {
+  color: rgb(97, 197, 172);
+  text-decoration-color: rgb(97, 197, 172);
+}
+
+.tap-link.is-secondary {
+  color: rgb(103, 82, 63);
+  text-decoration-color: rgb(103, 82, 63);
+}
+
+.tap-link.is-secondary.is-disabled {
+  color: rgb(190, 173, 161);
+  text-decoration-color: rgb(190, 173, 161);
+}
+`;
 
 const toyBoxTheme: Theme = {
   id: "toy-box",

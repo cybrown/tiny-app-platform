@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
 import ErrorPopin from "./internal/ErrorPopin";
-import { Button as ThemedButton } from "../theme";
+import { Link, Button as ThemedButton } from "../theme";
 
 type ButtonProps = {
   ctx: RuntimeContext;
@@ -12,6 +12,7 @@ type ButtonProps = {
   secondary?: boolean;
   disabled?: boolean;
   outline?: boolean;
+  link?: boolean;
 };
 
 export default function Button({
@@ -22,6 +23,7 @@ export default function Button({
   secondary,
   disabled,
   outline,
+  link,
 }: ButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,13 +65,24 @@ export default function Button({
         confirm={confirm}
         onOk={doClickAction}
       />
-      <ThemedButton
-        onClick={clickHandler}
-        disabled={disabled || isLoading}
-        text={text}
-        secondary={secondary}
-        outline={outline}
-      />
+      {link ? (
+        <Link
+          text={text}
+          onClick={disabled ? undefined : clickHandler}
+          disabled={disabled}
+          url="#default"
+          secondary={secondary}
+        />
+      ) : (
+        <ThemedButton
+          onClick={clickHandler}
+          disabled={disabled || isLoading}
+          text={text}
+          secondary={secondary}
+          outline={outline}
+          link={link}
+        />
+      )}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );
@@ -84,5 +97,6 @@ export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {
     secondary: "Give the secondary style",
     text: "Message to show inside the button",
     outline: "Give an outlined style",
+    link: "Give a link style",
   },
 };

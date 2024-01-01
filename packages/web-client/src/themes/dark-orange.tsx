@@ -117,6 +117,10 @@ body {
   content: ' ';
   transform: rotate(45deg);
 }
+
+.tap-link.is-disabled {
+  color: #2f2f2f;
+}
 `;
 
 function CheckBox(props: CheckBoxProps) {

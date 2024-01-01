@@ -85,51 +85,120 @@ fun GalleryInputText() {
 fun GalleryCheckbox() {
   var value = false
 
-  Title { text: "CheckBox Switch" }
-  Row { CheckBox { bindTo: value } }
-  Row { Switch { bindTo: value } }
-  Row {
-    CheckBox { bindTo: value, disabled: true }
-  }
-  Row {
-    Switch { bindTo: value, disabled: true }
+  Column {
+    Title { text: "CheckBox Switch" }
+    Row { CheckBox { bindTo: value } }
+    Row { Switch { bindTo: value } }
+    Row {
+      CheckBox { bindTo: value, disabled: true }
+    }
+    Row {
+      Switch { bindTo: value, disabled: true }
+    }
   }
 }
 
 fun GalleryButton() {
   var value = false
+  var disabled = false
 
-  Title { text: "Button" }
-  Button { text: "Click me" }
-  Button {
-    text:    "Confirm"
-    confirm: "Are you sure ?"
-    onClick: () => log("Confirmed !")
-  }
-  Button { text: "Click me", secondary: true }
-  Button { text: "Click me", disabled: true }
-  Button {
-    text:      "Click me"
-    secondary: true
-    disabled:  true
+  Column {
+    Title { text: "Button" }
+
+    Row {
+      Switch { bindTo: disabled }
+      Text { text: "Disabled" }
+    }
+
+    Button { text: "Click me", disabled: disabled }
+
+    Button {
+      text:     "Confirm"
+      confirm:  "Are you sure ?"
+      onClick:  () => log("Confirmed !")
+      disabled: disabled
+    }
+
+    Button {
+      text:      "Secondary"
+      secondary: true
+      disabled:  disabled
+    }
+
+    Button {
+      text:     "Outline"
+      outline:  true
+      disabled: disabled
+    }
+
+    Button {
+      text:      "Outline Secondary"
+      secondary: true
+      outline:   true
+      disabled:  disabled
+    }
+
+    Button {
+      text:     "Link"
+      link:     true
+      disabled: disabled
+      onClick:  () => log("link click")
+    }
+
+    Button {
+      text:      "Link Secondary"
+      secondary: true
+      link:      true
+      disabled:  disabled
+      onClick:   () => log("link click secondary")
+    }
   }
 }
 
 fun GalleryLink() {
   var value = false
 
-  Title { text: "Link" }
-  Link { url: "https://www.example.com" }
+  Column {
+    Title { text: "Link" }
+    Link { url: "https://www.example.com" }
+  }
 }
 
 fun GalleryPager() {
   var currentPage = 1
+  var showPrevNext = true
+  var disabled = false
+  var size = "2"
 
-  Title { text: "Pager" }
-  Pager {
-    max:     100
-    perPage: 10
-    bindTo:  currentPage
+  Column {
+    Title { text: "Pager" }
+
+    Row {
+      Switch { bindTo: showPrevNext }
+      Text { text: "showPrevNext" }
+    }
+
+    Row {
+      Switch { bindTo: disabled }
+      Text { text: "disabled" }
+    }
+
+    Row {
+      Select {
+        bindTo:  size
+        options: ["2", "3", "4"]
+      }
+      Text { text: "size" }
+    }
+
+    Pager {
+      max:          100
+      perPage:      10
+      bindTo:       currentPage
+      showPrevNext: showPrevNext
+      size:         string_to_number(size)
+      disabled:     disabled
+    }
   }
 }
 
@@ -138,23 +207,25 @@ fun GallerySelect() {
   var value = "Red"
   var value2
 
-  Title { text: "Select" }
-  Select {
-    options:     values
-    placeholder: "Color"
-    bindTo:      value
-  }
-  Text { text: "Selected: " + value }
-  Select {
-    options:     values
-    placeholder: "Color"
-    bindTo:      value
-    disabled:    true
-  }
-  Select {
-    options:     values
-    placeholder: "Color"
-    bindTo:      value2
+  Column {
+    Title { text: "Select" }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value
+    }
+    Text { text: "Selected: " + value }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value
+      disabled:    true
+    }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value2
+    }
   }
 }
 
@@ -172,121 +243,124 @@ fun GalleryTable() {
     {name: "Tutu", age: "132", secret: true}
   ]
 
-  Title { text: "Table" }
-
-  Row {
-    CheckBox { bindTo: useRemaining }
-    Text {
-      text: "Name column must use remaining space"
-    }
-  }
-
-  Row {
-    CheckBox { bindTo: noHeader }
-    Text { text: "No header" }
-  }
-
-  Row {
-    CheckBox { bindTo: striped }
-    Text { text: "Striped" }
-  }
-
-  Row {
-    CheckBox { bindTo: noHighlight }
-    Text { text: "No Highlight" }
-  }
-
-  Row {
-    CheckBox { bindTo: bordered }
-    Text { text: "Bordered" }
-  }
-
-  Table {
-    _key:        (row) => row.name
-    noHeader:    noHeader
-    striped:     striped
-    noHighlight: noHighlight
-    bordered:    bordered
-    columns:     [
-      {
-        description:  "Name"
-        display:      (row) => Text { text: row.name }
-        useRemaining: useRemaining
-      }
-      {
-        description: "Age"
-        display:     (row) => Text { text: row.age }
-      }
-    ]
-    values:      data
-  }
-
-  Table {
-    values:      data
-    noHeader:    noHeader
-    noHighlight: noHighlight
-    bordered:    bordered
-    striped:     striped
-  }
-
-  Table {
-    noHeader:    noHeader
-    noHighlight: noHighlight
-    striped:     striped
-    bordered:    bordered
-    columns:     [
-      "name"
-      {
-        description: "Age"
-        display:     (row) => Text { text: row.age + " years old" }
-      }
-    ]
-    values:      data
-  }
-}
-
-fun GalleryThemeSelector() {
-  Title { text: "Theme selector" }
-
   Column {
-    Button {
-      text:    "HTML"
-      onClick: () => set_system_property("theme", "HTML")
+    Title { text: "Table" }
+
+    Row {
+      CheckBox { bindTo: useRemaining }
+      Text {
+        text: "Name column must use remaining space"
+      }
     }
-    Button {
-      text:    "Toy Box"
-      onClick: () => set_system_property("theme", "Toy Box")
+
+    Row {
+      CheckBox { bindTo: noHeader }
+      Text { text: "No header" }
     }
-    Button {
-      text:    "Bootstrap"
-      onClick: () => set_system_property("theme", "Bootstrap")
+
+    Row {
+      CheckBox { bindTo: striped }
+      Text { text: "Striped" }
     }
-    Button {
-      text:    "Bootstrap Dark"
-      onClick: () => set_system_property("theme", "Bootstrap Dark")
+
+    Row {
+      CheckBox { bindTo: noHighlight }
+      Text { text: "No Highlight" }
     }
-    Button {
-      text:    "NES.css"
-      onClick: () => set_system_property("theme", "NES.css")
+
+    Row {
+      CheckBox { bindTo: bordered }
+      Text { text: "Bordered" }
+    }
+
+    Table {
+      _key:        (row) => row.name
+      noHeader:    noHeader
+      striped:     striped
+      noHighlight: noHighlight
+      bordered:    bordered
+      columns:     [
+        {
+          description:  "Name"
+          display:      (row) => Text { text: row.name }
+          useRemaining: useRemaining
+        }
+        {
+          description: "Age"
+          display:     (row) => Text { text: row.age }
+        }
+      ]
+      values:      data
+    }
+
+    Table {
+      values:      data
+      noHeader:    noHeader
+      noHighlight: noHighlight
+      bordered:    bordered
+      striped:     striped
+    }
+
+    Table {
+      noHeader:    noHeader
+      noHighlight: noHighlight
+      striped:     striped
+      bordered:    bordered
+      columns:     [
+        "name"
+        {
+          description: "Age"
+          display:     (row) => Text { text: row.age + " years old" }
+        }
+      ]
+      values:      data
     }
   }
 }
 
-Column {
-  Debug { value: "Debug enabled !" }
-  Row {
-    Box { width: "360px", GalleryInputText {} }
-    Box { width: "360px", GalleryText {} }
-    Box { width: "360px", GalleryCheckbox {} }
-    Box { width: "360px", GalleryButton {} }
-    Box { width: "360px", GalleryLink {} }
-    Box { width: "360px", GalleryPager {} }
-    Box { width: "360px", GallerySelect {} }
-    Box { width: "360px", GalleryTable {} }
-    Box {
-      width: "360px"
+fun App() {
+  Column {
+    padding: 0.5
 
-      GalleryThemeSelector {}
+    Debug { value: "Debug enabled !" }
+
+    var currentTheme = "toy-box"
+    let themes = [
+      "html"
+      "toy-box"
+      "twbs"
+      "twbs-dark"
+      "nes-css"
+      "dark-orange"
+    ]
+
+    Column {
+      Row {
+        Text { text: "Change theme: " }
+        Select {
+          value:    currentTheme
+          onChange: (newVal) => {
+            set currentTheme = newVal
+            set_system_property("theme", newVal)
+          }
+          options:  themes
+        }
+      }
+
+      Row {
+        wrap: true
+
+        Box { width: "360px", GalleryInputText {} }
+        Box { width: "360px", GalleryText {} }
+        Box { width: "360px", GalleryCheckbox {} }
+        Box { width: "360px", GalleryButton {} }
+        Box { width: "360px", GalleryLink {} }
+        Box { width: "360px", GalleryPager {} }
+        Box { width: "360px", GallerySelect {} }
+        Box { width: "360px", GalleryTable {} }
+      }
     }
   }
 }
+
+App {}

@@ -6,7 +6,10 @@ export default function Link(props: LinkProps) {
   if (!props.text && !props.url) {
     throw new Error("text or url is mandatory for Link widget");
   }
-  return <ThemedLink {...props} />;
+  if (props.url && props.onClick) {
+    throw new Error("url is mutually exclusive with onClick for Link widget");
+  }
+  return <ThemedLink url="#default" {...props} />;
 }
 
 export const LinkDocumentation: WidgetDocumentation<LinkProps> = {
@@ -15,6 +18,9 @@ export const LinkDocumentation: WidgetDocumentation<LinkProps> = {
   props: {
     ...TextDocumentation.props,
     text: "Text content of the link",
-    url: "URL to navigate to",
+    url: "URL to navigate to, mutually exclusive with onClick",
+    onClick: "Expression to evaluate on click, mutually exclusive with url",
+    disabled: "Do not allow the user to interact with this widget",
+    secondary: "Give the secondary style",
   },
 };

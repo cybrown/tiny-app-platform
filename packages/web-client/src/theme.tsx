@@ -18,6 +18,7 @@ export interface ButtonProps {
   onClick?: () => void;
   secondary?: boolean;
   outline?: boolean;
+  link?: boolean;
 }
 
 export interface CheckBoxProps {
@@ -138,7 +139,10 @@ export interface ModalProps {
 
 export type LinkProps = Omit<TextProps, "text"> & {
   url?: string;
+  onClick?: () => void;
   text?: string;
+  disabled?: boolean;
+  secondary?: boolean;
 };
 
 export interface Theme {

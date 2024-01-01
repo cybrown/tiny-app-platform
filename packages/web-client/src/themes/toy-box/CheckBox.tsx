@@ -13,7 +13,9 @@ export default function CheckBox({ disabled, onChange, value }: CheckBoxProps) {
           onChange={(e) => onChange && onChange(e.target.checked)}
           disabled={disabled}
         />
-        <div className={styles.checkMark}></div>
+        <div className={styles.checkMark}>
+          <div className={styles.checkMarkInner} />
+        </div>
       </div>
     </>
   );

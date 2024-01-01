@@ -20,13 +20,29 @@
 .checkMark {
   pointer-events: none;
   position: absolute;
-  top: 2px;
-  left: 2px;
-  height: 16px;
-  width: 16px;
+  top: 0px;
+  left: 0px;
+  height: 20px;
+  width: 20px;
   background-color: rgb(28, 179, 141);
   opacity: 0;
   transition: opacity 100ms linear;
+}
+
+.disabled .checkMark {
+  background-color: rgb(85, 206, 176);
+}
+
+.checkMarkInner {
+  position: absolute;
+  width: 8px;
+  height: 14px;
+  left: 6px;
+  top: 0px;
+  border: 2px solid white;
+  border-left: none;
+  border-top: none;
+  transform: rotate(45deg);
 }
 
 input:checked + .checkMark {

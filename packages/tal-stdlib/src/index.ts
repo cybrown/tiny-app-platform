@@ -105,7 +105,7 @@ import {
   date_year,
 } from './functions/date';
 import { metadata_set, metadata_get } from './functions/metadata';
-import { flex } from './functions/widget';
+import { flex, scroller } from './functions/widget';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -209,4 +209,5 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(metadata_set);
   ctx.registerFunction(metadata_get);
   ctx.registerFunction(flex);
+  ctx.registerFunction(scroller);
 }

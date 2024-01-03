@@ -35,8 +35,9 @@ function computeChildStyles(
         ? { paddingLeft: (d.gap ?? 0.5) * baseSize }
         : { paddingTop: (d.gap ?? 0.5) * baseSize }
       : {}),
-    ...(meta.flex ? { flex: meta.flex } : {}),
+    ...(meta.flexGrow ? { flexGrow: meta.flexGrow } : {}),
     ...(meta.backgroundColor ? { backgroundColor: meta.backgroundColor } : {}),
+    ...(meta.scroller ? { overflowY: "auto" as const } : {}),
   };
 }
 

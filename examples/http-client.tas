@@ -49,12 +49,11 @@ Column {
     }
 
     InputText {
-          bindTo:      url
-          placeholder: "URL"
-          type:        "url"
-          onSubmit:    executeHttpRequest
-        }
-      |  flex(1)
+      bindTo:      url
+      placeholder: "URL"
+      type:        "url"
+      onSubmit:    executeHttpRequest
+    } | flex(1)
   }
 
   if (array_length(headers) > 0) {
@@ -70,10 +69,9 @@ Column {
 
 
             InputText {
-                  placeholder: "Header value"
-                  bindTo:      it[1]
-                }
-              |  flex(2)
+              placeholder: "Header value"
+              bindTo:      it[1]
+            } | flex(2)
 
 
             Button {
@@ -121,15 +119,15 @@ Column {
       Text {
         copy: true
         text: "curl -X $method $headers '$url'"
-          |  string_format({
+           | string_format({
               method:  method
               url:     url
               headers: validHeaders
-                |  array_map((it) => string_format(
+                 | array_map((it) => string_format(
                     "-H '$name: $value'"
                     {name: it[0], value: it[1]}
                   ))
-                |  array_join(" ")
+                 | array_join(" ")
             })
       }
     }
@@ -138,7 +136,7 @@ Column {
       Text {
         copy: true
         text: 'http_request(method: "$method", url: "$url" $headers $body)'
-          |  string_format({
+           | string_format({
               method:  method
               url:     url
               body:    if (body != null && body != "") {
@@ -187,8 +185,8 @@ Column {
           }
         ]
         values:  response.headers
-          |  object_entries
-          |  array_map((it) => {key: it[0], value: it[1]})
+           | object_entries
+           | array_map((it) => {key: it[0], value: it[1]})
       }
     }
 
@@ -211,21 +209,18 @@ Column {
       Switch { bindTo: doFormat }
     }
 
-    Box {
-      scroll: true
-
-      if (language == "json" && doFormat) {
-        Debug {
-          value: responseBodyString | json_parse
-          force: true
-        }
-      } else {
-        Snippet {
-          text:     responseBodyString
-          language: language
-          format:   doFormat
-        }
+    if (language == "json" && doFormat) {
+      Debug {
+        value: responseBodyString | json_parse
+        force: true
       }
+    } else {
+      Snippet {
+        text:        responseBodyString
+        language:    language
+        format:      doFormat
+        noMaxHeight: true
+      } | scroller
     }
   }
-}
+} | scroller

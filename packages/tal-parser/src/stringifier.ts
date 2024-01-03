@@ -234,20 +234,30 @@ class Stringifier {
 
   stringifyPipeMultiline(obj: PipeExpression): string {
     let result = '';
-    this.incrementDepth();
-    this.incrementDepth();
+    const isLeftKindedObject = obj.first.kind == 'KindedObject';
+    if (!isLeftKindedObject) {
+      this.incrementDepth();
+      this.incrementDepth();
+    }
     result += this.stringify(obj.first);
-    this.decrementDepth();
+    if (!isLeftKindedObject) {
+      this.decrementDepth();
+    }
     for (let index = 0; index < obj.values.length; index++) {
       const value = obj.values[index];
-      result += '\n';
-      result += this.depthSpace();
-      result += value.pipeKind + (value.pipeKind === '|' ? ' ' : '') + ' ';
+      if (index != 0 && isLeftKindedObject) {
+        result += '\n';
+        result += this.depthSpace();
+      }
+      result +=
+        (index == 0 && isLeftKindedObject ? ' ' : '  ') + value.pipeKind + ' ';
       this.incrementDepth();
       result += this.stringify(value.value);
       this.decrementDepth();
     }
-    this.decrementDepth();
+    if (!isLeftKindedObject) {
+      this.decrementDepth();
+    }
     return result;
   }
 

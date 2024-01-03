@@ -102,7 +102,9 @@ export default function Snippet({
                 text="Copy formatted"
               />
             ) : null}
-            <Button onClick={viewMoreHandler} text="View more" />
+            {!noMaxHeight ? (
+              <Button onClick={viewMoreHandler} text="View more" />
+            ) : null}
             <Button onClick={toggleFullScreen} text="Fullscreen" />
           </div>
           <div className={styles.preContainer}>

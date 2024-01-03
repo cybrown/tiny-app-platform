@@ -9,7 +9,6 @@ type BoxProps = {
   height?: string | number;
   flex?: number;
   backgroundColor?: string;
-  scroll?: boolean;
   children?: IRNode[];
 };
 
@@ -20,7 +19,6 @@ export default function Box({
   children,
   flex,
   backgroundColor,
-  scroll,
 }: BoxProps) {
   const childContext = ctx.createChild({});
   return (
@@ -31,9 +29,6 @@ export default function Box({
         height,
         flexGrow: flex ?? 0,
         backgroundColor: backgroundColor,
-        minHeight: scroll ? "0" : undefined,
-        flexShrink: scroll ? 1 : undefined,
-        overflow: scroll ? "auto" : undefined,
       }}
     >
       {children
@@ -56,7 +51,6 @@ export const BoxDocumentation: WidgetDocumentation<BoxProps> = {
     children: "Content",
     flex: "Weight of free space to use",
     height: "Height like in CSS",
-    scroll: "Enable scrolling",
     width: "Width like in CSS",
   },
 };

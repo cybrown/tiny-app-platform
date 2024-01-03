@@ -1,62 +1,59 @@
 .Button {
   font-family: Proxima Nova Rg;
   font-weight: 800;
-  color: rgb(186, 231, 220);
-
   min-height: 24px;
-
   border-style: solid;
-  border-color: rgb(28, 95, 78);
   border-width: 1px;
-  background-color: rgb(28, 179, 141);
+}
+
+.Button {
+  color: var(--toy-box-color-primary-100);
+  background-color: var(--toy-box-color-primary-400);
+  border-color: var(--toy-box-color-primary-700);
 }
 
 .Button.secondary {
-  border-color: rgb(103, 82, 63);
-  background-color: rgb(159, 129, 111);
-  color: rgb(234, 231, 228);
-}
-
-.Button.secondary:active:enabled {
-  background-color: rgb(141, 109, 51);
+  color: var(--toy-box-color-secondary-100);
+  background-color: var(--toy-box-color-secondary-400);
+  border-color: var(--toy-box-color-secondary-700);
 }
 
 .Button:active:enabled {
-  background-color: rgb(26, 145, 115);
+  background-color: var(--toy-box-color-primary-300);
+}
+
+.Button.secondary:active:enabled {
+  background-color: var(--toy-box-color-secondary-300);
 }
 
 .Button:disabled {
-  border-color: rgb(39, 119, 99);
-  background-color: rgb(97, 197, 172);
+  border-color: var(--toy-box-color-primary-600);
+  background-color: var(--toy-box-color-primary-200);
 }
 
 .Button.secondary:disabled {
-  border-color: rgb(145, 122, 103);
-  background-color: rgb(190, 173, 161);
+  border-color: var(--toy-box-color-secondary-600);
+  background-color: var(--toy-box-color-secondary-200);
 }
 
 .Button.outline {
-  background-color: rgb(218, 218, 218);
-  color: rgb(27, 158, 125);
-}
-
-.Button.outline:disabled {
-  background-color: rgb(218, 218, 218);
+  background-color: transparent;
+  color: var(--toy-box-color-primary-500);
 }
 
 .Button.outline.secondary {
-  color: rgb(128, 105, 90);
+  color: var(--toy-box-color-secondary-500);
 }
 
 .Button.outline:disabled {
-  color: rgb(97, 197, 172);
+  color: var(--toy-box-color-primary-200);
+  background-color: var(--toy-box-color-gray-300);
 }
 
 .Button.outline.secondary:disabled {
-  color: rgb(190, 173, 161);
+  color: var(--toy-box-color-secondary-200);
 }
 
-.Button.outline:active:enabled,
-.Button.outline.secondary:active:enabled {
-  color: rgb(186, 231, 220);
+.Button.outline:active:enabled {
+  background-color: var(--toy-box-color-gray-300);
 }

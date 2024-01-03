@@ -7,20 +7,30 @@
 .tab {
   padding: 6px 12px;
   cursor: pointer;
+  border-bottom: solid 1px var(--toy-box-color-primary-700);
 }
 
 .tabSpacer {
   flex-grow: 1;
+  border-bottom: solid 1px var(--toy-box-color-primary-700);
 }
 
 .selected {
-  background-color: rgba(0, 0, 0, 0.03);
-  color: rgb(28, 95, 78);
+  background-image: linear-gradient(
+    180deg,
+    var(--toy-box-color-gray-500) 0%,
+    var(--toy-box-color-gray-500) 20%,
+    transparent 100%
+  );
+  color: var(--toy-box-color-primary-700);
+  border: solid 1px var(--toy-box-color-primary-700);
+  border-bottom: none;
 }
 
 .content {
   padding: 6px;
-  background-color: rgba(0, 0, 0, 0.03);
+  border: solid 1px var(--toy-box-color-primary-700);
+  border-top: none;
 }
 
 .content > * {

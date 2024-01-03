@@ -6,6 +6,7 @@ import { Switch as ThemedSwitch } from "../theme";
 
 type SwitchProps = {
   ctx: RuntimeContext;
+  secondary?: boolean;
 } & InputProps<boolean>;
 
 export default function Switch({
@@ -13,6 +14,7 @@ export default function Switch({
   onChange,
   value,
   disabled,
+  secondary,
 }: SwitchProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -31,7 +33,12 @@ export default function Switch({
 
   return (
     <>
-      <ThemedSwitch disabled={disabled} onChange={handleChange} value={value} />
+      <ThemedSwitch
+        disabled={disabled}
+        onChange={handleChange}
+        value={value}
+        secondary={secondary}
+      />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );
@@ -41,5 +48,6 @@ export const SwitchDocumentation: WidgetDocumentation<SwitchProps> = {
   description: "Input a boolean value. Like Checkbox but with another style",
   props: {
     ...InputPropsDocs,
+    secondary: "Give the secondary style",
   },
 };

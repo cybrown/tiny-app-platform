@@ -1,11 +1,18 @@
 import { CheckBoxProps } from "../../theme";
 import styles from "./CheckBox.module.css";
 
-export default function CheckBox({ disabled, onChange, value }: CheckBoxProps) {
+export default function CheckBox({
+  disabled,
+  onChange,
+  value,
+  secondary,
+}: CheckBoxProps) {
   return (
     <>
       <div
-        className={styles.CheckBox + (disabled ? " " + styles.disabled : "")}
+        className={`${styles.CheckBox} ${secondary ? styles.secondary : ""} ${
+          disabled ? " " + styles.disabled : ""
+        }`}
       >
         <input
           type="checkbox"

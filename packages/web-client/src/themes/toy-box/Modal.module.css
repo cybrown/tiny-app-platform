@@ -1,6 +1,6 @@
 .Modal {
   width: 600px;
-  background-color: rgb(218, 218, 218);
+  background-color: var(--toy-box-color-gray-300);
   padding: 8px;
   display: flex;
   flex-direction: column;

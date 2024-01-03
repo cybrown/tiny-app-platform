@@ -25,12 +25,14 @@ export interface CheckBoxProps {
   disabled?: boolean;
   onChange?(newValue: boolean): Promise<void>;
   value?: boolean;
+  secondary?: boolean;
 }
 
 export interface SwitchProps {
   disabled?: boolean;
   onChange?(newValue: boolean): Promise<void> | void;
   value?: boolean;
+  secondary?: boolean;
 }
 
 export interface InputTextProps {
@@ -154,6 +156,7 @@ export type RadioProps = {
   value?: string;
   onChange?(): void;
   disabled?: boolean;
+  secondary?: boolean;
 };
 
 export type TabsProps = {
@@ -162,11 +165,23 @@ export type TabsProps = {
   tabs: { id: string; title: string; content: () => JSX.Element | null }[];
 };
 
+interface ColorScale {
+  "100": string;
+  "200": string;
+  "300": string;
+  "400": string;
+  "500": string;
+  "600": string;
+  "700": string;
+}
+
 export interface Theme {
   id: string;
   name: string;
   colors: {
     background: string;
+    primary?: ColorScale;
+    secondary?: ColorScale;
   };
   baseSize?: number;
   Button(props: ButtonProps): any;
@@ -254,6 +269,7 @@ export function Radio(props: RadioProps) {
 
 export function Tabs(props: TabsProps) {
   const theme = useTheme();
-  if (!theme.Tabs) return <Text text="Warning: Tabs not supported with this theme" />;
+  if (!theme.Tabs)
+    return <Text text="Warning: Tabs not supported with this theme" />;
   return <theme.Tabs {...props} />;
 }

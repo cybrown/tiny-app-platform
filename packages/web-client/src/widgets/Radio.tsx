@@ -8,6 +8,7 @@ import { Radio as ThemedRadio } from "../theme";
 type RadioProps = {
   ctx: RuntimeContext;
   option: string | { value: string; label: string };
+  secondary?: boolean;
 } & InputProps<string>;
 
 export default function Radio({
@@ -16,6 +17,7 @@ export default function Radio({
   onChange,
   value,
   option,
+  secondary,
 }: RadioProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -38,6 +40,7 @@ export default function Radio({
         onChange={handleChange}
         value={value}
         disabled={disabled}
+        secondary={secondary}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
@@ -47,8 +50,9 @@ export default function Radio({
 export const RadioDocumentation: WidgetDocumentation<RadioProps> = {
   description: "Radio to select a value",
   props: {
+    ...InputPropsDocs,
     option:
       "Value to set when this radio is checked, string | {value: string, label: string}",
-    ...InputPropsDocs,
+    secondary: "Give the secondary style",
   },
 };

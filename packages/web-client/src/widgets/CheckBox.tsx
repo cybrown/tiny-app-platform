@@ -7,6 +7,7 @@ import { CheckBox as ThemedCheckBox } from "../theme";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
+  secondary?: boolean;
 } & InputProps<boolean>;
 
 export default function CheckBox({
@@ -14,6 +15,7 @@ export default function CheckBox({
   disabled,
   onChange,
   value,
+  secondary,
 }: CheckBoxProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -36,6 +38,7 @@ export default function CheckBox({
         onChange={handleChange}
         value={value}
         disabled={disabled}
+        secondary={secondary}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
@@ -46,5 +49,6 @@ export const CheckBoxDocumentation: WidgetDocumentation<CheckBoxProps> = {
   description: "A checkbox to input a boolean value",
   props: {
     ...InputPropsDocs,
+    secondary: "Give the secondary style",
   },
 };

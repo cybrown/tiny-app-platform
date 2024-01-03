@@ -13,7 +13,9 @@ fun executeHttpRequest() {
   set response = http_request(
     method
     url
-    headers | array_filter((it) => it[0] && it[1])
+    headers
+       | array_filter((it) => it[0] && it[1] && it[2])
+       | array_map((it) => [it[1], it[2]])
     body
     allowErrorStatusCode: true
   )
@@ -28,6 +30,9 @@ fun executeHttpRequest() {
   }
   set responseBodyString = bytes_to_string(response.body)
 }
+
+var currentRequestTab = "headers"
+var currentResponseTab = "headers"
 
 Column {
   padding: 0.5
@@ -54,173 +59,195 @@ Column {
       type:        "url"
       onSubmit:    executeHttpRequest
     } | flex(1)
+
+    Button {
+      text:    "Send"
+      onClick: executeHttpRequest
+    }
   }
 
-  if (array_length(headers) > 0) {
+  Tabs {
+    bindTo: currentRequestTab
+
     Column {
-      array_map(
-        headers
-        (it, index) => [
-          Row {
-            InputText {
-              placeholder: "Header name"
-              bindTo:      it[0]
-            }
+      Row {
+        Button {
+          onClick: () => set headers = array_append(
+            headers
+            [
+              true
+              "user-agent"
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"
+            ]
+          )
+          text:    "Add user agent header"
+          outline: true
+        } | flex(1)
+
+        Button {
+          onClick: () => set headers = array_append(
+            headers
+            [true, "content-type", "application/json"]
+          )
+          text:    "Add content JSON"
+          outline: true
+        } | flex(1)
+
+        Button {
+          text:    "New header"
+          onClick: { () => set headers = array_append(headers, [true, "", ""]) }
+        } | flex(1)
+      }
+
+      if (array_length(headers) > 0) {
+        Column {
+          array_map(
+            headers
+            (it, index) => [
+              Row {
+                CheckBox { bindTo: it[0] }
+
+                InputText {
+                  placeholder: "Header name"
+                  bindTo:      it[1]
+                }
+
+                InputText {
+                  placeholder: "Header value"
+                  bindTo:      it[2]
+                } | flex(2)
 
 
-            InputText {
-              placeholder: "Header value"
-              bindTo:      it[1]
-            } | flex(2)
+                Button {
+                  text:    "🗑️"
+                  confirm: if (it[1] || it[2]) { "Remove header ?" } else { null }
+                  outline: true
+                  onClick: () => set headers = array_remove(headers, index)
+                }
 
+              }
+            ]
+          )
+        }
+      }
+    } | tab("headers", "Headers")
 
-            Button {
-              text:    "Remove"
-              onClick: () => set headers = array_remove(headers, index)
-            }
+    InputText {
+      bindTo:      body
+      placeholder: "body"
+      multiline:   true
+    } | tab("body", "Body")
 
+    Column {
+      {
+        let validHeaders = headers
+           | array_filter((it) => it[0] && it[1] && it[2])
+           | array_map((it) => [it[1], it[2]])
+
+        if (method != null && url != null) {
+          Text {
+            copy: true
+            text: "curl -X $method $headers '$url'"
+               | string_format({
+                  method:  method
+                  url:     url
+                  headers: validHeaders
+                     | array_map((it) => string_format(
+                        "-H '$name: $value'"
+                        {name: it[0], value: it[1]}
+                      ))
+                     | array_join(" ")
+                })
           }
-        ]
-      )
-    }
-  }
 
-  Button {
-    onClick: () => set headers = array_append(
-      headers
-      [
-        "user-agent"
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"
-      ]
-    )
-    text:    "Add user agent header"
-  }
-
-  Button {
-    text:    "New header"
-    onClick: { () => set headers = array_append(headers, ["", ""]) }
-  }
-
-  InputText {
-    bindTo:      body
-    placeholder: "body"
-    multiline:   true
-  }
-
-  Button {
-    text:    "Execute HTTP Request"
-    onClick: executeHttpRequest
-  }
-
-  {
-    let validHeaders = headers | array_filter((it) => it[0] && it[1])
-
-    if (method != null && url != null) {
-      Text {
-        copy: true
-        text: "curl -X $method $headers '$url'"
-           | string_format({
-              method:  method
-              url:     url
-              headers: validHeaders
-                 | array_map((it) => string_format(
-                    "-H '$name: $value'"
-                    {name: it[0], value: it[1]}
-                  ))
-                 | array_join(" ")
-            })
+          Text {
+            copy: true
+            text: 'http_request(method: "$method", url: "$url" $headers $body)'
+               | string_format({
+                  method:  method
+                  url:     url
+                  body:    if (body != null && body != "") {
+                    ', body: "' + body + '"'
+                  } else {
+                    " "
+                  }
+                  headers: if (array_length(validHeaders) > 0) {
+                    ", headers:" + (validHeaders | json_stringify)
+                  } else {
+                    " "
+                  }
+                })
+          }
+        }
       }
-    }
 
-    if (method != null && url != null) {
-      Text {
-        copy: true
-        text: 'http_request(method: "$method", url: "$url" $headers $body)'
-           | string_format({
-              method:  method
-              url:     url
-              body:    if (body != null && body != "") {
-                ', body: "' + body + '"'
-              } else {
-                " "
-              }
-              headers: if (array_length(validHeaders) > 0) {
-                ", headers:" + (validHeaders | json_stringify)
-              } else {
-                " "
-              }
-            })
-      }
-    }
+    } | tab("code", "Code")
   }
 
   if (response != null) {
     Row {
       Text {
-        text: string_format(
-          "Status code: $status"
-          {status: response.status}
-        )
+        text: string_format("Status: $status", {status: response.status})
       }
     }
 
-    Row {
-      Text { text: "Show headers" }
-      Switch { bindTo: doShowHeaders }
-    }
+    Tabs {
+      bindTo: currentResponseTab
 
-    if (doShowHeaders) {
-      Text { text: "Headers:" }
+      Column {
+        Table {
+          _key:    (row) => row.key
+          columns: [
+            {
+              description: "Name"
+              display:     (row) => Text { text: row.key, copy: true }
+            }
 
-      Table {
-        columns: [
-          {
-            description: "Name"
-            display:     (row) => Text { text: row.key, copy: true }
+            {
+              description: "Value"
+              display:     (row) => Text { text: row.value, copy: true }
+            }
+          ]
+          values:  response.headers
+             | object_entries
+             | array_map((it) => {key: it[0], value: it[1]})
+        }
+      } | tab("headers", "Headers")
+
+      Column {
+        Row {
+          Text { text: "Language" }
+
+          Select {
+            options: [
+              "text"
+              "json"
+              "html"
+              "xml"
+              "javascript"
+              "css"
+            ]
+            bindTo:  language
           }
 
-          {
-            description: "Value"
-            display:     (row) => Text { text: row.value, copy: true }
+          Text { text: "Format" }
+          Switch { bindTo: doFormat }
+        }
+
+        if (language == "json" && doFormat) {
+          Debug {
+            value: responseBodyString | json_parse
+            force: true
           }
-        ]
-        values:  response.headers
-           | object_entries
-           | array_map((it) => {key: it[0], value: it[1]})
-      }
-    }
-
-    Row {
-      Text { text: "Language syntax to highlight" }
-
-      Select {
-        options: [
-          "text"
-          "json"
-          "html"
-          "xml"
-          "javascript"
-          "css"
-        ]
-        bindTo:  language
-      }
-
-      Text { text: "Format code (when possible)" }
-      Switch { bindTo: doFormat }
-    }
-
-    if (language == "json" && doFormat) {
-      Debug {
-        value: responseBodyString | json_parse
-        force: true
-      }
-    } else {
-      Snippet {
-        text:        responseBodyString
-        language:    language
-        format:      doFormat
-        noMaxHeight: true
-      } | scroller
-    }
+        } else {
+          Snippet {
+            text:        responseBodyString
+            language:    language
+            format:      doFormat
+            noMaxHeight: true
+          }
+        }
+      } | tab("body", "Body")
+    } | scroller
   }
 } | scroller

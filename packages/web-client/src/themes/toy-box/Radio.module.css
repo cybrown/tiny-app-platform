@@ -4,7 +4,7 @@
   border-radius: 12px;
   position: relative;
   background-color: white;
-  border: rgb(73, 73, 73) 2px solid;
+  border: var(--toy-box-color-gray-600) 2px solid;
 }
 
 .Radio > input {
@@ -14,8 +14,8 @@
 }
 
 .disabled {
-  background-color: rgb(240, 240, 240);
-  border: rgb(133, 133, 133) 2px solid;
+  background-color: var(--toy-box-color-gray-200);
+  border: var(--toy-box-color-gray-500) 2px solid;
 }
 
 .checkMark {
@@ -26,13 +26,21 @@
   left: 2px;
   height: 16px;
   width: 16px;
-  background-color: rgb(28, 179, 141);
+  background-color: var(--toy-box-color-primary-300);
   opacity: 0;
   transition: opacity 100ms linear;
 }
 
+.secondary .checkMark {
+  background-color: var(--toy-box-color-secondary-300);
+}
+
 .disabled .checkMark {
-  background-color: rgb(85, 206, 176);
+  background-color: var(--toy-box-color-primary-300);
+}
+
+.secondary.disabled .checkMark {
+  background-color: var(--toy-box-color-secondary-300);
 }
 
 input:checked + .checkMark {

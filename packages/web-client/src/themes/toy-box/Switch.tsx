@@ -1,10 +1,19 @@
 import styles from "./Switch.module.css";
 import { SwitchProps } from "../../theme";
 
-export default function Switch({ onChange, value, disabled }: SwitchProps) {
+export default function Switch({
+  onChange,
+  value,
+  disabled,
+  secondary,
+}: SwitchProps) {
   return (
     <>
-      <div className={styles.SwitchContainer}>
+      <div
+        className={`${styles.SwitchContainer} ${
+          secondary ? styles.secondary : ""
+        }`}
+      >
         <input
           className={styles.Switch}
           type="checkbox"

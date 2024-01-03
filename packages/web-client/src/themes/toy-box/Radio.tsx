@@ -6,10 +6,15 @@ export default function Radio({
   onChange,
   value,
   option,
+  secondary,
 }: RadioProps) {
   return (
     <>
-      <div className={styles.Radio + (disabled ? " " + styles.disabled : "")}>
+      <div
+        className={`${styles.Radio} ${
+          secondary ? " " + styles.secondary : ""
+        } ${disabled ? " " + styles.disabled : ""}`}
+      >
         <input
           type="checkbox"
           checked={option === value}

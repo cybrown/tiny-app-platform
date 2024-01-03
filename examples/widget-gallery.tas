@@ -87,13 +87,33 @@ fun GalleryCheckbox() {
 
   Column {
     Title { text: "CheckBox Switch" }
-    Row { CheckBox { bindTo: value } }
-    Row { Switch { bindTo: value } }
     Row {
-      CheckBox { bindTo: value, disabled: true }
+      CheckBox { bindTo: value }
+      Switch { bindTo: value }
+      Text { text: "primary" }
     }
     Row {
+      CheckBox { bindTo: value, disabled: true }
       Switch { bindTo: value, disabled: true }
+      Text { text: "primary disabled" }
+    }
+    Row {
+      CheckBox { bindTo: value, secondary: true }
+      Switch { bindTo: value, secondary: true }
+      Text { text: "secondary" }
+    }
+    Row {
+      CheckBox {
+        bindTo:    value
+        disabled:  true
+        secondary: true
+      }
+      Switch {
+        bindTo:    value
+        disabled:  true
+        secondary: true
+      }
+      Text { text: "secondary disabled" }
     }
   }
 }
@@ -243,11 +263,24 @@ fun GallerySelect() {
 
     Row {
       values
-        |  array_map((option) => Row {
+         | array_map((option) => Row {
             Radio {
               option:   option
               bindTo:   value
               disabled: disabled
+            }
+            Text { text: default(option.label, option) }
+          })
+    }
+
+    Row {
+      values
+         | array_map((option) => Row {
+            Radio {
+              option:    option
+              bindTo:    value
+              disabled:  disabled
+              secondary: true
             }
             Text { text: default(option.label, option) }
           })
@@ -344,6 +377,21 @@ fun GalleryTable() {
   }
 }
 
+fun GalleryTabs() {
+  var currentTab = "first"
+
+  Column {
+    Title { text: "Tabs" }
+
+    Tabs {
+      bindTo: currentTab
+
+      Text { text: "First tab" } | tab("first", "First")
+      Text { text: "Second tab" } | tab("second", "Second")
+    }
+  }
+}
+
 fun App() {
   Column {
     padding: 0.5
@@ -384,6 +432,7 @@ fun App() {
         Box { width: "360px", GalleryPager {} }
         Box { width: "360px", GallerySelect {} }
         Box { width: "360px", GalleryTable {} }
+        Box { width: "360px", GalleryTabs {} }
       }
     }
   }

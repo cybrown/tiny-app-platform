@@ -17,13 +17,13 @@
   pointer-events: none;
   top: 0;
   left: 0;
-  background-color: rgb(192, 192, 192);
+  background-color: var(--toy-box-color-gray-600);
   transition: background-color 100ms linear;
   border-radius: 12px;
 }
 
 .backgroundDisabled {
-  background-color: rgb(194, 194, 194);
+  background-color: var(--toy-box-color-gray-500);
 }
 
 .switch {
@@ -39,7 +39,7 @@
 }
 
 .switchDisabled {
-  background-color: rgb(223, 222, 222);
+  background-color: var(--toy-box-color-gray-200);
 }
 
 .background,
@@ -48,11 +48,19 @@
 }
 
 .Switch:checked + .background {
-  background-color: rgb(28, 179, 141);
+  background-color: var(--toy-box-color-primary-300);
+}
+
+.secondary > .Switch:checked + .background {
+  background-color: var(--toy-box-color-secondary-300);
 }
 
 .Switch:checked + .backgroundDisabled {
-  background-color: rgb(84, 185, 160);
+  background-color: var(--toy-box-color-primary-200);
+}
+
+.secondary > .Switch:checked + .backgroundDisabled {
+  background-color: var(--toy-box-color-secondary-200);
 }
 
 .Switch:checked + .background + .switch {

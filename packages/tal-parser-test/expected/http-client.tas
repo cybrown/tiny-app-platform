@@ -132,15 +132,15 @@ Column {
         Text {
           copy: true
           text: "curl -X $method $headers '$url'"
-            |  string_format({
+             | string_format({
                 method:  method
                 url:     url
                 headers: validHeaders
-                  |  array_map((it) => string_format(
+                   | array_map((it) => string_format(
                       "-H '$name: $value'"
                       {name: it[0], value: it[1]}
                     ))
-                  |  array_join(" ")
+                   | array_join(" ")
               })
         }
       }
@@ -149,7 +149,7 @@ Column {
         Text {
           copy: true
           text: 'http_request(method: "$method", url: "$url" $headers $body)'
-            |  string_format({
+             | string_format({
                 method:  method
                 url:     url
                 body:    if (body != null && body != "") {
@@ -203,8 +203,8 @@ Column {
               }
             ]
             values:  response.headers
-              |  object_entries
-              |  array_map((it) => {key: it[0], value: it[1]})
+               | object_entries
+               | array_map((it) => {key: it[0], value: it[1]})
           }
         }
       }

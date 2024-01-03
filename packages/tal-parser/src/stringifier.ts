@@ -245,12 +245,19 @@ class Stringifier {
     }
     for (let index = 0; index < obj.values.length; index++) {
       const value = obj.values[index];
-      if (index != 0 && isLeftKindedObject) {
+      if (isLeftKindedObject) {
+        if (index != 0) {
+          result += '\n';
+          result += this.depthSpace();
+        }
+      } else {
         result += '\n';
         result += this.depthSpace();
       }
       result +=
-        (index == 0 && isLeftKindedObject ? ' ' : '  ') + value.pipeKind + ' ';
+        (isLeftKindedObject ? (index == 0 ? ' ' : '  ') : ' ') +
+        value.pipeKind +
+        ' ';
       this.incrementDepth();
       result += this.stringify(value.value);
       this.decrementDepth();

@@ -156,6 +156,12 @@ export type RadioProps = {
   disabled?: boolean;
 };
 
+export type TabsProps = {
+  value: string;
+  onChange(newValue: string): void;
+  tabs: { id: string; title: string; content: () => JSX.Element | null }[];
+};
+
 export interface Theme {
   id: string;
   name: string;
@@ -176,6 +182,7 @@ export interface Theme {
   ModalBackdrop(props: ModalBackdropProps): any;
   Link(props: LinkProps): any;
   Radio(props: RadioProps): any;
+  Tabs?(props: TabsProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -242,6 +249,11 @@ export function Link(props: LinkProps) {
 
 export function Radio(props: RadioProps) {
   const theme = useTheme();
-  if (!theme.Radio) return null;
   return <theme.Radio {...props} />;
+}
+
+export function Tabs(props: TabsProps) {
+  const theme = useTheme();
+  if (!theme.Tabs) return <Text text="Warning: Tabs not supported with this theme" />;
+  return <theme.Tabs {...props} />;
 }

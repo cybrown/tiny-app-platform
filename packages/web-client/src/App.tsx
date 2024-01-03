@@ -43,6 +43,7 @@ import { Select as ThemedSelect } from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import darkOrangeTheme from "./themes/dark-orange";
+import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 
 const queryParams = window.location.search
   .slice(1)
@@ -139,6 +140,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Table", Table, TableDocumentation);
   ctx.registerWidget("Text", Text, TextDocumentation);
   ctx.registerWidget("Radio", Radio, RadioDocumentation);
+  ctx.registerWidget("Tabs", Tabs, TabsDocumentation);
 
   return ctx;
 }

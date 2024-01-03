@@ -10,6 +10,7 @@ import htmlTheme from "../html";
 import Pager from "./Pager";
 import Modal from "./Modal";
 import Radio from "./Radio";
+import Tabs from "./Tabs";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -57,6 +58,7 @@ const toyBoxTheme: Theme = {
   ModalBackdrop: htmlTheme.ModalBackdrop,
   Link: htmlTheme.Link,
   Radio,
+  Tabs,
   onLoad() {
     document.body.appendChild(styleElement);
   },

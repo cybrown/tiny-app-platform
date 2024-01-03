@@ -13,7 +13,6 @@ export const metadata_get = defineFunction(
   'metadata_get',
   [{ name: 'value' }],
   (_ctx, { value }: any) => {
-    metadataGet(value);
-    return value;
+    return metadataGet(value);
   }
 );

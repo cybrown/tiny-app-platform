@@ -1,0 +1,28 @@
+.tabs {
+  display: flex;
+  flex-direction: row;
+  height: 36px;
+}
+
+.tab {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.tabSpacer {
+  flex-grow: 1;
+}
+
+.selected {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: rgb(28, 95, 78);
+}
+
+.content {
+  padding: 6px;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.content > * {
+  width: 100%;
+}

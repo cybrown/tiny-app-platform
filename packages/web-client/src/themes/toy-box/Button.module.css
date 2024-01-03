@@ -14,6 +14,7 @@
 .Button.secondary {
   border-color: rgb(103, 82, 63);
   background-color: rgb(159, 129, 111);
+  color: rgb(234, 231, 228);
 }
 
 .Button.secondary:active:enabled {

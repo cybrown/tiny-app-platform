@@ -12,14 +12,6 @@
   overflow: auto;
 }
 
-.Snippet.noMaxHeight {
-  height: initial;
-}
-
-.Snippet.viewMore {
-  height: 276px;
-}
-
 .floatingToolBar {
   z-index: 1;
   position: absolute;

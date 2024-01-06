@@ -62,14 +62,8 @@ export default function Snippet({
   }, [viewMore]);
 
   return (
-    <Container height={8}>
-      <div
-        className={[
-          styles.Snippet,
-          noMaxHeight ? styles.noMaxHeight : "",
-          viewMore ? styles.viewMore : "",
-        ].join(" ")}
-      >
+    <Container height={noMaxHeight ? undefined : viewMore ? 16 : 8}>
+      <div className={styles.Snippet}>
         {fullScreen ? (
           <div className={styles.fullScreen}>
             <div className={styles.floatingFullscreenToolbar}>

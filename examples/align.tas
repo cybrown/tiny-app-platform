@@ -2,13 +2,13 @@ var text = ""
 
 let numbers = Column {
   Button { text: "1" }
-  Button { text: "2" }
+  Button { text: "2", outline: true }
   Button { text: "3" }
-  Button { text: "4" }
+  Button { text: "4", outline: true }
   Button { text: "5" }
-  Button { text: "6" }
+  Button { text: "6", outline: true }
   Button { text: "7" }
-  Button { text: "8" }
+  Button { text: "8", outline: true }
   Button { text: "9" }
 }
 
@@ -25,18 +25,19 @@ Row {
       Radio { option: "hello2", value: "hello" }
     }
     Select { options: ["a", "b"] }
-    Tabs {
-      value: "tab"
-
-      Button { text: "tab" } | tab("tab", "Title")
-    }
+    Button { text: "Hello" }
   }
 
   numbers
 
   Column {
-    Button { text: "Hello" }
     InputText { multiline: true, bindTo: text }
+    Button { text: "Hello" }
+    Tabs {
+      value: "tab"
+
+      Button { text: "tab" } | tab("tab", "Title")
+    }
     Button { text: "Hello" }
   }
 

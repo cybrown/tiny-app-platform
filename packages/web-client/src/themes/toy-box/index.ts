@@ -53,6 +53,22 @@ body {
   --toy-box-size-700-gap: ${sizes["700"] + sizes["150"] + "px"};
   --toy-box-size-800: ${sizes["800"] + "px"};
   --toy-box-size-800-gap: ${sizes["800"] + sizes["150"] + "px"};
+  --toy-box-size-900: ${sizes["900"] + "px"};
+  --toy-box-size-900-gap: ${sizes["900"] + sizes["200"] + "px"};
+  --toy-box-size-1000: ${sizes["1000"] + "px"};
+  --toy-box-size-1000-gap: ${sizes["1000"] + sizes["200"] + "px"};
+  --toy-box-size-1100: ${sizes["1100"] + "px"};
+  --toy-box-size-1100-gap: ${sizes["1100"] + sizes["250"] + "px"};
+  --toy-box-size-1200: ${sizes["1200"] + "px"};
+  --toy-box-size-1200-gap: ${sizes["1200"] + sizes["250"] + "px"};
+  --toy-box-size-1300: ${sizes["1300"] + "px"};
+  --toy-box-size-1300-gap: ${sizes["1300"] + sizes["300"] + "px"};
+  --toy-box-size-1400: ${sizes["1400"] + "px"};
+  --toy-box-size-1400-gap: ${sizes["1400"] + sizes["300"] + "px"};
+  --toy-box-size-1500: ${sizes["1500"] + "px"};
+  --toy-box-size-1500-gap: ${sizes["1500"] + sizes["350"] + "px"};
+  --toy-box-size-1600: ${sizes["1600"] + "px"};
+  --toy-box-size-1600-gap: ${sizes["1600"] + sizes["350"] + "px"};
 
   background-color: var(--toy-box-color-gray-400);
 }

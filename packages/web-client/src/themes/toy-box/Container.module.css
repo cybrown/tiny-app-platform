@@ -34,3 +34,35 @@
 .height8 {
   height: var(--toy-box-size-800-gap);
 }
+
+.height9 {
+  height: var(--toy-box-size-900-gap);
+}
+
+.height10 {
+  height: var(--toy-box-size-1000-gap);
+}
+
+.height11 {
+  height: var(--toy-box-size-1100-gap);
+}
+
+.height12 {
+  height: var(--toy-box-size-1200-gap);
+}
+
+.height13 {
+  height: var(--toy-box-size-1300-gap);
+}
+
+.height14 {
+  height: var(--toy-box-size-1400-gap);
+}
+
+.height15 {
+  height: var(--toy-box-size-1500-gap);
+}
+
+.height16 {
+  height: var(--toy-box-size-1600-gap);
+}

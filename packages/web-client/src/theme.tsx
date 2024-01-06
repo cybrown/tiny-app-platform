@@ -166,7 +166,7 @@ export type TabsProps = {
 };
 
 export type ContainerProps = {
-  height: number;
+  height?: number;
 } & React.PropsWithChildren;
 
 interface ColorScale {

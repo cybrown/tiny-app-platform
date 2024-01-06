@@ -1,43 +1,23 @@
 import styles from "./Tabs.module.css";
 import { TabsProps, Text } from "../../theme";
-import { metadataGet } from "tal-eval";
-
-function computeChildStyles(meta: any) {
-  if (!meta) {
-    return {};
-  }
-  return {
-    ...(meta.scroller ? { overflowY: "auto" as const } : {}),
-  };
-}
 
 export default function Tabs({ value, onChange, tabs }: TabsProps) {
-  const content = tabs.find((tab) => tab.id === value)?.content();
-
   return (
     <div>
       <div className={styles.tabs}>
         {tabs.map((tab) => (
           <div
-            key={tab.id}
+            key={tab.value}
             className={`${styles.tab} ${
-              tab.id === value ? styles.selected : ""
+              tab.value === value ? styles.selected : ""
             }`}
-            onClick={() => onChange(tab.id)}
+            onClick={() => onChange(tab.value)}
           >
-            <Text text={tab.title} />
+            <Text text={tab.label} />
           </div>
         ))}
         <div className={styles.tabSpacer} />
       </div>
-      {content ? (
-        <div
-          className={styles.content}
-          style={computeChildStyles(metadataGet(content))}
-        >
-          {content}
-        </div>
-      ) : null}
     </div>
   );
 }

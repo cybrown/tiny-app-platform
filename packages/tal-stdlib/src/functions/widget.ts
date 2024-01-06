@@ -17,12 +17,3 @@ export const scroller = defineFunction(
     return value;
   }
 );
-
-export const tab = defineFunction(
-  'tab',
-  [{ name: 'value' }, { name: 'id' }, { name: 'title' }],
-  (_ctx, { value, id, title }) => {
-    metadataSet(value, { tab: { id, title } });
-    return value;
-  }
-);

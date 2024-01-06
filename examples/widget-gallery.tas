@@ -384,10 +384,16 @@ fun GalleryTabs() {
     Title { text: "Tabs" }
 
     Tabs {
-      bindTo: currentTab
+      bindTo:  currentTab
+      options: [
+        {label: "First tab", value: "first"}
+        {label: "Second tab", value: "second"}
+      ]
+    }
 
-      Text { text: "First tab" } | tab("first", "First")
-      Text { text: "Second tab" } | tab("second", "Second")
+    switch (currentTab) {
+      "first"  => Text { text: "First tab" }
+      "second" => Text { text: "Second tab" }
     }
   }
 }

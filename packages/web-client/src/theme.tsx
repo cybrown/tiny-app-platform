@@ -162,7 +162,7 @@ export type RadioProps = {
 export type TabsProps = {
   value: string;
   onChange(newValue: string): void;
-  tabs: { id: string; title: string; content: () => JSX.Element | null }[];
+  tabs: { value: string; label: string }[];
 };
 
 export type ContainerProps = {

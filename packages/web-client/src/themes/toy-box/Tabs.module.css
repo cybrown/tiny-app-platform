@@ -26,7 +26,3 @@
   color: var(--toy-box-color-primary-700);
   border-bottom: solid 3px var(--toy-box-color-primary-500);
 }
-
-.content > * {
-  width: 100%;
-}

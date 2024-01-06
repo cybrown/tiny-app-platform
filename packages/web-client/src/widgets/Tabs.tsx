@@ -1,23 +1,21 @@
-import {
-  Closure,
-  IRNode,
-  RuntimeContext,
-  WidgetDocumentation,
-  metadataGet,
-} from "tal-eval";
+import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { Tabs as ThemedTabs } from "../theme";
 import { useCallback, useState } from "react";
 import ErrorPopin from "./internal/ErrorPopin";
-import RenderExpression from "../runtime/RenderExpression";
+
+type TabOptions = {
+  value: string;
+  label: string;
+};
 
 type TabsProps = {
   ctx: RuntimeContext;
   value: string;
   onChange: Closure;
-  children: IRNode[];
+  options: TabOptions[];
 };
 
-export default function Tabs({ ctx, value, onChange, children }: TabsProps) {
+export default function Tabs({ ctx, value, onChange, options }: TabsProps) {
   const [lastError, setLastError] = useState<unknown>(null);
 
   const handleOnChange = useCallback(
@@ -36,15 +34,10 @@ export default function Tabs({ ctx, value, onChange, children }: TabsProps) {
       <ThemedTabs
         value={value}
         onChange={handleOnChange}
-        tabs={children.flat(Infinity).map((child) => {
-          const metadata = metadataGet(child);
-          if (!metadata) throw new Error("Metadata missing");
-          return {
-            id: (metadata as any).tab.id,
-            title: (metadata as any).tab.title,
-            content: () => <RenderExpression ctx={ctx} evaluatedUI={child} />,
-          };
-        })}
+        tabs={options.map((child) => ({
+          value: child.value,
+          label: child.label,
+        }))}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
@@ -57,6 +50,6 @@ export const TabsDocumentation: WidgetDocumentation<TabsProps> = {
   props: {
     value: "Current selected tab",
     onChange: "Set new selected tab",
-    children: "Tabs to render",
+    options: "Tabs to display: {value: string, label: string}[]",
   },
 };

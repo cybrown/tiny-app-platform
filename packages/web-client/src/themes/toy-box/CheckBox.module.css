@@ -20,10 +20,10 @@
 .checkMark {
   pointer-events: none;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  height: calc(var(--toy-box-size-200) - 4px);
-  width: calc(var(--toy-box-size-200) - 4px);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   background-color: var(--toy-box-color-primary-300);
   opacity: 0;
   transition: opacity 100ms linear;

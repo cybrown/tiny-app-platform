@@ -9,6 +9,7 @@ export default function Switch({
   return (
     <input
       className={`tap-checkbox ${secondary ? "is-secondary" : ""}`}
+      type="checkbox"
       checked={value}
       onChange={(e) => onChange && onChange(e.target.checked)}
       disabled={disabled}

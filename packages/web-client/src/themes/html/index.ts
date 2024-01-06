@@ -32,6 +32,7 @@ const htmlTheme: Theme = {
   Link,
   ModalBackdrop,
   Radio,
+  Container: (props) => props.children,
 };
 
 export default htmlTheme;

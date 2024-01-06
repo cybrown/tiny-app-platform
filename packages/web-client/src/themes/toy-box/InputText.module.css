@@ -1,5 +1,5 @@
 .InputText {
-  height: 24px;
+  height: var(--toy-box-size-200);
   background-color: var(--toy-box-color-gray-100);
   border-style: solid;
   border-width: 1px;
@@ -20,5 +20,7 @@
 }
 
 textarea.InputText {
-  height: 120px;
+  /* Remove the extra space between the textarea and its container */
+  display: flex;
+  height: var(--toy-box-size-800-gap);
 }

@@ -1,15 +1,15 @@
 .Radio {
-  height: 24px;
-  width: 24px;
-  border-radius: 12px;
+  height: var(--toy-box-size-200);
+  width: var(--toy-box-size-200);
+  border-radius: 100%;
   position: relative;
   background-color: white;
   border: var(--toy-box-color-gray-600) 2px solid;
 }
 
 .Radio > input {
-  height: 24px;
-  width: 24px;
+  height: var(--toy-box-size-200);
+  width: var(--toy-box-size-200);
   opacity: 0;
 }
 
@@ -19,13 +19,13 @@
 }
 
 .checkMark {
-  border-radius: 12px;
+  border-radius: 100%;
   pointer-events: none;
   position: absolute;
   top: 2px;
   left: 2px;
-  height: 16px;
-  width: 16px;
+  height: calc(var(--toy-box-size-200) - 8px);
+  width: calc(var(--toy-box-size-200) - 8px);
   background-color: var(--toy-box-color-primary-300);
   opacity: 0;
   transition: opacity 100ms linear;

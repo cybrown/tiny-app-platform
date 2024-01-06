@@ -1,0 +1,36 @@
+.Container {
+  overflow-y: auto;
+  overflow-x: visible;
+}
+
+.height1 {
+  height: var(--toy-box-size-100-gap);
+}
+
+.height2 {
+  height: var(--toy-box-size-200-gap);
+}
+
+.height3 {
+  height: var(--toy-box-size-300-gap);
+}
+
+.height4 {
+  height: var(--toy-box-size-400-gap);
+}
+
+.height5 {
+  height: var(--toy-box-size-500-gap);
+}
+
+.height6 {
+  height: var(--toy-box-size-600-gap);
+}
+
+.height7 {
+  height: var(--toy-box-size-700-gap);
+}
+
+.height8 {
+  height: var(--toy-box-size-800-gap);
+}

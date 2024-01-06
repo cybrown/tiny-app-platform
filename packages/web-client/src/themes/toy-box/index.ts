@@ -11,36 +11,8 @@ import Pager from "./Pager";
 import Modal from "./Modal";
 import Radio from "./Radio";
 import Tabs from "./Tabs";
-
-const colors = {
-  primary: {
-    "100": "rgb(186, 231, 220)",
-    "200": "rgb(97, 197, 172)",
-    "300": "rgb(37 171 144)",
-    "400": "rgb(32 165 133)",
-    "500": "rgb(26, 145, 115)",
-    "600": "rgb(39, 119, 99)",
-    "700": "rgb(28, 95, 78)",
-  },
-  secondary: {
-    "100": "rgb(234, 231, 228)",
-    "200": "rgb(190, 173, 161)",
-    "300": "rgb(177 147 129)",
-    "400": "rgb(159, 129, 111)",
-    "500": "rgb(133 111 94)",
-    "600": "rgb(128, 105, 90)",
-    "700": "rgb(103, 82, 63)",
-  },
-  gray: {
-    "100": "rgb(250, 250, 250)",
-    "200": "rgb(240, 240, 240)",
-    "300": "rgb(233, 233, 233)",
-    "400": "rgb(218, 218, 218)",
-    "500": "rgb(192, 192, 192)",
-    "600": "rgb(133, 133, 133)",
-    "700": "rgb(73, 73, 73)",
-  },
-};
+import { baseSize, colors, sizes } from "./constants";
+import Container from "./Container";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -66,6 +38,21 @@ body {
   --toy-box-color-gray-500: ${colors.gray["500"]};
   --toy-box-color-gray-600: ${colors.gray["600"]};
   --toy-box-color-gray-700: ${colors.gray["700"]};
+  --toy-box-size-050: ${sizes["050"] + "px"};
+  --toy-box-size-100: ${sizes["100"] + "px"};
+  --toy-box-size-200: ${sizes["200"] + "px"};
+  --toy-box-size-300: ${sizes["300"] + "px"};
+  --toy-box-size-300-gap: ${sizes["300"] + sizes["050"] + "px"};
+  --toy-box-size-400: ${sizes["400"] + "px"};
+  --toy-box-size-400-gap: ${sizes["400"] + sizes["050"] + "px"};
+  --toy-box-size-500: ${sizes["500"] + "px"};
+  --toy-box-size-500-gap: ${sizes["500"] + sizes["100"] + "px"};
+  --toy-box-size-600: ${sizes["600"] + "px"};
+  --toy-box-size-600-gap: ${sizes["600"] + sizes["100"] + "px"};
+  --toy-box-size-700: ${sizes["700"] + "px"};
+  --toy-box-size-700-gap: ${sizes["700"] + sizes["150"] + "px"};
+  --toy-box-size-800: ${sizes["800"] + "px"};
+  --toy-box-size-800-gap: ${sizes["800"] + sizes["150"] + "px"};
 
   background-color: var(--toy-box-color-gray-400);
 }
@@ -94,10 +81,12 @@ body {
 const toyBoxTheme: Theme = {
   id: "toy-box",
   name: "Toy Box",
+  baseSize: baseSize,
   colors: {
     background: colors.gray["400"],
     primary: colors.primary,
   },
+  sizes: sizes,
   Button,
   CheckBox,
   Switch,
@@ -112,6 +101,7 @@ const toyBoxTheme: Theme = {
   Link: htmlTheme.Link,
   Radio,
   Tabs,
+  Container,
   onLoad() {
     document.body.appendChild(styleElement);
   },

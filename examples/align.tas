@@ -1,0 +1,51 @@
+var text = ""
+
+let numbers = Column {
+  Button { text: "1" }
+  Button { text: "2" }
+  Button { text: "3" }
+  Button { text: "4" }
+  Button { text: "5" }
+  Button { text: "6" }
+  Button { text: "7" }
+  Button { text: "8" }
+  Button { text: "9" }
+}
+
+Row {
+  numbers
+
+  Column {
+    Button { text: "Hello" }
+    CheckBox {}
+    Switch {}
+    InputText {}
+    Row {
+      Radio { option: "hello", value: "hello" }
+      Radio { option: "hello2", value: "hello" }
+    }
+    Select { options: ["a", "b"] }
+    Tabs {
+      value: "tab"
+
+      Button { text: "tab" } | tab("tab", "Title")
+    }
+  }
+
+  numbers
+
+  Column {
+    Button { text: "Hello" }
+    InputText { multiline: true, bindTo: text }
+    Button { text: "Hello" }
+  }
+
+  numbers
+
+  Column {
+    Button { text: "World" }
+    Text { text: "World" }
+    Snippet { text: "Hello World" }
+    Button { text: "World" }
+  }
+}

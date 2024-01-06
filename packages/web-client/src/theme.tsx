@@ -165,6 +165,10 @@ export type TabsProps = {
   tabs: { id: string; title: string; content: () => JSX.Element | null }[];
 };
 
+export type ContainerProps = {
+  height: number;
+} & React.PropsWithChildren;
+
 interface ColorScale {
   "100": string;
   "200": string;
@@ -175,6 +179,26 @@ interface ColorScale {
   "700": string;
 }
 
+interface SizeScale {
+  "050": number;
+  "100": number;
+  "150": number;
+  "200": number;
+  "250": number;
+  "300": number;
+  "350": number;
+  "400": number;
+  "450": number;
+  "500": number;
+  "550": number;
+  "600": number;
+  "650": number;
+  "700": number;
+  "750": number;
+  "800": number;
+  "850": number;
+}
+
 export interface Theme {
   id: string;
   name: string;
@@ -183,6 +207,7 @@ export interface Theme {
     primary?: ColorScale;
     secondary?: ColorScale;
   };
+  sizes?: SizeScale;
   baseSize?: number;
   Button(props: ButtonProps): any;
   CheckBox(props: CheckBoxProps): any;
@@ -198,6 +223,7 @@ export interface Theme {
   Link(props: LinkProps): any;
   Radio(props: RadioProps): any;
   Tabs?(props: TabsProps): any;
+  Container(props: ContainerProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -272,4 +298,9 @@ export function Tabs(props: TabsProps) {
   if (!theme.Tabs)
     return <Text text="Warning: Tabs not supported with this theme" />;
   return <theme.Tabs {...props} />;
+}
+
+export function Container(props: ContainerProps) {
+  const theme = useTheme();
+  return <theme.Container {...props} />;
 }

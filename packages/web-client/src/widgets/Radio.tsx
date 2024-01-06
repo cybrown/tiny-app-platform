@@ -16,7 +16,7 @@ export default function Radio({
   disabled,
   onChange,
   value,
-  option,
+  option = "",
   secondary,
 }: RadioProps) {
   const [lastError, setLastError] = useState(null as any);

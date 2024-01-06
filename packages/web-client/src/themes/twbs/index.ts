@@ -42,6 +42,7 @@ const twbsTheme: Theme = {
   Modal,
   Radio,
   Link: htmlTheme.Link,
+  Container: htmlTheme.Container,
   ModalBackdrop: htmlTheme.ModalBackdrop,
   onLoad() {
     document.body.appendChild(cssLink);

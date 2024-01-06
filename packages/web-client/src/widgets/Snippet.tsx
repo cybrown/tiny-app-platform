@@ -5,7 +5,7 @@ import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 import "prismjs/components/prism-json.min";
 import usePressEscape from "./internal/usePressEscape";
-import { Button } from "../theme";
+import { Button, Container } from "../theme";
 
 type SnippetProps = {
   ctx: RuntimeContext;
@@ -62,64 +62,66 @@ export default function Snippet({
   }, [viewMore]);
 
   return (
-    <div
-      className={[
-        styles.Snippet,
-        noMaxHeight ? styles.noMaxHeight : "",
-        viewMore ? styles.viewMore : "",
-      ].join(" ")}
-    >
-      {fullScreen ? (
-        <div className={styles.fullScreen}>
-          <div className={styles.floatingFullscreenToolbar}>
-            <Button onClick={copyClickHandler} text="Copy" />
-            {format ? (
-              <Button
-                onClick={copyFormattedClickHandler}
-                text="Copy formatted"
-              />
-            ) : null}
-            <Button onClick={toggleFullScreen} text="Close" />
+    <Container height={8}>
+      <div
+        className={[
+          styles.Snippet,
+          noMaxHeight ? styles.noMaxHeight : "",
+          viewMore ? styles.viewMore : "",
+        ].join(" ")}
+      >
+        {fullScreen ? (
+          <div className={styles.fullScreen}>
+            <div className={styles.floatingFullscreenToolbar}>
+              <Button onClick={copyClickHandler} text="Copy" />
+              {format ? (
+                <Button
+                  onClick={copyFormattedClickHandler}
+                  text="Copy formatted"
+                />
+              ) : null}
+              <Button onClick={toggleFullScreen} text="Close" />
+            </div>
+            <div className={styles.scroller}>
+              {htmlToRender ? (
+                <pre
+                  className={styles.preFullscreen}
+                  dangerouslySetInnerHTML={{ __html: htmlToRender }}
+                />
+              ) : (
+                <pre className={styles.preFullscreen}>{textToRender}</pre>
+              )}
+            </div>
           </div>
-          <div className={styles.scroller}>
-            {htmlToRender ? (
-              <pre
-                className={styles.preFullscreen}
-                dangerouslySetInnerHTML={{ __html: htmlToRender }}
-              />
-            ) : (
-              <pre className={styles.preFullscreen}>{textToRender}</pre>
-            )}
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className={styles.floatingToolBar}>
-            <Button onClick={copyClickHandler} text="Copy" />
-            {format ? (
-              <Button
-                onClick={copyFormattedClickHandler}
-                text="Copy formatted"
-              />
-            ) : null}
-            {!noMaxHeight ? (
-              <Button onClick={viewMoreHandler} text="View more" />
-            ) : null}
-            <Button onClick={toggleFullScreen} text="Fullscreen" />
-          </div>
-          <div className={styles.preContainer}>
-            {htmlToRender ? (
-              <pre
-                className={styles.preInline}
-                dangerouslySetInnerHTML={{ __html: htmlToRender }}
-              />
-            ) : (
-              <pre className={styles.preInline}>{textToRender}</pre>
-            )}
-          </div>
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            <div className={styles.floatingToolBar}>
+              <Button onClick={copyClickHandler} text="Copy" />
+              {format ? (
+                <Button
+                  onClick={copyFormattedClickHandler}
+                  text="Copy formatted"
+                />
+              ) : null}
+              {!noMaxHeight ? (
+                <Button onClick={viewMoreHandler} text="View more" />
+              ) : null}
+              <Button onClick={toggleFullScreen} text="Fullscreen" />
+            </div>
+            <div className={styles.preContainer}>
+              {htmlToRender ? (
+                <pre
+                  className={styles.preInline}
+                  dangerouslySetInnerHTML={{ __html: htmlToRender }}
+                />
+              ) : (
+                <pre className={styles.preInline}>{textToRender}</pre>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </Container>
   );
 }
 

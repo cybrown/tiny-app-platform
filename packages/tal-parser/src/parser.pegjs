@@ -1,3 +1,17 @@
+{
+	const escapeSequences = {
+    	"\\0": "\0",
+    	"\\n": "\n",
+    	"\\t": "\t",
+    	"\\v": "\v",
+    	"\\f": "\f",
+    	"\\r": "\r",
+    	'\\"': '"',
+    	"\\'": "'",
+    	'\\\\': '\\',
+    }
+}
+
 Document
 	= _ expr:(TopLevelExpression _)* { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
 
@@ -200,10 +214,37 @@ Local
     	{ return { location: location(), kind: 'Local', name: id}; }
 
 RawString
-	= "\"" str:([^"\\] / '\\n' )* "\""
-    	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
-	/ "'" str:[^']* "'"
-    	{ return str.map(a => a == '\\n' ? '\n' : a).join(''); }
+	= '"' str:(DoubleQuoteStringCharacter*) '"'
+    	{ return str.join(''); }
+	/ "'" str:(SingleQuoteStringCharacter*) "'"
+    	{ return str.join(''); }
+
+DoubleQuoteStringCharacter
+	= ! '"' chr:( EscapedDoubleQuote / EscapedCharacter / UnicodeCharacter / .)
+    	{ return chr; }
+
+SingleQuoteStringCharacter
+	= ! "'" chr:( EscapedSingleQuote / EscapedCharacter / UnicodeCharacter / .)
+    	{ return chr; }
+
+EscapedDoubleQuote
+	= '\\"'
+    	{ return '"'; }
+
+EscapedSingleQuote
+	= "\\'"
+    	{ return "'"; }
+
+EscapedCharacter
+	= chr:("\\n" / "\\0" / "\\t" / "\\v" / "\\f" / "\\r" / '\\"' / '\\\\' / '\\"' / "\\'" )
+    	{ return escapeSequences[chr]; }
+
+UnicodeCharacter
+	= 'u' '{' hexValue:HexCharacter+ '}'
+    	{ return String.fromCharCode(parseInt(hexValue.join(''), 16)); }
+
+HexCharacter
+	= [0123456789ABCDEFabcdef]
 
 String
 	= value:RawString

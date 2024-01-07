@@ -81,7 +81,15 @@ class Stringifier {
   }
 
   escapeString(str: string): string {
-    return str.replace('\n', '\\n');
+    return str
+      .replaceAll('\\', '\\\\')
+      .replaceAll('\n', '\\n')
+      .replaceAll('\0', '\\0')
+      .replaceAll('\n', '\\n')
+      .replaceAll('\t', '\\t')
+      .replaceAll('\v', '\\v')
+      .replaceAll('\f', '\\f')
+      .replaceAll('\r', '\\r');
   }
 
   stringifyKind(obj: Expression): string {

@@ -297,32 +297,35 @@ const routes = [
       let { uri, query, params } = request;
 
       const client = new Client({ connectionString: uri });
-      await client.connect();
+      try {
+        await client.connect();
 
-      const res = await client.query(query, params);
-      await client.end();
+        const res = await client.query(query, params);
 
-      let result = {};
+        let result = {};
 
-      switch (res.command) {
-        case "SELECT":
-          result.rows = res.rows;
-          break;
-        case "INSERT":
-          result.rowCount = res.rowCount;
-          result.oid = res.oid;
-          break;
-        case "UPDATE":
-          result.rowCount = res.rowCount;
-          break;
-        case "DELETE":
-          result.rowCount = res.rowCount;
-          break;
-        default:
-          result = res;
+        switch (res.command) {
+          case "SELECT":
+            result.rows = res.rows;
+            break;
+          case "INSERT":
+            result.rowCount = res.rowCount;
+            result.oid = res.oid;
+            break;
+          case "UPDATE":
+            result.rowCount = res.rowCount;
+            break;
+          case "DELETE":
+            result.rowCount = res.rowCount;
+            break;
+          default:
+            result = res;
+        }
+
+        return okJson(result);
+      } finally {
+        await client.end();
       }
-
-      return okJson(result);
     },
   },
   {

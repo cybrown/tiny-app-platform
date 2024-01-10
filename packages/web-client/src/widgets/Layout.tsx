@@ -9,6 +9,7 @@ type LayoutDescription = {
   gap?: number;
   padding?: number;
   wrap?: boolean;
+  scroll?: boolean;
 };
 
 export type LayoutProps = {
@@ -51,7 +52,7 @@ export default function Layout({ ctx, children, ...d }: LayoutProps) {
     <div
       className={`${isRow ? styles.directionRow : styles.directionColumn} ${
         d.wrap ? styles.wrap : ""
-      }`}
+      } ${d.scroll ? styles.scroll : ""}`}
       style={computeLayoutStyles(d, baseSize)}
     >
       {children
@@ -82,5 +83,6 @@ export const LayoutDocumentation: WidgetDocumentation<LayoutProps> = {
     gap: "Space between children",
     padding: "Space around children",
     wrap: "Return to avoid scrolling",
+    scroll: "Scroll content on overflow",
   },
 };

@@ -16,3 +16,7 @@
 .wrap {
   flex-wrap: wrap;
 }
+
+.scroll {
+  overflow: auto;
+}

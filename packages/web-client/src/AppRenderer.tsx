@@ -47,7 +47,12 @@ function AppRenderer({
     run();
   }, [app, ctx]);
   return lastError ? (
-    <RenderError expression={null} err={lastError} isStartup retry={retry} />
+    <RenderError
+      expression={null}
+      err={lastError}
+      phase="startup"
+      retry={retry}
+    />
   ) : appUi ? (
     <RenderExpression ctx={ctx} expression={appUi} />
   ) : null;

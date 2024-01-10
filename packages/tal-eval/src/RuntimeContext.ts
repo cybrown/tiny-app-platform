@@ -54,6 +54,26 @@ export class RuntimeContext {
     }
   }
 
+  private _isCreated = false;
+
+  public get isCreated() {
+    return this._isCreated;
+  }
+
+  public setCreated() {
+    this._isCreated = true;
+  }
+
+  private _onCreateError: unknown;
+
+  public get onCreateError() {
+    return this._onCreateError;
+  }
+
+  public set onCreateError(error: unknown) {
+    this._onCreateError = error;
+  }
+
   private stateChangedListeners: Set<() => void> = new Set();
   private isValueRedeclarationAllowed = false;
   private mutableLocals = new Set<string>();

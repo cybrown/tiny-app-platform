@@ -34,6 +34,7 @@ export default function RenderExpression({
                 ctx={ctxRef.current}
                 onError={(err, retry) => (
                   <RenderError
+                    phase="render"
                     expression={expression ?? (evaluatedUI as any).kind ?? null}
                     err={err}
                     retry={retry}
@@ -51,6 +52,7 @@ export default function RenderExpression({
           ctx={ctxRef.current}
           onError={(err, retry) => (
             <RenderError
+              phase="render"
               expression={expression ?? (evaluatedUI as any).kind ?? null}
               err={err}
               retry={retry}
@@ -64,6 +66,7 @@ export default function RenderExpression({
   } catch (err) {
     return (
       <RenderError
+        phase="render"
         expression={expression ?? (evaluatedUI as any).kind ?? null}
         err={err}
         retry={retry}
@@ -176,6 +179,16 @@ function CustomWidgetHost({
 
   const { childCtx } = state.current;
 
+  if (childCtx.onCreateError) {
+    return (
+      <RenderError
+        phase="on_create"
+        expression={null}
+        err={childCtx.onCreateError}
+      />
+    );
+  }
+
   const irNode = widget.ctx.program![widget.name].body as IRNode;
   let ui: unknown;
   if (irNode.kind === "BLOCK") {
@@ -186,19 +199,20 @@ function CustomWidgetHost({
   } else {
     ui = runNode(childCtx, childCtx.program!, irNode, true);
   }
+  childCtx.setCreated();
   return <RenderExpression ctx={childCtx} evaluatedUI={ui} />;
 }
 
 export function RenderError({
   expression,
   err,
-  isStartup = false,
+  phase,
   retry,
 }: {
   expression: IRNode | null;
   err: unknown;
-  isStartup?: boolean;
-  retry: () => void;
+  phase: "startup" | "render" | "on_create";
+  retry?: () => void;
 }) {
   let locationMessage = "";
 
@@ -212,9 +226,7 @@ export function RenderError({
     <div className={styles.RenderError}>
       {`Failed to evaluate ${
         expression ? nameKindOfExpression(expression) : "an expression"
-      } during ${
-        isStartup ? "startup" : "render"
-      } because of: <${err}>${locationMessage}`}
+      } during ${phase} because of: <${err}>${locationMessage}`}
       <button
         onClick={() =>
           console.error(err instanceof EvaluationError ? err.cause : err)
@@ -222,7 +234,7 @@ export function RenderError({
       >
         Dump error in console
       </button>
-      <button onClick={retry}>Retry</button>
+      {retry ? <button onClick={retry}>Retry</button> : null}
     </div>
   );
 }

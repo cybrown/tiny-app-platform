@@ -1,6 +1,19 @@
 import { RuntimeContext, defineFunction } from 'tal-eval';
 import { Expression } from 'tal-parser';
 
+export const on_create = defineFunction(
+  'on_create',
+  [{ name: 'handler' }],
+  (ctx, { handler }) => {
+    if (!ctx.isCreated) {
+      ctx.callFunctionAsync(handler, []).catch(err => {
+        ctx.onCreateError = err;
+        ctx.forceRefresh();
+      });
+    }
+  }
+);
+
 const watches = new WeakMap<RuntimeContext, Map<Expression, unknown>>();
 
 export const watch = defineFunction(

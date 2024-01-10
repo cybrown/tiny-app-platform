@@ -5,6 +5,9 @@ export const on_create = defineFunction(
   'on_create',
   [{ name: 'handler' }],
   (ctx, { handler }) => {
+    if (!ctx.isWidgetState) {
+      throw new Error("on_create is only usable inside Widgets")
+    }
     if (!ctx.isCreated) {
       ctx.callFunctionAsync(handler, []).catch(err => {
         ctx.onCreateError = err;
@@ -18,6 +21,9 @@ export const on_destroy = defineFunction(
   'on_destroy',
   [{ name: 'handler' }],
   (ctx, { handler }) => {
+    if (!ctx.isWidgetState) {
+      throw new Error("on_destroy is only usable inside Widgets")
+    }
     if (ctx.isCreated) return;
     ctx.addDestructor(handler);
   }
@@ -29,6 +35,12 @@ export const watch = defineFunction(
   'watch',
   [{ name: 'expr' }, { name: 'action' }],
   (ctx, { expr, action }) => {
+    if (!ctx.isWidgetState) {
+      throw new Error("watch is only usable inside Widgets")
+    }
+    if (ctx.isCreated) {
+      return;
+    }
     let currentCtxMap = watches.get(ctx);
     if (!currentCtxMap) {
       currentCtxMap = new Map();

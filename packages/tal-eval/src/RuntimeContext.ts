@@ -77,7 +77,7 @@ export class RuntimeContext {
   private destructors: Closure[] = [];
 
   public addDestructor(func: Closure) {
-    if (!this.isWidgetState) {
+    if (!this._isWidgetState) {
       this.parent?.addDestructor(func);
       return;
     }
@@ -85,7 +85,7 @@ export class RuntimeContext {
   }
 
   public triggerDestructors() {
-    if (!this.isWidgetState) {
+    if (!this._isWidgetState) {
       this.parent?.triggerDestructors();
       return;
     }
@@ -97,7 +97,11 @@ export class RuntimeContext {
   private stateChangedListeners: Set<() => void> = new Set();
   private isValueRedeclarationAllowed = false;
   private mutableLocals = new Set<string>();
-  private isWidgetState = false;
+  private _isWidgetState = false;
+
+  public get isWidgetState() {
+    return this._isWidgetState;
+  }
 
   forceRefresh() {
     this.triggerStateChangedListeners();
@@ -138,7 +142,7 @@ export class RuntimeContext {
     if (
       this._locals.hasOwnProperty(name) &&
       !this.isValueRedeclarationAllowed &&
-      !this.isWidgetState
+      !this._isWidgetState
     ) {
       throw new Error('Local already declared: ' + name);
     }
@@ -367,7 +371,7 @@ export class RuntimeContext {
       this,
       true
     );
-    ctx.isWidgetState = true;
+    ctx._isWidgetState = true;
     return ctx;
   }
 

@@ -11,6 +11,8 @@
 
 .Switch {
   opacity: 0;
+  /* Avoid vertical scrolling */
+  display: flex;
 }
 
 .background {

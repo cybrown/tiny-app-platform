@@ -31,6 +31,7 @@ import {
   eval_js,
   is_defined,
   set_system_property,
+  copy,
 } from './functions/core';
 import { http_request_form, http_request } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
@@ -110,6 +111,7 @@ import { flex, scroller } from './functions/widget';
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
   ctx.registerFunction(log);
+  ctx.registerFunction(copy);
   ctx.registerFunction(throw$);
   ctx.registerFunction(typeof$);
   ctx.registerFunction(watch);

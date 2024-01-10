@@ -92,6 +92,15 @@ export const log = defineFunction(
   }
 );
 
+export const copy = defineFunction(
+  'copy',
+  [{ name: 'text' }],
+  (_ctx, { text }) => {
+    navigator.clipboard.writeText(text);
+    return text;
+  }
+);
+
 export const set_system_property = defineFunction(
   'set_system_property',
   [{ name: 'key' }, { name: 'value' }],

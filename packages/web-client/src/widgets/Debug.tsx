@@ -45,6 +45,13 @@ function RenderAny({ value, path }: { value: unknown; path: string }): any {
         {valueAsJson.slice(0, 250) + (hasMore ? " truncated..." : "")}
       </CopyOnClick>
     );
+  } else if (typeof value == "function") {
+    return (
+      <span>native function {value.name ? "'" + value.name + "'" : ""}</span>
+    );
+  } else {
+    console.log("Failed to render", value);
+    return <span>Failed to render, check console</span>;
   }
 }
 

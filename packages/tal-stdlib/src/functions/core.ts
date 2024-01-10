@@ -14,6 +14,15 @@ export const on_create = defineFunction(
   }
 );
 
+export const on_destroy = defineFunction(
+  'on_destroy',
+  [{ name: 'handler' }],
+  (ctx, { handler }) => {
+    if (ctx.isCreated) return;
+    ctx.addDestructor(handler);
+  }
+);
+
 const watches = new WeakMap<RuntimeContext, Map<Expression, unknown>>();
 
 export const watch = defineFunction(

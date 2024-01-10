@@ -145,6 +145,7 @@ function CustomWidgetHost({
   });
 
   if (widget.name !== state.current.name) {
+    state.current.childCtx.triggerDestructors();
     state.current = {
       childCtx: ctx.createChildForWidget({ ...props, children }),
       name: widget.name,

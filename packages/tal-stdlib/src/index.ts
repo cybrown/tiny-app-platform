@@ -33,6 +33,7 @@ import {
   set_system_property,
   copy,
   on_create,
+  on_destroy,
 } from './functions/core';
 import { http_request_form, http_request } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
@@ -116,6 +117,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(throw$);
   ctx.registerFunction(typeof$);
   ctx.registerFunction(on_create);
+  ctx.registerFunction(on_destroy);
   ctx.registerFunction(watch);
 
   ctx.registerFunction(array_append);

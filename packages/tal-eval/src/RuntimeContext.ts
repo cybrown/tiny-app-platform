@@ -74,6 +74,26 @@ export class RuntimeContext {
     this._onCreateError = error;
   }
 
+  private destructors: Closure[] = [];
+
+  public addDestructor(func: Closure) {
+    if (!this.isWidgetState) {
+      this.parent?.addDestructor(func);
+      return;
+    }
+    this.destructors.push(func);
+  }
+
+  public triggerDestructors() {
+    if (!this.isWidgetState) {
+      this.parent?.triggerDestructors();
+      return;
+    }
+    this.destructors.forEach(destructor => {
+      this.callFunctionAsync(destructor, []);
+    });
+  }
+
   private stateChangedListeners: Set<() => void> = new Set();
   private isValueRedeclarationAllowed = false;
   private mutableLocals = new Set<string>();

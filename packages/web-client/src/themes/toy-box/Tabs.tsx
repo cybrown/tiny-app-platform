@@ -1,7 +1,7 @@
 import styles from "./Tabs.module.css";
 import { TabsProps, Text } from "../../theme";
 
-export default function Tabs({ value, onChange, tabs }: TabsProps) {
+export default function Tabs({ value, onChange, tabs, after }: TabsProps) {
   return (
     <div>
       <div className={styles.tabs}>
@@ -16,7 +16,7 @@ export default function Tabs({ value, onChange, tabs }: TabsProps) {
             <Text text={tab.label} />
           </div>
         ))}
-        <div className={styles.tabSpacer} />
+        <div className={styles.tabSpacer}>{after}</div>
       </div>
     </div>
   );

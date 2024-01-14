@@ -19,6 +19,7 @@
 
 .tabSpacer {
   flex-grow: 1;
+  padding: var(--toy-box-size-050) var(--toy-box-size-100);
   border-bottom: solid 1px var(--toy-box-color-gray-700);
 }
 

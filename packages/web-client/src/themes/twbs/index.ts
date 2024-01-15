@@ -11,6 +11,7 @@ import Table from "./Table";
 import Modal from "./Modal";
 import htmlTheme from "../html";
 import Radio from "./Radio";
+import Loader from "./Loader";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -41,6 +42,7 @@ const twbsTheme: Theme = {
   Table,
   Modal,
   Radio,
+  Loader,
   Link: htmlTheme.Link,
   Container: htmlTheme.Container,
   ModalBackdrop: htmlTheme.ModalBackdrop,

@@ -1,4 +1,4 @@
-import { Theme } from "../../theme";
+import { LoaderProps, Theme } from "../../theme";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
 import Switch from "./Switch";
@@ -32,6 +32,7 @@ const htmlTheme: Theme = {
   Link,
   ModalBackdrop,
   Radio,
+  Loader: (props: LoaderProps) => "Loading...",
   Container: (props) => props.children,
 };
 

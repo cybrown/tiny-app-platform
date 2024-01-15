@@ -398,6 +398,17 @@ fun GalleryTabs() {
   }
 }
 
+fun GalleryLoader() {
+  Column {
+    Loader {}
+    Loader { primary: true }
+    Loader { secondary: true }
+    Loader { size: "sm" }
+    Loader { size: "md" }
+    Loader { size: "lg" }
+  }
+}
+
 fun App() {
   Column {
     padding: 0.5
@@ -439,6 +450,7 @@ fun App() {
         Box { width: "360px", GallerySelect {} }
         Box { width: "360px", GalleryTable {} }
         Box { width: "360px", GalleryTabs {} }
+        Box { width: "360px", GalleryLoader {} }
       }
     }
   }

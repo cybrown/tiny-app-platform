@@ -170,6 +170,14 @@ export type ContainerProps = {
   height?: number;
 } & React.PropsWithChildren;
 
+export type LoaderSize = "sm" | "md" | "lg";
+
+export type LoaderProps = {
+  primary?: boolean;
+  secondary?: boolean;
+  size?: LoaderSize;
+};
+
 interface ColorScale {
   "100": string;
   "200": string;
@@ -225,6 +233,7 @@ export interface Theme {
   Radio(props: RadioProps): any;
   Tabs?(props: TabsProps): any;
   Container(props: ContainerProps): any;
+  Loader(props: LoaderProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -304,4 +313,9 @@ export function Tabs(props: TabsProps) {
 export function Container(props: ContainerProps) {
   const theme = useTheme();
   return <theme.Container {...props} />;
+}
+
+export function Loader(props: LoaderProps) {
+  const theme = useTheme();
+  return <theme.Loader {...props} />;
 }

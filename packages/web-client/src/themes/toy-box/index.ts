@@ -13,6 +13,7 @@ import Radio from "./Radio";
 import Tabs from "./Tabs";
 import { baseSize, colors, sizes } from "./constants";
 import Container from "./Container";
+import Loader from "./Loader";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -118,6 +119,7 @@ const toyBoxTheme: Theme = {
   Radio,
   Tabs,
   Container,
+  Loader,
   onLoad() {
     document.body.appendChild(styleElement);
   },

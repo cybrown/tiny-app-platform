@@ -1,0 +1,62 @@
+[
+  {
+    "kind": "Function",
+    "body": {
+      "kind": "BinaryOperator",
+      "operator": "+",
+      "right": {
+        "kind": "Local",
+        "name": "b"
+      },
+      "left": {
+        "kind": "Local",
+        "name": "a"
+      }
+    },
+    "parameters": [
+      "a"
+    ]
+  },
+  {
+    "kind": "Function",
+    "body": {
+      "kind": "BinaryOperator",
+      "operator": "+",
+      "right": {
+        "kind": "Local",
+        "name": "b"
+      },
+      "left": {
+        "kind": "Local",
+        "name": "a"
+      }
+    },
+    "parameters": [
+      "a"
+    ]
+  },
+  {
+    "kind": "Function",
+    "body": {
+      "kind": "Function",
+      "body": {
+        "kind": "BinaryOperator",
+        "operator": "+",
+        "right": {
+          "kind": "Local",
+          "name": "b"
+        },
+        "left": {
+          "kind": "Local",
+          "name": "a"
+        }
+      },
+      "parameters": [
+        "b"
+      ]
+    },
+    "parameters": [
+      "a"
+    ]
+  }
+]

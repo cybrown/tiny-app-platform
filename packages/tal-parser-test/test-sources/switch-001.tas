@@ -7,5 +7,5 @@ switch (state.name) {
     }
     "editor" => Editor{}
     "contact" => Contact{}
-    * => NotFound{}
+    _ => NotFound{}
 }

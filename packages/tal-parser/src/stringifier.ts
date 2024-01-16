@@ -277,12 +277,15 @@ class Stringifier {
   }
 
   stringifyFunction(obj: FunctionExpression): string {
-    return (
-      '(' +
-      (obj.parameters ?? []).join(', ') +
-      ') => ' +
-      this.stringify(obj.body)
-    );
+    let result = '';
+    if (obj.parameters.length === 0) {
+      result += '()';
+    } else if (obj.parameters.length === 1) {
+      result += obj.parameters[0];
+    } else {
+      result += '(' + (obj.parameters ?? []).join(', ') + ')';
+    }
+    return result + ' => ' + this.stringify(obj.body);
   }
 
   stringifyBlockOfExpressions(obj: BlockOfExpressionsExpression): string {
@@ -604,7 +607,7 @@ class Stringifier {
       .reduce((prev, longest) => Math.max(prev, longest), 0);
     if (obj.defaultBranch) {
       stringifiedBranches.push([
-        '*',
+        '_',
         this.stringifyWithIndent(obj.defaultBranch.value),
       ]);
     }

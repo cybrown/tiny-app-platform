@@ -12,7 +12,7 @@ fun executeHttpRequest() {
   set response = http_request(
     method
     url
-    headers | array_filter((it) => it[0] && it[1])
+    headers | array_filter(it => it[0] && it[1])
     body
     allowErrorStatusCode: true
   )
@@ -125,7 +125,7 @@ Column {
   }
 
   {
-    let validHeaders = headers | array_filter((it) => it[0] && it[1])
+    let validHeaders = headers | array_filter(it => it[0] && it[1])
 
     [
       if (method != null && url != null) {
@@ -136,7 +136,7 @@ Column {
                 method:  method
                 url:     url
                 headers: validHeaders
-                   | array_map((it) => string_format(
+                   | array_map(it => string_format(
                       "-H '$name: $value'"
                       {name: it[0], value: it[1]}
                     ))
@@ -194,17 +194,15 @@ Column {
             columns: [
               {
                 description: "Name"
-                display:     (row) => Text { text: row.key, copy: true }
+                display:     row => Text { text: row.key, copy: true }
               }
 
               {
                 description: "Value"
-                display:     (row) => Text { text: row.value, copy: true }
+                display:     row => Text { text: row.value, copy: true }
               }
             ]
-            values:  response.headers
-               | object_entries
-               | array_map((it) => {key: it[0], value: it[1]})
+            values:  response.headers | object_entries | array_map(it => {key: it[0], value: it[1]})
           }
         }
       }

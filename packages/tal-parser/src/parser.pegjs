@@ -118,11 +118,14 @@ Switch
         }
 
 SwitchBranch
-    = comparator:Expression _ '=>' _ value:Expression
+    // Parse identifiers first to avoid parsing expression as a single parameter lambda
+    = comparator:Local _ '=>' _ value:Expression
+        { return { comparator, value }; }
+    / comparator:Expression _ '=>' _ value:Expression
         { return { comparator, value }; }
 
 SwitchDefaultBranch
-    = '*' _ '=>' _ value: Expression
+    = '_' _ '=>' _ value: Expression
         { return { value }; }
 
 Try
@@ -151,6 +154,8 @@ NamedFunction
 Function
     = '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Expression
         { return { location: location(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
+    / parameter:(Identifier) _ '=>' _ body:Expression
+        { return { location: location(), kind: "Function", body: body, parameters: [parameter] }; }
 
 ObjectWithKind
     = kind:DottedExpression _ "{" _ values:((ObjectWithKindKeyValuePair / Expression) _ ','? _)* "}"
@@ -267,13 +272,16 @@ Null
     	{ return { kind: "Literal", value: null }; }
 
 Identifier
+    // Only _ is not a valid identifier, but an identifier can start with _ and have other characters after
     = head:IdentifierHeadCharacters tail:IdentifierTailCharacters*
+    	{ return head + tail.join(''); }
+    / head:'_' tail:IdentifierTailCharacters+
     	{ return head + tail.join(''); }
     / '@' str:RawString
     	{ return str; }
 
 IdentifierHeadCharacters
-    = [A-Za-z_$]
+    = [A-Za-z$]
 
 IdentifierTailCharacters
     = [A-Za-z_$0-9]

@@ -1,5 +1,5 @@
 switch {
     expr1 => value1
     expr2 => value2
-    *     => defaultValue
+    _     => defaultValue
 }

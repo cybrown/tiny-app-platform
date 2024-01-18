@@ -25,6 +25,10 @@ export type WidgetDocumentation<T> = {
   };
 };
 
+export interface SourceFetcher {
+  fetch(path: string): Promise<string>;
+}
+
 export class RuntimeContext {
   constructor(
     onStateChange: () => void,
@@ -35,7 +39,28 @@ export class RuntimeContext {
     this.stateChangedListeners.add(onStateChange);
   }
 
-  public getSource?: (path: string) => Promise<string>;
+  private sourceFetcher?: SourceFetcher;
+
+  private getSourceFetcher(): SourceFetcher | undefined {
+    if (this.sourceFetcher) {
+      return this.sourceFetcher;
+    } else if (this.parent) {
+      return this.parent.getSourceFetcher();
+    }
+    return undefined;
+  }
+
+  public setSourceFetcher(importer: SourceFetcher | undefined) {
+    this.sourceFetcher = importer;
+  }
+
+  public fetchSource(path: string): Promise<string> {
+    const sourceFetcher = this.getSourceFetcher();
+    if (!sourceFetcher) {
+      throw new Error('source fetch not set on context');
+    }
+    return sourceFetcher.fetch(path);
+  }
 
   private _program?: Program;
 

@@ -580,8 +580,7 @@ async function resolveModule(
   ctx: RuntimeContext,
   path: string
 ): Promise<unknown> {
-  if (!ctx.getSource) throw new Error('getSource not defined on context');
-  const moduleSource = await ctx.getSource(path);
+  const moduleSource = await ctx.fetchSource(path);
   const ast = parse(moduleSource);
   const module = compile(ast, path);
   Object.entries(module).forEach(([name, func]) => {

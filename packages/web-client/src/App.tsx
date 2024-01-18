@@ -84,6 +84,9 @@ async function getApp(name: string) {
 }
 
 async function getSource(sourcePath: string) {
+  if ((window as any).electronAPI) {
+    return (window as any).electronAPI.getSourceForImport(sourcePath);
+  }
   return getApp(sourcePath);
 }
 
@@ -111,7 +114,7 @@ try {
 
 function buildContext(onStateChange: () => void): RuntimeContext {
   const ctx = new RuntimeContext(onStateChange);
-  ctx.getSource = getSource;
+  ctx.setSourceFetcher({ fetch: getSource });
   importStdlibInContext(ctx);
 
   ctx.registerWidget("Box", Box, BoxDocumentation);
@@ -204,20 +207,23 @@ function App() {
   );
   const [editorApi, setEditorApi] = useState<EditorApi>();
 
-  const executeSource = useCallback((newSource: string) => {
-    if (newSource == null) {
-      setApp(null);
-      return;
-    }
-    try {
-      setApp(compile(tal.parse(newSource)));
-    } catch (err) {
-      setParseError(err as Error);
-      setApp(null);
-    } finally {
-      editorApi?.replaceAll(newSource);
-    }
-  }, [editorApi]);
+  const executeSource = useCallback(
+    (newSource: string) => {
+      if (newSource == null) {
+        setApp(null);
+        return;
+      }
+      try {
+        setApp(compile(tal.parse(newSource)));
+      } catch (err) {
+        setParseError(err as Error);
+        setApp(null);
+      } finally {
+        editorApi?.replaceAll(newSource);
+      }
+    },
+    [editorApi]
+  );
 
   useEffect(() => {
     (async function() {
@@ -313,7 +319,7 @@ function App() {
     if (!updateSourceFunc) return;
     let sourceToFormat = updateSourceFunc();
     try {
-      editorApi?.replaceAll(tal.stringify(tal.parse(sourceToFormat)))
+      editorApi?.replaceAll(tal.stringify(tal.parse(sourceToFormat)));
     } catch (err) {
       console.error("Failed to format because of syntax error", err);
     }

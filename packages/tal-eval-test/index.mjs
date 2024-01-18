@@ -27,21 +27,23 @@ const source = await new Promise((resolve, reject) => {
 const expressions = tal.parse(source);
 const ctx = new RuntimeContext(() => {});
 
-ctx.getSource = (sourcePath) => {
-  const absolutePath = join(process.cwd(), sourcePath);
-  return new Promise((resolve, reject) => {
-    fs.readFile(
-      absolutePath,
-      {
-        encoding: "utf-8",
-      },
-      (err, data) => {
-        if (err) return reject(err);
-        return resolve(data);
-      }
-    );
-  });
-};
+ctx.setSourceFetcher({
+  fetch(sourcePath) {
+    const absolutePath = join(process.cwd(), sourcePath);
+    return new Promise((resolve, reject) => {
+      fs.readFile(
+        absolutePath,
+        {
+          encoding: "utf-8",
+        },
+        (err, data) => {
+          if (err) return reject(err);
+          return resolve(data);
+        }
+      );
+    });
+  },
+});
 
 ctx.defineFunction(
   "give_hello",

@@ -31,5 +31,19 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
   saveFile(source) {
     ipcRenderer.send("save-file", source);
-  }
+  },
+  getSourceForImport(sourceRelativePath) {
+    return new Promise((resolve, reject) => {
+      const requestId = Math.random().toString(16);
+      function responseHandler(e, requestIdResponse, err, sourceFile) {
+        if (requestIdResponse === requestId) {
+          if (err) return reject(err);
+          ipcRenderer.off("getSourceForImport-response", responseHandler);
+          return resolve(sourceFile);
+        }
+      }
+      ipcRenderer.on("getSourceForImport-response", responseHandler);
+      ipcRenderer.send("getSourceForImport", requestId, sourceRelativePath);
+    });
+  },
 });

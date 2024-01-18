@@ -97,10 +97,11 @@ function createWindow() {
       console.error("Failed to load file", err);
     }
     const port = await PORT;
+    const sourcePathDirname = path.dirname(sourcePath);
     mainWindow.webContents.send("config", {
       backendUrl: "http://localhost:" + port,
       sourceFromFile,
-      sourcePathDirname: path.dirname(sourcePath),
+      sourcePathDirname,
     });
     ipcMain.on("set-property", (e, key, value) => {
       switch (key) {
@@ -114,8 +115,30 @@ function createWindow() {
 
     ipcMain.on("save-file", (e, source) => {
       fs.writeFile(sourcePath, source, (err) => {
-        throw err;
+        if (err) throw err;
       });
+    });
+
+    ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
+      fs.readFile(
+        path.join(sourcePathDirname, sourceRelativePath + ".tas"),
+        (err, data) => {
+          if (err) {
+            mainWindow.webContents.send(
+              "getSourceForImport-response",
+              requestId,
+              err
+            );
+            return;
+          }
+          mainWindow.webContents.send(
+            "getSourceForImport-response",
+            requestId,
+            null,
+            data.toString("utf-8")
+          );
+        }
+      );
     });
   });
 

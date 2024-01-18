@@ -196,13 +196,13 @@ function App() {
   const currentAppName = "latestSource";
 
   // TODO: Do not load default app or local storage if is loading from server
-  const [source, setSource] = useState<string | null>(null);
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
   const [app, setApp] = useState<Program | null>(null);
   const [theme, setTheme] = useState(
     selectedThemeFromQueryString ?? toyBoxTheme
   );
+  const [editorApi, setEditorApi] = useState<EditorApi>();
 
   const executeSource = useCallback((newSource: string) => {
     if (newSource == null) {
@@ -215,9 +215,9 @@ function App() {
       setParseError(err as Error);
       setApp(null);
     } finally {
-      setSource(newSource);
+      editorApi?.replaceAll(newSource);
     }
-  }, []);
+  }, [editorApi]);
 
   useEffect(() => {
     (async function() {
@@ -239,7 +239,7 @@ function App() {
             ? localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE
             : sourceFromFile ?? DEFAULT_APP_SOURCE;
         }
-        setSource(sourceToExecute);
+        editorApi?.replaceAll(sourceToExecute);
         executeSource(sourceToExecute);
       } catch (err) {
         console.error("Failed to get server features");
@@ -249,7 +249,7 @@ function App() {
         setIsLoadingApp(false);
       }
     })();
-  }, [executeSource]);
+  }, [editorApi, executeSource]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, dummyStateUpdate] = useState(0);
@@ -309,32 +309,36 @@ function App() {
     [ctx]
   );
 
-  const [editorApi, setEditorApi] = useState<EditorApi>();
-
   const onFormatHandler = useCallback(() => {
     if (!updateSourceFunc) return;
     let sourceToFormat = updateSourceFunc();
     try {
-      setSource(tal.stringify(tal.parse(sourceToFormat)));
+      editorApi?.replaceAll(tal.stringify(tal.parse(sourceToFormat)))
     } catch (err) {
       console.error("Failed to format because of syntax error", err);
     }
-  }, [updateSourceFunc]);
+  }, [editorApi, updateSourceFunc]);
+
+  const onApplyAndFormatWithSourceHandler = useCallback(
+    (source: string) => {
+      try {
+        const app = tal.parse(source);
+        source = tal.stringify(app);
+      } catch (err) {
+        console.error("Failed to format because of syntax error", err);
+      } finally {
+        persistSource(source);
+        editorApi?.replaceAll(source);
+        executeSource(source);
+      }
+    },
+    [editorApi, executeSource, persistSource]
+  );
 
   const onApplyAndFormatHandler = useCallback(() => {
     if (!updateSourceFunc) return;
-    let source = updateSourceFunc();
-    try {
-      const app = tal.parse(source);
-      source = tal.stringify(app);
-    } catch (err) {
-      console.error("Failed to format because of syntax error", err);
-    } finally {
-      persistSource(source);
-      setSource(source);
-      executeSource(source);
-    }
-  }, [executeSource, persistSource, updateSourceFunc]);
+    onApplyAndFormatWithSourceHandler(updateSourceFunc());
+  }, [onApplyAndFormatWithSourceHandler, updateSourceFunc]);
 
   const onCloseHandler = useCallback(() => {
     // TODO: Find user friendly confirm dialogs
@@ -422,13 +426,12 @@ function App() {
                   onChange={(newIndex) => applyTheme(themes[newIndex])}
                 />
               </div>
-              {source ? (
-                <Editor
-                  source={source}
-                  grabSetSource={setUpdateSource}
-                  onApiReady={setEditorApi}
-                />
-              ) : null}
+              <Editor
+                grabSetSource={setUpdateSource}
+                onApiReady={setEditorApi}
+                onSaveAndFormat={onApplyAndFormatWithSourceHandler}
+                onCloseEditor={onCloseHandler}
+              />
             </div>
           ) : null}
           <div className={styles.AppRendererContainer}>

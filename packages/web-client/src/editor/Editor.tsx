@@ -11,22 +11,22 @@ export interface EditorApi {
 }
 
 export function Editor({
-  source,
   grabSetSource,
   onApiReady,
+  onSaveAndFormat,
+  onCloseEditor,
 }: {
-  source: string;
   grabSetSource(arg: () => () => string): void;
   onApiReady(api: EditorApi): void;
+  onSaveAndFormat(source: string): void;
+  onCloseEditor(): void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorView | null>(null);
-  const [sourceBefore, setSourceBefore] = useState(source);
   const setUpdateSourceFunc = useMemo(
     () => () => () => {
       if (editor) {
         const newSource = [...editor.state.doc].join("");
-        setSourceBefore(newSource);
         return newSource;
       }
       return "";
@@ -39,15 +39,26 @@ export function Editor({
         editor?.dispatch(editor?.state.replaceSelection(text));
       },
       replaceAll(text) {
+        const previousSelection = editor?.state.selection;
         editor?.dispatch(
           editor.state.update({
             changes: { from: 0, to: editor.state.doc.length, insert: text },
           })
         );
+        if (previousSelection) {
+          editor?.dispatch({
+            selection: previousSelection,
+          });
+        }
       },
     }),
     [editor]
   );
+
+  const onSaveAndFormatRef = useRef(onSaveAndFormat);
+  useEffect(() => {
+    onSaveAndFormatRef.current = onSaveAndFormat;
+  }, [onSaveAndFormat]);
 
   useEffect(() => {
     if (ref.current == null) {
@@ -55,18 +66,30 @@ export function Editor({
       return;
     }
     if (editor == null) {
+      const saveWithModS = keymap.of([
+        {
+          key: "Mod-s",
+          run: ({ state }) => {
+            onSaveAndFormatRef.current([...state.doc].join(""));
+            return true;
+          },
+        },
+      ]);
       setEditor(
         new EditorView({
-          doc: source,
-          extensions: [basicSetup, keymap.of([indentWithTab]), javascript()],
+          doc: "",
+          extensions: [
+            basicSetup,
+            keymap.of([indentWithTab]),
+            saveWithModS,
+            javascript(),
+          ],
           parent: ref.current,
         })
       );
-    } else if (sourceBefore !== source) {
-      editorApi?.replaceAll(source);
     }
     grabSetSource(setUpdateSourceFunc);
-  }, [editor, editorApi, grabSetSource, setUpdateSourceFunc, source, sourceBefore]);
+  }, [editor, editorApi, grabSetSource, onCloseEditor, onSaveAndFormat, setUpdateSourceFunc]);
 
   useEffect(() => {
     onApiReady(editorApi);

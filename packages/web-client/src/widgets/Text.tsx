@@ -4,7 +4,7 @@ import styles from "./Text.module.css";
 import { Button, Text as ThemedText } from "../theme";
 
 export type TextProps = {
-  ctx: RuntimeContext;
+  ctx?: RuntimeContext;
   text: string;
   preformatted?: boolean;
   copy?: boolean;

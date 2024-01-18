@@ -3,6 +3,7 @@ import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
 import { Closure, TODO_ANY } from "tal-eval/dist/core";
+import Text from "../widgets/Text";
 
 export default function RenderExpression({
   ctx,
@@ -122,8 +123,10 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
         children={children}
       />
     );
+  } else if (typeof ui === "string") {
+    return <Text text={ui}  />
   }
-  return <Debug ctx={null as any} value={ui} />;
+  return <Debug value={ui} />;
 }
 
 function CustomWidgetHost({

@@ -141,7 +141,7 @@ function CustomWidgetHost({
   children: unknown[];
 }) {
   const state = useRef({
-    childCtx: ctx.createChildForWidget({ ...props, children }),
+    childCtx: widget.ctx.createChildForWidget({ ...props, children }),
     name: widget.name,
     oldProps: props,
     oldChildren: children,

@@ -3,6 +3,7 @@ import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
 import { Table as ThemedTable } from "../theme";
+import { APP_DEBUG_MODE_ENV } from "../constants";
 
 type TableModelColumn =
   | ({
@@ -97,7 +98,7 @@ export default function Table({
         titles={effectiveColumns.map((col) => ({
           text: col.description,
           width: col.width,
-          remainingPercent: col.useRemaining ? remainingPercent : null
+          remainingPercent: col.useRemaining ? remainingPercent : null,
         }))}
         rows={(values ?? []).map((value, index) => {
           return {
@@ -115,6 +116,9 @@ export default function Table({
           };
         })}
       />
+      {ctx.getEnvOr(APP_DEBUG_MODE_ENV, false) ? (
+        <Debug value={values} />
+      ) : null}
     </div>
   );
 }

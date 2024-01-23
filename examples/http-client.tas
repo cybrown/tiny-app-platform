@@ -14,8 +14,8 @@ fun executeHttpRequest() {
     method
     url
     headers
-       | array_filter((header) => header.selected && header.name && header.value)
-       | array_map((header) => [header.name, header.value])
+       | array_filter(header => header.selected && header.name && header.value)
+       | array_map(header => [header.name, header.value])
     body
     allowErrorStatusCode: true
   )
@@ -37,7 +37,7 @@ fun buildCurlCode(method, url, headers) {
         method:  method
         url:     url
         headers: headers
-           | array_map((header) => string_format(
+           | array_map(header => string_format(
               "-H '$name: $value'"
               {name: header.name, value: header.value}
             ))
@@ -187,8 +187,7 @@ Column {
       }
     "code"    => Column {
         {
-          let validHeaders = headers
-             | array_filter((header) => header.selected && header.name && header.value)
+          let validHeaders = headers | array_filter(header => header.selected && header.name && header.value)
 
           if (method != null && url != null) {
             Text {
@@ -229,21 +228,21 @@ Column {
     switch (currentResponseTab) {
       "headers" => Column {
           Table {
-            _key:    (row) => row.key
+            _key:    row => row.key
             columns: [
               {
                 description: "Name"
-                display:     (row) => Text { text: row.key, copy: true }
+                display:     row => Text { text: row.key, copy: true }
               }
 
               {
                 description: "Value"
-                display:     (row) => Text { text: row.value, copy: true }
+                display:     row => Text { text: row.value, copy: true }
               }
             ]
             values:  response.headers
                | object_entries
-               | array_map((header) => {key: header[0], value: header[1]})
+               | array_map(header => {key: header[0], value: header[1]})
           }
         }
       "body"    => Column {

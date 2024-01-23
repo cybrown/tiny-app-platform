@@ -44,6 +44,7 @@ import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import darkOrangeTheme from "./themes/dark-orange";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
+import { Overlay, OverlayPlaceholder, OverlayProvider } from "./overlay";
 
 const queryParams = window.location.search
   .slice(1)
@@ -391,87 +392,96 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [overlayVisible, setOverlayVisible] = useState(false);
+
   return (
-    <ThemeProvider value={theme}>
-      <>
-        <div
-          className={[
-            sourceFromFile && !isDebugMode ? styles.electron : "",
-            styles.App,
-            isDebugMode ? styles.hasEditor : "",
-          ].join(" ")}
-        >
-          {!isDebugMode ? (
-            <button
-              className={styles.BtnEdit}
-              type="button"
-              onClick={openEditorHandler}
-            >
-              Edit
-            </button>
-          ) : null}
-          {isDebugMode ? (
-            <div className={styles.EditorContainer}>
-              <div className={styles.ToolBarContainer}>
-                <ToolBar
-                  onFormat={onFormatHandler}
-                  onApplyAndFormat={onApplyAndFormatHandler}
-                  onClose={onCloseHandler}
-                  onShowDocumentation={toggleShowDocumentationHandler}
-                  appDebugMode={
-                    ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
-                  }
-                  setAppDebugMode={setAppDebutModeHandler}
-                />
-                <ThemedSelect
-                  options={themes.map((theme) => ({
-                    label: theme.name,
-                    value: theme.id,
-                  }))}
-                  value={theme.id}
-                  onChange={(newIndex) => applyTheme(themes[newIndex])}
-                />
-              </div>
-              <Editor
-                grabSetSource={setUpdateSource}
-                onApiReady={setEditorApi}
-                onSaveAndFormat={onApplyAndFormatWithSourceHandler}
-                onCloseEditor={onCloseHandler}
-              />
-            </div>
-          ) : null}
-          <div className={styles.AppRendererContainer}>
-            {app ? (
-              <AppRenderer ctx={ctx} app={app} />
-            ) : parseError ? (
-              <div className={errorStyles.RenderError}>
-                <div>Error parsing source: {parseError.message}</div>
-                <div>
-                  At line {(parseError as any)?.location?.start?.line} column{" "}
-                  {(parseError as any)?.location?.start?.column}
+    <OverlayProvider>
+      <ThemeProvider value={theme}>
+        <>
+          <div
+            className={[
+              sourceFromFile && !isDebugMode ? styles.electron : "",
+              styles.App,
+              isDebugMode ? styles.hasEditor : "",
+            ].join(" ")}
+          >
+            {!isDebugMode ? (
+              <button
+                className={styles.BtnEdit}
+                type="button"
+                onClick={openEditorHandler}
+              >
+                Edit
+              </button>
+            ) : null}
+            {isDebugMode ? (
+              <div className={styles.EditorContainer}>
+                <div className={styles.ToolBarContainer}>
+                  <ToolBar
+                    onFormat={onFormatHandler}
+                    onApplyAndFormat={onApplyAndFormatHandler}
+                    onClose={onCloseHandler}
+                    onShowDocumentation={toggleShowDocumentationHandler}
+                    appDebugMode={
+                      ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
+                    }
+                    setAppDebugMode={setAppDebutModeHandler}
+                  />
+                  <ThemedSelect
+                    options={themes.map((theme) => ({
+                      label: theme.name,
+                      value: theme.id,
+                    }))}
+                    value={theme.id}
+                    onChange={(newIndex) => applyTheme(themes[newIndex])}
+                  />
                 </div>
-                <button onClick={() => console.error(parseError)}>
-                  Click to console.error
-                </button>
+                <Editor
+                  grabSetSource={setUpdateSource}
+                  onApiReady={setEditorApi}
+                  onSaveAndFormat={onApplyAndFormatWithSourceHandler}
+                  onCloseEditor={onCloseHandler}
+                />
               </div>
-            ) : isLoadingApp ? (
-              <div>Loading app...</div>
-            ) : isLoadError ? (
-              <div>Error while loading app</div>
-            ) : (
-              <div>Unknown failure</div>
-            )}
+            ) : null}
+            <div className={styles.AppRendererContainer}>
+              {app ? (
+                <AppRenderer ctx={ctx} app={app} />
+              ) : parseError ? (
+                <div className={errorStyles.RenderError}>
+                  <div>Error parsing source: {parseError.message}</div>
+                  <div>
+                    At line {(parseError as any)?.location?.start?.line} column{" "}
+                    {(parseError as any)?.location?.start?.column}
+                  </div>
+                  <button onClick={() => console.error(parseError)}>
+                    Click to console.error
+                  </button>
+                </div>
+              ) : isLoadingApp ? (
+                <div>Loading app...</div>
+              ) : isLoadError ? (
+                <div>Error while loading app</div>
+              ) : (
+                <div>Unknown failure</div>
+              )}
+            </div>
           </div>
-        </div>
-        {showDocumentation ? (
-          <Documentation
-            ctx={ctx}
-            onClose={toggleShowDocumentationHandler}
-            onWriteInEditor={onWriteInEditorHandler}
-          />
-        ) : null}
-      </>
-    </ThemeProvider>
+          {showDocumentation ? (
+            <Documentation
+              ctx={ctx}
+              onClose={toggleShowDocumentationHandler}
+              onWriteInEditor={onWriteInEditorHandler}
+            />
+          ) : null}
+
+          <button onClick={() => setOverlayVisible(true)}>Show</button>
+          <button onClick={() => setOverlayVisible(false)}>Hide</button>
+          {overlayVisible ? <Overlay>OVERLAY</Overlay> : null}
+          <OverlayPlaceholder />
+        </>
+      </ThemeProvider>
+    </OverlayProvider>
   );
 }
 

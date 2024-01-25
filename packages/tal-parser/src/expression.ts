@@ -107,7 +107,7 @@ export type SubExpressionExpression = ExpressionMetadata & {
 export type PipeExpression = ExpressionMetadata & {
   kind: 'Pipe';
   first: Expression;
-  values: { value: Expression; pipeKind: '|' | '|?' | '|!' }[];
+  values: Expression[];
 };
 
 export type UnaryOperatorExpression = ExpressionMetadata & {

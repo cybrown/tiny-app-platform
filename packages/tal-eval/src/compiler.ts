@@ -222,10 +222,7 @@ export class Compiler {
           children: [this.compile(value.key)],
         });
       case 'Pipe':
-        let [previous, current, ...rest] = [
-          value.first,
-          ...value.values.map(a => a.value),
-        ];
+        let [previous, current, ...rest] = [value.first, ...value.values];
         while (true) {
           if (current.kind === 'Call') {
             previous = {

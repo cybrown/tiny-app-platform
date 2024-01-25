@@ -10,10 +10,20 @@
     	"\\'": "'",
     	'\\\\': '\\',
     }
+
+    function buildBinaryOperator(left, right) {
+        if (right.length == 0) return left;
+        return right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]}))
+            .reduce((left, right) => {
+                right.left = left;
+                return right;
+            }, left);
+    }
 }
 
 Document
-	= _ expr:(TopLevelExpression _)* { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
+	= _ expr:(TopLevelExpression _)*
+        { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
 
 TopLevelExpression
     = 'export' _ expr:Expression
@@ -24,40 +34,53 @@ Expression
     = PipeExpression
 
 PipeExpression
-	= first:LogicalOrOperator tail:(_ ('|?' / '|!' / '|') _ LogicalOrOperator)*
-    	{ return tail.length == 0 ? first : { location: location(), kind: "Pipe", first, values: tail.map(a => ({pipeKind: a[1], value: a[3]})) }; }
+	= first:LogicalOrOperator tail:(_ '|' _ LogicalOrOperator)*
+    	{
+            if (tail.length == 0) return first;
+            return {
+                location: location(),
+                kind: "Pipe",
+                first,
+                values: tail.map(a => a[3])
+            };
+        }
 
 LogicalOrOperator
 	= left:LogicalAndOperator right:(_ '||' _ LogicalAndOperator)*
-    	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
+    	{ return buildBinaryOperator(left, right); }
 
 LogicalAndOperator
 	= left:EqualityOperators right:(_ '&&' _ EqualityOperators)*
-    	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
+    	{ return buildBinaryOperator(left, right); }
 
 EqualityOperators
 	= left:ComparisonOperators right:(_ ('===' / '!==' / '==' / '!=') _ ComparisonOperators)*
-    	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
+    	{ return buildBinaryOperator(left, right); }
 
 ComparisonOperators
 	= left:PlusAndMinusOperators right:(_ ('<=' / '>=' / '<' / '>') _ PlusAndMinusOperators)*
-    	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
+    	{ return buildBinaryOperator(left, right); }
 
 PlusAndMinusOperators
 	= left:MultiplicationOperators right:(_ ('+' / '-') _ MultiplicationOperators)*
-    	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
+    	{ return buildBinaryOperator(left, right); }
 
 MultiplicationOperators
 	= left:UnaryPrefixOperatorExpression right:(_ ('*' / '/' / '%') _ UnaryPrefixOperatorExpression)*
-    	{ return right.length == 0 ? left : right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]})).reduce((left, right) => (right.left = left, right), left); }
+    	{ return buildBinaryOperator(left, right); }
 
 UnaryPrefixOperatorExpression
 	= operator:("-" / "+" / "!" / "&")? _ operand:ExpressionLevel2
-     	{ return operator == null ? operand : (operator == "&" ? { location: location(), kind: "Provided", key: operand } : { location: location(), kind: "UnaryOperator", operator, operand }); }
+     	{
+            if (!operator) return operand;
+            return (operator == "&" ? { location: location(), kind: "Provided", key: operand } : { location: location(), kind: "UnaryOperator", operator, operand });
+        }
 
 ExpressionLevel2 // Dotted and indexed expression
 	= expr:ExpressionLevel1 field:ExpressionLevel2Right*
-        { return field.reduce((prev, cur) => ({ ...cur, value: prev }), expr); }
+        {
+            return field.reduce((prev, cur) => ({ ...cur, value: prev }), expr);
+        }
 
 ExpressionLevel2Right
 	= DottedExpressionTail

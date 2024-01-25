@@ -114,44 +114,41 @@
                     },
                     "values": [
                       {
-                        "pipeKind": "|",
-                        "value": {
-                          "kind": "Call",
-                          "args": [
-                            {
-                              "argKind": "Positional",
-                              "value": {
-                                "kind": "Function",
-                                "body": {
-                                  "kind": "BinaryOperator",
-                                  "operator": "&&",
-                                  "right": {
-                                    "kind": "Index",
-                                    "index": 1,
-                                    "value": {
-                                      "kind": "Local",
-                                      "name": "it"
-                                    }
-                                  },
-                                  "left": {
-                                    "kind": "Index",
-                                    "index": 0,
-                                    "value": {
-                                      "kind": "Local",
-                                      "name": "it"
-                                    }
+                        "kind": "Call",
+                        "args": [
+                          {
+                            "argKind": "Positional",
+                            "value": {
+                              "kind": "Function",
+                              "body": {
+                                "kind": "BinaryOperator",
+                                "operator": "&&",
+                                "right": {
+                                  "kind": "Index",
+                                  "index": 1,
+                                  "value": {
+                                    "kind": "Local",
+                                    "name": "it"
                                   }
                                 },
-                                "parameters": [
-                                  "it"
-                                ]
-                              }
+                                "left": {
+                                  "kind": "Index",
+                                  "index": 0,
+                                  "value": {
+                                    "kind": "Local",
+                                    "name": "it"
+                                  }
+                                }
+                              },
+                              "parameters": [
+                                "it"
+                              ]
                             }
-                          ],
-                          "value": {
-                            "kind": "Local",
-                            "name": "array_filter"
                           }
+                        ],
+                        "value": {
+                          "kind": "Local",
+                          "name": "array_filter"
                         }
                       }
                     ]
@@ -221,11 +218,8 @@
                     },
                     "values": [
                       {
-                        "pipeKind": "|",
-                        "value": {
-                          "kind": "Local",
-                          "name": "string_trim"
-                        }
+                        "kind": "Local",
+                        "name": "string_trim"
                       }
                     ]
                   }
@@ -738,44 +732,41 @@
                 },
                 "values": [
                   {
-                    "pipeKind": "|",
-                    "value": {
-                      "kind": "Call",
-                      "args": [
-                        {
-                          "argKind": "Positional",
-                          "value": {
-                            "kind": "Function",
-                            "body": {
-                              "kind": "BinaryOperator",
-                              "operator": "&&",
-                              "right": {
-                                "kind": "Index",
-                                "index": 1,
-                                "value": {
-                                  "kind": "Local",
-                                  "name": "it"
-                                }
-                              },
-                              "left": {
-                                "kind": "Index",
-                                "index": 0,
-                                "value": {
-                                  "kind": "Local",
-                                  "name": "it"
-                                }
+                    "kind": "Call",
+                    "args": [
+                      {
+                        "argKind": "Positional",
+                        "value": {
+                          "kind": "Function",
+                          "body": {
+                            "kind": "BinaryOperator",
+                            "operator": "&&",
+                            "right": {
+                              "kind": "Index",
+                              "index": 1,
+                              "value": {
+                                "kind": "Local",
+                                "name": "it"
                               }
                             },
-                            "parameters": [
-                              "it"
-                            ]
-                          }
+                            "left": {
+                              "kind": "Index",
+                              "index": 0,
+                              "value": {
+                                "kind": "Local",
+                                "name": "it"
+                              }
+                            }
+                          },
+                          "parameters": [
+                            "it"
+                          ]
                         }
-                      ],
-                      "value": {
-                        "kind": "Local",
-                        "name": "array_filter"
                       }
+                    ],
+                    "value": {
+                      "kind": "Local",
+                      "name": "array_filter"
                     }
                   }
                 ]
@@ -824,114 +815,105 @@
                             "first": "curl -X $method $headers '$url'",
                             "values": [
                               {
-                                "pipeKind": "|",
-                                "value": {
-                                  "kind": "Call",
-                                  "args": [
-                                    {
-                                      "argKind": "Positional",
+                                "kind": "Call",
+                                "args": [
+                                  {
+                                    "argKind": "Positional",
+                                    "value": {
+                                      "kind": "Object",
                                       "value": {
-                                        "kind": "Object",
-                                        "value": {
-                                          "method": {
+                                        "method": {
+                                          "kind": "Local",
+                                          "name": "method"
+                                        },
+                                        "url": {
+                                          "kind": "Local",
+                                          "name": "url"
+                                        },
+                                        "headers": {
+                                          "kind": "Pipe",
+                                          "first": {
                                             "kind": "Local",
-                                            "name": "method"
+                                            "name": "validHeaders"
                                           },
-                                          "url": {
-                                            "kind": "Local",
-                                            "name": "url"
-                                          },
-                                          "headers": {
-                                            "kind": "Pipe",
-                                            "first": {
-                                              "kind": "Local",
-                                              "name": "validHeaders"
-                                            },
-                                            "values": [
-                                              {
-                                                "pipeKind": "|",
-                                                "value": {
-                                                  "kind": "Call",
-                                                  "args": [
-                                                    {
-                                                      "argKind": "Positional",
-                                                      "value": {
-                                                        "kind": "Function",
-                                                        "body": {
-                                                          "kind": "Call",
-                                                          "args": [
-                                                            {
-                                                              "argKind": "Positional",
-                                                              "value": "-H '$name: $value'"
-                                                            },
-                                                            {
-                                                              "argKind": "Positional",
-                                                              "value": {
-                                                                "kind": "Object",
+                                          "values": [
+                                            {
+                                              "kind": "Call",
+                                              "args": [
+                                                {
+                                                  "argKind": "Positional",
+                                                  "value": {
+                                                    "kind": "Function",
+                                                    "body": {
+                                                      "kind": "Call",
+                                                      "args": [
+                                                        {
+                                                          "argKind": "Positional",
+                                                          "value": "-H '$name: $value'"
+                                                        },
+                                                        {
+                                                          "argKind": "Positional",
+                                                          "value": {
+                                                            "kind": "Object",
+                                                            "value": {
+                                                              "name": {
+                                                                "kind": "Index",
+                                                                "index": 0,
                                                                 "value": {
-                                                                  "name": {
-                                                                    "kind": "Index",
-                                                                    "index": 0,
-                                                                    "value": {
-                                                                      "kind": "Local",
-                                                                      "name": "it"
-                                                                    }
-                                                                  },
-                                                                  "value": {
-                                                                    "kind": "Index",
-                                                                    "index": 1,
-                                                                    "value": {
-                                                                      "kind": "Local",
-                                                                      "name": "it"
-                                                                    }
-                                                                  }
+                                                                  "kind": "Local",
+                                                                  "name": "it"
+                                                                }
+                                                              },
+                                                              "value": {
+                                                                "kind": "Index",
+                                                                "index": 1,
+                                                                "value": {
+                                                                  "kind": "Local",
+                                                                  "name": "it"
                                                                 }
                                                               }
                                                             }
-                                                          ],
-                                                          "value": {
-                                                            "kind": "Local",
-                                                            "name": "string_format"
                                                           }
-                                                        },
-                                                        "parameters": [
-                                                          "it"
-                                                        ]
+                                                        }
+                                                      ],
+                                                      "value": {
+                                                        "kind": "Local",
+                                                        "name": "string_format"
                                                       }
-                                                    }
-                                                  ],
-                                                  "value": {
-                                                    "kind": "Local",
-                                                    "name": "array_map"
+                                                    },
+                                                    "parameters": [
+                                                      "it"
+                                                    ]
                                                   }
                                                 }
-                                              },
-                                              {
-                                                "pipeKind": "|",
-                                                "value": {
-                                                  "kind": "Call",
-                                                  "args": [
-                                                    {
-                                                      "argKind": "Positional",
-                                                      "value": " "
-                                                    }
-                                                  ],
-                                                  "value": {
-                                                    "kind": "Local",
-                                                    "name": "array_join"
-                                                  }
-                                                }
+                                              ],
+                                              "value": {
+                                                "kind": "Local",
+                                                "name": "array_map"
                                               }
-                                            ]
-                                          }
+                                            },
+                                            {
+                                              "kind": "Call",
+                                              "args": [
+                                                {
+                                                  "argKind": "Positional",
+                                                  "value": " "
+                                                }
+                                              ],
+                                              "value": {
+                                                "kind": "Local",
+                                                "name": "array_join"
+                                              }
+                                            }
+                                          ]
                                         }
                                       }
                                     }
-                                  ],
-                                  "value": {
-                                    "kind": "Local",
-                                    "name": "string_format"
                                   }
+                                ],
+                                "value": {
+                                  "kind": "Local",
+                                  "name": "string_format"
                                 }
                               }
                             ]
@@ -981,140 +963,134 @@
                             "first": "http_request(method: \"$method\", url: \"$url\" $headers $body)",
                             "values": [
                               {
-                                "pipeKind": "|",
-                                "value": {
-                                  "kind": "Call",
-                                  "args": [
-                                    {
-                                      "argKind": "Positional",
+                                "kind": "Call",
+                                "args": [
+                                  {
+                                    "argKind": "Positional",
+                                    "value": {
+                                      "kind": "Object",
                                       "value": {
-                                        "kind": "Object",
-                                        "value": {
-                                          "method": {
-                                            "kind": "Local",
-                                            "name": "method"
-                                          },
-                                          "url": {
-                                            "kind": "Local",
-                                            "name": "url"
-                                          },
-                                          "body": {
-                                            "kind": "If",
-                                            "condition": {
+                                        "method": {
+                                          "kind": "Local",
+                                          "name": "method"
+                                        },
+                                        "url": {
+                                          "kind": "Local",
+                                          "name": "url"
+                                        },
+                                        "body": {
+                                          "kind": "If",
+                                          "condition": {
+                                            "kind": "BinaryOperator",
+                                            "operator": "&&",
+                                            "right": {
                                               "kind": "BinaryOperator",
-                                              "operator": "&&",
-                                              "right": {
-                                                "kind": "BinaryOperator",
-                                                "operator": "!=",
-                                                "right": "",
-                                                "left": {
-                                                  "kind": "Local",
-                                                  "name": "body"
-                                                }
-                                              },
+                                              "operator": "!=",
+                                              "right": "",
                                               "left": {
-                                                "kind": "BinaryOperator",
-                                                "operator": "!=",
-                                                "right": null,
-                                                "left": {
-                                                  "kind": "Local",
-                                                  "name": "body"
-                                                }
+                                                "kind": "Local",
+                                                "name": "body"
                                               }
                                             },
-                                            "ifTrue": {
-                                              "kind": "BlockOfExpressions",
-                                              "children": [
-                                                {
-                                                  "kind": "BinaryOperator",
-                                                  "operator": "+",
-                                                  "right": "\"",
-                                                  "left": {
-                                                    "kind": "BinaryOperator",
-                                                    "operator": "+",
-                                                    "right": {
-                                                      "kind": "Local",
-                                                      "name": "body"
-                                                    },
-                                                    "left": ", body: \""
-                                                  }
-                                                }
-                                              ]
-                                            },
-                                            "ifFalse": {
-                                              "kind": "BlockOfExpressions",
-                                              "children": [
-                                                " "
-                                              ]
+                                            "left": {
+                                              "kind": "BinaryOperator",
+                                              "operator": "!=",
+                                              "right": null,
+                                              "left": {
+                                                "kind": "Local",
+                                                "name": "body"
+                                              }
                                             }
                                           },
-                                          "headers": {
-                                            "kind": "If",
-                                            "condition": {
-                                              "kind": "BinaryOperator",
-                                              "operator": ">",
-                                              "right": 0,
-                                              "left": {
-                                                "kind": "Call",
-                                                "args": [
-                                                  {
-                                                    "argKind": "Positional",
-                                                    "value": {
-                                                      "kind": "Local",
-                                                      "name": "validHeaders"
-                                                    }
-                                                  }
-                                                ],
-                                                "value": {
-                                                  "kind": "Local",
-                                                  "name": "array_length"
-                                                }
-                                              }
-                                            },
-                                            "ifTrue": {
-                                              "kind": "BlockOfExpressions",
-                                              "children": [
-                                                {
+                                          "ifTrue": {
+                                            "kind": "BlockOfExpressions",
+                                            "children": [
+                                              {
+                                                "kind": "BinaryOperator",
+                                                "operator": "+",
+                                                "right": "\"",
+                                                "left": {
                                                   "kind": "BinaryOperator",
                                                   "operator": "+",
                                                   "right": {
-                                                    "kind": "SubExpression",
-                                                    "expr": {
-                                                      "kind": "Pipe",
-                                                      "first": {
-                                                        "kind": "Local",
-                                                        "name": "validHeaders"
-                                                      },
-                                                      "values": [
-                                                        {
-                                                          "pipeKind": "|",
-                                                          "value": {
-                                                            "kind": "Local",
-                                                            "name": "json_stringify"
-                                                          }
-                                                        }
-                                                      ]
-                                                    }
+                                                    "kind": "Local",
+                                                    "name": "body"
                                                   },
-                                                  "left": ", headers:"
+                                                  "left": ", body: \""
                                                 }
-                                              ]
-                                            },
-                                            "ifFalse": {
-                                              "kind": "BlockOfExpressions",
-                                              "children": [
-                                                " "
-                                              ]
+                                              }
+                                            ]
+                                          },
+                                          "ifFalse": {
+                                            "kind": "BlockOfExpressions",
+                                            "children": [
+                                              " "
+                                            ]
+                                          }
+                                        },
+                                        "headers": {
+                                          "kind": "If",
+                                          "condition": {
+                                            "kind": "BinaryOperator",
+                                            "operator": ">",
+                                            "right": 0,
+                                            "left": {
+                                              "kind": "Call",
+                                              "args": [
+                                                {
+                                                  "argKind": "Positional",
+                                                  "value": {
+                                                    "kind": "Local",
+                                                    "name": "validHeaders"
+                                                  }
+                                                }
+                                              ],
+                                              "value": {
+                                                "kind": "Local",
+                                                "name": "array_length"
+                                              }
                                             }
+                                          },
+                                          "ifTrue": {
+                                            "kind": "BlockOfExpressions",
+                                            "children": [
+                                              {
+                                                "kind": "BinaryOperator",
+                                                "operator": "+",
+                                                "right": {
+                                                  "kind": "SubExpression",
+                                                  "expr": {
+                                                    "kind": "Pipe",
+                                                    "first": {
+                                                      "kind": "Local",
+                                                      "name": "validHeaders"
+                                                    },
+                                                    "values": [
+                                                      {
+                                                        "kind": "Local",
+                                                        "name": "json_stringify"
+                                                      }
+                                                    ]
+                                                  }
+                                                },
+                                                "left": ", headers:"
+                                              }
+                                            ]
+                                          },
+                                          "ifFalse": {
+                                            "kind": "BlockOfExpressions",
+                                            "children": [
+                                              " "
+                                            ]
                                           }
                                         }
                                       }
                                     }
-                                  ],
-                                  "value": {
-                                    "kind": "Local",
-                                    "name": "string_format"
                                   }
+                                ],
+                                "value": {
+                                  "kind": "Local",
+                                  "name": "string_format"
                                 }
                               }
                             ]
@@ -1344,52 +1320,46 @@
                                       },
                                       "values": [
                                         {
-                                          "pipeKind": "|",
-                                          "value": {
-                                            "kind": "Local",
-                                            "name": "object_entries"
-                                          }
+                                          "kind": "Local",
+                                          "name": "object_entries"
                                         },
                                         {
-                                          "pipeKind": "|",
-                                          "value": {
-                                            "kind": "Call",
-                                            "args": [
-                                              {
-                                                "argKind": "Positional",
-                                                "value": {
-                                                  "kind": "Function",
-                                                  "body": {
-                                                    "kind": "Object",
-                                                    "value": {
-                                                      "key": {
-                                                        "kind": "Index",
-                                                        "index": 0,
-                                                        "value": {
-                                                          "kind": "Local",
-                                                          "name": "it"
-                                                        }
-                                                      },
+                                          "kind": "Call",
+                                          "args": [
+                                            {
+                                              "argKind": "Positional",
+                                              "value": {
+                                                "kind": "Function",
+                                                "body": {
+                                                  "kind": "Object",
+                                                  "value": {
+                                                    "key": {
+                                                      "kind": "Index",
+                                                      "index": 0,
                                                       "value": {
-                                                        "kind": "Index",
-                                                        "index": 1,
-                                                        "value": {
-                                                          "kind": "Local",
-                                                          "name": "it"
-                                                        }
+                                                        "kind": "Local",
+                                                        "name": "it"
+                                                      }
+                                                    },
+                                                    "value": {
+                                                      "kind": "Index",
+                                                      "index": 1,
+                                                      "value": {
+                                                        "kind": "Local",
+                                                        "name": "it"
                                                       }
                                                     }
-                                                  },
-                                                  "parameters": [
-                                                    "it"
-                                                  ]
-                                                }
+                                                  }
+                                                },
+                                                "parameters": [
+                                                  "it"
+                                                ]
                                               }
-                                            ],
-                                            "value": {
-                                              "kind": "Local",
-                                              "name": "array_map"
                                             }
+                                          ],
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "array_map"
                                           }
                                         }
                                       ]
@@ -1516,11 +1486,8 @@
                                       },
                                       "values": [
                                         {
-                                          "pipeKind": "|",
-                                          "value": {
-                                            "kind": "Local",
-                                            "name": "json_parse"
-                                          }
+                                          "kind": "Local",
+                                          "name": "json_parse"
                                         }
                                       ]
                                     },

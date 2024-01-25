@@ -231,11 +231,7 @@ class Stringifier {
   stringifyPipeSingleline(obj: PipeExpression): string {
     let result = this.stringify(obj.first);
     for (let i = 0; i < obj.values.length; i++) {
-      result +=
-        ' ' +
-        obj.values[i].pipeKind +
-        ' ' +
-        this.stringify(obj.values[i].value);
+      result += ' | ' + this.stringify(obj.values[i]);
     }
     return result;
   }
@@ -262,12 +258,9 @@ class Stringifier {
         result += '\n';
         result += this.depthSpace();
       }
-      result +=
-        (isLeftKindedObject ? (index == 0 ? ' ' : '  ') : ' ') +
-        value.pipeKind +
-        ' ';
+      result += (isLeftKindedObject ? (index == 0 ? ' ' : '  ') : ' ') + '| ';
       this.incrementDepth();
-      result += this.stringify(value.value);
+      result += this.stringify(value);
       this.decrementDepth();
     }
     if (!isLeftKindedObject) {

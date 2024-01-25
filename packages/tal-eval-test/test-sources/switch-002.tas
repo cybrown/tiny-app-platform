@@ -1,6 +1,6 @@
 fun letterToNumber(letter) {
   switch (letter) {
-    * => 4
+    _ => 4
   }
 }
 

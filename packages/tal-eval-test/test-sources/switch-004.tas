@@ -1,5 +1,5 @@
 switch {
     true  => "ok"
     false => "ko"
-    *     => "default"
+    _     => "default"
 }

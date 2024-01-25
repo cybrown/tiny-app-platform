@@ -3,7 +3,7 @@ fun letterToNumber(letter) {
     "a" => 1
     "b" => 2
     "c" => 3
-    *   => 4
+    _   => 4
   }
 }
 

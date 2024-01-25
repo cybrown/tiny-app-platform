@@ -141,8 +141,11 @@ Switch
         }
 
 SwitchBranch
+    // Parse true, false and null first to avoid parsing them as identifiers
+    = comparator:(Boolean / Null) _ '=>' _ value:Expression
+        { return { comparator, value }; }
     // Parse identifiers first to avoid parsing expression as a single parameter lambda
-    = comparator:Local _ '=>' _ value:Expression
+    / comparator:Local _ '=>' _ value:Expression
         { return { comparator, value }; }
     / comparator:Expression _ '=>' _ value:Expression
         { return { comparator, value }; }

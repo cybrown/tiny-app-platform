@@ -2,12 +2,20 @@ import { parse } from 'tal-parser';
 import { RuntimeContext } from './RuntimeContext';
 import {
   Closure,
-  IRNode,
   NativeFunctionBinding,
   ParameterDef,
   Program,
+  TODO_ANY,
 } from './core';
 import { compile } from './compiler';
+import { IRNode, IRNodeIntrinsic } from './ir-node';
+
+const IRNODES_WITH_LAZY_CHILDREN: IRNode['kind'][] = [
+  'Condition',
+  'Try',
+  'Kinded',
+  'Provide',
+];
 
 export function run(
   ctx: RuntimeContext,
@@ -16,19 +24,14 @@ export function run(
   returnAllBlockValues = false
 ): unknown {
   const currentFunction = program[entryPoint];
-  if (currentFunction.body.kind == 'BLOCK' && returnAllBlockValues) {
-    const node = currentFunction.body;
-    let stack: unknown[] = [];
-    if ('children' in node) {
-      stack = node.children.map(n => {
-        try {
-          return runNode(ctx, program, n);
-        } catch (err) {
-          return err;
-        }
-      });
-    }
-    return stack;
+  if (currentFunction.body.kind == 'Block' && returnAllBlockValues) {
+    return currentFunction.body.children.map(node => {
+      try {
+        return runNode(ctx, program, node);
+      } catch (err) {
+        return err;
+      }
+    });
   }
   return runNode(ctx, program, currentFunction.body);
 }
@@ -61,30 +64,27 @@ export function runNode(
 ): unknown {
   try {
     let stack: unknown[] = [];
-    if (
-      !['CONDITION', 'TRY', 'KINDED', 'PROVIDE'].includes(node.kind) &&
-      'children' in node
-    ) {
-      const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
+    if (!IRNODES_WITH_LAZY_CHILDREN.includes(node.kind) && 'children' in node) {
+      const ctxToUse = node.kind == 'Block' ? ctx.createChild({}) : ctx;
       stack = node.children.map(n =>
         runNode(ctxToUse, program, n, returnArrayFromBlock)
       );
     }
     switch (node.kind) {
-      case 'LITERAL':
-        return (node as IRNode<'LITERAL'>).value;
-      case 'LOCAL':
-        return ctx.getLocal((node as IRNode<'LOCAL'>).name);
-      case 'MAKE_ARRAY':
+      case 'Literal':
+        return node.value;
+      case 'Local':
+        return ctx.getLocal(node.name);
+      case 'MakeArray':
         return stack;
-      case 'MAKE_OBJECT': {
+      case 'MakeObject': {
         const result: Record<string, unknown> = {};
         for (let i = 0; i < stack.length; i += 2) {
           result[stack[i] as string] = stack[i + 1];
         }
         return result;
       }
-      case 'CALL': {
+      case 'Call': {
         const [closure, args, kwargs] = stack as [
           Closure,
           unknown[],
@@ -108,110 +108,78 @@ export function runNode(
           return nativeFuncValue.call(ctx, namedArguments, positionalArguments);
         }
       }
-      case 'INTRINSIC': {
-        const n = node as IRNode<'INTRINSIC'>;
-        return computeIntrinsic(stack, n);
+      case 'Intrinsic': {
+        return computeIntrinsic(stack, node);
       }
-      case 'FUNCTION_REF': {
-        const n = node as IRNode<'FUNCTION_REF'>;
+      case 'FunctionRef': {
         return {
-          name: n.name,
+          name: node.name,
           ctx: ctx,
         };
       }
-      case 'DECLARE_LOCAL': {
-        const n = node as IRNode<'DECLARE_LOCAL'>;
-        ctx.declareLocal(n.name, {
-          mutable: n.mutable,
+      case 'DeclareLocal': {
+        ctx.declareLocal(node.name, {
+          mutable: node.mutable,
           initialValue: stack[0],
         });
         return;
       }
-      case 'BLOCK':
+      case 'Block':
         if (returnArrayFromBlock) {
           return stack.filter(s => s !== null);
         }
         return stack[stack.length - 1];
-      case 'INDEX':
+      case 'Index':
         return (stack[1] as any[])[stack[0] as any];
-      case 'ATTRIBUTE': {
-        const n = node as IRNode<'ATTRIBUTE'>;
-        return (stack[0] as any)[n.name];
+      case 'Attribute': {
+        return (stack[0] as any)[node.name];
       }
-      case 'SET_LOCAL': {
-        const n = node as IRNode<'SET_LOCAL'>;
-        ctx.setLocal(n.name as any, stack[0]);
+      case 'SetLocal': {
+        ctx.setLocal(node.name as any, stack[0]);
         return stack[0];
       }
-      case 'SET_INDEX': {
-        const n = node as IRNode<'SET_INDEX'>;
+      case 'SetIndex': {
         (stack[1] as any)[stack[0] as any] = stack[2];
-        if (n.forceRender) {
+        if (node.forceRender) {
           ctx.forceRefresh();
         }
         return stack[2];
       }
-      case 'SET_ATTRIBUTE': {
-        const n = node as IRNode<'SET_ATTRIBUTE'>;
-        (stack[0] as any)[n.name] = stack[1];
-        if (n.forceRender) {
+      case 'SetAttribute': {
+        (stack[0] as any)[node.name] = stack[1];
+        if (node.forceRender) {
           ctx.forceRefresh();
         }
         return stack[1];
       }
-      case 'CONDITION': {
-        if ('children' in node) {
-          const conditionResult = runNode(ctx, program, node.children[0]);
-          if (conditionResult) {
-            return runNode(
-              ctx,
-              program,
-              node.children[1],
-              returnArrayFromBlock
-            );
-          } else if (node.children.length > 2) {
-            return runNode(
-              ctx,
-              program,
-              node.children[2],
-              returnArrayFromBlock
-            );
-          } else {
-            return null;
-          }
-        }
-        throw new Error('Unreachable');
-      }
-      case 'TRY': {
-        if ('children' in node) {
-          try {
-            return runNode(
-              ctx,
-              program,
-              node.children[0],
-              returnArrayFromBlock
-            );
-          } catch (error) {
-            if (node.children.length <= 1) {
-              return null;
-            }
-            return runNode(
-              ctx.createChild({ error }, false),
-              program,
-              node.children[1]
-            );
-          }
-        }
-        throw new Error('Unreachable');
-      }
-      case 'PROVIDE': {
-        const n = node as IRNode<'PROVIDE'>;
-        if (!('children' in n)) {
+      case 'Condition': {
+        const conditionResult = runNode(ctx, program, node.children[0]);
+        if (conditionResult) {
+          return runNode(ctx, program, node.children[1], returnArrayFromBlock);
+        } else if (node.children.length > 2) {
+          return runNode(ctx, program, node.children[2], returnArrayFromBlock);
+        } else {
           return null;
         }
-        const keyIr = n.children[0];
-        const valueIr = n.children[1];
-        const bodyIr = n.children[2];
+      }
+      case 'Try': {
+        try {
+          return runNode(ctx, program, node.children[0], returnArrayFromBlock);
+        } catch (error) {
+          if (node.children.length <= 1) {
+            return null;
+          }
+          return runNode(
+            ctx.createChild({ error }, false),
+            program,
+            node.children[1]
+          );
+        }
+      }
+      case 'Provide': {
+        const keyIr = node.children[0];
+        const valueIr = node.children[1];
+        const bodyIr = node.children[2];
 
         const key = runNode(ctx, program, keyIr);
         const value = runNode(ctx, program, valueIr);
@@ -220,21 +188,13 @@ export function runNode(
 
         return runNode(childContext, program, bodyIr, returnArrayFromBlock);
       }
-      case 'PROVIDED': {
-        const n = node as IRNode<'PROVIDED'>;
-        if (!('children' in n)) {
-          return null;
-        }
+      case 'Provided': {
         return ctx.getProvidedValue(stack[0]);
       }
-      case 'KINDED': {
-        const n = node as IRNode<'KINDED'>;
-        if (!('children' in n)) {
-          return null;
-        }
-        const kindIr = n.children[0];
-        const childrenIr = n.children[1];
-        const propsIr = n.children[2];
+      case 'Kinded': {
+        const kindIr = node.children[0];
+        const childrenIr = node.children[1];
+        const propsIr = node.children[2];
         return {
           ctx,
           kind: kindIr,
@@ -242,17 +202,19 @@ export function runNode(
           props: propsIr,
         };
       }
-      case 'CTX_RENDER':
+      case 'CtxRender':
         ctx.forceRefresh();
         return;
-      case 'IMPORT':
+      case 'Import':
         throw new EvaluationError(
           'import not allowed in synchronous expression',
           node,
           null
         );
-      default:
-        throw new Error('Unknown node kind: ' + node.kind);
+      default: {
+        const n: never = node; // If this does not compile, you forgot a case
+        throw new Error('Unknown node kind: ' + (n as TODO_ANY).kind);
+      }
     }
   } catch (error) {
     if (error instanceof EvaluationError) {
@@ -269,16 +231,14 @@ export async function runAsync(
   returnAllBlockValues = false
 ): Promise<unknown> {
   const currentFunction = program[entryPoint];
-  if (currentFunction.body.kind == 'BLOCK' && returnAllBlockValues) {
+  if (currentFunction.body.kind == 'Block' && returnAllBlockValues) {
     const node = currentFunction.body;
     let stack: unknown[] = [];
-    if ('children' in node) {
-      for (let n of node.children) {
-        try {
-          stack.push(await runNodeAsync(ctx, program, n));
-        } catch (err) {
-          stack.push(err);
-        }
+    for (let n of node.children) {
+      try {
+        stack.push(await runNodeAsync(ctx, program, n));
+      } catch (err) {
+        stack.push(err);
       }
     }
     return stack;
@@ -312,30 +272,27 @@ export async function runNodeAsync(
 ): Promise<unknown> {
   try {
     let stack: unknown[] = [];
-    if (
-      !['CONDITION', 'TRY', 'KINDED', 'PROVIDE'].includes(node.kind) &&
-      'children' in node
-    ) {
-      const ctxToUse = node.kind == 'BLOCK' ? ctx.createChild({}) : ctx;
+    if (!IRNODES_WITH_LAZY_CHILDREN.includes(node.kind) && 'children' in node) {
+      const ctxToUse = node.kind == 'Block' ? ctx.createChild({}) : ctx;
       for (let n of node.children) {
         stack.push(await runNodeAsync(ctxToUse, program, n));
       }
     }
     switch (node.kind) {
-      case 'LITERAL':
-        return (node as IRNode<'LITERAL'>).value;
-      case 'LOCAL':
-        return ctx.getLocal((node as IRNode<'LOCAL'>).name);
-      case 'MAKE_ARRAY':
+      case 'Literal':
+        return node.value;
+      case 'Local':
+        return ctx.getLocal(node.name);
+      case 'MakeArray':
         return stack;
-      case 'MAKE_OBJECT': {
+      case 'MakeObject': {
         const result: Record<string, unknown> = {};
         for (let i = 0; i < stack.length; i += 2) {
           result[stack[i] as string] = stack[i + 1];
         }
         return result;
       }
-      case 'CALL': {
+      case 'Call': {
         const [
           closure,
           providedPositionalArguments,
@@ -362,96 +319,79 @@ export async function runNodeAsync(
             : func.call(ctx, namedArguments, positionalArguments);
         }
       }
-      case 'INTRINSIC': {
-        const n = node as IRNode<'INTRINSIC'>;
-        return computeIntrinsic(stack, n);
+      case 'Intrinsic': {
+        return computeIntrinsic(stack, node);
       }
-      case 'FUNCTION_REF': {
-        const n = node as IRNode<'FUNCTION_REF'>;
+      case 'FunctionRef': {
         return {
-          name: n.name,
+          name: node.name,
           ctx: ctx,
         };
       }
-      case 'DECLARE_LOCAL': {
-        const n = node as IRNode<'DECLARE_LOCAL'>;
-        ctx.declareLocal(n.name, {
-          mutable: n.mutable,
+      case 'DeclareLocal': {
+        ctx.declareLocal(node.name, {
+          mutable: node.mutable,
           initialValue: stack[0],
         });
         return;
       }
-      case 'BLOCK':
+      case 'Block':
         return stack[stack.length - 1];
-      case 'INDEX':
+      case 'Index':
         return (stack[1] as any[])[stack[0] as any];
-      case 'ATTRIBUTE': {
-        const n = node as IRNode<'ATTRIBUTE'>;
-        return (stack[0] as any)[n.name];
+      case 'Attribute': {
+        return (stack[0] as any)[node.name];
       }
-      case 'SET_LOCAL': {
-        const n = node as IRNode<'SET_LOCAL'>;
-        ctx.setLocal(n.name as any, stack[0]);
+      case 'SetLocal': {
+        ctx.setLocal(node.name as any, stack[0]);
         return stack[0];
       }
-      case 'SET_INDEX': {
-        const n = node as IRNode<'SET_INDEX'>;
+      case 'SetIndex': {
         (stack[1] as any)[stack[0] as any] = stack[2];
-        if (n.forceRender) {
+        if (node.forceRender) {
           ctx.forceRefresh();
         }
         return stack[2];
       }
-      case 'SET_ATTRIBUTE': {
-        const n = node as IRNode<'SET_ATTRIBUTE'>;
-        (stack[0] as any)[n.name] = stack[1];
-        if (n.forceRender) {
+      case 'SetAttribute': {
+        (stack[0] as any)[node.name] = stack[1];
+        if (node.forceRender) {
           ctx.forceRefresh();
         }
         return stack[1];
       }
-      case 'CONDITION': {
-        if ('children' in node) {
-          const conditionResult = await runNodeAsync(
-            ctx,
-            program,
-            node.children[0]
-          );
-          if (conditionResult) {
-            return await runNodeAsync(ctx, program, node.children[1]);
-          } else if (node.children.length > 2) {
-            return await runNodeAsync(ctx, program, node.children[2]);
-          } else {
-            return null;
-          }
-        }
-        throw new Error('Unreachable');
-      }
-      case 'TRY': {
-        if ('children' in node) {
-          try {
-            return await runNodeAsync(ctx, program, node.children[0]);
-          } catch (error) {
-            if (node.children.length <= 1) {
-              return null;
-            }
-            return await runNodeAsync(
-              ctx.createChild({ error }, false),
-              program,
-              node.children[1]
-            );
-          }
-        }
-        throw new Error('Unreachable');
-      }
-      case 'PROVIDE': {
-        const n = node as IRNode<'PROVIDE'>;
-        if (!('children' in n)) {
+      case 'Condition': {
+        const conditionResult = await runNodeAsync(
+          ctx,
+          program,
+          node.children[0]
+        );
+        if (conditionResult) {
+          return await runNodeAsync(ctx, program, node.children[1]);
+        } else if (node.children.length > 2) {
+          return await runNodeAsync(ctx, program, node.children[2]);
+        } else {
           return null;
         }
-        const keyIr = n.children[0];
-        const valueIr = n.children[1];
-        const bodyIr = n.children[2];
+      }
+      case 'Try': {
+        try {
+          return await runNodeAsync(ctx, program, node.children[0]);
+        } catch (error) {
+          if (node.children.length <= 1) {
+            return null;
+          }
+          return await runNodeAsync(
+            ctx.createChild({ error }, false),
+            program,
+            node.children[1]
+          );
+        }
+      }
+      case 'Provide': {
+        const keyIr = node.children[0];
+        const valueIr = node.children[1];
+        const bodyIr = node.children[2];
 
         const key = await runNodeAsync(ctx, program, keyIr);
         const value = await runNodeAsync(ctx, program, valueIr);
@@ -460,21 +400,13 @@ export async function runNodeAsync(
 
         return await runNodeAsync(childContext, program, bodyIr);
       }
-      case 'PROVIDED': {
-        const n = node as IRNode<'PROVIDED'>;
-        if (!('children' in n)) {
-          return null;
-        }
+      case 'Provided': {
         return ctx.getProvidedValue(stack[0]);
       }
-      case 'KINDED': {
-        const n = node as IRNode<'KINDED'>;
-        if (!('children' in n)) {
-          return null;
-        }
-        const kindIr = n.children[0];
-        const childrenIr = n.children[1];
-        const propsIr = n.children[2];
+      case 'Kinded': {
+        const kindIr = node.children[0];
+        const childrenIr = node.children[1];
+        const propsIr = node.children[2];
         return {
           ctx,
           kind: kindIr,
@@ -482,15 +414,16 @@ export async function runNodeAsync(
           props: propsIr,
         };
       }
-      case 'CTX_RENDER':
+      case 'CtxRender':
         ctx.forceRefresh();
         return;
-      case 'IMPORT': {
-        const n = node as IRNode<'IMPORT'>;
-        return await resolveModule(ctx, n.path);
+      case 'Import': {
+        return await resolveModule(ctx, node.path);
       }
-      default:
-        throw new Error('Unknown node kind: ' + node.kind);
+      default: {
+        const n: never = node; // If this does not compile, you forgot a case
+        throw new Error('Unknown node kind: ' + (n as TODO_ANY).kind);
+      }
     }
   } catch (error) {
     if (error instanceof EvaluationError) {
@@ -510,7 +443,7 @@ export class EvaluationError extends Error {
   }
 }
 
-function computeIntrinsic(stack: unknown[], n: IRNode<'INTRINSIC'>) {
+function computeIntrinsic(stack: unknown[], n: IRNodeIntrinsic) {
   switch (n.operation) {
     case 'INTRINSIC_ADD':
       return (stack[0] as any) + (stack[1] as any);

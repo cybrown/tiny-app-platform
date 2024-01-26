@@ -5,11 +5,11 @@ describe('RuntimeContext', () => {
     const ctx = new RuntimeContext(() => {}, { a: 2, b: 40 });
     ctx.program = {};
     const result = ctx.evaluate({
-      kind: 'INTRINSIC',
+      kind: 'Intrinsic',
       operation: 'INTRINSIC_ADD',
       children: [
-        { kind: 'LOCAL', name: 'a' },
-        { kind: 'LOCAL', name: 'b' },
+        { kind: 'Local', name: 'a' },
+        { kind: 'Local', name: 'b' },
       ],
     });
     expect(result).toEqual(42);

@@ -1,6 +1,6 @@
 main: 
-  BLOCK
-    CALL
-      LOCAL {"name":"sync_or_async"}
-      MAKE_ARRAY
-      MAKE_OBJECT
+  Block
+    Call
+      Local {"name":"sync_or_async"}
+      MakeArray
+      MakeObject

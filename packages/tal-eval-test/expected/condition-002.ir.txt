@@ -1,13 +1,13 @@
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"a","mutable":true}
-      LITERAL {"value":1}
-    DECLARE_LOCAL {"name":"b","mutable":true}
-      LITERAL {"value":1}
-    CONDITION
-      LITERAL {"value":false}
-      BLOCK
-        SET_LOCAL {"name":"a"}
-          LITERAL {"value":2}
-    LOCAL {"name":"a"}
-    LOCAL {"name":"b"}
+  Block
+    DeclareLocal {"name":"a","mutable":true}
+      Literal {"value":1}
+    DeclareLocal {"name":"b","mutable":true}
+      Literal {"value":1}
+    Condition
+      Literal {"value":false}
+      Block
+        SetLocal {"name":"a"}
+          Literal {"value":2}
+    Local {"name":"a"}
+    Local {"name":"b"}

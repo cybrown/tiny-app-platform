@@ -1,5 +1,6 @@
-import { Closure, IRNode, Program } from './core';
+import { Closure, Program } from './core';
 import { runNodeAsync, runNode, runCall, runCallAsync } from './interpreter';
+import { IRNode } from './ir-node';
 
 class GetLocalError extends Error {
   constructor(localName: string) {
@@ -290,21 +291,18 @@ export class RuntimeContext {
       );
     }
     switch (address.kind) {
-      case 'ATTRIBUTE': {
-        const n = address as IRNode<'ATTRIBUTE'>;
-        const object = this.evaluate(n.children[0]);
-        (object as any)[n.name] = value;
+      case 'Attribute': {
+        const object = this.evaluate(address.children[0]);
+        (object as any)[address.name] = value;
         break;
       }
-      case 'INDEX': {
-        const n = address as IRNode<'INDEX'>;
-        const object = this.evaluate(n.children[1]);
-        (object as any)[this.evaluate(n.children[0]) as any] = value;
+      case 'Index': {
+        const object = this.evaluate(address.children[1]);
+        (object as any)[this.evaluate(address.children[0]) as any] = value;
         break;
       }
-      case 'LOCAL': {
-        const n = address as IRNode<'LOCAL'>;
-        this.setLocal(n.name, value);
+      case 'Local': {
+        this.setLocal(address.name, value);
         break;
       }
       default:

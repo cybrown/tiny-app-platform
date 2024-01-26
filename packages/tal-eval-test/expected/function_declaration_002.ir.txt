@@ -1,154 +1,154 @@
 func_0: a, b
-  MAKE_OBJECT
-    LITERAL {"value":"a"}
-    LOCAL {"name":"a"}
-    LITERAL {"value":"b"}
-    LOCAL {"name":"b"}
+  MakeObject
+    Literal {"value":"a"}
+    Local {"name":"a"}
+    Literal {"value":"b"}
+    Local {"name":"b"}
 func_1: a, b
-  MAKE_OBJECT
-    LITERAL {"value":"a"}
-    LOCAL {"name":"a"}
-    LITERAL {"value":"b"}
-    LOCAL {"name":"b"}
+  MakeObject
+    Literal {"value":"a"}
+    Local {"name":"a"}
+    Literal {"value":"b"}
+    Local {"name":"b"}
 func_2: a, b
-  MAKE_OBJECT
-    LITERAL {"value":"a"}
-    LOCAL {"name":"a"}
-    LITERAL {"value":"b"}
-    LOCAL {"name":"b"}
+  MakeObject
+    Literal {"value":"a"}
+    Local {"name":"a"}
+    Literal {"value":"b"}
+    Local {"name":"b"}
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"a","mutable":false}
-      LITERAL {"value":1}
-    DECLARE_LOCAL {"name":"b","mutable":false}
-      LITERAL {"value":2}
-    DECLARE_LOCAL {"name":"f","mutable":false}
-      FUNCTION_REF {"name":"func_0"}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":1}
-        LITERAL {"value":2}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"a"}
-        LITERAL {"value":5}
-        LITERAL {"value":"b"}
-        LITERAL {"value":6}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"b"}
-        LITERAL {"value":7}
-        LITERAL {"value":"a"}
-        LITERAL {"value":8}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":4}
-      MAKE_OBJECT
-        LITERAL {"value":"a"}
-        LITERAL {"value":3}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":6}
-      MAKE_OBJECT
-        LITERAL {"value":"b"}
-        LITERAL {"value":5}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":7}
-      MAKE_OBJECT
-        LITERAL {"value":"a"}
-        LITERAL {"value":8}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":9}
-      MAKE_OBJECT
-        LITERAL {"value":"b"}
-        LITERAL {"value":0}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":1}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"a"}
-        LITERAL {"value":2}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"b"}
-        LITERAL {"value":3}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":1}
-      MAKE_OBJECT
-        LITERAL {"value":"c"}
-        LITERAL {"value":4}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"c"}
-        LITERAL {"value":5}
-        LITERAL {"value":"a"}
-        LITERAL {"value":2}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"c"}
-        LITERAL {"value":6}
-        LITERAL {"value":"b"}
-        LITERAL {"value":3}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":1}
-      MAKE_OBJECT
-        LITERAL {"value":"b"}
-        LITERAL {"value":2}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":3}
-      MAKE_OBJECT
-        LITERAL {"value":"a"}
-        LITERAL {"value":4}
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":5}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"f"}
-      MAKE_ARRAY
-        LITERAL {"value":6}
-      MAKE_OBJECT
-    CALL
-      FUNCTION_REF {"name":"func_1"}
-      MAKE_ARRAY
-        LITERAL {"value":7}
-      MAKE_OBJECT
-        LITERAL {"value":"a"}
-        LITERAL {"value":3}
-    CALL
-      FUNCTION_REF {"name":"func_2"}
-      MAKE_ARRAY
-        LITERAL {"value":8}
-      MAKE_OBJECT
-        LITERAL {"value":"b"}
-        LITERAL {"value":4}
+  Block
+    DeclareLocal {"name":"a","mutable":false}
+      Literal {"value":1}
+    DeclareLocal {"name":"b","mutable":false}
+      Literal {"value":2}
+    DeclareLocal {"name":"f","mutable":false}
+      FunctionRef {"name":"func_0"}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":1}
+        Literal {"value":2}
+      MakeObject
+    Call
+      Local {"name":"f"}
+      MakeArray
+      MakeObject
+        Literal {"value":"a"}
+        Literal {"value":5}
+        Literal {"value":"b"}
+        Literal {"value":6}
+    Call
+      Local {"name":"f"}
+      MakeArray
+      MakeObject
+        Literal {"value":"b"}
+        Literal {"value":7}
+        Literal {"value":"a"}
+        Literal {"value":8}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":4}
+      MakeObject
+        Literal {"value":"a"}
+        Literal {"value":3}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":6}
+      MakeObject
+        Literal {"value":"b"}
+        Literal {"value":5}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":7}
+      MakeObject
+        Literal {"value":"a"}
+        Literal {"value":8}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":9}
+      MakeObject
+        Literal {"value":"b"}
+        Literal {"value":0}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":1}
+      MakeObject
+    Call
+      Local {"name":"f"}
+      MakeArray
+      MakeObject
+        Literal {"value":"a"}
+        Literal {"value":2}
+    Call
+      Local {"name":"f"}
+      MakeArray
+      MakeObject
+        Literal {"value":"b"}
+        Literal {"value":3}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":1}
+      MakeObject
+        Literal {"value":"c"}
+        Literal {"value":4}
+    Call
+      Local {"name":"f"}
+      MakeArray
+      MakeObject
+        Literal {"value":"c"}
+        Literal {"value":5}
+        Literal {"value":"a"}
+        Literal {"value":2}
+    Call
+      Local {"name":"f"}
+      MakeArray
+      MakeObject
+        Literal {"value":"c"}
+        Literal {"value":6}
+        Literal {"value":"b"}
+        Literal {"value":3}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":1}
+      MakeObject
+        Literal {"value":"b"}
+        Literal {"value":2}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":3}
+      MakeObject
+        Literal {"value":"a"}
+        Literal {"value":4}
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":5}
+      MakeObject
+    Call
+      Local {"name":"f"}
+      MakeArray
+        Literal {"value":6}
+      MakeObject
+    Call
+      FunctionRef {"name":"func_1"}
+      MakeArray
+        Literal {"value":7}
+      MakeObject
+        Literal {"value":"a"}
+        Literal {"value":3}
+    Call
+      FunctionRef {"name":"func_2"}
+      MakeArray
+        Literal {"value":8}
+      MakeObject
+        Literal {"value":"b"}
+        Literal {"value":4}

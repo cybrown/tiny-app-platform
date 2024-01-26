@@ -1,6 +1,6 @@
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"toto","mutable":true}
-    SET_LOCAL {"name":"toto"}
-      LITERAL {"value":"value"}
-    LOCAL {"name":"toto"}
+  Block
+    DeclareLocal {"name":"toto","mutable":true}
+    SetLocal {"name":"toto"}
+      Literal {"value":"value"}
+    Local {"name":"toto"}

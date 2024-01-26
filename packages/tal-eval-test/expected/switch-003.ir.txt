@@ -1,41 +1,41 @@
 func_0: letter
-  BLOCK
-    CONDITION
-      INTRINSIC {"operation":"INTRINSIC_EQUAL_STRICT"}
-        LOCAL {"name":"letter"}
-        LITERAL {"value":"a"}
-      LITERAL {"value":1}
-      CONDITION
-        INTRINSIC {"operation":"INTRINSIC_EQUAL_STRICT"}
-          LOCAL {"name":"letter"}
-          LITERAL {"value":"b"}
-        LITERAL {"value":2}
-        CONDITION
-          INTRINSIC {"operation":"INTRINSIC_EQUAL_STRICT"}
-            LOCAL {"name":"letter"}
-            LITERAL {"value":"c"}
-          LITERAL {"value":3}
+  Block
+    Condition
+      Intrinsic {"operation":"INTRINSIC_EQUAL_STRICT"}
+        Local {"name":"letter"}
+        Literal {"value":"a"}
+      Literal {"value":1}
+      Condition
+        Intrinsic {"operation":"INTRINSIC_EQUAL_STRICT"}
+          Local {"name":"letter"}
+          Literal {"value":"b"}
+        Literal {"value":2}
+        Condition
+          Intrinsic {"operation":"INTRINSIC_EQUAL_STRICT"}
+            Local {"name":"letter"}
+            Literal {"value":"c"}
+          Literal {"value":3}
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"letterToNumber","mutable":false}
-      FUNCTION_REF {"name":"func_0"}
-    CALL
-      LOCAL {"name":"letterToNumber"}
-      MAKE_ARRAY
-        LITERAL {"value":"a"}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"letterToNumber"}
-      MAKE_ARRAY
-        LITERAL {"value":"b"}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"letterToNumber"}
-      MAKE_ARRAY
-        LITERAL {"value":"c"}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"letterToNumber"}
-      MAKE_ARRAY
-        LITERAL {"value":"d"}
-      MAKE_OBJECT
+  Block
+    DeclareLocal {"name":"letterToNumber","mutable":false}
+      FunctionRef {"name":"func_0"}
+    Call
+      Local {"name":"letterToNumber"}
+      MakeArray
+        Literal {"value":"a"}
+      MakeObject
+    Call
+      Local {"name":"letterToNumber"}
+      MakeArray
+        Literal {"value":"b"}
+      MakeObject
+    Call
+      Local {"name":"letterToNumber"}
+      MakeArray
+        Literal {"value":"c"}
+      MakeObject
+    Call
+      Local {"name":"letterToNumber"}
+      MakeArray
+        Literal {"value":"d"}
+      MakeObject

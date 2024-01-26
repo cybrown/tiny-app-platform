@@ -1,11 +1,11 @@
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"mylib","mutable":false}
-      IMPORT {"path":"./test-sources/module-definition-001.tas"}
-    CALL
-      ATTRIBUTE {"name":"add"}
-        LOCAL {"name":"mylib"}
-      MAKE_ARRAY
-        LITERAL {"value":40}
-        LITERAL {"value":2}
-      MAKE_OBJECT
+  Block
+    DeclareLocal {"name":"mylib","mutable":false}
+      Import {"path":"./test-sources/module-definition-001.tas"}
+    Call
+      Attribute {"name":"add"}
+        Local {"name":"mylib"}
+      MakeArray
+        Literal {"value":40}
+        Literal {"value":2}
+      MakeObject

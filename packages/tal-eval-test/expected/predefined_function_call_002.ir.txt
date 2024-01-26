@@ -1,8 +1,8 @@
 main: 
-  BLOCK
-    INTRINSIC {"operation":"INTRINSIC_ADD"}
-      CALL
-        LOCAL {"name":"give_hello"}
-        MAKE_ARRAY
-        MAKE_OBJECT
-      LITERAL {"value":" Toto"}
+  Block
+    Intrinsic {"operation":"INTRINSIC_ADD"}
+      Call
+        Local {"name":"give_hello"}
+        MakeArray
+        MakeObject
+      Literal {"value":" Toto"}

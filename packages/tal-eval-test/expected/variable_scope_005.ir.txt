@@ -1,25 +1,25 @@
 func_0: 
-  BLOCK
-    LOCAL {"name":"value"}
+  Block
+    Local {"name":"value"}
 func_1: 
-  BLOCK
-    DECLARE_LOCAL {"name":"value","mutable":false}
-      LITERAL {"value":"b"}
-    CALL
-      LOCAL {"name":"sub_function"}
-      MAKE_ARRAY
-      MAKE_OBJECT
-        LITERAL {"value":"value"}
-        LOCAL {"name":"value"}
+  Block
+    DeclareLocal {"name":"value","mutable":false}
+      Literal {"value":"b"}
+    Call
+      Local {"name":"sub_function"}
+      MakeArray
+      MakeObject
+        Literal {"value":"value"}
+        Local {"name":"value"}
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"value","mutable":false}
-      LITERAL {"value":"a"}
-    DECLARE_LOCAL {"name":"sub_function","mutable":false}
-      FUNCTION_REF {"name":"func_0"}
-    DECLARE_LOCAL {"name":"root_function","mutable":false}
-      FUNCTION_REF {"name":"func_1"}
-    CALL
-      LOCAL {"name":"root_function"}
-      MAKE_ARRAY
-      MAKE_OBJECT
+  Block
+    DeclareLocal {"name":"value","mutable":false}
+      Literal {"value":"a"}
+    DeclareLocal {"name":"sub_function","mutable":false}
+      FunctionRef {"name":"func_0"}
+    DeclareLocal {"name":"root_function","mutable":false}
+      FunctionRef {"name":"func_1"}
+    Call
+      Local {"name":"root_function"}
+      MakeArray
+      MakeObject

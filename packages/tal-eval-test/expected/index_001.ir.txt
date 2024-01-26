@@ -1,6 +1,6 @@
 main: 
-  BLOCK
-    INDEX
-      LITERAL {"value":0}
-      MAKE_ARRAY
-        LITERAL {"value":1}
+  Block
+    Index
+      Literal {"value":0}
+      MakeArray
+        Literal {"value":1}

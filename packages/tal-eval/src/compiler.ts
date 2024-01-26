@@ -1,11 +1,6 @@
 import { Expression, FunctionExpression } from 'tal-parser';
-import {
-  IRNode,
-  buildIRNode,
-  Program,
-  ParameterDef,
-  AnyForNever,
-} from './core';
+import { Program, ParameterDef, AnyForNever } from './core';
+import { buildIRNode, IRNode } from './ir-node';
 
 export class Compiler {
   private functions: Program = {};
@@ -17,20 +12,20 @@ export class Compiler {
   compileMain(value: Expression | Expression[]): Program {
     const expressionToCompile = Array.isArray(value) ? value : [value];
     const body = buildIRNode(
-      'BLOCK',
+      'Block',
       expressionToCompile.length ? expressionToCompile[0].location : undefined,
       {
         children: [
           ...expressionToCompile.map(a => this.compile(a)),
           ...(this.namesToExport.size
             ? [
-                buildIRNode('MAKE_OBJECT', expressionToCompile[0].location, {
+                buildIRNode('MakeObject', expressionToCompile[0].location, {
                   children: Array.from(this.namesToExport).flatMap(name => {
                     return [
-                      buildIRNode('LITERAL', expressionToCompile[0].location, {
+                      buildIRNode('Literal', expressionToCompile[0].location, {
                         value: name,
                       }),
-                      buildIRNode('LOCAL', expressionToCompile[0].location, {
+                      buildIRNode('Local', expressionToCompile[0].location, {
                         name,
                       }),
                     ];
@@ -54,22 +49,22 @@ export class Compiler {
     switch (value.kind) {
       // Core interactions
       case 'Literal':
-        return buildIRNode('LITERAL', value.location, { value: value.value });
+        return buildIRNode('Literal', value.location, { value: value.value });
       case 'Array':
-        return buildIRNode('MAKE_ARRAY', value.location, {
+        return buildIRNode('MakeArray', value.location, {
           children: value.value.map(element => this.compile(element)),
         });
       case 'Object':
-        return buildIRNode('MAKE_OBJECT', value.location, {
+        return buildIRNode('MakeObject', value.location, {
           children: Object.entries(value.value).flatMap(([key, value]) => [
-            buildIRNode('LITERAL', value.location, { value: key }),
+            buildIRNode('Literal', value.location, { value: key }),
             this.compile(value),
           ]),
         });
       case 'Local':
-        return buildIRNode('LOCAL', value.location, { name: value.name });
+        return buildIRNode('Local', value.location, { name: value.name });
       case 'DeclareLocal':
-        return buildIRNode('DECLARE_LOCAL', value.location, {
+        return buildIRNode('DeclareLocal', value.location, {
           name: value.name,
           mutable: value.mutable,
           children: value.value ? [this.compile(value.value)] : [],
@@ -77,7 +72,7 @@ export class Compiler {
       case 'Assign': {
         switch (value.address.kind) {
           case 'Attribute':
-            return buildIRNode('SET_ATTRIBUTE', value.location, {
+            return buildIRNode('SetAttribute', value.location, {
               name: value.address.key,
               forceRender: true,
               children: [
@@ -86,7 +81,7 @@ export class Compiler {
               ],
             });
           case 'Index':
-            return buildIRNode('SET_INDEX', value.location, {
+            return buildIRNode('SetIndex', value.location, {
               forceRender: true,
               children: [
                 this.compile(value.address.index),
@@ -95,7 +90,7 @@ export class Compiler {
               ],
             });
           case 'Local':
-            return buildIRNode('SET_LOCAL', value.location, {
+            return buildIRNode('SetLocal', value.location, {
               name: value.address.name,
               children: [this.compile(value.value)],
             });
@@ -107,7 +102,7 @@ export class Compiler {
         }
       }
       case 'Function':
-        return buildIRNode('FUNCTION_REF', value.location, {
+        return buildIRNode('FunctionRef', value.location, {
           name: this.compileFunction(value),
         });
       case 'Call': {
@@ -122,18 +117,18 @@ export class Compiler {
           }
         });
 
-        const positionalArgsIr = buildIRNode('MAKE_ARRAY', value.location, {
+        const positionalArgsIr = buildIRNode('MakeArray', value.location, {
           children: positionalArgs.map(arg => this.compile(arg)),
         });
 
-        const namedArgsIr = buildIRNode('MAKE_OBJECT', value.location, {
+        const namedArgsIr = buildIRNode('MakeObject', value.location, {
           children: namedArgs.flatMap(([key, value]) => [
-            buildIRNode('LITERAL', value.location, { value: key }),
+            buildIRNode('Literal', value.location, { value: key }),
             this.compile(value),
           ]),
         });
 
-        return buildIRNode('CALL', value.location, {
+        return buildIRNode('Call', value.location, {
           children: [this.compile(value.value), positionalArgsIr, namedArgsIr],
         });
       }
@@ -142,16 +137,16 @@ export class Compiler {
       case 'SubExpression':
         return this.compile(value.expr);
       case 'Attribute':
-        return buildIRNode('ATTRIBUTE', value.location, {
+        return buildIRNode('Attribute', value.location, {
           name: value.key,
           children: [this.compile(value.value)],
         });
       case 'Index':
-        return buildIRNode('INDEX', value.location, {
+        return buildIRNode('Index', value.location, {
           children: [this.compile(value.index), this.compile(value.value)],
         });
       case 'If':
-        return buildIRNode('CONDITION', value.location, {
+        return buildIRNode('Condition', value.location, {
           children: [
             this.compile(value.condition),
             this.compile(value.ifTrue),
@@ -161,16 +156,16 @@ export class Compiler {
       case 'Switch': {
         const valueIRNode = value.value
           ? this.compile(value.value)
-          : buildIRNode('LITERAL', value.location, {
+          : buildIRNode('Literal', value.location, {
               value: true,
             });
         let node: IRNode;
         if (value.defaultBranch) {
           node = this.compile(value.defaultBranch.value);
         } else {
-          node = buildIRNode('CONDITION', value.location, {
+          node = buildIRNode('Condition', value.location, {
             children: [
-              buildIRNode('INTRINSIC', value.location, {
+              buildIRNode('Intrinsic', value.location, {
                 operation: 'INTRINSIC_EQUAL_STRICT',
                 children: [
                   valueIRNode,
@@ -188,9 +183,9 @@ export class Compiler {
           .reverse()
           .slice(value.defaultBranch ? 0 : 1)
           .reduce((elseClause, branch) => {
-            return buildIRNode('CONDITION', value.location, {
+            return buildIRNode('Condition', value.location, {
               children: [
-                buildIRNode('INTRINSIC', value.location, {
+                buildIRNode('Intrinsic', value.location, {
                   operation: 'INTRINSIC_EQUAL_STRICT',
                   children: [valueIRNode, this.compile(branch.comparator)],
                 }),
@@ -201,7 +196,7 @@ export class Compiler {
           }, node);
       }
       case 'Try':
-        return buildIRNode('TRY', value.location, {
+        return buildIRNode('Try', value.location, {
           children: [
             this.compile(value.expr),
             ...(value.catchBlock ? [this.compile(value.catchBlock)] : []),
@@ -209,7 +204,7 @@ export class Compiler {
         });
       case 'Provide':
         return value.entries.reduce((prev, entry) => {
-          return buildIRNode('PROVIDE', value.location, {
+          return buildIRNode('Provide', value.location, {
             children: [
               this.compile(entry.key),
               this.compile(entry.value),
@@ -218,7 +213,7 @@ export class Compiler {
           });
         }, this.compile(value.body));
       case 'Provided':
-        return buildIRNode('PROVIDED', value.location, {
+        return buildIRNode('Provided', value.location, {
           children: [this.compile(value.key)],
         });
       case 'Pipe':
@@ -247,7 +242,7 @@ export class Compiler {
         }
         return this.compile(previous);
       case 'UnaryOperator':
-        return buildIRNode('INTRINSIC', value.location, {
+        return buildIRNode('Intrinsic', value.location, {
           operation: (() => {
             switch (value.operator) {
               case '-':
@@ -267,16 +262,16 @@ export class Compiler {
       case 'BinaryOperator':
         if (value.operator == '&&') {
           const leftIr = this.compile(value.left);
-          return buildIRNode('BLOCK', value.location, {
+          return buildIRNode('Block', value.location, {
             children: [
-              buildIRNode('DECLARE_LOCAL', value.location, {
+              buildIRNode('DeclareLocal', value.location, {
                 mutable: false,
                 name: 'tmp_for_and',
                 children: [leftIr],
               }),
-              buildIRNode('CONDITION', value.location, {
+              buildIRNode('Condition', value.location, {
                 children: [
-                  buildIRNode('LOCAL', value.location, { name: 'tmp_for_and' }),
+                  buildIRNode('Local', value.location, { name: 'tmp_for_and' }),
                   this.compile(value.right),
                   this.compile(value.left),
                 ],
@@ -286,16 +281,16 @@ export class Compiler {
         }
         if (value.operator == '||') {
           const leftIr = this.compile(value.left);
-          return buildIRNode('BLOCK', value.location, {
+          return buildIRNode('Block', value.location, {
             children: [
-              buildIRNode('DECLARE_LOCAL', value.location, {
+              buildIRNode('DeclareLocal', value.location, {
                 mutable: false,
                 name: 'tmp_for_or',
                 children: [leftIr],
               }),
-              buildIRNode('CONDITION', value.location, {
+              buildIRNode('Condition', value.location, {
                 children: [
-                  buildIRNode('LOCAL', value.location, { name: 'tmp_for_or' }),
+                  buildIRNode('Local', value.location, { name: 'tmp_for_or' }),
                   this.compile(value.left),
                   this.compile(value.right),
                 ],
@@ -303,7 +298,7 @@ export class Compiler {
             ],
           });
         }
-        return buildIRNode('INTRINSIC', value.location, {
+        return buildIRNode('Intrinsic', value.location, {
           children: [this.compile(value.left), this.compile(value.right)],
           operation: (() => {
             switch (value.operator) {
@@ -341,7 +336,7 @@ export class Compiler {
           })(),
         });
       case 'BlockOfExpressions':
-        return buildIRNode('BLOCK', value.location, {
+        return buildIRNode('Block', value.location, {
           children: value.children.map(expr => this.compile(expr)),
         });
 
@@ -349,22 +344,22 @@ export class Compiler {
       case 'KindedObject': {
         const valueAsUiWidget = value.value as any;
 
-        const childrenArray = buildIRNode('MAKE_ARRAY', value.location, {
+        const childrenArray = buildIRNode('MakeArray', value.location, {
           children: (valueAsUiWidget.children ?? []).map((arg: any) =>
             this.compile(arg)
           ),
         });
-        const propsObjectIr = buildIRNode('MAKE_OBJECT', value.location, {
+        const propsObjectIr = buildIRNode('MakeObject', value.location, {
           children: Object.entries(valueAsUiWidget)
             .filter(([key]) => !['kind', 'ctx', 'children'].includes(key))
             .flatMap(([key, value]: [any, any]) => {
               if (key == 'bindTo') {
                 return [
-                  buildIRNode('LITERAL', value.location, { value: 'onChange' }),
-                  buildIRNode('FUNCTION_REF', value.location, {
+                  buildIRNode('Literal', value.location, { value: 'onChange' }),
+                  buildIRNode('FunctionRef', value.location, {
                     name: this.createFunction(
                       [{ name: 'newValue' }],
-                      buildIRNode('BLOCK', value.location, {
+                      buildIRNode('Block', value.location, {
                         children: [
                           this.compile({
                             kind: 'Assign',
@@ -374,23 +369,23 @@ export class Compiler {
                               name: 'newValue',
                             },
                           }),
-                          buildIRNode('CTX_RENDER', value.location, {}),
+                          buildIRNode('CtxRender', value.location, {}),
                         ],
                       })
                     ),
                   }),
-                  buildIRNode('LITERAL', value.location, { value: 'value' }),
+                  buildIRNode('Literal', value.location, { value: 'value' }),
                   this.compile(value),
                 ];
               }
               return [
-                buildIRNode('LITERAL', value.location, { value: key }),
+                buildIRNode('Literal', value.location, { value: key }),
                 this.compile(value),
               ];
             }),
         });
 
-        return buildIRNode('KINDED', value.location, {
+        return buildIRNode('Kinded', value.location, {
           children: [
             this.compile(valueAsUiWidget.kind),
             childrenArray,
@@ -399,7 +394,7 @@ export class Compiler {
         });
       }
       case 'Import': {
-        return buildIRNode('IMPORT', value.location, {
+        return buildIRNode('Import', value.location, {
           path: value.path,
         });
       }

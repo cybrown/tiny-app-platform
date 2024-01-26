@@ -1,3 +1,3 @@
 main: 
-  BLOCK
-    LITERAL {"value":42}
+  Block
+    Literal {"value":42}

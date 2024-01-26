@@ -1,6 +1,6 @@
 main: 
-  BLOCK
-    CALL
-      LOCAL {"name":"give_hello"}
-      MAKE_ARRAY
-      MAKE_OBJECT
+  Block
+    Call
+      Local {"name":"give_hello"}
+      MakeArray
+      MakeObject

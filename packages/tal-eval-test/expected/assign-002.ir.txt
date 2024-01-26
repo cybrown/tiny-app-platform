@@ -1,9 +1,9 @@
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"toto","mutable":false}
-      MAKE_OBJECT
-    SET_ATTRIBUTE {"name":"property","forceRender":true}
-      LOCAL {"name":"toto"}
-      LITERAL {"value":"value"}
-    ATTRIBUTE {"name":"property"}
-      LOCAL {"name":"toto"}
+  Block
+    DeclareLocal {"name":"toto","mutable":false}
+      MakeObject
+    SetAttribute {"name":"property","forceRender":true}
+      Local {"name":"toto"}
+      Literal {"value":"value"}
+    Attribute {"name":"property"}
+      Local {"name":"toto"}

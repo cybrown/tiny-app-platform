@@ -1,32 +1,32 @@
 func_0: 
-  BLOCK
-    CALL
-      LOCAL {"name":"func_2"}
-      MAKE_ARRAY
-      MAKE_OBJECT
+  Block
+    Call
+      Local {"name":"func_2"}
+      MakeArray
+      MakeObject
 func_1: 
-  BLOCK
-    INTRINSIC {"operation":"INTRINSIC_ADD"}
-      INTRINSIC {"operation":"INTRINSIC_ADD"}
-        PROVIDED
-          LITERAL {"value":"http.timeoutMs"}
-        LITERAL {"value":", "}
-      PROVIDED
-        LITERAL {"value":"http.useCookies"}
+  Block
+    Intrinsic {"operation":"INTRINSIC_ADD"}
+      Intrinsic {"operation":"INTRINSIC_ADD"}
+        Provided
+          Literal {"value":"http.timeoutMs"}
+        Literal {"value":", "}
+      Provided
+        Literal {"value":"http.useCookies"}
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"func_1","mutable":false}
-      FUNCTION_REF {"name":"func_0"}
-    DECLARE_LOCAL {"name":"func_2","mutable":false}
-      FUNCTION_REF {"name":"func_1"}
-    PROVIDE
-      LITERAL {"value":"http.useCookies"}
-      LITERAL {"value":false}
-      PROVIDE
-        LITERAL {"value":"http.timeoutMs"}
-        LITERAL {"value":250}
-        BLOCK
-          CALL
-            LOCAL {"name":"func_1"}
-            MAKE_ARRAY
-            MAKE_OBJECT
+  Block
+    DeclareLocal {"name":"func_1","mutable":false}
+      FunctionRef {"name":"func_0"}
+    DeclareLocal {"name":"func_2","mutable":false}
+      FunctionRef {"name":"func_1"}
+    Provide
+      Literal {"value":"http.useCookies"}
+      Literal {"value":false}
+      Provide
+        Literal {"value":"http.timeoutMs"}
+        Literal {"value":250}
+        Block
+          Call
+            Local {"name":"func_1"}
+            MakeArray
+            MakeObject

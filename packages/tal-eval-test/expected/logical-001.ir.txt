@@ -1,9 +1,9 @@
 main: 
-  BLOCK
-    BLOCK
-      DECLARE_LOCAL {"mutable":false,"name":"tmp_for_and"}
-        LITERAL {"value":2}
-      CONDITION
-        LOCAL {"name":"tmp_for_and"}
-        LITERAL {"value":0}
-        LITERAL {"value":2}
+  Block
+    Block
+      DeclareLocal {"mutable":false,"name":"tmp_for_and"}
+        Literal {"value":2}
+      Condition
+        Local {"name":"tmp_for_and"}
+        Literal {"value":0}
+        Literal {"value":2}

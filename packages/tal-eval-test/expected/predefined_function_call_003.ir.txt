@@ -1,60 +1,60 @@
 main: 
-  BLOCK
-    CALL
-      LOCAL {"name":"predefined_function"}
-      MAKE_ARRAY
-        LITERAL {"value":"a"}
-        LITERAL {"value":"b"}
-        LITERAL {"value":"c"}
-        LITERAL {"value":"d"}
-        LITERAL {"value":"e"}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"predefined_function"}
-      MAKE_ARRAY
-        LITERAL {"value":"b"}
-        LITERAL {"value":"c"}
-        LITERAL {"value":"d"}
-        LITERAL {"value":"e"}
-      MAKE_OBJECT
-        LITERAL {"value":"arg1"}
-        LITERAL {"value":"a"}
-    CALL
-      LOCAL {"name":"predefined_function"}
-      MAKE_ARRAY
-        LITERAL {"value":"c"}
-        LITERAL {"value":"d"}
-        LITERAL {"value":"e"}
-      MAKE_OBJECT
-        LITERAL {"value":"arg1"}
-        LITERAL {"value":"a"}
-        LITERAL {"value":"arg2"}
-        LITERAL {"value":"b"}
-    CALL
-      LOCAL {"name":"predefined_function"}
-      MAKE_ARRAY
-        LITERAL {"value":"a"}
-        LITERAL {"value":"b"}
-        LITERAL {"value":"d"}
-      MAKE_OBJECT
-        LITERAL {"value":"arg2"}
-        LITERAL {"value":"c"}
-        LITERAL {"value":"arg1"}
-        LITERAL {"value":"e"}
-    CALL
-      LOCAL {"name":"predefined_function"}
-      MAKE_ARRAY
-        LITERAL {"value":"a"}
-      MAKE_OBJECT
-    CALL
-      LOCAL {"name":"predefined_function"}
-      MAKE_ARRAY
-        LITERAL {"value":"b"}
-        LITERAL {"value":"d"}
-      MAKE_OBJECT
-        LITERAL {"value":"arg1"}
-        LITERAL {"value":"a"}
-        LITERAL {"value":"arg1"}
-        LITERAL {"value":"c"}
-        LITERAL {"value":"arg1"}
-        LITERAL {"value":"e"}
+  Block
+    Call
+      Local {"name":"predefined_function"}
+      MakeArray
+        Literal {"value":"a"}
+        Literal {"value":"b"}
+        Literal {"value":"c"}
+        Literal {"value":"d"}
+        Literal {"value":"e"}
+      MakeObject
+    Call
+      Local {"name":"predefined_function"}
+      MakeArray
+        Literal {"value":"b"}
+        Literal {"value":"c"}
+        Literal {"value":"d"}
+        Literal {"value":"e"}
+      MakeObject
+        Literal {"value":"arg1"}
+        Literal {"value":"a"}
+    Call
+      Local {"name":"predefined_function"}
+      MakeArray
+        Literal {"value":"c"}
+        Literal {"value":"d"}
+        Literal {"value":"e"}
+      MakeObject
+        Literal {"value":"arg1"}
+        Literal {"value":"a"}
+        Literal {"value":"arg2"}
+        Literal {"value":"b"}
+    Call
+      Local {"name":"predefined_function"}
+      MakeArray
+        Literal {"value":"a"}
+        Literal {"value":"b"}
+        Literal {"value":"d"}
+      MakeObject
+        Literal {"value":"arg2"}
+        Literal {"value":"c"}
+        Literal {"value":"arg1"}
+        Literal {"value":"e"}
+    Call
+      Local {"name":"predefined_function"}
+      MakeArray
+        Literal {"value":"a"}
+      MakeObject
+    Call
+      Local {"name":"predefined_function"}
+      MakeArray
+        Literal {"value":"b"}
+        Literal {"value":"d"}
+      MakeObject
+        Literal {"value":"arg1"}
+        Literal {"value":"a"}
+        Literal {"value":"arg1"}
+        Literal {"value":"c"}
+        Literal {"value":"arg1"}
+        Literal {"value":"e"}

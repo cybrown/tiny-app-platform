@@ -124,7 +124,7 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
       />
     );
   } else if (typeof ui === "string") {
-    return <Text text={ui}  />
+    return <Text text={ui} />;
   }
   return <Debug value={ui} />;
 }
@@ -195,9 +195,8 @@ function CustomWidgetHost({
 
   const irNode = widget.ctx.program![widget.name].body as IRNode;
   let ui: unknown;
-  if (irNode.kind === "BLOCK") {
-    const n = irNode as IRNode<"BLOCK">;
-    ui = n.children
+  if (irNode.kind === "Block") {
+    ui = irNode.children
       .map((childNode) => runNode(childCtx, childCtx.program!, childNode, true))
       .filter((child) => child != null);
   } else {
@@ -244,24 +243,18 @@ export function RenderError({
 }
 
 function nameKindOfExpression(expr: IRNode) {
-  if (expr.kind === "LOCAL") {
-    return (expr as IRNode<"LOCAL">).name;
+  if (expr.kind === "Local") {
+    return expr.name;
   }
-  if (expr && typeof expr == "object") {
-    if (
-      "value" in expr &&
-      expr.value &&
-      typeof expr.value == "object" &&
-      "kind" in expr.value
-    ) {
-      return expr.value.kind;
-    }
-    return expr.kind;
+  if (
+    expr.kind === "Literal" &&
+    expr.value &&
+    typeof expr.value == "object" &&
+    "kind" in expr.value
+  ) {
+    return expr.value.kind;
   }
-  if (expr == null) {
-    return null;
-  }
-  return typeof expr;
+  return expr.kind;
 }
 
 class ErrorBoundary extends React.Component<

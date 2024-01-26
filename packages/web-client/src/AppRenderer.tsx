@@ -23,17 +23,20 @@ function AppRenderer({
         ctx.beginReinit();
         // TODO: Move that elsewhere later
         ctx.declareLocal(APP_DEBUG_MODE_ENV, { mutable: true });
-        const irNodes = (app["main"].body as IRNode<"BLOCK">).children;
+        const irNodes =
+          app["main"].body.kind === "Block"
+            ? app["main"].body.children
+            : [app["main"].body];
         for (let expression of irNodes.slice(0, -1)) {
           await ctx.evaluateAsync(expression);
         }
         ctx.endReinit();
         const lastExpr = irNodes.at(-1);
         setAppUi({
-          kind: "KINDED",
+          kind: "Kinded",
           children: [
-            buildIRNode("LOCAL", lastExpr?.location, { name: "Column" }),
-            buildIRNode("MAKE_ARRAY", lastExpr?.location, {
+            buildIRNode("Local", lastExpr?.location, { name: "Column" }),
+            buildIRNode("MakeArray", lastExpr?.location, {
               children: lastExpr ? [lastExpr] : [],
             }),
           ],

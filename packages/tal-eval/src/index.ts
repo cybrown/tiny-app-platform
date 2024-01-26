@@ -5,5 +5,6 @@ export {
 } from './RuntimeContext';
 export { compile } from './compiler';
 export { run, runAsync, EvaluationError, runNode } from './interpreter';
-export { Program, IRNode, Closure, buildIRNode } from './core';
+export { Program, Closure } from './core';
+export * from './ir-node';
 export * from './metadata';

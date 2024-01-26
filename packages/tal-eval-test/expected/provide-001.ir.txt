@@ -1,16 +1,16 @@
 func_0: 
-  BLOCK
-    PROVIDED
-      LITERAL {"value":"http.timeoutMs"}
+  Block
+    Provided
+      Literal {"value":"http.timeoutMs"}
 main: 
-  BLOCK
-    DECLARE_LOCAL {"name":"usingProvidedValue","mutable":false}
-      FUNCTION_REF {"name":"func_0"}
-    PROVIDE
-      LITERAL {"value":"http.timeoutMs"}
-      LITERAL {"value":250}
-      BLOCK
-        CALL
-          LOCAL {"name":"usingProvidedValue"}
-          MAKE_ARRAY
-          MAKE_OBJECT
+  Block
+    DeclareLocal {"name":"usingProvidedValue","mutable":false}
+      FunctionRef {"name":"func_0"}
+    Provide
+      Literal {"value":"http.timeoutMs"}
+      Literal {"value":250}
+      Block
+        Call
+          Local {"name":"usingProvidedValue"}
+          MakeArray
+          MakeObject

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 has_errors=false
 
@@ -9,7 +9,7 @@ do
   diff -q "actual/$name.sync.txt" "expected/$name.sync.txt" || has_errors=true
   diff -q "actual/$name.async.txt" "expected/$name.async.txt" || has_errors=true
   diff -q "actual/$name.ir.txt" "expected/$name.ir.txt" || has_errors=true
-done <<< $(ls test-sources/*.tas)
+done <<< "$(ls test-sources/*.tas)"
 
 if  [ $has_errors = true ]
 then

@@ -18,6 +18,8 @@ export type IRNodeMetadata = {
 export type IRNodeLiteral = {
   kind: 'Literal';
   value: unknown;
+  // Remove this literal from array ending, for comments
+  removeFromBlock?: boolean;
 } & IRNodeMetadata;
 
 export type IRNodeMakeArray = {

@@ -20,6 +20,7 @@ import {
   SwitchExpression,
   ImportExpression,
   ExportExpression,
+  CommentExpression,
 } from './expression';
 
 export function stringify(value: Expression[]): string {
@@ -142,6 +143,8 @@ class Stringifier {
         return this.stringifyImport(obj);
       case 'Export':
         return this.stringifyExport(obj);
+      case 'Comment':
+        return this.stringifyComment(obj);
       default:
         return this.stringifyCustomKind(obj);
     }
@@ -375,6 +378,14 @@ class Stringifier {
 
   stringifyExport(obj: ExportExpression): string {
     return 'export ' + this.stringify(obj.expr);
+  }
+
+  stringifyComment(obj: CommentExpression): string {
+    let result = '//' + obj.text + '\n' + this.depthSpace();
+    if (obj.expr) {
+      result += this.stringify(obj.expr);
+    }
+    return result;
   }
 
   // TODO: Deprecated

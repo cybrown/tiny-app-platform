@@ -1,0 +1,106 @@
+[
+  {
+    "kind": "Comment",
+    "text": " First comment !",
+    "expr": {
+      "kind": "Call",
+      "args": [
+        {
+          "argKind": "Positional",
+          "value": "Hello, World !"
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "print"
+      }
+    }
+  },
+  {
+    "kind": "If",
+    "condition": {
+      "kind": "Comment",
+      "text": " Condition if true",
+      "expr": true
+    },
+    "ifTrue": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        {
+          "kind": "Comment",
+          "text": " First expression if true",
+          "expr": true
+        },
+        {
+          "kind": "Comment",
+          "text": " Second expression if true",
+          "expr": 2
+        }
+      ]
+    },
+    "ifFalse": {
+      "kind": "BlockOfExpressions",
+      "children": [
+        {
+          "kind": "Comment",
+          "text": " Expression if not true",
+          "expr": "false as a string"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " A comment",
+    "expr": {
+      "kind": "Comment",
+      "text": " On multiple lines",
+      "expr": {
+        "kind": "Comment",
+        "text": " Because we can",
+        "expr": {
+          "kind": "Comment",
+          "text": " Add two numbers",
+          "expr": {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "add",
+            "value": {
+              "kind": "Function",
+              "body": {
+                "kind": "BlockOfExpressions",
+                "children": [
+                  {
+                    "kind": "Comment",
+                    "text": " Compute the addition",
+                    "expr": {
+                      "kind": "BinaryOperator",
+                      "operator": "+",
+                      "right": {
+                        "kind": "Local",
+                        "name": "b"
+                      },
+                      "left": {
+                        "kind": "Local",
+                        "name": "a"
+                      }
+                    }
+                  },
+                  {
+                    "kind": "Comment",
+                    "text": " Comment after",
+                    "expr": null
+                  }
+                ]
+              },
+              "parameters": [
+                "a",
+                "b"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+]

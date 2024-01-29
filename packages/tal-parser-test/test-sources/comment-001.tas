@@ -1,0 +1,30 @@
+// First comment !
+print("Hello, World !")
+
+if (
+    // Condition if true
+    true
+) {
+  // First expression if true
+  true
+  // Second expression if true
+
+  2
+
+} else {
+  // Expression if not true
+  "false as a string"
+}
+
+// A comment
+// On multiple lines
+// Because we can
+
+// Add two numbers
+fun add(a, b) {
+
+  // Compute the addition
+  a + b
+  // Comment after
+
+}

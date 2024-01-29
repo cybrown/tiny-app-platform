@@ -122,6 +122,15 @@ ExpressionLevel1
     / Number
     / Array
     / SubExpression
+    / Comment
+
+Comment
+    = '//' text:Comment_text '\n' _ expr:Expression?
+        { return { location: location(), kind: "Comment", text, expr }; }
+
+Comment_text
+    = [^\n]*
+        { return text(); }
 
 Import
     = 'import' _ path:RawString

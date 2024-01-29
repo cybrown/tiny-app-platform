@@ -165,6 +165,12 @@ export type ProvidedExpression = ExpressionMetadata & {
   key: Expression;
 };
 
+export type CommentExpression = ExpressionMetadata & {
+  kind: 'Comment';
+  text: string;
+  expr?: Expression;
+};
+
 export type ExpressionLocation = ExpressionMetadata & {
   start: {
     offset: number;
@@ -208,6 +214,7 @@ export type ExpressionByKind = {
   KindedObject: KindedObjectExpression;
   Import: ImportExpression;
   Export: ExportExpression;
+  Comment: CommentExpression;
 };
 
 export type Expression =
@@ -231,7 +238,8 @@ export type Expression =
   | ProvideExpression
   | ProvidedExpression
   | ImportExpression
-  | ExportExpression;
+  | ExportExpression
+  | CommentExpression;
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
   expr: Expression,

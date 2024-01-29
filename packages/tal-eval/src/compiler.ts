@@ -16,7 +16,9 @@ export class Compiler {
       expressionToCompile.length ? expressionToCompile[0].location : undefined,
       {
         children: [
-          ...expressionToCompile.map(a => this.compile(a)),
+          ...expressionToCompile
+            .map(a => this.compile(a))
+            .filter(doRemoveFromBlock),
           ...(this.namesToExport.size
             ? [
                 buildIRNode('MakeObject', expressionToCompile[0].location, {
@@ -52,7 +54,9 @@ export class Compiler {
         return buildIRNode('Literal', value.location, { value: value.value });
       case 'Array':
         return buildIRNode('MakeArray', value.location, {
-          children: value.value.map(element => this.compile(element)),
+          children: value.value
+            .map(element => this.compile(element))
+            .filter(doRemoveFromBlock),
         });
       case 'Object':
         return buildIRNode('MakeObject', value.location, {
@@ -337,7 +341,9 @@ export class Compiler {
         });
       case 'BlockOfExpressions':
         return buildIRNode('Block', value.location, {
-          children: value.children.map(expr => this.compile(expr)),
+          children: value.children
+            .map(expr => this.compile(expr))
+            .filter(doRemoveFromBlock),
         });
 
       // UI Widgets
@@ -413,9 +419,20 @@ export class Compiler {
             );
         }
       }
+      case 'Comment': {
+        if (value.expr) {
+          return this.compile(value.expr);
+        }
+        return buildIRNode('Literal', value.location, {
+          value: null,
+          removeFromBlock: true,
+        });
+      }
       default: {
+        const valueNever: never = value; // Error if missing node in switch
         throw new Error(
-          'Failed to compile node with kind: ' + (value as AnyForNever).kind
+          'Failed to compile node with kind: ' +
+            (valueNever as AnyForNever).kind
         );
       }
     }
@@ -441,4 +458,8 @@ export class Compiler {
 export function compile(expr: Expression | Expression[], prefix = ''): Program {
   const c = new Compiler(prefix);
   return c.compileMain(expr);
+}
+
+function doRemoveFromBlock(e: IRNode): boolean {
+  return !(e.kind == 'Literal' && e.value === null && e.removeFromBlock);
 }

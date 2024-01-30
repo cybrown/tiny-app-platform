@@ -9,7 +9,7 @@ export class Compiler {
 
   constructor(private prefix: string) {}
 
-  compileMain(value: Expression | Expression[]): Program {
+  compileMain(value: Expression | Expression[], prefix?: string): Program {
     const expressionToCompile = Array.isArray(value) ? value : [value];
     const body = buildIRNode(
       'Block',
@@ -40,7 +40,7 @@ export class Compiler {
     );
     return {
       ...this.functions,
-      main: {
+      [prefix ? prefix + 'main' : 'main']: {
         parameters: [],
         body,
       },
@@ -457,7 +457,7 @@ export class Compiler {
 
 export function compile(expr: Expression | Expression[], prefix = ''): Program {
   const c = new Compiler(prefix);
-  return c.compileMain(expr);
+  return c.compileMain(expr, prefix);
 }
 
 function doRemoveFromBlock(e: IRNode): boolean {

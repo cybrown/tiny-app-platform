@@ -513,15 +513,20 @@ async function resolveModule(
   ctx: RuntimeContext,
   path: string
 ): Promise<unknown> {
+  if (!ctx.program) {
+    return;
+  }
   const moduleSource = await ctx.fetchSource(path);
   const ast = parse(moduleSource);
   const module = compile(ast, path);
   Object.entries(module).forEach(([name, func]) => {
-    if (name != 'main' && ctx.program) {
-      ctx.program[name] = func;
+    // TODO: Remove this check with TypeScript 5.4
+    if (!ctx.program) {
+      throw new Error('Unreachable code');
     }
+    ctx.program[name] = func;
   });
   const moduleContext = ctx.createWithSameRootLocals();
-  moduleContext.program = module;
-  return await runAsync(moduleContext, module, 'main', false);
+  moduleContext.program = ctx.program;
+  return await runAsync(moduleContext, ctx.program, path + 'main', false);
 }

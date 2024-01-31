@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
-import { Program, RuntimeContext, compile, FetchedSource } from "tal-eval";
+import {
+  Program,
+  RuntimeContext,
+  compile,
+  FetchedSource,
+  SourceFetcher,
+} from "tal-eval";
 import * as tal from "tal-parser";
 import { Editor, EditorApi } from "./editor/Editor";
 import AppRenderer from "./AppRenderer";
@@ -83,12 +89,23 @@ async function getApp(name: string): Promise<FetchedSource> {
   return { path: name, source: await response.text() };
 }
 
-async function getSource(sourcePath: string): Promise<FetchedSource> {
-  if ((window as any).electronAPI) {
-    return (window as any).electronAPI.getSourceForImport(sourcePath);
-  }
-  return getApp(sourcePath);
-}
+const webSourceFetcher: SourceFetcher = {
+  async fetch(path) {
+    return getApp(path);
+  },
+  async normalizePath(path) {
+    return path;
+  },
+};
+
+const electronSourceFetcher: SourceFetcher = {
+  async fetch(path) {
+    return (window as any).electronAPI.getSourceForImport(path);
+  },
+  async normalizePath(path) {
+    return path;
+  },
+};
 
 async function saveApp(name: string, source: string) {
   const response = await fetch(backendUrl + "/apps/write/" + name, {
@@ -115,7 +132,9 @@ try {
 
 function buildContext(onStateChange: () => void): RuntimeContext {
   const ctx = new RuntimeContext(onStateChange);
-  ctx.setSourceFetcher({ fetch: getSource });
+  ctx.setSourceFetcher(
+    (window as any).electronAPI ? electronSourceFetcher : webSourceFetcher
+  );
   importStdlibInContext(ctx);
 
   ctx.registerWidget("Box", Box, BoxDocumentation);

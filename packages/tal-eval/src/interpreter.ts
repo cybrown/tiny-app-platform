@@ -516,9 +516,15 @@ async function resolveModule(
   if (!ctx.program) {
     return;
   }
-  const { source: moduleSource, path: modulePath } = await ctx.fetchSource(
-    path
-  );
+  const normalizedPath = await ctx.getSourceFetcher().normalizePath(path);
+  if (ctx.moduleCache.has(normalizedPath)) {
+    return ctx.moduleCache.get(normalizedPath);
+  }
+
+  const {
+    source: moduleSource,
+    path: modulePath,
+  } = await ctx.getSourceFetcher().fetch(path);
   const ast = parse(moduleSource, modulePath);
   const module = compile(ast, path);
   Object.entries(module).forEach(([name, func]) => {
@@ -530,5 +536,12 @@ async function resolveModule(
   });
   const moduleContext = ctx.createWithSameRootLocals();
   moduleContext.program = ctx.program;
-  return await runAsync(moduleContext, ctx.program, path + 'main', false);
+  const moduleReturnValue = await runAsync(
+    moduleContext,
+    ctx.program,
+    path + 'main',
+    false
+  );
+  ctx.moduleCache.set(normalizedPath, moduleReturnValue);
+  return moduleReturnValue;
 }

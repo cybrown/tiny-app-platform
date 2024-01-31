@@ -33,6 +33,7 @@ export interface FetchedSource {
 
 export interface SourceFetcher {
   fetch(path: string): Promise<FetchedSource>;
+  normalizePath(path: string): Promise<string>;
 }
 
 export class RuntimeContext {
@@ -43,29 +44,31 @@ export class RuntimeContext {
     private extendable: boolean = true
   ) {
     this.stateChangedListeners.add(onStateChange);
+    this._moduleCache = !parent ? new Map<string, unknown>() : undefined;
   }
 
   private sourceFetcher?: SourceFetcher;
 
-  private getSourceFetcher(): SourceFetcher | undefined {
+  private readonly _moduleCache?: Map<string, unknown>;
+
+  public get moduleCache(): Map<string, unknown> {
+    if (this.parent) {
+      return this.parent.moduleCache;
+    }
+    return this._moduleCache!;
+  }
+
+  public getSourceFetcher(): SourceFetcher {
     if (this.sourceFetcher) {
       return this.sourceFetcher;
     } else if (this.parent) {
       return this.parent.getSourceFetcher();
     }
-    return undefined;
+    throw new Error('source fetch not set on context');
   }
 
   public setSourceFetcher(importer: SourceFetcher | undefined) {
     this.sourceFetcher = importer;
-  }
-
-  public fetchSource(path: string): Promise<FetchedSource> {
-    const sourceFetcher = this.getSourceFetcher();
-    if (!sourceFetcher) {
-      throw new Error('source fetch not set on context');
-    }
-    return sourceFetcher.fetch(path);
   }
 
   private _program?: Program;

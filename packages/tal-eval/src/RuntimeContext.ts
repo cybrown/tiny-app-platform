@@ -26,8 +26,13 @@ export type WidgetDocumentation<T> = {
   };
 };
 
+export interface FetchedSource {
+  path: string;
+  source: string;
+}
+
 export interface SourceFetcher {
-  fetch(path: string): Promise<string>;
+  fetch(path: string): Promise<FetchedSource>;
 }
 
 export class RuntimeContext {
@@ -55,7 +60,7 @@ export class RuntimeContext {
     this.sourceFetcher = importer;
   }
 
-  public fetchSource(path: string): Promise<string> {
+  public fetchSource(path: string): Promise<FetchedSource> {
     const sourceFetcher = this.getSourceFetcher();
     if (!sourceFetcher) {
       throw new Error('source fetch not set on context');

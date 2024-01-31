@@ -101,6 +101,7 @@ function createWindow() {
     mainWindow.webContents.send("config", {
       backendUrl: "http://localhost:" + port,
       sourceFromFile,
+      sourcePath,
       sourcePathDirname,
     });
     ipcMain.on("set-property", (e, key, value) => {
@@ -120,25 +121,26 @@ function createWindow() {
     });
 
     ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
-      fs.readFile(
-        path.join(sourcePathDirname, sourceRelativePath + ".tas"),
-        (err, data) => {
-          if (err) {
-            mainWindow.webContents.send(
-              "getSourceForImport-response",
-              requestId,
-              err
-            );
-            return;
-          }
+      const modulePath = path.join(
+        sourcePathDirname,
+        sourceRelativePath + ".tas"
+      );
+      fs.readFile(modulePath, (err, data) => {
+        if (err) {
           mainWindow.webContents.send(
             "getSourceForImport-response",
             requestId,
-            null,
-            data.toString("utf-8")
+            err
           );
+          return;
         }
-      );
+        mainWindow.webContents.send(
+          "getSourceForImport-response",
+          requestId,
+          null,
+          { path: modulePath, source: data.toString("utf-8") }
+        );
+      });
     });
   });
 

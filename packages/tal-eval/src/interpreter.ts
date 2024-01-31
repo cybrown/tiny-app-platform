@@ -516,8 +516,10 @@ async function resolveModule(
   if (!ctx.program) {
     return;
   }
-  const moduleSource = await ctx.fetchSource(path);
-  const ast = parse(moduleSource);
+  const { source: moduleSource, path: modulePath } = await ctx.fetchSource(
+    path
+  );
+  const ast = parse(moduleSource, modulePath);
   const module = compile(ast, path);
   Object.entries(module).forEach(([name, func]) => {
     // TODO: Remove this check with TypeScript 5.4

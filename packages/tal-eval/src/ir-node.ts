@@ -1,18 +1,8 @@
 import { TODO_ANY } from './core';
+import { ExpressionLocation } from 'tal-parser';
 
 export type IRNodeMetadata = {
-  location?: {
-    start: {
-      offset: number;
-      line: number;
-      column: number;
-    };
-    end: {
-      offset: number;
-      line: number;
-      column: number;
-    };
-  };
+  location?: ExpressionLocation;
 };
 
 export type IRNodeLiteral = {

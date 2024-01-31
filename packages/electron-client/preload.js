@@ -35,11 +35,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getSourceForImport(sourceRelativePath) {
     return new Promise((resolve, reject) => {
       const requestId = Math.random().toString(16);
-      function responseHandler(e, requestIdResponse, err, sourceFile) {
+      function responseHandler(e, requestIdResponse, err, source) {
         if (requestIdResponse === requestId) {
           if (err) return reject(err);
           ipcRenderer.off("getSourceForImport-response", responseHandler);
-          return resolve(sourceFile);
+          return resolve(source);
         }
       }
       ipcRenderer.on("getSourceForImport-response", responseHandler);

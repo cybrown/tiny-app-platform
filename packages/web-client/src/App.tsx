@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
-import { Program, RuntimeContext, compile } from "tal-eval";
+import { Program, RuntimeContext, compile, FetchedSource } from "tal-eval";
 import * as tal from "tal-parser";
 import { Editor, EditorApi } from "./editor/Editor";
 import AppRenderer from "./AppRenderer";
@@ -73,17 +73,17 @@ async function getRemoteConfiguration() {
   return await response.json();
 }
 
-async function getApp(name: string) {
+async function getApp(name: string): Promise<FetchedSource> {
   const response = await fetch(backendUrl + "/apps/read/" + name);
   if (response.status < 200 || response.status >= 300) {
     throw new Error(
       "Failed to fetch remote app with status: " + response.status
     );
   }
-  return await response.text();
+  return { path: name, source: await response.text() };
 }
 
-async function getSource(sourcePath: string) {
+async function getSource(sourcePath: string): Promise<FetchedSource> {
   if ((window as any).electronAPI) {
     return (window as any).electronAPI.getSourceForImport(sourcePath);
   }
@@ -104,11 +104,12 @@ async function saveApp(name: string, source: string) {
 }
 
 let sourceFromFile: string | null = null;
-let failedToLoadFromFile = false;
+let sourcePath: string | null = null;
 try {
-  sourceFromFile = (window as any).electronAPI.config().sourceFromFile;
+  const config = (window as any).electronAPI.config();
+  sourceFromFile = config.sourceFromFile;
+  sourcePath = config.sourcePath;
 } catch (err) {
-  failedToLoadFromFile = true;
   console.log("failed to initialize config event for sourceFromFile");
 }
 
@@ -208,13 +209,14 @@ function App() {
   const [editorApi, setEditorApi] = useState<EditorApi>();
 
   const executeSource = useCallback(
-    (newSource: string) => {
+    (newSource: string, path: string) => {
+      console.log("execute at path: ", path);
       if (newSource == null) {
         setApp(null);
         return;
       }
       try {
-        setApp(compile(tal.parse(newSource)));
+        setApp(compile(tal.parse(newSource, path)));
       } catch (err) {
         setParseError(err as Error);
         setApp(null);
@@ -224,6 +226,16 @@ function App() {
     },
     [editorApi]
   );
+
+  const getSourcePath = useCallback(() => {
+    if (sourcePath) {
+      return sourcePath;
+    }
+    if (appNameFromUrl) {
+      return appNameFromUrl;
+    }
+    return "localstorage";
+  }, []);
 
   useEffect(() => {
     (async function() {
@@ -239,14 +251,15 @@ function App() {
           appNameFromUrl
         ) {
           const remoteAppSource = await getApp(appNameFromUrl);
-          sourceToExecute = remoteAppSource;
+          sourceToExecute = remoteAppSource.source;
+        } else if (sourceFromFile && sourcePath) {
+          sourceToExecute = sourceFromFile ?? DEFAULT_APP_SOURCE;
         } else {
-          sourceToExecute = failedToLoadFromFile
-            ? localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE
-            : sourceFromFile ?? DEFAULT_APP_SOURCE;
+          sourceToExecute =
+            localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE;
         }
         editorApi?.replaceAll(sourceToExecute);
-        executeSource(sourceToExecute);
+        executeSource(sourceToExecute, getSourcePath());
       } catch (err) {
         console.error("Failed to get server features");
         console.error(err);
@@ -255,7 +268,7 @@ function App() {
         setIsLoadingApp(false);
       }
     })();
-  }, [editorApi, executeSource]);
+  }, [editorApi, executeSource, getSourcePath]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, dummyStateUpdate] = useState(0);
@@ -319,26 +332,28 @@ function App() {
     if (!updateSourceFunc) return;
     let sourceToFormat = updateSourceFunc();
     try {
-      editorApi?.replaceAll(tal.stringify(tal.parse(sourceToFormat)));
+      editorApi?.replaceAll(
+        tal.stringify(tal.parse(sourceToFormat, getSourcePath()))
+      );
     } catch (err) {
       console.error("Failed to format because of syntax error", err);
     }
-  }, [editorApi, updateSourceFunc]);
+  }, [editorApi, getSourcePath, updateSourceFunc]);
 
   const onApplyAndFormatWithSourceHandler = useCallback(
     (source: string) => {
       try {
-        const app = tal.parse(source);
+        const app = tal.parse(source, getSourcePath());
         source = tal.stringify(app);
       } catch (err) {
         console.error("Failed to format because of syntax error", err);
       } finally {
         persistSource(source);
         editorApi?.replaceAll(source);
-        executeSource(source);
+        executeSource(source, getSourcePath());
       }
     },
-    [editorApi, executeSource, persistSource]
+    [editorApi, executeSource, getSourcePath, persistSource]
   );
 
   const onApplyAndFormatHandler = useCallback(() => {

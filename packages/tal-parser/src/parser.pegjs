@@ -13,11 +13,15 @@
 
     function buildBinaryOperator(left, right) {
         if (right.length == 0) return left;
-        return right.map(a => ({ location: location(), kind: "BinaryOperator", operator: a[1], right: a[3]}))
+        return right.map(a => ({ location: buildLocation(), kind: "BinaryOperator", operator: a[1], right: a[3]}))
             .reduce((left, right) => {
                 right.left = left;
                 return right;
             }, left);
+    }
+
+    function buildLocation() {
+        return {...location(), path: options.path};
     }
 }
 
@@ -38,7 +42,7 @@ PipeExpression
     	{
             if (tail.length == 0) return first;
             return {
-                location: location(),
+                location: buildLocation(),
                 kind: "Pipe",
                 first,
                 values: tail.map(a => a[3])
@@ -73,7 +77,7 @@ UnaryPrefixOperatorExpression
 	= operator:("-" / "+" / "!" / "&")? _ operand:ExpressionLevel2
      	{
             if (!operator) return operand;
-            return (operator == "&" ? { location: location(), kind: "Provided", key: operand } : { location: location(), kind: "UnaryOperator", operator, operand });
+            return (operator == "&" ? { location: buildLocation(), kind: "Provided", key: operand } : { location: buildLocation(), kind: "UnaryOperator", operator, operand });
         }
 
 ExpressionLevel2 // Dotted and indexed expression
@@ -85,10 +89,10 @@ ExpressionLevel2 // Dotted and indexed expression
 ExpressionLevel2Right
 	= DottedExpressionTail
     / _ '[' _ index:Expression _ ']'
-    	{ return { location: location(), kind: 'Index', index }; }
+    	{ return { location: buildLocation(), kind: 'Index', index }; }
     / _ "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
         & { return !isLambda; }
-        { return { location: location(), kind: "Call", args: values.map(a => a[0]) }; }
+        { return { location: buildLocation(), kind: "Call", args: values.map(a => a[0]) }; }
 
 FunctionArgument
     = NamedArgument
@@ -126,7 +130,7 @@ ExpressionLevel1
 
 Comment
     = '//' text:Comment_text '\n' _ expr:Expression?
-        { return { location: location(), kind: "Comment", text, expr }; }
+        { return { location: buildLocation(), kind: "Comment", text, expr }; }
 
 Comment_text
     = [^\n]*
@@ -134,19 +138,19 @@ Comment_text
 
 Import
     = 'import' _ path:RawString
-        { return { location: location(), kind: "Import", path }; }
+        { return { location: buildLocation(), kind: "Import", path }; }
 
 If
     = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:BlockOfExpressions ifFalseArray:(_ 'else' _ (BlockOfExpressions / If))?
         {
             const ifFalse = ifFalseArray ? ifFalseArray[3] : undefined
-            return { location: location(), kind: "If", condition, ifTrue, ifFalse };
+            return { location: buildLocation(), kind: "If", condition, ifTrue, ifFalse };
         }
 
 Switch
     = 'switch' _ value:('(' _ Expression _ ')' _)? '{' _ branches:(SwitchBranch _)* defaultBranch:SwitchDefaultBranch? _ '}'
         {
-            return { location: location(), kind: "Switch", value: value ? value[2] : null, branches: branches.map(e => e[0]), defaultBranch };
+            return { location: buildLocation(), kind: "Switch", value: value ? value[2] : null, branches: branches.map(e => e[0]), defaultBranch };
         }
 
 SwitchBranch
@@ -167,12 +171,12 @@ Try
     = 'try' _ expr:BlockOfExpressions catchBlockArray:(_ 'catch' _ BlockOfExpressions)?
         {
             const catchBlock = catchBlockArray ? catchBlockArray[3] : undefined
-            return { location: location(), kind: "Try", expr, catchBlock };
+            return { location: buildLocation(), kind: "Try", expr, catchBlock };
         }
 
 Provide
     = 'with' _  '(' _ entries:(ProvideKeyValuePair (_ ',')? _ )+ _ ')' _ body:BlockOfExpressions
-        { return { location: location(), kind: "Provide", entries: entries.map(entry => entry[0]), body }; }
+        { return { location: buildLocation(), kind: "Provide", entries: entries.map(entry => entry[0]), body }; }
 
 ProvideKeyValuePair
     = key:Expression _ '=' _ value:Expression
@@ -180,17 +184,17 @@ ProvideKeyValuePair
 
 SubExpression
 	= '(' _ expr:Expression _ ')'
-    	{ return { location: location(), kind: 'SubExpression', expr }; }
+    	{ return { location: buildLocation(), kind: 'SubExpression', expr }; }
 
 NamedFunction
     = 'fun' _ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression
-        { return { location: location(), kind: "DeclareLocal", mutable: false, name, value: { location: location(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
+        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
 
 Function
     = '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Expression
-        { return { location: location(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
+        { return { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
     / parameter:(Identifier) _ '=>' _ body:Expression
-        { return { location: location(), kind: "Function", body: body, parameters: [parameter] }; }
+        { return { location: buildLocation(), kind: "Function", body: body, parameters: [parameter] }; }
 
 ObjectWithKind
     = kind:DottedExpression _ "{" _ values:((ObjectWithKindKeyValuePair / Expression) _ ','? _)* "}"
@@ -198,7 +202,7 @@ ObjectWithKind
             const children = values.filter(a => !Array.isArray(a[0]))
                 .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
             return {
-                location: location(),
+                location: buildLocation(),
                 kind: "KindedObject",
                 value: {
                     kind: kind,
@@ -219,7 +223,7 @@ DottedExpression
 
 DottedExpressionTail
 	= _ '.' _ key:Identifier
-    	{ return { location: location(), kind: 'Attribute', key }; }
+    	{ return { location: buildLocation(), kind: 'Attribute', key }; }
 
 ObjectWithKindKeyValuePair
     = key:ObjectKey _ ":" _ value:Expression
@@ -235,7 +239,7 @@ ObjectWithKindKeyValuePair
 
 Object
 	= "{" _ entries:(ObjectKeyValuePair _)* "}"
-    	{ return { location: location(), kind: "Object", value: Object.fromEntries(entries.map(a => a[0])) }; }
+    	{ return { location: buildLocation(), kind: "Object", value: Object.fromEntries(entries.map(a => a[0])) }; }
 
 ObjectKeyValuePair
 	= key:ObjectKey _ ':' _ value:Expression (_ ',')?
@@ -247,11 +251,11 @@ ObjectKey
 
 Array
 	= '[' _ expressions:(Expression _ ','? _ )* ']'
-    	{ return { location: location(), kind: "Array", value: expressions.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })) }; }
+    	{ return { location: buildLocation(), kind: "Array", value: expressions.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })) }; }
 
 Local
     = id:Identifier
-    	{ return { location: location(), kind: 'Local', name: id}; }
+    	{ return { location: buildLocation(), kind: 'Local', name: id}; }
 
 RawString
 	= '"' str:(DoubleQuoteStringCharacter*) '"'
@@ -323,15 +327,15 @@ IdentifierTailCharacters
 
 Assignement
     = "set" _ address:Expression _ '=' _ value:Expression
-        { return { location: location(), kind: "Assign", address, value }; }
+        { return { location: buildLocation(), kind: "Assign", address, value }; }
 
 LocalDeclaration
     = keyword:("let" / "var") ! IdentifierTailCharacters _ name:Identifier value:(_ '=' _ Expression)?
-        { return { location: location(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
+        { return { location: buildLocation(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
 
 BlockOfExpressions
     = "{" _ children:ManyExpressions "}"
-        { return { location: location(), kind: "BlockOfExpressions", children }; }
+        { return { location: buildLocation(), kind: "BlockOfExpressions", children }; }
 
 ManyExpressions
     = expressions:(Expression _ ','? _)*

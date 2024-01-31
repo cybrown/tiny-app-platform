@@ -172,6 +172,7 @@ export type CommentExpression = ExpressionMetadata & {
 };
 
 export type ExpressionLocation = ExpressionMetadata & {
+  path: string;
   start: {
     offset: number;
     line: number;

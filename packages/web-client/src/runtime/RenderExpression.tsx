@@ -222,7 +222,7 @@ export function RenderError({
   const irNode =
     (err instanceof EvaluationError ? err.node : expression) ?? expression;
   if (typeof irNode == "object" && irNode && irNode.location) {
-    locationMessage = ` at location: (${irNode.location.start.line}, ${irNode.location.start.column})`;
+    locationMessage = ` at location: (${irNode.location.path}, ${irNode.location.start.line}, ${irNode.location.start.column})`;
   }
 
   return (

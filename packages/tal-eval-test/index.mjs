@@ -38,11 +38,14 @@ ctx.setSourceFetcher({
         },
         (err, data) => {
           if (err) return reject(err);
-          return resolve(data);
+          return resolve({path: absolutePath, source: data});
         }
       );
     });
   },
+  async normalizePath(path) {
+    return path;
+  }
 });
 
 ctx.defineFunction(

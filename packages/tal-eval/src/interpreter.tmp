@@ -109,7 +109,7 @@ export function runNode(
         }
       }
       case 'Intrinsic': {
-        return computeIntrinsic(stack, node);
+        return computeIntrinsic(ctx, stack, node);
       }
       case 'FunctionRef': {
         return {
@@ -320,7 +320,7 @@ export async function runNodeAsync(
         }
       }
       case 'Intrinsic': {
-        return computeIntrinsic(stack, node);
+        return computeIntrinsic(ctx, stack, node);
       }
       case 'FunctionRef': {
         return {
@@ -443,7 +443,7 @@ export class EvaluationError extends Error {
   }
 }
 
-function computeIntrinsic(stack: unknown[], n: IRNodeIntrinsic) {
+function computeIntrinsic(ctx: RuntimeContext, stack: unknown[], n: IRNodeIntrinsic) {
   switch (n.operation) {
     case 'INTRINSIC_ADD':
       return (stack[0] as any) + (stack[1] as any);
@@ -481,6 +481,7 @@ function computeIntrinsic(stack: unknown[], n: IRNodeIntrinsic) {
       return !(stack[0] as any);
     case 'INTRINSIC_NEGATE':
       return -(stack[0] as any);
+      return;
     default:
       throw new Error('Unknown intrinsic: ' + n.operation);
   }

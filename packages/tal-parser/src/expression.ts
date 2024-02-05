@@ -48,6 +48,7 @@ export type ExpressionMetadata = {
 export type LiteralExpression = ExpressionMetadata & {
   kind: 'Literal';
   value: null | boolean | number | string;
+  doRemoveFromBlock?: boolean;
 };
 
 export type IfExpression = ExpressionMetadata & {
@@ -90,7 +91,7 @@ export type ArgumentExpression =
 
 export type ObjectExpression = ExpressionMetadata & {
   kind: 'Object';
-  value: object;
+  value: Record<string, Expression>;
 };
 
 export type AssignExpression = ExpressionMetadata & {
@@ -140,7 +141,11 @@ export type DeclareLocalExpression = ExpressionMetadata & {
 
 export type KindedObjectExpression = ExpressionMetadata & {
   kind: 'KindedObject';
-  value: { kind: Expression; [key: string]: unknown };
+  value: {
+    kind: Expression;
+    children?: Expression[];
+    [key: string]: Expression | Expression[] | undefined;
+  };
 };
 
 export type ArrayExpression = ExpressionMetadata & {
@@ -195,14 +200,19 @@ export type ExportExpression = ExpressionMetadata & {
   expr: Expression;
 };
 
+export type IntrinsicExpression = ExpressionMetadata & {
+  kind: 'Intrinsic';
+  op: 'ForceRender';
+};
+
 export type ExpressionByKind = {
   Literal: LiteralExpression;
-  Local: LocalExpression;
-  Attribute: AttributeExpression;
-  Index: IndexExpression;
+  Addressable: AddressableExpression;
   Array: ArrayExpression;
-  If: IfExpression;
   Object: ObjectExpression;
+  If: IfExpression;
+  Switch: SwitchExpression;
+  Try: TryExpression;
   Assign: AssignExpression;
   Function: FunctionExpression;
   Call: CallExpression;
@@ -213,38 +223,27 @@ export type ExpressionByKind = {
   BlockOfExpressions: BlockOfExpressionsExpression;
   DeclareLocal: DeclareLocalExpression;
   KindedObject: KindedObjectExpression;
+  Provide: ProvideExpression;
+  Provided: ProvidedExpression;
   Import: ImportExpression;
   Export: ExportExpression;
   Comment: CommentExpression;
+  Intrinsic: IntrinsicExpression;
 };
 
-export type Expression =
-  | LiteralExpression
-  | AddressableExpression
-  | ArrayExpression
-  | ObjectExpression
-  | IfExpression
-  | SwitchExpression
-  | TryExpression
-  | AssignExpression
-  | FunctionExpression
-  | CallExpression
-  | SubExpressionExpression
-  | PipeExpression
-  | UnaryOperatorExpression
-  | BinaryOperatorExpression
-  | BlockOfExpressionsExpression
-  | DeclareLocalExpression
-  | KindedObjectExpression
-  | ProvideExpression
-  | ProvidedExpression
-  | ImportExpression
-  | ExportExpression
-  | CommentExpression;
+export type Expression = ExpressionByKind[keyof ExpressionByKind];
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
   expr: Expression,
   kind: Kind
 ): expr is ExpressionByKind[Kind] {
   return expr !== null && typeof expr == 'object' && expr.kind == kind;
+}
+
+export function isAddressableExpression(
+  expr: Expression
+): expr is AddressableExpression {
+  return (
+    expr.kind === 'Local' || expr.kind === 'Index' || expr.kind === 'Attribute'
+  );
 }

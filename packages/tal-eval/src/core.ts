@@ -20,9 +20,14 @@ export type ParameterDef = {
   onlyNamed?: boolean;
 };
 
+export type FunctionBody = {
+  entry: IRNode[];
+  [key: string]: IRNode[];
+}
+
 export type FunctionDef = {
   parameters: ParameterDef[];
-  body: IRNode;
+  body: FunctionBody;
 };
 
 export type Program = { [key: string]: FunctionDef };

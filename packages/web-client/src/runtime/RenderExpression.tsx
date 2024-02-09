@@ -1,42 +1,44 @@
-import { EvaluationError, IRNode, RuntimeContext, runNode } from "tal-eval";
+import { EvaluationError, IRNode, RuntimeContext, VM, run } from "tal-eval";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
-import { Closure, TODO_ANY } from "tal-eval/dist/core";
+import { Closure } from "tal-eval/dist/core";
 import Text from "../widgets/Text";
 
 export default function RenderExpression({
   ctx,
-  expression,
-  evaluatedUI,
+  ui,
 }: {
   ctx: RuntimeContext;
-} & (
-  | { expression: IRNode | null; evaluatedUI?: undefined }
-  | { expression?: undefined; evaluatedUI: unknown }
-)): JSX.Element {
+  ui: unknown;
+}): JSX.Element {
   const ctxRef = useRef(ctx.createChild({}));
   const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
+  if (ui == null) {
+    return <></>;
+  }
   try {
-    const ui =
-      expression != null
-        ? ctxRef.current.evaluate(expression)
-        : evaluatedUI != null
-        ? evaluatedUI
-        : null;
-    const result = renderNullableWidget(ui);
-    if (Array.isArray(result)) {
+    const uiClosure = ui as Closure | Closure[];
+    if (Array.isArray(uiClosure)) {
       return (
         <>
-          {result
+          {uiClosure
             .filter((child) => child != null)
-            .map((child) => (
+            .map((uiClosure) => {
+              const vm = new VM(uiClosure.ctx);
+              const runResult = run(vm, uiClosure.name);
+              return renderNullableWidget(runResult);
+            })
+            .map((child, index) => (
               <ErrorBoundary
+                key={index}
                 ctx={ctxRef.current}
                 onError={(err, retry) => (
                   <RenderError
                     phase="render"
-                    expression={expression ?? (evaluatedUI as any).kind ?? null}
+                    expression={
+                      /*expression ?? (evaluatedUI as any).kind ?? null*/ null
+                    }
                     err={err}
                     retry={retry}
                   />
@@ -48,19 +50,23 @@ export default function RenderExpression({
         </>
       );
     } else {
+      const vm = new VM(uiClosure.ctx);
+      const runResult = run(vm, uiClosure.name);
       return (
         <ErrorBoundary
           ctx={ctxRef.current}
           onError={(err, retry) => (
             <RenderError
               phase="render"
-              expression={expression ?? (evaluatedUI as any).kind ?? null}
+              expression={
+                /*expression ?? (evaluatedUI as any).kind ?? null*/ null
+              }
               err={err}
               retry={retry}
             />
           )}
         >
-          {renderNullableWidget(ui)}
+          {renderNullableWidget(runResult)}
         </ErrorBoundary>
       );
     }
@@ -68,7 +74,7 @@ export default function RenderExpression({
     return (
       <RenderError
         phase="render"
-        expression={expression ?? (evaluatedUI as any).kind ?? null}
+        expression={/*expression ?? (evaluatedUI as any).kind ?? null*/ null}
         err={err}
         retry={retry}
       />
@@ -95,15 +101,9 @@ function renderWidget(ui: unknown): JSX.Element | JSX.Element[] {
     "ctx" in ui &&
     ui.ctx instanceof RuntimeContext
   ) {
-    const widget = ui.ctx.evaluate(ui.kind as any) as TODO_ANY;
-    const children =
-      "children" in ui && ui.children
-        ? (ui.ctx.evaluate(ui.children as any, true) as unknown[])
-        : [];
-    const props =
-      "props" in ui && ui.props
-        ? (ui.ctx.evaluate(ui.props as any) as any)
-        : {};
+    const widget = ui.kind as any;
+    const children = (ui as any).children;
+    const props = (ui as any).props;
 
     if (widget == null) {
       throw new Error("Widget is null");
@@ -193,17 +193,19 @@ function CustomWidgetHost({
     );
   }
 
-  const irNode = widget.ctx.program![widget.name].body as IRNode;
+  const vm = new VM(childCtx);
+  vm.keepUpmostStack = true;
+  const result = vm.runFunction(widget.name);
   let ui: unknown;
-  if (irNode.kind === "Block") {
-    ui = irNode.children
-      .map((childNode) => runNode(childCtx, childCtx.program!, childNode, true))
-      .filter((child) => child != null);
+  if (result.kind === "FINISHED") {
+    ui = (result.result as unknown[]).filter((a) => a != null);
+  } else if (result.kind === "PENDING") {
+    throw new Error("Async results not supported for widgets");
   } else {
-    ui = runNode(childCtx, childCtx.program!, irNode, true);
+    throw result.error;
   }
   childCtx.setCreated();
-  return <RenderExpression ctx={childCtx} evaluatedUI={ui} />;
+  return <RenderExpression ctx={childCtx} ui={ui} />;
 }
 
 export function RenderError({

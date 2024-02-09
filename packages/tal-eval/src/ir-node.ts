@@ -6,143 +6,88 @@ export type IRNodeMetadata = {
 };
 
 export type IRNodeLiteral = {
-  kind: 'Literal';
   value: unknown;
   // Remove this literal from array ending, for comments
   removeFromBlock?: boolean;
 } & IRNodeMetadata;
 
-export type IRNodeMakeArray = {
-  kind: 'MakeArray';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeMakeArray = {} & IRNodeMetadata;
 
-export type IRNodeMakeObject = {
-  kind: 'MakeObject';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeMakeObject = {} & IRNodeMetadata;
 
 export type IRNodeLocal = {
-  kind: 'Local';
   name: string;
 } & IRNodeMetadata;
 
 export type IRNodeDeclareLocal = {
-  kind: 'DeclareLocal';
   name: string;
   mutable: boolean;
-  children: IRNode[];
+  hasInitialValue: boolean;
 } & IRNodeMetadata;
 
 export type IRNodeSetLocal = {
-  kind: 'SetLocal';
   name: string;
-  children: IRNode[];
 } & IRNodeMetadata;
 
 export type IRNodeFunctionRef = {
-  kind: 'FunctionRef';
   name: string;
 } & IRNodeMetadata;
 
-export type IRNodeCondition = {
-  kind: 'Condition';
-  children: IRNode[];
+export type IRNodeJump = {
+  label: string;
+} & IRNodeMetadata;
+
+export type IRNodeJumpTrue = {
+  label: string;
 } & IRNodeMetadata;
 
 export type IRNodeTry = {
-  kind: 'Try';
-  children: IRNode[];
+  catchLabel: string | undefined;
 } & IRNodeMetadata;
 
-export type IRNodeCall = {
-  kind: 'Call';
-  children: IRNode[];
+export type IRNodeTryPop = {
 } & IRNodeMetadata;
+
+export type IRNodeCall = {} & IRNodeMetadata;
 
 export type IRNodeAttribute = {
-  kind: 'Attribute';
   name: string;
-  children: IRNode[];
 } & IRNodeMetadata;
 
 export type IRNodeSetAttribute = {
-  kind: 'SetAttribute';
   name: string;
   forceRender: boolean;
-  children: IRNode[];
 } & IRNodeMetadata;
 
-export type IRNodeIndex = {
-  kind: 'Index';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeIndex = {} & IRNodeMetadata;
 
 export type IRNodeSetIndex = {
-  kind: 'SetIndex';
   forceRender: boolean;
-  children: IRNode[];
 } & IRNodeMetadata;
 
 export type IRNodeIntrinsic = {
-  kind: 'Intrinsic';
   operation: IRIntrinsicOperator;
-  children: IRNode[];
 } & IRNodeMetadata;
 
-export type IRNodeBlock = {
-  kind: 'Block';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeScopeEnter = {} & IRNodeMetadata;
 
-export type IRNodeKinded = {
-  kind: 'Kinded';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeScopeLeave = {} & IRNodeMetadata;
 
-export type IRNodeCtxRender = {
-  kind: 'CtxRender';
-} & IRNodeMetadata;
+export type IRNodePop = {} & IRNodeMetadata;
 
-export type IRNodeProvide = {
-  kind: 'Provide';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeKinded = {} & IRNodeMetadata;
 
-export type IRNodeProvided = {
-  kind: 'Provided';
-  children: IRNode[];
-} & IRNodeMetadata;
+export type IRNodeCtxRender = {} & IRNodeMetadata;
+
+export type IRNodeProvide = {} & IRNodeMetadata;
+
+export type IRNodeGetProvided = {} & IRNodeMetadata;
 
 export type IRNodeImport = {
-  kind: 'Import';
   path: string;
 } & IRNodeMetadata;
 
-export type IRNode =
-  | IRNodeLiteral
-  | IRNodeMakeArray
-  | IRNodeMakeObject
-  | IRNodeLocal
-  | IRNodeDeclareLocal
-  | IRNodeSetLocal
-  | IRNodeFunctionRef
-  | IRNodeCondition
-  | IRNodeTry
-  | IRNodeCall
-  | IRNodeAttribute
-  | IRNodeSetAttribute
-  | IRNodeIndex
-  | IRNodeSetIndex
-  | IRNodeIntrinsic
-  | IRNodeBlock
-  | IRNodeKinded
-  | IRNodeCtxRender
-  | IRNodeProvide
-  | IRNodeProvided
-  | IRNodeImport;
-
-export type IRNodeByKind = {
+export type IRNodeByKind2 = {
   Literal: IRNodeLiteral;
   MakeArray: IRNodeMakeArray;
   MakeObject: IRNodeMakeObject;
@@ -150,21 +95,31 @@ export type IRNodeByKind = {
   DeclareLocal: IRNodeDeclareLocal;
   SetLocal: IRNodeSetLocal;
   FunctionRef: IRNodeFunctionRef;
-  Condition: IRNodeCondition;
+  Jump: IRNodeJump;
+  JumpTrue: IRNodeJumpTrue;
   Try: IRNodeTry;
+  TryPop: IRNodeTryPop;
   Call: IRNodeCall;
   Attribute: IRNodeAttribute;
   SetAttribute: IRNodeSetAttribute;
   Index: IRNodeIndex;
   SetIndex: IRNodeSetIndex;
   Intrinsic: IRNodeIntrinsic;
-  Block: IRNodeBlock;
+  ScopeEnter: IRNodeScopeEnter;
+  ScopeLeave: IRNodeScopeLeave;
+  Pop: IRNodePop;
   Kinded: IRNodeKinded;
   CtxRender: IRNodeCtxRender;
   Provide: IRNodeProvide;
-  Provided: IRNodeProvided;
+  GetProvided: IRNodeGetProvided;
   Import: IRNodeImport;
 };
+
+export type IRNodeByKind = {
+  [T in keyof IRNodeByKind2]: { kind: T } & IRNodeByKind2[T] & IRNodeMetadata;
+};
+
+export type IRNode = IRNodeByKind[keyof IRNodeByKind];
 
 export type IRIntrinsicOperator =
   | 'INTRINSIC_NEGATE'
@@ -184,7 +139,8 @@ export type IRIntrinsicOperator =
   | 'INTRINSIC_EQUAL_STRICT'
   | 'INTRINSIC_NOT_EQUAL_STRICT'
   | 'INTRINSIC_AND'
-  | 'INTRINSIC_OR';
+  | 'INTRINSIC_OR'
+  | 'INTRINSIC_FORCE_RENDER';
 
 export function buildIRNode<Kind extends IRNode['kind']>(
   kind: Kind,

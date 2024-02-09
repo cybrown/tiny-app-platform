@@ -34,7 +34,7 @@ export default function Box({
       {children
         ? children
             .flatMap((child) => (
-              <RenderExpression ctx={childContext} evaluatedUI={child} />
+              <RenderExpression ctx={childContext} ui={child} />
             ))
             .map((child, index) => (
               <React.Fragment key={index}>{child}</React.Fragment>

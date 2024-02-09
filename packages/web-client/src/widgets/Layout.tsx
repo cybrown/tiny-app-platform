@@ -59,7 +59,7 @@ export default function Layout({ ctx, children, ...d }: LayoutProps) {
         .flat(Infinity)
         .filter((child) => child)
         .map((child) => ({
-          node: <RenderExpression ctx={childContext} evaluatedUI={child} />,
+          node: <RenderExpression ctx={childContext} ui={child} />,
           meta: metadataGet(child) ?? {},
         }))
         .map((child, index) => (

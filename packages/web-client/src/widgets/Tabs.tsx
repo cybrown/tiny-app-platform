@@ -46,7 +46,7 @@ export default function Tabs({
           value: child.value,
           label: child.label,
         }))}
-        after={<RenderExpression ctx={ctx} evaluatedUI={after} />}
+        after={<RenderExpression ctx={ctx} ui={after} />}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>

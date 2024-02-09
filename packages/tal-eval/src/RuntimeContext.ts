@@ -1,5 +1,5 @@
 import { Closure, Program } from './core';
-import { runNodeAsync, runNode, runCall, runCallAsync } from './interpreter';
+import { VM, run, runAsync } from './interpreter';
 import { IRNode } from './ir-node';
 
 class GetLocalError extends Error {
@@ -291,36 +291,6 @@ export class RuntimeContext {
     return false;
   }
 
-  setValue(address: IRNode, value: unknown): void {
-    if (!address || typeof address != 'object' || !address.kind) {
-      throw new Error(
-        'Unknown node to address value of type: ' +
-          (address == null ? 'null' : typeof address)
-      );
-    }
-    switch (address.kind) {
-      case 'Attribute': {
-        const object = this.evaluate(address.children[0]);
-        (object as any)[address.name] = value;
-        break;
-      }
-      case 'Index': {
-        const object = this.evaluate(address.children[1]);
-        (object as any)[this.evaluate(address.children[0]) as any] = value;
-        break;
-      }
-      case 'Local': {
-        this.setLocal(address.name, value);
-        break;
-      }
-      default:
-        throw new Error(
-          'Unknown node to address value: ' + (address as any).kind
-        );
-    }
-    this.triggerStateChangedListeners();
-  }
-
   hasValue(address: IRNode): boolean {
     try {
       this.evaluate(address);
@@ -333,34 +303,25 @@ export class RuntimeContext {
     return true;
   }
 
-  evaluate(expr: IRNode, returnArrayFromBlock = false): unknown {
+  evaluate(_expr: IRNode, _returnArrayFromBlock = false): unknown {
+    console.error('evaluate is deprecated');
     if (!this.program) throw new Error('missing program');
-    return runNode(this, this.program, expr, returnArrayFromBlock);
+    return null;
   }
 
-  evaluateAsync(expr: IRNode): Promise<unknown> {
+  evaluateAsync(_expr: IRNode): Promise<unknown> {
+    console.error('evaluateAsync is deprecated');
     if (!this.program) throw new Error('missing program');
-    return runNodeAsync(this, this.program, expr);
-  }
-
-  evaluateOr(expr: IRNode, alternative: unknown): unknown {
-    try {
-      return this.evaluate(expr) ?? alternative;
-    } catch (err) {
-      if (err instanceof GetLocalError) {
-        return alternative;
-      }
-      throw err;
-    }
+    return Promise.resolve(null);
   }
 
   callFunction(
     func: Closure,
-    args: unknown[],
+    args: unknown[] = [],
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runCall(func, this.program, args, kwargs, this);
+    return run(new VM(func.ctx), func.name, kwargs, args);
   }
 
   async callFunctionAsync(
@@ -369,7 +330,7 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runCallAsync(func, this.program, args, kwargs, this);
+    return runAsync(new VM(func.ctx), func.name, kwargs, args);
   }
 
   createChild(

@@ -25,7 +25,9 @@ class Lowerer {
     expr: Expression[],
     returnArrayFromBlock = false
   ): Expression[] {
-    return expr.map(e => this.lowerSingle(e, returnArrayFromBlock)).filter(removeNodes);
+    return expr
+      .map(e => this.lowerSingle(e, returnArrayFromBlock))
+      .filter(removeNodes);
   }
 
   public lowerSingle(
@@ -206,9 +208,16 @@ class Lowerer {
         return this.lowerBlockOfExpressions(expr, returnArrayFromBlock);
       }
       case 'DeclareLocal': {
+        let value = null;
+        if (expr.value) {
+          value = this.lowerSingle(expr.value);
+          if (value.kind == 'Function') {
+            (value as any).name = expr.name;
+          }
+        }
         return {
           ...expr,
-          ...(expr.value ? { value: this.lowerSingle(expr.value) } : {}),
+          ...(value ? { value } : {}),
         };
       }
       case 'KindedObject': {

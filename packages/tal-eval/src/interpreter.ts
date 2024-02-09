@@ -38,7 +38,9 @@ type VmPendingState = {
 };
 
 type TryState = {
-  label?: string;
+  catchLabel?: string;
+  endTryLabel: string;
+  ctxStackLength: number;
 };
 
 export type VmExit = VmExitFinished | VmExitPending | VmExitError;
@@ -46,49 +48,60 @@ export type VmExit = VmExitFinished | VmExitPending | VmExitError;
 type FrameState = {
   currentFunction: string;
   currentLabel: string;
-  stack: unknown[];
   pc: number;
+  stack: unknown[];
   tryStack: TryState[];
   isInsideWidget: boolean;
   widgetStateFlagConsumed: boolean;
+  ctx: RuntimeContext;
+  ctxStack: RuntimeContext[];
 };
 
 export class VM {
-  private ctx: RuntimeContext;
-  private ctxStack: RuntimeContext[] = [];
-
   // Frame data
-  private currentFunction: string;
-  private currentLabel: string;
+  private currentFunctionName: string;
+  private currentLabelName: string;
   private stack: unknown[] = [];
   private pc: number = 0;
   private tryStack: TryState[] = [];
   private isInsideWidget = false;
   private widgetStateFlagConsumed = false;
+  private ctx: RuntimeContext;
+  private ctxStack: RuntimeContext[] = [];
 
   private frameStack: FrameState[] = [];
 
-  private pushFrame(functionName: string) {
+  private pushFrame(functionName: string, ctx: RuntimeContext) {
     this.frameStack.push({
-      currentFunction: this.currentFunction,
-      currentLabel: this.currentLabel,
+      currentFunction: this.currentFunctionName,
+      currentLabel: this.currentLabelName,
       pc: this.pc,
       stack: this.stack,
       tryStack: this.tryStack,
       isInsideWidget: this.isInsideWidget,
       widgetStateFlagConsumed: this.widgetStateFlagConsumed,
+      ctxStack: this.ctxStack,
+      ctx: this.ctx,
     });
     this.resetFrameData(functionName);
+    this.ctx = ctx;
+    this.ctxStack = [this.ctx];
+  }
+
+  private jumpToLabel(name: string) {
+    this.currentLabelName = name;
+    this.pc = 0;
   }
 
   private resetFrameData(functionName: string) {
-    this.currentFunction = functionName;
-    this.currentLabel = 'entry';
+    this.currentFunctionName = functionName;
+    this.currentLabelName = 'entry';
     this.pc = 0;
     this.stack = [];
     this.tryStack = [];
     this.isInsideWidget = false;
     this.widgetStateFlagConsumed = false;
+    this.ctxStack = [];
   }
 
   private hasFrame(): boolean {
@@ -100,37 +113,48 @@ export class VM {
     if (topFrame == undefined) {
       throw new Error('Stack from underflow');
     }
-    this.currentFunction = topFrame.currentFunction;
-    this.currentLabel = topFrame.currentLabel;
+    this.currentFunctionName = topFrame.currentFunction;
+    this.currentLabelName = topFrame.currentLabel;
     this.pc = topFrame.pc;
     this.stack = topFrame.stack;
     this.tryStack = topFrame.tryStack;
+    this.ctxStack = topFrame.ctxStack;
+    this.ctx = topFrame.ctx;
   }
 
   constructor(ctx: RuntimeContext, private verbose = false) {
     this.ctx = ctx;
+    this.ctxStack = [this.ctx];
     this.isInsideWidget = this.ctx.isWidgetState;
-    this.currentFunction = 'main';
-    this.currentLabel = 'entry';
+    this.currentFunctionName = 'main';
+    this.currentLabelName = 'entry';
   }
 
   keepUpmostStack = false;
 
-  private current() {
-    const currentFunction = this.ctx.program![this.currentFunction];
+  private currentFunction() {
+    const currentFunction = this.ctx.program![this.currentFunctionName];
     if (!currentFunction) {
-      throw new Error('Unknown function: ' + this.currentFunction);
+      throw new Error('Unknown function: ' + this.currentFunctionName);
     }
-    const currentLabel = currentFunction.body[this.currentLabel];
+    return currentFunction;
+  }
+
+  private currentLabel() {
+    const currentLabel = this.currentFunction().body[this.currentLabelName];
     if (!currentLabel) {
       throw new Error(
         'Unknown label: ' +
-          this.currentLabel +
+          this.currentLabelName +
           ' in function: ' +
-          this.currentFunction
+          this.currentFunctionName
       );
     }
     return currentLabel;
+  }
+
+  private currentOpcode(): IRNode {
+    return this.currentLabel()[this.pc];
   }
 
   runMain(): VmExit {
@@ -138,18 +162,18 @@ export class VM {
     return this.run();
   }
 
-  runFunction(currentFunction: string): VmExit {
-    this.currentFunction = currentFunction;
+  runFunction(functionName: string): VmExit {
+    this.currentFunctionName = functionName;
     return this.run();
   }
 
   runFunctionWithArgs(
-    currentFunction: string,
+    functionName: string,
     namedArgs: Record<string, unknown>,
     positionalArgs: unknown[]
   ): VmExit {
-    const closure: Closure = { ctx: this.ctx, name: currentFunction };
-    this.currentFunction = currentFunction;
+    const closure: Closure = { ctx: this.ctx, name: functionName };
+    this.currentFunctionName = functionName;
     const [namedArguments /* positionalArguments */] = resolveArgumentNames(
       this.ctx.program![closure.name],
       namedArgs,
@@ -158,56 +182,50 @@ export class VM {
     this.ctx = closure.ctx
       .createChild(namedArguments, false)
       .createChildWithProvideParent({}, this.ctx);
+    this.ctxStack.push(this.ctx);
     return this.run();
   }
 
   resume(state: VmPendingState): VmExit {
     // TODO: Resume from rejected promise
-    this.currentFunction = state.func;
-    this.currentLabel = state.label;
+    this.currentFunctionName = state.func;
+    this.currentLabelName = state.label;
     this.pc = state.pc;
     return this.run();
   }
 
   private run(): VmExit {
     while (true) {
-      while (this.pc < this.current().length) {
+      runloop: while (this.pc < this.currentLabel().length) {
         try {
           if (this.verbose) {
-            const { location, ...opcode } = this.current()[this.pc];
+            const { location, ...opcode } = this.currentOpcode();
             console.log(opcode);
           }
-          const exit = this.runOpcode(this.current()[this.pc]);
+          const exit = this.runOpcode(this.currentOpcode());
           this.verbose && console.log(this.stack);
           if (exit) {
             return exit;
           }
         } catch (err) {
-          this.verbose && console.log('Exception: jumping to catch block');
-          let catchBlockDefined = false;
-          while (!catchBlockDefined) {
-            while (this.tryStack.length) {
-              const previousTryState = this.tryStack.pop()!;
-              if (!previousTryState.label) {
-                this.verbose && console.log('Exception: try without catch');
-                continue;
-              }
-              this.verbose && console.log('Exception: catch block found');
-              this.currentLabel = previousTryState.label;
-              this.pc = 0;
-              catchBlockDefined = true;
-              break;
+          while (true) {
+            // Get top most try state and jump to its catch or end label if present
+            const previousTryState = this.tryStack.pop();
+            if (previousTryState) {
+              this.jumpToLabel(
+                previousTryState.catchLabel ?? previousTryState.endTryLabel
+              );
+              this.ctxStack.length = previousTryState.ctxStackLength;
+              continue runloop;
             }
-            if (catchBlockDefined) {
-              break;
-            }
+
+            // No try state found on current frame, pop current frame
+            // If this is the top most frame, return a result with an ERROR kind
             if (this.hasFrame()) {
               this.verbose && console.log('Exception: pop stack');
               this.popFrame();
-              this.popContext();
               this.pc++;
             } else {
-              this.verbose && console.log('Exception: uncaught');
               return {
                 kind: 'ERROR',
                 error:
@@ -215,7 +233,7 @@ export class VM {
                     ? err
                     : new EvaluationError(
                         'Uncaught exception',
-                        this.current()[this.pc],
+                        this.currentOpcode(),
                         err
                       ),
               };
@@ -227,7 +245,6 @@ export class VM {
         const lastValue = this.stack.pop();
         this.popFrame();
         this.stack.push(lastValue);
-        this.popContext();
         this.pc++;
       } else {
         break;
@@ -267,8 +284,7 @@ export class VM {
           const childContext = closure.ctx
             .createChild(namedArguments, false)
             .createChildWithProvideParent({}, this.ctx);
-          this.pushFrame(closure.name);
-          this.pushContext(childContext);
+          this.pushFrame(closure.name, childContext);
         } else {
           if (closure.call) {
             const [namedArguments, positionalArguments] = resolveArgumentNames(
@@ -297,8 +313,8 @@ export class VM {
                   this.stack.push(result);
                 }),
               state: {
-                func: this.currentFunction,
-                label: this.currentLabel,
+                func: this.currentFunctionName,
+                label: this.currentLabelName,
                 pc: this.pc + 1,
               },
             };
@@ -344,8 +360,8 @@ export class VM {
             this.stack.push(module);
           }),
           state: {
-            func: this.currentFunction,
-            label: this.currentLabel,
+            func: this.currentFunctionName,
+            label: this.currentLabelName,
             pc: this.pc + 1,
           },
         };
@@ -368,15 +384,13 @@ export class VM {
         break;
       }
       case 'Jump': {
-        this.currentLabel = node.label;
-        this.pc = 0;
+        this.jumpToLabel(node.label);
         break;
       }
       case 'JumpTrue': {
         const value = this.stack.pop();
         if (value) {
-          this.currentLabel = node.label;
-          this.pc = 0;
+          this.jumpToLabel(node.label);
         } else {
           this.pc++;
         }
@@ -487,7 +501,9 @@ export class VM {
       }
       case 'Try': {
         this.tryStack.push({
-          label: node.catchLabel,
+          catchLabel: node.catchLabel,
+          endTryLabel: node.endTryLabel,
+          ctxStackLength: this.ctxStack.length,
         });
         this.pc++;
         break;
@@ -767,7 +783,6 @@ async function resolveModule(
 
   const vm = new VM(moduleContext);
   const moduleReturnValue = await runAsync(vm, path + 'main');
-  console.log('RETURN', moduleReturnValue);
   ctx.moduleCache.set(normalizedPath, moduleReturnValue);
   return moduleReturnValue;
 }

@@ -2,7 +2,7 @@ import { EvaluationError, IRNode, RuntimeContext, VM, run } from "tal-eval";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
-import { Closure } from "tal-eval/dist/core";
+import { Closure, TODO_ANY } from "tal-eval/dist/core";
 import Text from "../widgets/Text";
 
 export default function RenderExpression({
@@ -24,6 +24,8 @@ export default function RenderExpression({
         <>
           {uiClosure
             .filter((child) => child != null)
+            .map((child) => renderAgain(ctxRef.current, uiClosure))
+          /*
             .map((uiClosure) => {
               const vm = new VM(uiClosure.ctx);
               const runResult = run(vm, uiClosure.name);
@@ -37,7 +39,7 @@ export default function RenderExpression({
                   <RenderError
                     phase="render"
                     expression={
-                      /*expression ?? (evaluatedUI as any).kind ?? null*/ null
+                      /*expression ?? (evaluatedUI as any).kind ?? null* / null
                     }
                     err={err}
                     retry={retry}
@@ -46,29 +48,17 @@ export default function RenderExpression({
               >
                 {child}
               </ErrorBoundary>
-            ))}
+            ))*/
+          }
         </>
       );
     } else {
-      const vm = new VM(uiClosure.ctx);
-      const runResult = run(vm, uiClosure.name);
-      return (
-        <ErrorBoundary
-          ctx={ctxRef.current}
-          onError={(err, retry) => (
-            <RenderError
-              phase="render"
-              expression={
-                /*expression ?? (evaluatedUI as any).kind ?? null*/ null
-              }
-              err={err}
-              retry={retry}
-            />
-          )}
-        >
-          {renderNullableWidget(runResult)}
-        </ErrorBoundary>
-      );
+      const a = renderAgain(ctxRef.current, uiClosure);
+      if (Array.isArray(a)) {
+        return <>a</>;
+      } else {
+        return a;
+      }
     }
   } catch (err) {
     return (
@@ -79,6 +69,49 @@ export default function RenderExpression({
         retry={retry}
       />
     );
+  }
+}
+
+function renderAgain(
+  ctx: RuntimeContext,
+  uiClosure: unknown
+): JSX.Element | JSX.Element[] {
+  if (Array.isArray(uiClosure)) {
+    return uiClosure
+      .flatMap((a) => renderAgain(ctx, a))
+      .filter((a) => a != null);
+  }
+
+  if (
+    typeof uiClosure === "object" &&
+    uiClosure != null &&
+    "ctx" in uiClosure &&
+    uiClosure.ctx != null &&
+    uiClosure.ctx instanceof RuntimeContext
+  ) {
+    const vm = new VM(uiClosure.ctx);
+    const runResult = run(vm, (uiClosure as TODO_ANY).name);
+    return (
+      <ErrorBoundary
+        ctx={ctx}
+        onError={(err, retry) => (
+          <RenderError
+            phase="render"
+            expression={
+              /*expression ?? (evaluatedUI as any).kind ?? null*/ null
+            }
+            err={err}
+            retry={retry}
+          />
+        )}
+      >
+        {renderNullableWidget(runResult)}
+      </ErrorBoundary>
+    );
+  } else if (typeof uiClosure === "string") {
+    return <Text text={uiClosure} />;
+  } else {
+    return <Debug value={uiClosure} force />;
   }
 }
 
@@ -221,8 +254,9 @@ export function RenderError({
 }) {
   let locationMessage = "";
 
-  const irNode =
-    (err instanceof EvaluationError ? err.node : expression) ?? expression;
+  const irNode = err
+    ? (err instanceof EvaluationError ? err.node : expression) ?? expression
+    : null;
   if (typeof irNode == "object" && irNode && irNode.location) {
     locationMessage = ` at location: (${irNode.location.path}, ${irNode.location.start.line}, ${irNode.location.start.column})`;
   }
@@ -234,7 +268,7 @@ export function RenderError({
       } during ${phase} because of: <${err}>${locationMessage}`}
       <button
         onClick={() =>
-          console.error(err instanceof EvaluationError ? err.cause : err)
+          err && console.error(err instanceof EvaluationError ? err.cause : err)
         }
       >
         Dump error in console

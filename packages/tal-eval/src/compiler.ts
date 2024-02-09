@@ -1,5 +1,5 @@
 import { Expression, ExpressionLocation, FunctionExpression } from 'tal-parser';
-import { Program, ParameterDef, AnyForNever } from './core';
+import { Program, AnyForNever } from './core';
 import { buildIRNode, IRNodeByKind } from './ir-node';
 
 export class Compiler {
@@ -64,8 +64,8 @@ export class Compiler {
 
   private labelCount = 0;
 
-  private makeLabel(): string {
-    return 'label_' + ++this.labelCount;
+  private makeLabel(desc: string): string {
+    return desc + '_' + ++this.labelCount;
   }
 
   private setCurrentLabel(label: string): void {
@@ -206,9 +206,9 @@ export class Compiler {
         break;
       case 'If':
         this.compile(value.condition);
-        const ifTrueLabel = this.makeLabel();
-        const endIfLabel = this.makeLabel();
-        const ifFalseLabel = this.makeLabel();
+        const ifTrueLabel = this.makeLabel('if_true');
+        const ifFalseLabel = this.makeLabel('if_false');
+        const endIfLabel = this.makeLabel('if_end');
         this.appendIRNode('JumpTrue', value.location, {
           label: ifTrueLabel,
         });
@@ -233,10 +233,11 @@ export class Compiler {
         this.setCurrentLabel(endIfLabel);
         break;
       case 'Try':
-        const endTryLabel = this.makeLabel();
-        const catchLabel = value.catchBlock ? this.makeLabel() : undefined;
-        this.appendIRNode('Try', value.location, { catchLabel });
+        const catchLabel = value.catchBlock ? this.makeLabel('try_catch') : undefined;
+        const endTryLabel = this.makeLabel('try_end');
+        this.appendIRNode('Try', value.location, { catchLabel, endTryLabel });
         this.compile(value.expr);
+        this.appendIRNode('TryPop', value.location, {});
         this.appendIRNode('Jump', value.location, { label: endTryLabel });
         if (value.catchBlock && catchLabel) {
           this.setCurrentLabel(catchLabel);
@@ -244,7 +245,6 @@ export class Compiler {
           this.appendIRNode('Jump', value.location, { label: endTryLabel });
         }
         this.setCurrentLabel(endTryLabel);
-        this.appendIRNode('TryPop', value.location, {});
         break;
       case 'Provide':
         for (let entry of value.entries) {
@@ -427,9 +427,7 @@ export class Compiler {
   private functionIndexCounter = 0;
 
   private compileFunction(functionExpression: FunctionExpression): string {
-    const funcName = this.createFunction(
-      functionExpression.parameters.map(name => ({ name }))
-    );
+    const funcName = this.createFunction(functionExpression);
 
     const oldLabel = this.currentLabel;
     const oldFunction = this.currentFunction;
@@ -445,10 +443,15 @@ export class Compiler {
     return funcName;
   }
 
-  private createFunction(parameters: ParameterDef[]): string {
+  private createFunction(functionExpression: FunctionExpression): string {
     const name =
-      this.prefix + 'func_' + (this.functionIndexCounter++).toString(16);
-    this.functions[name] = { parameters, body: { entry: [] } };
+      this.prefix +
+      (functionExpression.name ? functionExpression.name + '_' : 'func_') +
+      (this.functionIndexCounter++).toString(16);
+    this.functions[name] = {
+      parameters: functionExpression.parameters.map(name => ({ name })),
+      body: { entry: [] },
+    };
     return name;
   }
 }

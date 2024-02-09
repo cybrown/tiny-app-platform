@@ -43,6 +43,7 @@ export type IRNodeJumpTrue = {
 
 export type IRNodeTry = {
   catchLabel: string | undefined;
+  endTryLabel: string;
 } & IRNodeMetadata;
 
 export type IRNodeTryPop = {

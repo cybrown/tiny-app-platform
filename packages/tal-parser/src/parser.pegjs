@@ -30,7 +30,7 @@ Document
         { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
 
 TopLevelExpression
-    = 'export' _ expr:Expression
+    = 'export' __ expr:Expression
         { return { kind: 'Export', expr }; }
     / Expression
 
@@ -137,7 +137,7 @@ Comment_text
         { return text(); }
 
 Import
-    = 'import' _ path:RawString
+    = 'import' __ path:RawString
         { return { location: buildLocation(), kind: "Import", path }; }
 
 If
@@ -187,7 +187,7 @@ SubExpression
     	{ return { location: buildLocation(), kind: 'SubExpression', expr }; }
 
 NamedFunction
-    = 'fun' _ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression
+    = 'fun' __ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression
         { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
 
 Function
@@ -326,11 +326,11 @@ IdentifierTailCharacters
     = [A-Za-z_$0-9]
 
 Assignement
-    = "set" _ address:Expression _ '=' _ value:Expression
+    = "set" __ address:Expression _ '=' _ value:Expression
         { return { location: buildLocation(), kind: "Assign", address, value }; }
 
 LocalDeclaration
-    = keyword:("let" / "var") ! IdentifierTailCharacters _ name:Identifier value:(_ '=' _ Expression)?
+    = keyword:("let" / "var") ! IdentifierTailCharacters __ name:Identifier value:(_ '=' _ Expression)?
         { return { location: buildLocation(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
 
 BlockOfExpressions
@@ -343,4 +343,8 @@ ManyExpressions
 
 _ "whitespace"
 	= chars:([ \t\n\r]*)
+    	{ return [...chars].filter(c => c === "\n").length; }
+
+__ "mandatory whitespace"
+	= chars:([ \t\n\r]+)
     	{ return [...chars].filter(c => c === "\n").length; }

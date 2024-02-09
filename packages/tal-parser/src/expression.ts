@@ -155,6 +155,7 @@ export type ArrayExpression = ExpressionMetadata & {
 
 export type FunctionExpression = ExpressionMetadata & {
   kind: 'Function';
+  name?: string;
   parameters: string[];
   body: Expression;
 };

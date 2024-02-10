@@ -66,7 +66,7 @@ export const watch = defineFunction(
       if (!currentCtxMap) return;
       const oldValue = currentCtxMap.get(expr);
       const newValue = ctx.callFunction(expr, []);
-      if (oldValue === undefined) {
+      if (!currentCtxMap.has(expr)) {
         run(currentCtxMap, oldValue, newValue);
       } else if (
         Array.isArray(oldValue) &&

@@ -16,10 +16,10 @@ class Lowerer {
             'Only immutable values and function definitions can be exported'
           );
         }
-        result.push(e.expr);
+        result.push(this.lowerSingle(e.expr));
         exportedNames.push(e.expr.name);
       } else {
-        result.push(e);
+        result.push(this.lowerSingle(e));
       }
     }
     if (exportedNames.length) {
@@ -53,7 +53,7 @@ class Lowerer {
         parameters: [],
         body: {
           kind: 'BlockOfExpressions',
-          children: [this.lowerSingle(last)],
+          children: [last],
         },
       },
     };
@@ -75,7 +75,7 @@ class Lowerer {
       },
     };
 
-    return [...this.lowerArray(head), rootWidget, lastFunction];
+    return [...head, rootWidget, lastFunction];
   }
 
   public lowerArray(

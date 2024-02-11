@@ -6,7 +6,7 @@ import {
 import { AnyForNever } from './core';
 
 class Lowerer {
-  public lowerTopLevelArray(expr: Expression[]): Expression[] {
+  public lowerTopLevel(expr: Expression[]): Expression[] {
     const exportedNames: string[] = [];
     const result: Expression[] = [];
     for (let e of expr) {
@@ -30,6 +30,11 @@ class Lowerer {
         ),
       });
     }
+    return result;
+  }
+
+  public lowerForApp(expr: Expression[]): Expression[] {
+    const result = this.lowerTopLevel(expr);
 
     const head = result.slice(0, -1);
     const last = result[result.length - 1];
@@ -37,11 +42,11 @@ class Lowerer {
       return [];
     }
 
-    const _rootWidget: Expression = {
+    const rootWidget: Expression = {
       kind: 'DeclareLocal',
       location: last.location,
       mutable: false,
-      name: 'ROOT',
+      name: '$$ROOT$$',
       value: {
         kind: 'Function',
         location: last.location,
@@ -53,7 +58,7 @@ class Lowerer {
       },
     };
 
-    const _lastFunction2: Expression = {
+    const lastFunction: Expression = {
       kind: 'Function',
       parameters: [],
       location: last.location,
@@ -64,13 +69,13 @@ class Lowerer {
           kind: 'KindedObject',
           location: last.location,
           value: {
-            kind: { kind: 'Local', location: last.location, name: 'ROOT' },
+            kind: { kind: 'Local', location: last.location, name: '$$ROOT$$' },
           },
         },
       },
     };
 
-    return [...this.lowerArray(head), _rootWidget, _lastFunction2];
+    return [...this.lowerArray(head), rootWidget, lastFunction];
   }
 
   public lowerArray(
@@ -458,11 +463,11 @@ class Lowerer {
 }
 
 export function lower(expr: Expression[]): Expression[] {
-  return new Lowerer().lowerArray(expr);
+  return new Lowerer().lowerTopLevel(expr);
 }
 
 export function lowerForApp(expr: Expression[]): Expression[] {
-  return new Lowerer().lowerTopLevelArray(expr);
+  return new Lowerer().lowerForApp(expr);
 }
 
 function removeNodes(expr: Expression): boolean {

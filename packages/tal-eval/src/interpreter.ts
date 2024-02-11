@@ -312,7 +312,10 @@ export class VM {
             .createChildWithProvideParent({}, this.ctx);
           this.pushFrame(closure.name, childContext);
         } else {
-          if (closure.call && this.onlySync) {
+          if (
+            closure.call &&
+            ((this.onlySync && closure.callAsync) || !closure.callAsync)
+          ) {
             const [namedArguments, positionalArguments] = resolveArgumentNames(
               closure,
               namedArgs,

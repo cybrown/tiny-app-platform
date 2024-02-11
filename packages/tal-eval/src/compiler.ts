@@ -5,8 +5,6 @@ import { buildIRNode, IRNodeByKind } from './ir-node';
 export class Compiler {
   private functions: Program = {};
 
-  private namesToExport: Set<string> = new Set();
-
   private mainName: string;
 
   constructor(private prefix: string) {
@@ -41,22 +39,6 @@ export class Compiler {
       if (i < expressionToCompile.length - 1) {
         this.appendIRNode('Pop', expr.location, {});
       }
-    }
-
-    if (this.namesToExport.size) {
-      this.appendIRNode('Pop', expressionToCompile[0].location, {});
-      for (let name of this.namesToExport) {
-        this.appendIRNode('Literal', expressionToCompile[0].location, {
-          value: name,
-        });
-        this.appendIRNode('Local', expressionToCompile[0].location, {
-          name,
-        });
-      }
-      this.appendIRNode('Literal', expressionToCompile[0].location, {
-        value: this.namesToExport.size,
-      });
-      this.appendIRNode('MakeObject', expressionToCompile[0].location, {});
     }
 
     return this.functions;
@@ -233,7 +215,9 @@ export class Compiler {
         this.setCurrentLabel(endIfLabel);
         break;
       case 'Try':
-        const catchLabel = value.catchBlock ? this.makeLabel('try_catch') : undefined;
+        const catchLabel = value.catchBlock
+          ? this.makeLabel('try_catch')
+          : undefined;
         const endTryLabel = this.makeLabel('try_end');
         this.appendIRNode('Try', value.location, { catchLabel, endTryLabel });
         this.compile(value.expr);
@@ -376,23 +360,8 @@ export class Compiler {
         });
         break;
       }
-      case 'Export': {
-        switch (value.expr.kind) {
-          case 'DeclareLocal': {
-            if (value.expr.mutable) {
-              throw new Error('Mutable variables can not be exported');
-            }
-            this.namesToExport.add(value.expr.name);
-            this.compile(value.expr);
-            break;
-          }
-          default:
-            throw new Error(
-              'Only immutable values and function definitions can be exported'
-            );
-        }
-        break;
-      }
+      case 'Export':
+        throw new Error('Export expression not supported');
       case 'Switch':
         throw new Error('Switch expression not supported');
       case 'Comment':

@@ -7,8 +7,32 @@ import { AnyForNever } from './core';
 
 class Lowerer {
   public lowerTopLevelArray(expr: Expression[]): Expression[] {
-    const head = expr.slice(0, -1);
-    const last = expr[expr.length - 1];
+    const exportedNames: string[] = [];
+    const result: Expression[] = [];
+    for (let e of expr) {
+      if (e.kind === 'Export') {
+        if (e.expr.kind !== 'DeclareLocal' || e.expr.mutable) {
+          throw new Error(
+            'Only immutable values and function definitions can be exported'
+          );
+        }
+        result.push(e.expr);
+        exportedNames.push(e.expr.name);
+      } else {
+        result.push(e);
+      }
+    }
+    if (exportedNames.length) {
+      result.push({
+        kind: 'Object',
+        value: Object.fromEntries(
+          exportedNames.map(name => [name, { kind: 'Local', name }])
+        ),
+      });
+    }
+
+    const head = result.slice(0, -1);
+    const last = result[result.length - 1];
     if (!last) {
       return [];
     }

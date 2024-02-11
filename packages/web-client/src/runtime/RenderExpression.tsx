@@ -1,4 +1,10 @@
-import { EvaluationError, IRNode, RuntimeContext, VM, run } from "tal-eval";
+import {
+  EvaluationError,
+  IRNode,
+  RuntimeContext,
+  run,
+  runForAllStack,
+} from "tal-eval";
 import styles from "./styles.module.css";
 import React, { useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
@@ -89,8 +95,7 @@ function renderAgain(
     uiClosure.ctx != null &&
     uiClosure.ctx instanceof RuntimeContext
   ) {
-    const vm = new VM(uiClosure.ctx);
-    const runResult = run(vm, (uiClosure as TODO_ANY).name);
+    const runResult = run(uiClosure.ctx, (uiClosure as TODO_ANY).name);
     return (
       <ErrorBoundary
         ctx={ctx}
@@ -226,17 +231,9 @@ function CustomWidgetHost({
     );
   }
 
-  const vm = new VM(childCtx);
-  vm.keepUpmostStack = true;
-  const result = vm.runFunction(widget.name);
-  let ui: unknown;
-  if (result.kind === "FINISHED") {
-    ui = (result.result as unknown[]).filter((a) => a != null);
-  } else if (result.kind === "PENDING") {
-    throw new Error("Async results not supported for widgets");
-  } else {
-    throw result.error;
-  }
+  const ui = (runForAllStack(childCtx, widget.name) as unknown[]).filter(
+    (a) => a != null
+  );
   childCtx.setCreated();
   return <RenderExpression ctx={childCtx} ui={ui} />;
 }

@@ -58,6 +58,9 @@ type FrameState = {
 };
 
 export class VM {
+  // TODO: Find a better way to initialize a VM only for sync evaluation
+  onlySync = false;
+
   // Frame data
   private currentFunctionName: string;
   private currentLabelName: string;
@@ -130,6 +133,7 @@ export class VM {
     this.currentLabelName = 'entry';
   }
 
+  // TODO: Find a better way to handle test runner
   keepUpmostStack = false;
 
   private currentFunction() {
@@ -186,17 +190,31 @@ export class VM {
     return this.run();
   }
 
-  resume(state: VmPendingState): VmExit {
-    // TODO: Resume from rejected promise
+  resume(state: VmPendingState, result: unknown): VmExit {
+    this.restoreVmPendingState(state);
+    this.stack.push(result);
+    return this.run();
+  }
+
+  resumeError(state: VmPendingState, err: unknown): VmExit {
+    this.restoreVmPendingState(state);
+
+    const errorResult = this.handleError(err);
+    if (errorResult == null) {
+      return this.run();
+    }
+    return errorResult;
+  }
+
+  private restoreVmPendingState(state: VmPendingState) {
     this.currentFunctionName = state.func;
     this.currentLabelName = state.label;
     this.pc = state.pc;
-    return this.run();
   }
 
   private run(): VmExit {
     while (true) {
-      runloop: while (this.pc < this.currentLabel().length) {
+      while (this.pc < this.currentLabel().length) {
         try {
           if (this.verbose) {
             const { location, ...opcode } = this.currentOpcode();
@@ -208,37 +226,11 @@ export class VM {
             return exit;
           }
         } catch (err) {
-          while (true) {
-            // Get top most try state and jump to its catch or end label if present
-            const previousTryState = this.tryStack.pop();
-            if (previousTryState) {
-              this.jumpToLabel(
-                previousTryState.catchLabel ?? previousTryState.endTryLabel
-              );
-              this.ctxStack.length = previousTryState.ctxStackLength;
-              continue runloop;
-            }
-
-            // No try state found on current frame, pop current frame
-            // If this is the top most frame, return a result with an ERROR kind
-            if (this.hasFrame()) {
-              this.verbose && console.log('Exception: pop stack');
-              this.popFrame();
-              this.pc++;
-            } else {
-              return {
-                kind: 'ERROR',
-                error:
-                  err instanceof EvaluationError
-                    ? err
-                    : new EvaluationError(
-                        'Uncaught exception',
-                        this.currentOpcode(),
-                        err
-                      ),
-              };
-            }
+          const errorResult = this.handleError(err);
+          if (errorResult == null) {
+            continue;
           }
+          return errorResult;
         }
       }
       if (this.frameStack.length) {
@@ -254,6 +246,40 @@ export class VM {
       kind: 'FINISHED',
       result: this.keepUpmostStack ? this.stack : this.stack.pop(),
     };
+  }
+
+  private handleError(err: unknown): VmExit | null {
+    while (true) {
+      // Get top most try state and jump to its catch or end label if present
+      const previousTryState = this.tryStack.pop();
+      if (previousTryState) {
+        this.jumpToLabel(
+          previousTryState.catchLabel ?? previousTryState.endTryLabel
+        );
+        this.ctxStack.length = previousTryState.ctxStackLength;
+        return null;
+      }
+
+      // No try state found on current frame, pop current frame
+      // If this is the top most frame, return a result with an ERROR kind
+      if (this.hasFrame()) {
+        this.verbose && console.log('Exception: pop stack');
+        this.popFrame();
+        this.pc++;
+      } else {
+        return {
+          kind: 'ERROR',
+          error:
+            err instanceof EvaluationError
+              ? err
+              : new EvaluationError(
+                  'Uncaught exception',
+                  this.currentOpcode(),
+                  err
+                ),
+        };
+      }
+    }
   }
 
   private runOpcode(node: IRNode): VmExit | undefined {
@@ -286,7 +312,7 @@ export class VM {
             .createChildWithProvideParent({}, this.ctx);
           this.pushFrame(closure.name, childContext);
         } else {
-          if (closure.call) {
+          if (closure.call && this.onlySync) {
             const [namedArguments, positionalArguments] = resolveArgumentNames(
               closure,
               namedArgs,
@@ -307,11 +333,11 @@ export class VM {
             );
             return {
               kind: 'PENDING',
-              promise: closure
-                .callAsync(this.ctx, namedArguments, positionalArguments)
-                .then(result => {
-                  this.stack.push(result);
-                }),
+              promise: closure.callAsync(
+                this.ctx,
+                namedArguments,
+                positionalArguments
+              ),
               state: {
                 func: this.currentFunctionName,
                 label: this.currentLabelName,
@@ -356,9 +382,7 @@ export class VM {
       case 'Import': {
         return {
           kind: 'PENDING',
-          promise: resolveModule(this.ctx, node.path).then(module => {
-            this.stack.push(module);
-          }),
+          promise: resolveModule(this.ctx, node.path),
           state: {
             func: this.currentFunctionName,
             label: this.currentLabelName,
@@ -757,6 +781,7 @@ async function resolveModule(
   ctx: RuntimeContext,
   path: string
 ): Promise<unknown> {
+  // TODO: Throw if only sync
   if (!ctx.program) {
     return;
   }
@@ -781,19 +806,19 @@ async function resolveModule(
   const moduleContext = ctx.createWithSameRootLocals().createChild({});
   moduleContext.program = ctx.program;
 
-  const vm = new VM(moduleContext);
-  const moduleReturnValue = await runAsync(vm, path + 'main');
+  const moduleReturnValue = await runAsync(moduleContext, path + 'main');
   ctx.moduleCache.set(normalizedPath, moduleReturnValue);
   return moduleReturnValue;
 }
 
 // TODO: find better API
 export async function runAsync(
-  vm: VM,
+  ctx: RuntimeContext,
   functionName = 'main',
   kwargs?: Record<string, unknown>,
   args?: unknown[]
 ) {
+  const vm = new VM(ctx);
   let result: VmExit;
   if (kwargs && args) {
     result = vm.runFunctionWithArgs(functionName, kwargs, args);
@@ -807,18 +832,49 @@ export async function runAsync(
     if (result.kind == 'ERROR') {
       throw result.error;
     }
-    await result.promise;
-    result = vm.resume(result.state);
+    const resultPending = result;
+    try {
+      result = vm.resume(result.state, await result.promise);
+    } catch (err) {
+      result = vm.resumeError(resultPending.state, err);
+    }
   }
 }
 
 // TODO: find better API
 export function run(
-  vm: VM,
+  ctx: RuntimeContext,
   functionName = 'main',
   kwargs?: Record<string, unknown>,
   args?: unknown[]
 ) {
+  const vm = new VM(ctx);
+  vm.onlySync = true;
+  let result: VmExit;
+  if (kwargs && args) {
+    result = vm.runFunctionWithArgs(functionName, kwargs, args);
+  } else {
+    result = vm.runFunction(functionName);
+  }
+  if (result.kind == 'ERROR') {
+    throw result.error;
+  }
+  if (result.kind == 'PENDING') {
+    throw new Error('Unexpected async result');
+  }
+  return result.result;
+}
+
+// TODO: find better API
+export function runForAllStack(
+  ctx: RuntimeContext,
+  functionName = 'main',
+  kwargs?: Record<string, unknown>,
+  args?: unknown[]
+) {
+  const vm = new VM(ctx);
+  vm.onlySync = true;
+  vm.keepUpmostStack = true;
   let result: VmExit;
   if (kwargs && args) {
     result = vm.runFunctionWithArgs(functionName, kwargs, args);

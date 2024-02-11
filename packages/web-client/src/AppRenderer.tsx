@@ -2,7 +2,6 @@ import { RuntimeContext, Program, runAsync, Closure } from "tal-eval";
 import RenderExpression, { RenderError } from "./runtime/RenderExpression";
 import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
-import { VM } from "tal-eval";
 
 function AppRenderer({
   app,
@@ -25,11 +24,10 @@ function AppRenderer({
         // TODO: Move that elsewhere later
         ctx.declareLocal(APP_DEBUG_MODE_ENV, { mutable: true });
 
-        const vm = new VM(ctx);
-        const uiClosure: Closure = await runAsync(vm) as any;
+        const uiClosure: Closure = await runAsync(ctx) as any;
 
         ctx.endReinit();
-        const ui: any = await runAsync(new VM(uiClosure.ctx), uiClosure.name);
+        const ui: any = await runAsync(uiClosure.ctx, uiClosure.name);
         setAppUi(ui);
         setLastError(null);
       } catch (err) {

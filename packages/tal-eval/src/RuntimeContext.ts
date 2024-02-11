@@ -1,5 +1,5 @@
 import { Closure, Program } from './core';
-import { VM, run, runAsync } from './interpreter';
+import { run, runAsync } from './interpreter';
 import { IRNode } from './ir-node';
 
 class GetLocalError extends Error {
@@ -321,7 +321,7 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return run(new VM(func.ctx), func.name, kwargs, args);
+    return run(func.ctx, func.name, kwargs, args);
   }
 
   async callFunctionAsync(
@@ -330,7 +330,7 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runAsync(new VM(func.ctx), func.name, kwargs, args);
+    return runAsync(func.ctx, func.name, kwargs, args);
   }
 
   createChild(

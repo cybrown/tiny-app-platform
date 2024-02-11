@@ -7,18 +7,46 @@ import { AnyForNever } from './core';
 
 class Lowerer {
   public lowerTopLevelArray(expr: Expression[]): Expression[] {
-    const last = expr.pop();
+    const head = expr.slice(0, -1);
+    const last = expr[expr.length - 1];
     if (!last) {
       return [];
     }
-    const first = this.lowerArray(expr);
-    const lastFunction: Expression = {
+
+    const _rootWidget: Expression = {
+      kind: 'DeclareLocal',
+      location: last.location,
+      mutable: false,
+      name: 'ROOT',
+      value: {
+        kind: 'Function',
+        location: last.location,
+        parameters: [],
+        body: {
+          kind: 'BlockOfExpressions',
+          children: [this.lowerSingle(last)],
+        },
+      },
+    };
+
+    const _lastFunction2: Expression = {
       kind: 'Function',
       parameters: [],
       location: last.location,
-      body: this.lowerSingle(last),
+      body: {
+        kind: 'Function',
+        parameters: [],
+        body: {
+          kind: 'KindedObject',
+          location: last.location,
+          value: {
+            kind: { kind: 'Local', location: last.location, name: 'ROOT' },
+          },
+        },
+      },
     };
-    return [...first, lastFunction];
+
+    return [...this.lowerArray(head), _rootWidget, _lastFunction2];
   }
 
   public lowerArray(

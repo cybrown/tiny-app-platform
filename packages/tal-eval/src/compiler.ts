@@ -313,11 +313,13 @@ export class Compiler {
           const expr = value.children[i];
           this.compile(expr);
           if (i < value.children.length - 1) {
-            this.appendIRNode('Pop', value.location, { inBlock: true });
+            this.appendIRNode('Pop', value.location, {
+              inBlock: !value.forceNotWidget,
+            });
           }
         }
         this.appendIRNode('ScopeLeave', value.location, {
-          inBlock: true,
+          inBlock: !value.forceNotWidget,
           count: value.children.length,
         });
         break;

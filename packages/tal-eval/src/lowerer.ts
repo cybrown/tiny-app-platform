@@ -200,6 +200,7 @@ class Lowerer {
         if (expr.operator == '&&') {
           return {
             kind: 'BlockOfExpressions',
+            forceNotWidget: true,
             children: [
               {
                 kind: 'DeclareLocal',
@@ -229,6 +230,7 @@ class Lowerer {
         if (expr.operator == '||') {
           return {
             kind: 'BlockOfExpressions',
+            forceNotWidget: true,
             children: [
               {
                 kind: 'DeclareLocal',

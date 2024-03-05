@@ -127,6 +127,7 @@ export type BinaryOperatorExpression = ExpressionMetadata & {
 export type BlockOfExpressionsExpression = ExpressionMetadata & {
   kind: 'BlockOfExpressions';
   children: Expression[];
+  forceNotWidget?: boolean;
   // Used by function calls when the body is directly a block of expression
   // There's no need to create a child context in those cases
   mustKeepContext?: boolean;

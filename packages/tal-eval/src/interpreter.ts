@@ -51,8 +51,6 @@ type FrameState = {
   pc: number;
   stack: unknown[];
   tryStack: TryState[];
-  isInsideWidget: boolean;
-  widgetStateFlagConsumed: boolean;
   ctx: RuntimeContext;
   ctxStack: RuntimeContext[];
 };
@@ -67,8 +65,6 @@ export class VM {
   private stack: unknown[] = [];
   private pc: number = 0;
   private tryStack: TryState[] = [];
-  private isInsideWidget = false;
-  private widgetStateFlagConsumed = false;
   private ctx: RuntimeContext;
   private ctxStack: RuntimeContext[] = [];
 
@@ -81,8 +77,6 @@ export class VM {
       pc: this.pc,
       stack: this.stack,
       tryStack: this.tryStack,
-      isInsideWidget: this.isInsideWidget,
-      widgetStateFlagConsumed: this.widgetStateFlagConsumed,
       ctxStack: this.ctxStack,
       ctx: this.ctx,
     });
@@ -102,8 +96,6 @@ export class VM {
     this.pc = 0;
     this.stack = [];
     this.tryStack = [];
-    this.isInsideWidget = false;
-    this.widgetStateFlagConsumed = false;
     this.ctxStack = [];
   }
 
@@ -128,7 +120,6 @@ export class VM {
   constructor(ctx: RuntimeContext, private verbose = false) {
     this.ctx = ctx;
     this.ctxStack = [this.ctx];
-    this.isInsideWidget = this.ctx.isWidgetState;
     this.currentFunctionName = 'main';
     this.currentLabelName = 'entry';
   }
@@ -452,15 +443,7 @@ export class VM {
         break;
       }
       case 'Pop': {
-        if (
-          !(
-            this.keepUpmostStack &&
-            this.frameStack.length == 0 &&
-            this.ctxStack.length == 0
-          )
-        ) {
-          this.stack.pop();
-        }
+        this.stack.pop();
         this.pc++;
         break;
       }
@@ -477,22 +460,13 @@ export class VM {
         break;
       }
       case 'ScopeEnter': {
-        // First scope inside a widget is the initial function call, do not create a new context for it
-        if (this.isInsideWidget && !this.widgetStateFlagConsumed) {
-          this.widgetStateFlagConsumed = true;
-        } else {
-          const newCtx = this.ctx.createChild({});
-          this.pushContext(newCtx);
-        }
+        const newCtx = this.ctx.createChild({});
+        this.pushContext(newCtx);
         this.pc++;
         break;
       }
       case 'ScopeLeave': {
-        if (this.ctxStack.length === 0 && this.widgetStateFlagConsumed) {
-          this.widgetStateFlagConsumed = false;
-        } else {
-          this.popContext();
-        }
+        this.popContext();
         this.pc++;
         break;
       }

@@ -1,0 +1,6 @@
+try {
+    async_throw()
+    "end try"
+} catch {
+    "ok"
+}

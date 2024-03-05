@@ -1,7 +1,8 @@
 import { RuntimeContext, Program, runAsync, Closure } from "tal-eval";
-import RenderExpression, { RenderError } from "./runtime/RenderExpression";
+import RenderExpression from "./runtime/RenderExpression";
 import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
+import RenderError from "./runtime/RenderError";
 
 function AppRenderer({
   app,

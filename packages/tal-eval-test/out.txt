@@ -1,0 +1,88 @@
+{
+  "main": {
+    "parameters": [],
+    "body": {
+      "entry": [
+        {
+          "kind": "Literal",
+          "value": "1"
+        },
+        {
+          "kind": "DeclareLocal",
+          "name": "a",
+          "mutable": false,
+          "hasInitialValue": true
+        },
+        {
+          "kind": "ScopeEnter"
+        },
+        {
+          "kind": "Literal",
+          "value": "2"
+        },
+        {
+          "kind": "DeclareLocal",
+          "name": "a",
+          "mutable": false,
+          "hasInitialValue": true
+        },
+        {
+          "kind": "Pop"
+        },
+        {
+          "kind": "Local",
+          "name": "a"
+        },
+        {
+          "kind": "ScopeLeave"
+        },
+        {
+          "kind": "Local",
+          "name": "a"
+        },
+        {
+          "kind": "Literal",
+          "value": 3
+        },
+        {
+          "kind": "MakeArray"
+        }
+      ]
+    }
+  }
+}
+{ kind: 'Literal', value: '1' }
+[ '1' ]
+{
+  kind: 'DeclareLocal',
+  name: 'a',
+  mutable: false,
+  hasInitialValue: true
+}
+[ undefined ]
+{ kind: 'ScopeEnter' }
+[ undefined ]
+{ kind: 'Literal', value: '2' }
+[ undefined, '2' ]
+{
+  kind: 'DeclareLocal',
+  name: 'a',
+  mutable: false,
+  hasInitialValue: true
+}
+[ undefined, undefined ]
+{ kind: 'Pop' }
+[ undefined ]
+{ kind: 'Local', name: 'a' }
+[ undefined, '2' ]
+{ kind: 'ScopeLeave' }
+[ undefined, '2' ]
+{ kind: 'Local', name: 'a' }
+[ undefined, '2', '1' ]
+{ kind: 'Literal', value: 3 }
+[ undefined, '2', '1', 3 ]
+{ kind: 'MakeArray' }
+[ [ undefined, '2', '1' ] ]
+<void>
+"2"
+"1"

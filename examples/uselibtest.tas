@@ -1,0 +1,7 @@
+let libtest = import "libtest"
+
+log(libtest)
+
+fun App() { libtest.Hello { text: "World !" } }
+
+App {}

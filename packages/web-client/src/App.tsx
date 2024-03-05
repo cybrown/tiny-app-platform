@@ -226,7 +226,12 @@ function App() {
         return;
       }
       try {
-        setApp(compile(lowerForApp(tal.parse(newSource, path))));
+        // TODO: Remove this
+        const hlast = tal.parse(newSource, path);
+        const llast = lowerForApp(hlast);
+        const bin = compile(llast);
+        console.log({hlast, llast, bin})
+        setApp(bin);
       } catch (err) {
         setParseError(err as Error);
         setApp(null);

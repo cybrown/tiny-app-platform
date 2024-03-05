@@ -1,0 +1,23 @@
+let a = "AA"
+var user = "me"
+
+fun Toto(v) {
+  var text = "a"
+
+  Column {
+    InputText { bindTo: text }
+    Text { text: text + " ok " + v }
+  }
+}
+
+Column {
+  Text { text: "Hello, World !" }
+  Text { text: a }
+  Text { text: "User: " + user }
+  InputText { bindTo: user }
+  Toto { v: user }
+  Button {
+    text:    "Click me"
+    onClick: () => { set user = "clicked !" }
+  }
+}

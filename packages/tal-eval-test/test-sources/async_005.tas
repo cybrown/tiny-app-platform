@@ -1,0 +1,1 @@
+array_map_parallel([1, 2, 3, 4, 5], value => add_one_sleep(value))

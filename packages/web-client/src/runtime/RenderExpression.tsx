@@ -1,7 +1,7 @@
 import { RuntimeContext, runForAllStack } from "tal-eval";
-import React, { ReactElement, ReactNode, useCallback, useRef } from "react";
+import { ReactNode, useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
-import { Closure, TODO_ANY } from "tal-eval/dist/core";
+import { Closure } from "tal-eval/dist/core";
 import Text from "../widgets/Text";
 import ErrorBoundary from "./ErrorBoundary";
 import CustomWidgetHost from "./CustomWidgetHost";
@@ -27,11 +27,12 @@ export default function RenderExpression({
         </>
       );
     }
+    let valueToReturn: ReactNode = null;
     if (isClosure(ui)) {
       const a = runForAllStack(ui.ctx, (ui as any).name);
-      return <RenderExpression ctx={ui.ctx} ui={a} />;
+      valueToReturn = <RenderExpression ctx={ui.ctx} ui={a} />;
     } else if (isCustomWidget(ui)) {
-      return (
+      valueToReturn = (
         <CustomWidgetHost
           ctx={ui.ctx}
           widget={ui.kind}
@@ -40,13 +41,33 @@ export default function RenderExpression({
         />
       );
     } else if (isNativeWidget(ui)) {
-      return (
+      valueToReturn = (
         <ui.kind ctx={ui.ctx} {...ui.props}>
           {ui.children}
         </ui.kind>
       );
+    } else if (typeof ui === "string" || typeof ui === "number") {
+      valueToReturn = <Text text={String(ui)} />;
+    } else if (ui != null) {
+      valueToReturn = <Debug value={ui} />;
     }
-    return null;
+    return (
+      <ErrorBoundary
+        ctx={ctx}
+        onError={(err, retry) => (
+          <RenderError
+            phase="render"
+            expression={
+              /*expression ?? (evaluatedUI as any).kind ?? null*/ null
+            }
+            err={err}
+            retry={retry}
+          />
+        )}
+      >
+        {valueToReturn}
+      </ErrorBoundary>
+    );
   } catch (err) {
     return (
       <RenderError

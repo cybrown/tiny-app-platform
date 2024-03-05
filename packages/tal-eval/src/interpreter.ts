@@ -443,7 +443,9 @@ export class VM {
         break;
       }
       case 'Pop': {
-        this.stack.pop();
+        if (!node.inBlock || !this.keepUpmostStack) {
+          this.stack.pop();
+        }
         this.pc++;
         break;
       }
@@ -467,6 +469,13 @@ export class VM {
       }
       case 'ScopeLeave': {
         this.popContext();
+        if (node.inBlock && this.keepUpmostStack) {
+          const array = [];
+          for (let i = 0; i < node.count; i++) {
+            array.unshift(this.stack.pop());
+          }
+          this.stack.push(array);
+        }
         this.pc++;
         break;
       }

@@ -37,7 +37,7 @@ export class Compiler {
       const expr = expressionToCompile[i];
       this.compile(expr);
       if (i < expressionToCompile.length - 1) {
-        this.appendIRNode('Pop', expr.location, {});
+        this.appendIRNode('Pop', expr.location, { inBlock: false });
       }
     }
 
@@ -241,7 +241,7 @@ export class Compiler {
         this.appendIRNode('Provide', value.location, {});
         this.compile(value.body);
         for (let i = 0; i < value.entries.length; i++) {
-          this.appendIRNode('ScopeLeave', value.location, {});
+          this.appendIRNode('ScopeLeave', value.location, { inBlock: false });
         }
         break;
       case 'Provided':
@@ -313,10 +313,13 @@ export class Compiler {
           const expr = value.children[i];
           this.compile(expr);
           if (i < value.children.length - 1) {
-            this.appendIRNode('Pop', value.location, {});
+            this.appendIRNode('Pop', value.location, { inBlock: true });
           }
         }
-        this.appendIRNode('ScopeLeave', value.location, {});
+        this.appendIRNode('ScopeLeave', value.location, {
+          inBlock: true,
+          count: value.children.length,
+        });
         break;
 
       // UI Widgets

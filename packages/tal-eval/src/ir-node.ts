@@ -46,8 +46,7 @@ export type IRNodeTry = {
   endTryLabel: string;
 } & IRNodeMetadata;
 
-export type IRNodeTryPop = {
-} & IRNodeMetadata;
+export type IRNodeTryPop = {} & IRNodeMetadata;
 
 export type IRNodeCall = {} & IRNodeMetadata;
 
@@ -72,9 +71,13 @@ export type IRNodeIntrinsic = {
 
 export type IRNodeScopeEnter = {} & IRNodeMetadata;
 
-export type IRNodeScopeLeave = {} & IRNodeMetadata;
+export type IRNodeScopeLeave = (
+  | { inBlock: false; count?: undefined }
+  | { inBlock: true; count: number }
+) &
+  IRNodeMetadata;
 
-export type IRNodePop = {} & IRNodeMetadata;
+export type IRNodePop = { inBlock: boolean } & IRNodeMetadata;
 
 export type IRNodeKinded = {} & IRNodeMetadata;
 

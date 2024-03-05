@@ -53,6 +53,7 @@ type FrameState = {
   tryStack: TryState[];
   ctx: RuntimeContext;
   ctxStack: RuntimeContext[];
+  keepUpmostStack: boolean;
 };
 
 export class VM {
@@ -67,6 +68,8 @@ export class VM {
   private tryStack: TryState[] = [];
   private ctx: RuntimeContext;
   private ctxStack: RuntimeContext[] = [];
+  // TODO: Find a better way to handle test runner and inside widget
+  keepUpmostStack = false;
 
   private frameStack: FrameState[] = [];
 
@@ -79,6 +82,7 @@ export class VM {
       tryStack: this.tryStack,
       ctxStack: this.ctxStack,
       ctx: this.ctx,
+      keepUpmostStack: this.keepUpmostStack,
     });
     this.resetFrameData(functionName);
     this.ctx = ctx;
@@ -97,6 +101,7 @@ export class VM {
     this.stack = [];
     this.tryStack = [];
     this.ctxStack = [];
+    this.keepUpmostStack = false;
   }
 
   private hasFrame(): boolean {
@@ -115,6 +120,7 @@ export class VM {
     this.tryStack = topFrame.tryStack;
     this.ctxStack = topFrame.ctxStack;
     this.ctx = topFrame.ctx;
+    this.keepUpmostStack = topFrame.keepUpmostStack;
   }
 
   constructor(ctx: RuntimeContext, private verbose = false) {
@@ -123,9 +129,6 @@ export class VM {
     this.currentFunctionName = 'main';
     this.currentLabelName = 'entry';
   }
-
-  // TODO: Find a better way to handle test runner
-  keepUpmostStack = false;
 
   private currentFunction() {
     const currentFunction = this.ctx.program![this.currentFunctionName];

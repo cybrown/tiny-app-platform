@@ -38,7 +38,7 @@ function httpRequest(method, urlStr, headers, body) {
               response.headers["x-set-cookie"] = response.headers["set-cookie"];
             }
             return resolve(
-              createResponse(response.status, response.headers, body)
+              createResponse(response.statusCode, response.headers, body)
             );
           })
           .catch(reject);

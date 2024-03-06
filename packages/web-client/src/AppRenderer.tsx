@@ -1,7 +1,8 @@
-import { IRNode, RuntimeContext, Program, buildIRNode } from "tal-eval";
-import RenderExpression, { RenderError } from "./runtime/RenderExpression";
+import { RuntimeContext, Program, runAsync, Closure } from "tal-eval";
+import RenderExpression from "./runtime/RenderExpression";
 import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
+import RenderError from "./runtime/RenderError";
 
 function AppRenderer({
   app,
@@ -10,7 +11,7 @@ function AppRenderer({
   app: Program | null;
   ctx: RuntimeContext;
 }) {
-  const [appUi, setAppUi] = useState(null as IRNode | null);
+  const [appUi, setAppUi] = useState(null as unknown);
   const [lastError, setLastError] = useState<unknown>(null);
   const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
 
@@ -23,24 +24,12 @@ function AppRenderer({
         ctx.beginReinit();
         // TODO: Move that elsewhere later
         ctx.declareLocal(APP_DEBUG_MODE_ENV, { mutable: true });
-        const irNodes =
-          app["main"].body.kind === "Block"
-            ? app["main"].body.children
-            : [app["main"].body];
-        for (let expression of irNodes.slice(0, -1)) {
-          await ctx.evaluateAsync(expression);
-        }
+
+        const uiClosure: Closure = await runAsync(ctx) as any;
+
         ctx.endReinit();
-        const lastExpr = irNodes.at(-1);
-        setAppUi({
-          kind: "Kinded",
-          children: [
-            buildIRNode("Local", lastExpr?.location, { name: "Column" }),
-            buildIRNode("MakeArray", lastExpr?.location, {
-              children: lastExpr ? [lastExpr] : [],
-            }),
-          ],
-        });
+        const ui: any = await runAsync(uiClosure.ctx, uiClosure.name);
+        setAppUi(ui);
         setLastError(null);
       } catch (err) {
         setLastError(err);
@@ -57,7 +46,7 @@ function AppRenderer({
       retry={retry}
     />
   ) : appUi ? (
-    <RenderExpression ctx={ctx} expression={appUi} />
+    <RenderExpression ctx={ctx} ui={appUi} />
   ) : null;
 }
 

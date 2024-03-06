@@ -14,13 +14,9 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Button, { ButtonDocumentation } from "./widgets/Button";
 import CheckBox, { CheckBoxDocumentation } from "./widgets/CheckBox";
 import InputFile, { InputFileDocumentation } from "./widgets/InputFile";
-import HorizontalLayout, {
-  HorizontalLayoutDocumentation,
-} from "./widgets/HorizontalLayout";
 import Text, { TextDocumentation } from "./widgets/Text";
 import Radio, { RadioDocumentation } from "./widgets/Radio";
 import Link, { LinkDocumentation } from "./widgets/Link";
-import ListLayout, { ListLayoutDocumentation } from "./widgets/ListLayout";
 import Select, { SelectDocumentation } from "./widgets/Select";
 import Table, { TableDocumentation } from "./widgets/Table";
 import InputText, { InputTextDocumentation } from "./widgets/InputText";
@@ -50,6 +46,7 @@ import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import darkOrangeTheme from "./themes/dark-orange";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
+import { lowerForApp } from "tal-eval";
 
 const queryParams = window.location.search
   .slice(1)
@@ -141,17 +138,11 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Button", Button, ButtonDocumentation);
   ctx.registerWidget("CheckBox", CheckBox, CheckBoxDocumentation);
   ctx.registerWidget("Column", Column, ColumnDocumentation);
-  ctx.registerWidget(
-    "HorizontalLayout",
-    HorizontalLayout,
-    HorizontalLayoutDocumentation
-  );
   ctx.registerWidget("Debug", Debug, DebugDocumentation);
   ctx.registerWidget("Image", Image, ImageDocumentation);
   ctx.registerWidget("InputFile", InputFile, InputFileDocumentation);
   ctx.registerWidget("InputText", InputText, InputTextDocumentation);
   ctx.registerWidget("Link", Link, LinkDocumentation);
-  ctx.registerWidget("ListLayout", ListLayout, ListLayoutDocumentation);
   ctx.registerWidget("Loader", Loader, LoaderDocumentation);
   ctx.registerWidget("Html", Html, HtmlDocumentation);
   ctx.registerWidget("Layout", Layout, LayoutDocumentation);
@@ -235,7 +226,10 @@ function App() {
         return;
       }
       try {
-        setApp(compile(tal.parse(newSource, path)));
+        const hlast = tal.parse(newSource, path);
+        const llast = lowerForApp(hlast);
+        const bin = compile(llast);
+        setApp(bin);
       } catch (err) {
         setParseError(err as Error);
         setApp(null);

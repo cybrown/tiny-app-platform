@@ -1,0 +1,7 @@
+export fun BigText(text) { Text { text: text, size: 2 } }
+
+fun concat(text) { text + " !!!!" }
+
+export fun Hello(text) { BigText { text: "Hello " + concat(text) } }
+
+log("LIBLIB")

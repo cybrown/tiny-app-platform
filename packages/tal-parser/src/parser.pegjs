@@ -30,7 +30,7 @@ Document
         { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
 
 TopLevelExpression
-    = 'export' _ expr:Expression
+    = 'export' __ expr:Expression
         { return { kind: 'Export', expr }; }
     / Expression
 
@@ -118,9 +118,9 @@ ExpressionLevel1
     / LocalDeclaration
     / NamedFunction
     / Function
-	/ ObjectWithKind
+	/ KindedRecord
     / Local
-    / Object
+    / Record
     / BlockOfExpressions
     / String
     / Number
@@ -137,7 +137,7 @@ Comment_text
         { return text(); }
 
 Import
-    = 'import' _ path:RawString
+    = 'import' __ path:RawString
         { return { location: buildLocation(), kind: "Import", path }; }
 
 If
@@ -187,7 +187,7 @@ SubExpression
     	{ return { location: buildLocation(), kind: 'SubExpression', expr }; }
 
 NamedFunction
-    = 'fun' _ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression
+    = 'fun' __ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression
         { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
 
 Function
@@ -196,14 +196,14 @@ Function
     / parameter:(Identifier) _ '=>' _ body:Expression
         { return { location: buildLocation(), kind: "Function", body: body, parameters: [parameter] }; }
 
-ObjectWithKind
-    = kind:DottedExpression _ "{" _ values:((ObjectWithKindKeyValuePair / Expression) _ ','? _)* "}"
+KindedRecord
+    = kind:DottedExpression _ "{" _ values:((KindedRecordKeyValuePair / Expression) _ ','? _)* "}"
         {
             const children = values.filter(a => !Array.isArray(a[0]))
                 .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
             return {
                 location: buildLocation(),
-                kind: "KindedObject",
+                kind: "KindedRecord",
                 value: {
                     kind: kind,
                     ...(children.length ? {children} : {}),
@@ -225,27 +225,27 @@ DottedExpressionTail
 	= _ '.' _ key:Identifier
     	{ return { location: buildLocation(), kind: 'Attribute', key }; }
 
-ObjectWithKindKeyValuePair
-    = key:ObjectKey _ ":" _ value:Expression
+KindedRecordKeyValuePair
+    = key:RecordKey _ ":" _ value:Expression
     	{
             if (key === 'kind') {
-                error("Object with kind must not have a key called 'kind'")
+                error("Record with kind must not have a key called 'kind'")
             }
             if (key === 'children') {
-                error("Object with kind must not have a key called 'children'")
+                error("Record with kind must not have a key called 'children'")
             }
             return [key, value];
         }
 
-Object
-	= "{" _ entries:(ObjectKeyValuePair _)* "}"
-    	{ return { location: buildLocation(), kind: "Object", value: Object.fromEntries(entries.map(a => a[0])) }; }
+Record
+	= "{" _ entries:(RecordKeyValuePair _)* "}"
+    	{ return { location: buildLocation(), kind: "Record", value: Object.fromEntries(entries.map(a => a[0])) }; }
 
-ObjectKeyValuePair
-	= key:ObjectKey _ ':' _ value:Expression (_ ',')?
+RecordKeyValuePair
+	= key:RecordKey _ ':' _ value:Expression (_ ',')?
     	{ return [key, value]; }
 
-ObjectKey
+RecordKey
     = Identifier
     / RawString
 
@@ -326,11 +326,11 @@ IdentifierTailCharacters
     = [A-Za-z_$0-9]
 
 Assignement
-    = "set" _ address:Expression _ '=' _ value:Expression
+    = "set" __ address:Expression _ '=' _ value:Expression
         { return { location: buildLocation(), kind: "Assign", address, value }; }
 
 LocalDeclaration
-    = keyword:("let" / "var") ! IdentifierTailCharacters _ name:Identifier value:(_ '=' _ Expression)?
+    = keyword:("let" / "var") ! IdentifierTailCharacters __ name:Identifier value:(_ '=' _ Expression)?
         { return { location: buildLocation(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
 
 BlockOfExpressions
@@ -343,4 +343,8 @@ ManyExpressions
 
 _ "whitespace"
 	= chars:([ \t\n\r]*)
+    	{ return [...chars].filter(c => c === "\n").length; }
+
+__ "mandatory whitespace"
+	= chars:([ \t\n\r]+)
     	{ return [...chars].filter(c => c === "\n").length; }

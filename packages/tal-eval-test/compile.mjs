@@ -65,18 +65,18 @@ try {
   const program = compile(expressions);
   Object.entries(program).forEach(([name, { parameters, body }]) => {
     process.stdout.write(name + ": " + parameters.map(p => p.name).join(", ") + "\n");
-    printIrNode(body);
+    printOpcode(body);
   });
 } catch (err) {
   process.stdout.write("<error: '" + err.stack + "'>");
 }
 
-function printIrNode(node, space = "  ") {
+function printOpcode(node, space = "  ") {
   const { kind, children, location, ...rest } = node;
   process.stdout.write(space + kind);
   if (Object.entries(rest).length > 0) {
     process.stdout.write(" " + JSON.stringify(rest));
   }
   process.stdout.write("\n");
-  (children ?? []).forEach((subNode) => printIrNode(subNode, space + "  "));
+  (children ?? []).forEach((subNode) => printOpcode(subNode, space + "  "));
 }

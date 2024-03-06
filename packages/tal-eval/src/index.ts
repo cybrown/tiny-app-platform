@@ -6,7 +6,8 @@ export {
   FetchedSource,
 } from './RuntimeContext';
 export { compile } from './compiler';
-export { run, runAsync, EvaluationError, runNode } from './interpreter';
+export { run, runForAllStack, runAsync, EvaluationError } from './interpreter';
 export { Program, Closure } from './core';
-export * from './ir-node';
+export { lower, lowerForApp } from './lowerer';
+export * from './opcodes';
 export * from './metadata';

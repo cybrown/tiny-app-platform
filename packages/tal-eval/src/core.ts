@@ -1,5 +1,5 @@
 import { RuntimeContext } from './RuntimeContext';
-import { IRNode } from './ir-node';
+import { Opcode } from './opcodes';
 
 export type NativeFunctionBinding = {
   parameters: [{ name: string }];
@@ -20,9 +20,14 @@ export type ParameterDef = {
   onlyNamed?: boolean;
 };
 
+export type FunctionBody = {
+  entry: Opcode[];
+  [key: string]: Opcode[];
+}
+
 export type FunctionDef = {
   parameters: ParameterDef[];
-  body: IRNode;
+  body: FunctionBody;
 };
 
 export type Program = { [key: string]: FunctionDef };

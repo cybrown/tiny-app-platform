@@ -48,6 +48,7 @@ export type ExpressionMetadata = {
 export type LiteralExpression = ExpressionMetadata & {
   kind: 'Literal';
   value: null | boolean | number | string;
+  doRemoveFromBlock?: boolean;
 };
 
 export type IfExpression = ExpressionMetadata & {
@@ -88,9 +89,9 @@ export type ArgumentExpression =
     }
   | { argKind: 'Named'; name: string; value: Expression };
 
-export type ObjectExpression = ExpressionMetadata & {
-  kind: 'Object';
-  value: object;
+export type RecordExpression = ExpressionMetadata & {
+  kind: 'Record';
+  value: Record<string, Expression>;
 };
 
 export type AssignExpression = ExpressionMetadata & {
@@ -126,6 +127,7 @@ export type BinaryOperatorExpression = ExpressionMetadata & {
 export type BlockOfExpressionsExpression = ExpressionMetadata & {
   kind: 'BlockOfExpressions';
   children: Expression[];
+  forceNotWidget?: boolean;
   // Used by function calls when the body is directly a block of expression
   // There's no need to create a child context in those cases
   mustKeepContext?: boolean;
@@ -138,9 +140,13 @@ export type DeclareLocalExpression = ExpressionMetadata & {
   mutable: boolean;
 };
 
-export type KindedObjectExpression = ExpressionMetadata & {
-  kind: 'KindedObject';
-  value: { kind: Expression; [key: string]: unknown };
+export type KindedRecordExpression = ExpressionMetadata & {
+  kind: 'KindedRecord';
+  value: {
+    kind: Expression;
+    children?: Expression[];
+    [key: string]: Expression | Expression[] | undefined;
+  };
 };
 
 export type ArrayExpression = ExpressionMetadata & {
@@ -150,6 +156,7 @@ export type ArrayExpression = ExpressionMetadata & {
 
 export type FunctionExpression = ExpressionMetadata & {
   kind: 'Function';
+  name?: string;
   parameters: string[];
   body: Expression;
 };
@@ -195,14 +202,19 @@ export type ExportExpression = ExpressionMetadata & {
   expr: Expression;
 };
 
+export type IntrinsicExpression = ExpressionMetadata & {
+  kind: 'Intrinsic';
+  op: 'ForceRender';
+};
+
 export type ExpressionByKind = {
   Literal: LiteralExpression;
-  Local: LocalExpression;
-  Attribute: AttributeExpression;
-  Index: IndexExpression;
+  Addressable: AddressableExpression;
   Array: ArrayExpression;
+  Record: RecordExpression;
   If: IfExpression;
-  Object: ObjectExpression;
+  Switch: SwitchExpression;
+  Try: TryExpression;
   Assign: AssignExpression;
   Function: FunctionExpression;
   Call: CallExpression;
@@ -212,39 +224,28 @@ export type ExpressionByKind = {
   BinaryOperator: BinaryOperatorExpression;
   BlockOfExpressions: BlockOfExpressionsExpression;
   DeclareLocal: DeclareLocalExpression;
-  KindedObject: KindedObjectExpression;
+  KindedRecord: KindedRecordExpression;
+  Provide: ProvideExpression;
+  Provided: ProvidedExpression;
   Import: ImportExpression;
   Export: ExportExpression;
   Comment: CommentExpression;
+  Intrinsic: IntrinsicExpression;
 };
 
-export type Expression =
-  | LiteralExpression
-  | AddressableExpression
-  | ArrayExpression
-  | ObjectExpression
-  | IfExpression
-  | SwitchExpression
-  | TryExpression
-  | AssignExpression
-  | FunctionExpression
-  | CallExpression
-  | SubExpressionExpression
-  | PipeExpression
-  | UnaryOperatorExpression
-  | BinaryOperatorExpression
-  | BlockOfExpressionsExpression
-  | DeclareLocalExpression
-  | KindedObjectExpression
-  | ProvideExpression
-  | ProvidedExpression
-  | ImportExpression
-  | ExportExpression
-  | CommentExpression;
+export type Expression = ExpressionByKind[keyof ExpressionByKind];
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
   expr: Expression,
   kind: Kind
 ): expr is ExpressionByKind[Kind] {
   return expr !== null && typeof expr == 'object' && expr.kind == kind;
+}
+
+export function isAddressableExpression(
+  expr: Expression
+): expr is AddressableExpression {
+  return (
+    expr.kind === 'Local' || expr.kind === 'Index' || expr.kind === 'Attribute'
+  );
 }

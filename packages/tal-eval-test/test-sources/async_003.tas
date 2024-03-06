@@ -1,0 +1,7 @@
+try {
+    only_async()
+    unknown_variable
+    "end try"
+} catch {
+    "ok"
+}

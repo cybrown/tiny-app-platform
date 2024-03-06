@@ -7,9 +7,9 @@ import {
   FunctionExpression,
   IfExpression,
   isExpr,
-  KindedObjectExpression,
+  KindedRecordExpression,
   LiteralExpression,
-  ObjectExpression,
+  RecordExpression,
   PipeExpression,
   AssignExpression,
   SubExpressionExpression,
@@ -131,10 +131,10 @@ class Stringifier {
         return this.stringify(obj.value) + '.' + obj.key;
       case 'Array':
         return this.stringifyArray(obj.value, false);
-      case 'Object':
-        return this.stringifyObject(obj);
-      case 'KindedObject':
-        return this.stringifyKindedObject(obj);
+      case 'Record':
+        return this.stringifyRecord(obj);
+      case 'KindedRecord':
+        return this.stringifyKindedRecord(obj);
       case 'Provide':
         return this.stringifyProvide(obj);
       case 'Provided':
@@ -241,18 +241,18 @@ class Stringifier {
 
   stringifyPipeMultiline(obj: PipeExpression): string {
     let result = '';
-    const isLeftKindedObject = obj.first.kind == 'KindedObject';
-    if (!isLeftKindedObject) {
+    const isLeftKindedRecord = obj.first.kind == 'KindedRecord';
+    if (!isLeftKindedRecord) {
       this.incrementDepth();
       this.incrementDepth();
     }
     result += this.stringify(obj.first);
-    if (!isLeftKindedObject) {
+    if (!isLeftKindedRecord) {
       this.decrementDepth();
     }
     for (let index = 0; index < obj.values.length; index++) {
       const value = obj.values[index];
-      if (isLeftKindedObject) {
+      if (isLeftKindedRecord) {
         if (index != 0) {
           result += '\n';
           result += this.depthSpace();
@@ -261,12 +261,12 @@ class Stringifier {
         result += '\n';
         result += this.depthSpace();
       }
-      result += (isLeftKindedObject ? (index == 0 ? ' ' : '  ') : ' ') + '| ';
+      result += (isLeftKindedRecord ? (index == 0 ? ' ' : '  ') : ' ') + '| ';
       this.incrementDepth();
       result += this.stringify(value);
       this.decrementDepth();
     }
-    if (!isLeftKindedObject) {
+    if (!isLeftKindedRecord) {
       this.decrementDepth();
     }
     return result;
@@ -389,16 +389,16 @@ class Stringifier {
   }
 
   // TODO: Deprecated
-  stringifyKindedObject(obj: KindedObjectExpression): string {
+  stringifyKindedRecord(obj: KindedRecordExpression): string {
     const result = this.stringify(obj.value.kind) + ' ';
-    let bodyResult = this.stringifyKindedObjectBodySingleline(obj);
+    let bodyResult = this.stringifyKindedRecordBodySingleline(obj);
     if (bodyResult.includes('\n') || bodyResult.length > 40) {
-      bodyResult = this.stringifyKindedObjectBodyMultiline(obj);
+      bodyResult = this.stringifyKindedRecordBodyMultiline(obj);
     }
     return result + bodyResult;
   }
 
-  stringifyKindedObjectBodySingleline(obj2: KindedObjectExpression): string {
+  stringifyKindedRecordBodySingleline(obj2: KindedRecordExpression): string {
     const obj = obj2.value;
     const entries = Object.entries(obj);
     if (
@@ -419,7 +419,7 @@ class Stringifier {
           (entry[0] === 'children' && !Array.isArray(obj.children))
       )
       .map(([key, value]) => {
-        const stringifiedKey = this.stringifyObjectKey(key);
+        const stringifiedKey = this.stringifyRecordKey(key);
         return stringifiedKey + ': ' + this.stringify(value as any);
       })
       .join(', ');
@@ -436,7 +436,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyKindedObjectBodyMultiline(obj2: KindedObjectExpression): string {
+  stringifyKindedRecordBodyMultiline(obj2: KindedRecordExpression): string {
     const obj = obj2.value;
     const entries = Object.entries(obj);
     let result = '';
@@ -456,7 +456,7 @@ class Stringifier {
       }
       longestEntry = Math.max(
         longestEntry,
-        this.stringifyObjectKey(entry[0]).length
+        this.stringifyRecordKey(entry[0]).length
       );
     }
     result = '{\n';
@@ -470,7 +470,7 @@ class Stringifier {
           (entry[0] === 'children' && !Array.isArray(obj.children))
       )
       .forEach(([key, value]) => {
-        const stringifiedKey = this.stringifyObjectKey(key);
+        const stringifiedKey = this.stringifyRecordKey(key);
         hasNamedAttributes = true;
         result +=
           this.depthSpace() +
@@ -519,7 +519,7 @@ class Stringifier {
         .map((arg: any) => {
           if (arg.argKind === 'Named') {
             return (
-              this.stringifyObjectKey(arg.name) +
+              this.stringifyRecordKey(arg.name) +
               ': ' +
               this.stringify(arg.value)
             );
@@ -681,13 +681,13 @@ class Stringifier {
       if (entry.argKind === 'Named') {
         longestEntry = Math.max(
           longestEntry,
-          this.stringifyObjectKey(entry.name).length
+          this.stringifyRecordKey(entry.name).length
         );
       }
     }
     obj.args.forEach((arg: any) => {
       if (arg.argKind === 'Named') {
-        const identifier = this.stringifyObjectKey(arg.name);
+        const identifier = this.stringifyRecordKey(arg.name);
         result +=
           this.depthSpace() +
           identifier +
@@ -748,18 +748,18 @@ class Stringifier {
     return result;
   }
 
-  stringifyObject(obj: ObjectExpression): string {
+  stringifyRecord(obj: RecordExpression): string {
     if (Object.entries(obj.value).length > 3) {
-      return this.stringifyObjectMultiline(obj);
+      return this.stringifyRecordMultiline(obj);
     }
-    const result = this.stringifyObjectSingleline(obj);
+    const result = this.stringifyRecordSingleline(obj);
     if (result.includes('\n') || result.length > 60) {
-      return this.stringifyObjectMultiline(obj);
+      return this.stringifyRecordMultiline(obj);
     }
     return result;
   }
 
-  stringifyObjectSingleline(obj: ObjectExpression): string {
+  stringifyRecordSingleline(obj: RecordExpression): string {
     const entries = Object.entries(obj.value);
     if (entries.length === 0) {
       return '{}';
@@ -767,7 +767,7 @@ class Stringifier {
     let result = '{';
     result += entries
       .map(([key, value]) => {
-        const identifier = this.stringifyObjectKey(key);
+        const identifier = this.stringifyRecordKey(key);
         return identifier + ': ' + this.stringify(value);
       })
       .join(', ');
@@ -775,19 +775,19 @@ class Stringifier {
     return result;
   }
 
-  stringifyObjectMultiline(obj: ObjectExpression): string {
+  stringifyRecordMultiline(obj: RecordExpression): string {
     const entries = Object.entries(obj.value);
     let longestEntry = 0;
     for (let entry of entries) {
       longestEntry = Math.max(
         longestEntry,
-        this.stringifyObjectKey(entry[0]).length
+        this.stringifyRecordKey(entry[0]).length
       );
     }
     let result = '{\n';
     this.incrementDepth();
     entries.forEach(([key, value]) => {
-      const identifier = this.stringifyObjectKey(key);
+      const identifier = this.stringifyRecordKey(key);
       result +=
         this.depthSpace() +
         identifier +
@@ -801,7 +801,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyObjectKey(id: string) {
+  stringifyRecordKey(id: string) {
     // TODO: check this regex is the same as in parser
     if (id.match(/^[A-Za-z_$][A-Za-z_$0-9]*$/)) {
       return id;

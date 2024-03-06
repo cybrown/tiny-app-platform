@@ -1,6 +1,5 @@
 import { Closure, Program } from './core';
-import { runNodeAsync, runNode, runCall, runCallAsync } from './interpreter';
-import { IRNode } from './ir-node';
+import { run, runAsync } from './interpreter';
 
 class GetLocalError extends Error {
   constructor(localName: string) {
@@ -291,76 +290,13 @@ export class RuntimeContext {
     return false;
   }
 
-  setValue(address: IRNode, value: unknown): void {
-    if (!address || typeof address != 'object' || !address.kind) {
-      throw new Error(
-        'Unknown node to address value of type: ' +
-          (address == null ? 'null' : typeof address)
-      );
-    }
-    switch (address.kind) {
-      case 'Attribute': {
-        const object = this.evaluate(address.children[0]);
-        (object as any)[address.name] = value;
-        break;
-      }
-      case 'Index': {
-        const object = this.evaluate(address.children[1]);
-        (object as any)[this.evaluate(address.children[0]) as any] = value;
-        break;
-      }
-      case 'Local': {
-        this.setLocal(address.name, value);
-        break;
-      }
-      default:
-        throw new Error(
-          'Unknown node to address value: ' + (address as any).kind
-        );
-    }
-    this.triggerStateChangedListeners();
-  }
-
-  hasValue(address: IRNode): boolean {
-    try {
-      this.evaluate(address);
-    } catch (err) {
-      if (err instanceof GetLocalError) {
-        return false;
-      }
-      throw err;
-    }
-    return true;
-  }
-
-  evaluate(expr: IRNode, returnArrayFromBlock = false): unknown {
-    if (!this.program) throw new Error('missing program');
-    return runNode(this, this.program, expr, returnArrayFromBlock);
-  }
-
-  evaluateAsync(expr: IRNode): Promise<unknown> {
-    if (!this.program) throw new Error('missing program');
-    return runNodeAsync(this, this.program, expr);
-  }
-
-  evaluateOr(expr: IRNode, alternative: unknown): unknown {
-    try {
-      return this.evaluate(expr) ?? alternative;
-    } catch (err) {
-      if (err instanceof GetLocalError) {
-        return alternative;
-      }
-      throw err;
-    }
-  }
-
   callFunction(
     func: Closure,
-    args: unknown[],
+    args: unknown[] = [],
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runCall(func, this.program, args, kwargs, this);
+    return run(func.ctx, func.name, kwargs, args);
   }
 
   async callFunctionAsync(
@@ -369,7 +305,7 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runCallAsync(func, this.program, args, kwargs, this);
+    return runAsync(func.ctx, func.name, kwargs, args);
   }
 
   createChild(

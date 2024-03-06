@@ -3,7 +3,13 @@ import { defineFunction, RuntimeContext } from 'tal-eval';
 
 export const http_request = defineFunction(
   'http_request',
-  [{ name: 'method' }, { name: 'url' }, { name: 'headers' }, { name: 'body' }],
+  [
+    { name: 'method' },
+    { name: 'url' },
+    { name: 'headers' },
+    { name: 'body' },
+    { name: 'allowErrorStatusCode' },
+  ],
   undefined,
   http_request_impl
 );
@@ -15,6 +21,7 @@ export const http_request_form = defineFunction(
     { name: 'url' },
     { name: 'headers' },
     { name: 'elements' },
+    { name: 'allowErrorStatusCode' },
   ],
   undefined,
   http_request_form_impl

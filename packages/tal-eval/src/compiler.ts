@@ -1,118 +1,150 @@
-import { Expression, FunctionExpression } from 'tal-parser';
-import { Program, ParameterDef, AnyForNever } from './core';
-import { buildIRNode, IRNode } from './ir-node';
+import {
+  BlockOfExpressionsExpression,
+  Expression,
+  ExpressionLocation,
+  FunctionExpression,
+} from 'tal-parser';
+import { Program, AnyForNever } from './core';
+import { buildOpcode, OpcodeByKind } from './opcodes';
 
 export class Compiler {
   private functions: Program = {};
 
-  private namesToExport: Set<string> = new Set();
+  private mainName: string;
 
-  constructor(private prefix: string) {}
-
-  compileMain(value: Expression | Expression[], prefix?: string): Program {
-    const expressionToCompile = Array.isArray(value) ? value : [value];
-    const body = buildIRNode(
-      'Block',
-      expressionToCompile.length ? expressionToCompile[0].location : undefined,
-      {
-        children: [
-          ...expressionToCompile
-            .map(a => this.compile(a))
-            .filter(doRemoveFromBlock),
-          ...(this.namesToExport.size
-            ? [
-                buildIRNode('MakeObject', expressionToCompile[0].location, {
-                  children: Array.from(this.namesToExport).flatMap(name => {
-                    return [
-                      buildIRNode('Literal', expressionToCompile[0].location, {
-                        value: name,
-                      }),
-                      buildIRNode('Local', expressionToCompile[0].location, {
-                        name,
-                      }),
-                    ];
-                  }),
-                }),
-              ]
-            : []),
-        ],
-      }
-    );
-    return {
-      ...this.functions,
-      [prefix ? prefix + 'main' : 'main']: {
-        parameters: [],
-        body,
-      },
+  constructor(private prefix: string) {
+    this.mainName = prefix + 'main';
+    this.currentFunction = this.mainName;
+    this.functions[this.currentFunction] = {
+      parameters: [],
+      body: { entry: [] },
     };
   }
 
-  compile(value: Expression): IRNode {
+  private currentFunction: string;
+
+  private currentLabel: string = 'entry';
+
+  appendOpcode<Kind extends keyof OpcodeByKind>(
+    kind: Kind,
+    location: ExpressionLocation | undefined,
+    attrs: Omit<OpcodeByKind[Kind], 'kind'>
+  ): void {
+    this.functions[this.currentFunction].body[this.currentLabel].push(
+      buildOpcode(kind, location, attrs)
+    );
+  }
+
+  compileMain(value: Expression | Expression[]): Program {
+    const expressionToCompile = Array.isArray(value) ? value : [value];
+
+    for (let i = 0; i < expressionToCompile.length; i++) {
+      const expr = expressionToCompile[i];
+      this.compile(expr);
+      if (i < expressionToCompile.length - 1) {
+        this.appendOpcode('Pop', expr.location, { inBlock: false });
+      }
+    }
+
+    return this.functions;
+  }
+
+  private labelCount = 0;
+
+  private makeLabel(desc: string): string {
+    return desc + '_' + ++this.labelCount;
+  }
+
+  private setCurrentLabel(label: string): void {
+    this.currentLabel = label;
+    if (!this.functions[this.currentFunction].body[this.currentLabel]) {
+      this.functions[this.currentFunction].body[this.currentLabel] = [];
+    }
+  }
+
+  compile(value: Expression): void {
     switch (value.kind) {
       // Core interactions
       case 'Literal':
-        return buildIRNode('Literal', value.location, { value: value.value });
+        this.appendOpcode('Literal', value.location, { value: value.value });
+        break;
       case 'Array':
-        return buildIRNode('MakeArray', value.location, {
-          children: value.value
-            .map(element => this.compile(element))
-            .filter(doRemoveFromBlock),
+        for (let element of value.value) {
+          this.compile(element);
+        }
+        this.appendOpcode('Literal', value.location, {
+          value: value.value.length,
         });
-      case 'Object':
-        return buildIRNode('MakeObject', value.location, {
-          children: Object.entries(value.value).flatMap(([key, value]) => [
-            buildIRNode('Literal', value.location, { value: key }),
-            this.compile(value),
-          ]),
+        this.appendOpcode('MakeArray', value.location, {});
+        break;
+      case 'Record': {
+        const entries = Object.entries(value.value);
+        entries.flatMap(([key, value]) => {
+          this.appendOpcode('Literal', value.location, { value: key });
+          this.compile(value);
         });
+        this.appendOpcode('Literal', value.location, {
+          value: entries.length,
+        });
+        this.appendOpcode('MakeRecord', value.location, {});
+        break;
+      }
       case 'Local':
-        return buildIRNode('Local', value.location, { name: value.name });
+        this.appendOpcode('Local', value.location, { name: value.name });
+        break;
       case 'DeclareLocal':
-        return buildIRNode('DeclareLocal', value.location, {
+        if (value.value) {
+          this.compile(value.value);
+        }
+        this.appendOpcode('DeclareLocal', value.location, {
           name: value.name,
           mutable: value.mutable,
-          children: value.value ? [this.compile(value.value)] : [],
+          hasInitialValue: !!value.value,
         });
+        break;
       case 'Assign': {
         switch (value.address.kind) {
           case 'Attribute':
-            return buildIRNode('SetAttribute', value.location, {
+            this.compile(value.address.value);
+            this.compile(value.value);
+            this.appendOpcode('SetAttribute', value.location, {
               name: value.address.key,
               forceRender: true,
-              children: [
-                this.compile(value.address.value),
-                this.compile(value.value),
-              ],
             });
+            break;
           case 'Index':
-            return buildIRNode('SetIndex', value.location, {
+            this.compile(value.address.index);
+            this.compile(value.address.value);
+            this.compile(value.value);
+            this.appendOpcode('SetIndex', value.location, {
               forceRender: true,
-              children: [
-                this.compile(value.address.index),
-                this.compile(value.address.value),
-                this.compile(value.value),
-              ],
             });
+            break;
           case 'Local':
-            return buildIRNode('SetLocal', value.location, {
+            this.compile(value.value);
+            this.appendOpcode('SetLocal', value.location, {
               name: value.address.name,
-              children: [this.compile(value.value)],
             });
+            break;
           default:
             throw new Error(
               'Failed to compile Assign expression with address: ' +
                 (value.address as AnyForNever).kind
             );
         }
+        break;
       }
       case 'Function':
-        return buildIRNode('FunctionRef', value.location, {
-          name: this.compileFunction(value),
+        const name = this.compileFunction(value);
+        this.appendOpcode('FunctionRef', value.location, {
+          name,
         });
+        break;
       case 'Call': {
         const positionalArgs: Expression[] = [];
         const namedArgs: [string, Expression][] = [];
 
+        // Seperate positional and named arguments
         value.args.forEach(arg => {
           if (arg.argKind === 'Named') {
             namedArgs.push([arg.name, arg.value]);
@@ -121,132 +153,109 @@ export class Compiler {
           }
         });
 
-        const positionalArgsIr = buildIRNode('MakeArray', value.location, {
-          children: positionalArgs.map(arg => this.compile(arg)),
+        // Emit positional arguments
+        for (let arg of positionalArgs) {
+          this.compile(arg);
+        }
+        this.appendOpcode('Literal', value.location, {
+          value: positionalArgs.length,
         });
+        this.appendOpcode('MakeArray', value.location, {});
 
-        const namedArgsIr = buildIRNode('MakeObject', value.location, {
-          children: namedArgs.flatMap(([key, value]) => [
-            buildIRNode('Literal', value.location, { value: key }),
-            this.compile(value),
-          ]),
+        // Emit named arguments
+        for (let [key, value] of namedArgs) {
+          this.appendOpcode('Literal', value.location, { value: key });
+          this.compile(value);
+        }
+        this.appendOpcode('Literal', value.location, {
+          value: namedArgs.length,
         });
+        this.appendOpcode('MakeRecord', value.location, {});
 
-        return buildIRNode('Call', value.location, {
-          children: [this.compile(value.value), positionalArgsIr, namedArgsIr],
-        });
+        // Emit function
+        this.compile(value.value);
+
+        this.appendOpcode('Call', value.location, {});
+        break;
       }
 
       // Expression
-      case 'SubExpression':
-        return this.compile(value.expr);
       case 'Attribute':
-        return buildIRNode('Attribute', value.location, {
+        this.compile(value.value);
+        this.appendOpcode('Attribute', value.location, {
           name: value.key,
-          children: [this.compile(value.value)],
         });
+        break;
       case 'Index':
-        return buildIRNode('Index', value.location, {
-          children: [this.compile(value.index), this.compile(value.value)],
-        });
+        this.compile(value.index);
+        this.compile(value.value);
+        this.appendOpcode('Index', value.location, {});
+        break;
       case 'If':
-        return buildIRNode('Condition', value.location, {
-          children: [
-            this.compile(value.condition),
-            this.compile(value.ifTrue),
-            ...(value.ifFalse ? [this.compile(value.ifFalse)] : []),
-          ],
+        this.compile(value.condition);
+        const ifTrueLabel = this.makeLabel('if_true');
+        const ifFalseLabel = this.makeLabel('if_false');
+        const endIfLabel = this.makeLabel('if_end');
+        this.appendOpcode('JumpTrue', value.location, {
+          label: ifTrueLabel,
         });
-      case 'Switch': {
-        const valueIRNode = value.value
-          ? this.compile(value.value)
-          : buildIRNode('Literal', value.location, {
-              value: true,
-            });
-        let node: IRNode;
-        if (value.defaultBranch) {
-          node = this.compile(value.defaultBranch.value);
-        } else {
-          node = buildIRNode('Condition', value.location, {
-            children: [
-              buildIRNode('Intrinsic', value.location, {
-                operation: 'INTRINSIC_EQUAL_STRICT',
-                children: [
-                  valueIRNode,
-                  this.compile(
-                    value.branches[value.branches.length - 1].comparator
-                  ),
-                ],
-              }),
-              this.compile(value.branches[value.branches.length - 1].value),
-            ],
-          });
+        this.appendOpcode('Jump', value.location, {
+          label: ifFalseLabel,
+        });
+
+        this.setCurrentLabel(ifTrueLabel);
+        this.compile(value.ifTrue);
+        this.appendOpcode('Jump', value.location, {
+          label: endIfLabel,
+        });
+
+        this.setCurrentLabel(ifFalseLabel);
+        if (value.ifFalse) {
+          this.compile(value.ifFalse);
         }
-        return value.branches
-          .slice()
-          .reverse()
-          .slice(value.defaultBranch ? 0 : 1)
-          .reduce((elseClause, branch) => {
-            return buildIRNode('Condition', value.location, {
-              children: [
-                buildIRNode('Intrinsic', value.location, {
-                  operation: 'INTRINSIC_EQUAL_STRICT',
-                  children: [valueIRNode, this.compile(branch.comparator)],
-                }),
-                this.compile(branch.value),
-                elseClause,
-              ],
-            });
-          }, node);
-      }
+        this.appendOpcode('Jump', value.location, {
+          label: endIfLabel,
+        });
+
+        this.setCurrentLabel(endIfLabel);
+        break;
       case 'Try':
-        return buildIRNode('Try', value.location, {
-          children: [
-            this.compile(value.expr),
-            ...(value.catchBlock ? [this.compile(value.catchBlock)] : []),
-          ],
-        });
-      case 'Provide':
-        return value.entries.reduce((prev, entry) => {
-          return buildIRNode('Provide', value.location, {
-            children: [
-              this.compile(entry.key),
-              this.compile(entry.value),
-              prev,
-            ],
-          });
-        }, this.compile(value.body));
-      case 'Provided':
-        return buildIRNode('Provided', value.location, {
-          children: [this.compile(value.key)],
-        });
-      case 'Pipe':
-        let [previous, current, ...rest] = [value.first, ...value.values];
-        while (true) {
-          if (current.kind === 'Call') {
-            previous = {
-              ...current,
-              args: [
-                { argKind: 'Positional', value: previous },
-                ...current.args,
-              ],
-            };
-          } else {
-            previous = {
-              kind: 'Call',
-              value: current,
-              args: [{ argKind: 'Positional', value: previous }],
-            };
-          }
-          const nextCurrent = rest.shift();
-          if (!nextCurrent) {
-            break;
-          }
-          current = nextCurrent;
+        const catchLabel = value.catchBlock
+          ? this.makeLabel('try_catch')
+          : undefined;
+        const endTryLabel = this.makeLabel('try_end');
+        this.appendOpcode('Try', value.location, { catchLabel, endTryLabel });
+        this.compile(value.expr);
+        this.appendOpcode('TryPop', value.location, {});
+        this.appendOpcode('Jump', value.location, { label: endTryLabel });
+        if (value.catchBlock && catchLabel) {
+          this.setCurrentLabel(catchLabel);
+          this.compile(value.catchBlock);
+          this.appendOpcode('Jump', value.location, { label: endTryLabel });
         }
-        return this.compile(previous);
+        this.setCurrentLabel(endTryLabel);
+        break;
+      case 'Provide':
+        for (let entry of value.entries) {
+          this.compile(entry.key);
+          this.compile(entry.value);
+        }
+        this.appendOpcode('Literal', value.location, {
+          value: value.entries.length,
+        });
+        this.appendOpcode('Provide', value.location, {});
+        this.compile(value.body);
+        for (let i = 0; i < value.entries.length; i++) {
+          this.appendOpcode('ScopeLeave', value.location, { inBlock: false });
+        }
+        break;
+      case 'Provided':
+        this.compile(value.key);
+        this.appendOpcode('GetProvided', value.location, {});
+        break;
       case 'UnaryOperator':
-        return buildIRNode('Intrinsic', value.location, {
+        this.compile(value.operand);
+        this.appendOpcode('Intrinsic', value.location, {
           operation: (() => {
             switch (value.operator) {
               case '-':
@@ -261,49 +270,12 @@ export class Compiler {
                 );
             }
           })(),
-          children: [this.compile(value.operand)],
         });
+        break;
       case 'BinaryOperator':
-        if (value.operator == '&&') {
-          const leftIr = this.compile(value.left);
-          return buildIRNode('Block', value.location, {
-            children: [
-              buildIRNode('DeclareLocal', value.location, {
-                mutable: false,
-                name: 'tmp_for_and',
-                children: [leftIr],
-              }),
-              buildIRNode('Condition', value.location, {
-                children: [
-                  buildIRNode('Local', value.location, { name: 'tmp_for_and' }),
-                  this.compile(value.right),
-                  this.compile(value.left),
-                ],
-              }),
-            ],
-          });
-        }
-        if (value.operator == '||') {
-          const leftIr = this.compile(value.left);
-          return buildIRNode('Block', value.location, {
-            children: [
-              buildIRNode('DeclareLocal', value.location, {
-                mutable: false,
-                name: 'tmp_for_or',
-                children: [leftIr],
-              }),
-              buildIRNode('Condition', value.location, {
-                children: [
-                  buildIRNode('Local', value.location, { name: 'tmp_for_or' }),
-                  this.compile(value.left),
-                  this.compile(value.right),
-                ],
-              }),
-            ],
-          });
-        }
-        return buildIRNode('Intrinsic', value.location, {
-          children: [this.compile(value.left), this.compile(value.right)],
+        this.compile(value.left);
+        this.compile(value.right);
+        this.appendOpcode('Intrinsic', value.location, {
           operation: (() => {
             switch (value.operator) {
               case '*':
@@ -339,94 +311,74 @@ export class Compiler {
             }
           })(),
         });
+        break;
       case 'BlockOfExpressions':
-        return buildIRNode('Block', value.location, {
-          children: value.children
-            .map(expr => this.compile(expr))
-            .filter(doRemoveFromBlock),
-        });
+        this.compileBlockOfExpressions(value);
+        break;
 
       // UI Widgets
-      case 'KindedObject': {
-        const valueAsUiWidget = value.value as any;
+      case 'KindedRecord': {
+        const valueAsUiWidget = value.value;
 
-        const childrenArray = buildIRNode('MakeArray', value.location, {
-          children: (valueAsUiWidget.children ?? []).map((arg: any) =>
-            this.compile(arg)
-          ),
-        });
-        const propsObjectIr = buildIRNode('MakeObject', value.location, {
-          children: Object.entries(valueAsUiWidget)
-            .filter(([key]) => !['kind', 'ctx', 'children'].includes(key))
-            .flatMap(([key, value]: [any, any]) => {
-              if (key == 'bindTo') {
-                return [
-                  buildIRNode('Literal', value.location, { value: 'onChange' }),
-                  buildIRNode('FunctionRef', value.location, {
-                    name: this.createFunction(
-                      [{ name: 'newValue' }],
-                      buildIRNode('Block', value.location, {
-                        children: [
-                          this.compile({
-                            kind: 'Assign',
-                            address: value,
-                            value: {
-                              kind: 'Local',
-                              name: 'newValue',
-                            },
-                          }),
-                          buildIRNode('CtxRender', value.location, {}),
-                        ],
-                      })
-                    ),
-                  }),
-                  buildIRNode('Literal', value.location, { value: 'value' }),
-                  this.compile(value),
-                ];
-              }
-              return [
-                buildIRNode('Literal', value.location, { value: key }),
-                this.compile(value),
-              ];
-            }),
-        });
+        // Emit kind
+        this.compile(valueAsUiWidget.kind);
 
-        return buildIRNode('Kinded', value.location, {
-          children: [
-            this.compile(valueAsUiWidget.kind),
-            childrenArray,
-            propsObjectIr,
-          ],
+        // Emit children
+        for (let child of valueAsUiWidget.children ?? []) {
+          this.compile(child);
+        }
+        this.appendOpcode('Literal', value.location, {
+          value: (valueAsUiWidget.children ?? []).length,
         });
+        this.appendOpcode('MakeArray', value.location, {});
+
+        // Emit props
+        const propsToCompile = Object.entries(valueAsUiWidget).filter(
+          ([key]) => !['kind', 'ctx', 'children'].includes(key)
+        );
+        for (let [key, value] of propsToCompile) {
+          if (!value || Array.isArray(value)) {
+            throw new Error('Unreachable');
+          }
+          this.appendOpcode('Literal', value.location, { value: key });
+          this.compile(value);
+        }
+        this.appendOpcode('Literal', value.location, {
+          value: propsToCompile.length,
+        });
+        this.appendOpcode('MakeRecord', value.location, {});
+
+        this.appendOpcode('Kinded', value.location, {});
+        break;
       }
       case 'Import': {
-        return buildIRNode('Import', value.location, {
+        this.appendOpcode('Import', value.location, {
           path: value.path,
         });
+        break;
       }
-      case 'Export': {
-        switch (value.expr.kind) {
-          case 'DeclareLocal': {
-            if (value.expr.mutable) {
-              throw new Error('Mutable variables can not be exported');
-            }
-            this.namesToExport.add(value.expr.name);
-            return this.compile(value.expr);
+      case 'Export':
+        throw new Error('Export expression not supported');
+      case 'Switch':
+        throw new Error('Switch expression not supported');
+      case 'Comment':
+        throw new Error('Comment expression not supported');
+      case 'Pipe':
+        throw new Error('Pipe expression not supported');
+      case 'SubExpression':
+        throw new Error('SubExpression expression not supported');
+      case 'Intrinsic': {
+        switch (value.op) {
+          case 'ForceRender': {
+            this.appendOpcode('CtxRender', value.location, {});
+            break;
           }
-          default:
-            throw new Error(
-              'Only immutable values and function definitions can be exported'
-            );
+          default: {
+            const opNever: never = value.op; // Error if missing intrinsic in switch
+            throw new Error('Failed to compile intrinsic: ' + opNever);
+          }
         }
-      }
-      case 'Comment': {
-        if (value.expr) {
-          return this.compile(value.expr);
-        }
-        return buildIRNode('Literal', value.location, {
-          value: null,
-          removeFromBlock: true,
-        });
+        return;
       }
       default: {
         const valueNever: never = value; // Error if missing node in switch
@@ -440,26 +392,69 @@ export class Compiler {
 
   private functionIndexCounter = 0;
 
-  private compileFunction(functionExpression: FunctionExpression): string {
-    return this.createFunction(
-      functionExpression.parameters.map(name => ({ name })),
-      this.compile(functionExpression.body)
-    );
+  private compileBlockOfExpressions(
+    value: BlockOfExpressionsExpression,
+    enterScope = true
+  ) {
+    if (enterScope) {
+      this.appendOpcode('ScopeEnter', value.location, {});
+    }
+    for (let i = 0; i < value.children.length; i++) {
+      const expr = value.children[i];
+      this.compile(expr);
+      if (i < value.children.length - 1) {
+        this.appendOpcode('Pop', value.location, {
+          inBlock: !value.forceNotWidget,
+        });
+      }
+    }
+    if (enterScope) {
+      this.appendOpcode('ScopeLeave', value.location, {
+        inBlock: !value.forceNotWidget,
+        count: value.children.length,
+      });
+    } else {
+      this.appendOpcode('MakeArrayForBlock', value.location, {
+        count: value.children.length,
+      });
+    }
   }
 
-  private createFunction(parameters: ParameterDef[], body: IRNode): string {
+  private compileFunction(functionExpression: FunctionExpression): string {
+    const funcName = this.createFunction(functionExpression);
+
+    const oldLabel = this.currentLabel;
+    const oldFunction = this.currentFunction;
+
+    this.currentLabel = 'entry';
+    this.currentFunction = funcName;
+
+    if (functionExpression.body.kind === 'BlockOfExpressions') {
+      this.compileBlockOfExpressions(functionExpression.body, false);
+    } else {
+      this.compile(functionExpression.body);
+    }
+
+    this.currentFunction = oldFunction;
+    this.currentLabel = oldLabel;
+
+    return funcName;
+  }
+
+  private createFunction(functionExpression: FunctionExpression): string {
     const name =
-      this.prefix + 'func_' + (this.functionIndexCounter++).toString(16);
-    this.functions[name] = { parameters, body };
+      this.prefix +
+      (functionExpression.name ? functionExpression.name + '_' : 'func_') +
+      (this.functionIndexCounter++).toString(16);
+    this.functions[name] = {
+      parameters: functionExpression.parameters.map(name => ({ name })),
+      body: { entry: [] },
+    };
     return name;
   }
 }
 
 export function compile(expr: Expression | Expression[], prefix = ''): Program {
   const c = new Compiler(prefix);
-  return c.compileMain(expr, prefix);
-}
-
-function doRemoveFromBlock(e: IRNode): boolean {
-  return !(e.kind == 'Literal' && e.value === null && e.removeFromBlock);
+  return c.compileMain(expr);
 }

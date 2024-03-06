@@ -1,4 +1,4 @@
-import { IRNode, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Layout.module.css";
 import { useTheme } from "../theme";
@@ -14,7 +14,7 @@ type LayoutDescription = {
 
 export type LayoutProps = {
   ctx: RuntimeContext;
-  children: IRNode[];
+  children: Opcode[];
 } & LayoutDescription;
 
 function computeLayoutStyles(d: LayoutDescription, baseSize: number) {
@@ -59,7 +59,7 @@ export default function Layout({ ctx, children, ...d }: LayoutProps) {
         .flat(Infinity)
         .filter((child) => child)
         .map((child) => ({
-          node: <RenderExpression ctx={childContext} evaluatedUI={child} />,
+          node: <RenderExpression ctx={childContext} ui={child} />,
           meta: metadataGet(child) ?? {},
         }))
         .map((child, index) => (

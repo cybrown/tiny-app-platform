@@ -20,7 +20,7 @@
           "kind": "BlockOfExpressions",
           "children": [
             {
-              "kind": "KindedObject",
+              "kind": "KindedRecord",
               "value": {
                 "kind": {
                   "kind": "Local",

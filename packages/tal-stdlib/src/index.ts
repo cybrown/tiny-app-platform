@@ -55,13 +55,13 @@ import {
   number_randint,
 } from './functions/number';
 import {
-  object_entries,
-  object_get,
-  object_keys,
-  object_merge,
-  object_set,
-  object_values,
-} from './functions/object';
+  record_entries,
+  record_get,
+  record_keys,
+  record_merge,
+  record_set,
+  record_values,
+} from './functions/record';
 import { pg_query } from './functions/pg';
 import { process_exec } from './functions/process';
 import { regex_match } from './functions/regex';
@@ -177,12 +177,12 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(number_trunc);
   ctx.registerFunction(number_random);
   ctx.registerFunction(number_randint);
-  ctx.registerFunction(object_entries);
-  ctx.registerFunction(object_get);
-  ctx.registerFunction(object_keys);
-  ctx.registerFunction(object_merge);
-  ctx.registerFunction(object_set);
-  ctx.registerFunction(object_values);
+  ctx.registerFunction(record_entries);
+  ctx.registerFunction(record_get);
+  ctx.registerFunction(record_keys);
+  ctx.registerFunction(record_merge);
+  ctx.registerFunction(record_set);
+  ctx.registerFunction(record_values);
   ctx.registerFunction(pg_query);
   ctx.registerFunction(process_exec);
   ctx.registerFunction(regex_match);

@@ -13,7 +13,7 @@
       {
         "comparator": "list",
         "value": {
-          "kind": "KindedObject",
+          "kind": "KindedRecord",
           "value": {
             "kind": {
               "kind": "Local",
@@ -29,7 +29,7 @@
       {
         "comparator": "editor",
         "value": {
-          "kind": "KindedObject",
+          "kind": "KindedRecord",
           "value": {
             "kind": {
               "kind": "Local",
@@ -41,7 +41,7 @@
       {
         "comparator": "contact",
         "value": {
-          "kind": "KindedObject",
+          "kind": "KindedRecord",
           "value": {
             "kind": {
               "kind": "Local",
@@ -53,7 +53,7 @@
     ],
     "defaultBranch": {
       "value": {
-        "kind": "KindedObject",
+        "kind": "KindedRecord",
         "value": {
           "kind": {
             "kind": "Local",

@@ -7,8 +7,8 @@ fun func_2() {
 }
 
 with (
-    "http.timeoutMs" = 250
-    "http.useCookies" = false
+    "http.timeoutMs" = "250"
+    "http.useCookies" = "false"
 ) {
     func_1()
 }

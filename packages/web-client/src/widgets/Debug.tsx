@@ -33,7 +33,7 @@ function RenderAny({ value, path }: { value: unknown; path: string }): any {
     if ("kind" in value && typeof value.kind === "string") {
       const kind = value.kind;
       if (typeof kind == "string") {
-        return <RenderKindedObject value={value} path={path} kind={kind} />;
+        return <RenderKindedRecord value={value} path={path} kind={kind} />;
       }
     }
     return <RenderObject value={value} path={path} />;
@@ -96,7 +96,7 @@ function RenderArray({ value, path }: { value: unknown[]; path: string }) {
   );
 }
 
-function RenderKindedObject({
+function RenderKindedRecord({
   value,
   path,
   kind,

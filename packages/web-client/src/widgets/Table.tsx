@@ -107,7 +107,7 @@ export default function Table({
               content: col.display ? (
                 <RenderExpression
                   ctx={ctx}
-                  evaluatedUI={ctx.callFunction(col.display, [value])}
+                  ui={ctx.callFunction(col.display, [value])}
                 />
               ) : (value as any)[col.description] !== undefined ? (
                 <Debug value={(value as any)[col.description]} />

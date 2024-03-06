@@ -1,4 +1,9 @@
-import { Expression, ExpressionLocation, FunctionExpression } from 'tal-parser';
+import {
+  BlockOfExpressionsExpression,
+  Expression,
+  ExpressionLocation,
+  FunctionExpression,
+} from 'tal-parser';
 import { Program, AnyForNever } from './core';
 import { buildIRNode, IRNodeByKind } from './ir-node';
 
@@ -308,20 +313,7 @@ export class Compiler {
         });
         break;
       case 'BlockOfExpressions':
-        this.appendIRNode('ScopeEnter', value.location, {});
-        for (let i = 0; i < value.children.length; i++) {
-          const expr = value.children[i];
-          this.compile(expr);
-          if (i < value.children.length - 1) {
-            this.appendIRNode('Pop', value.location, {
-              inBlock: !value.forceNotWidget,
-            });
-          }
-        }
-        this.appendIRNode('ScopeLeave', value.location, {
-          inBlock: !value.forceNotWidget,
-          count: value.children.length,
-        });
+        this.compileBlockOfExpressions(value);
         break;
 
       // UI Widgets
@@ -400,6 +392,34 @@ export class Compiler {
 
   private functionIndexCounter = 0;
 
+  private compileBlockOfExpressions(
+    value: BlockOfExpressionsExpression,
+    enterScope = true
+  ) {
+    if (enterScope) {
+      this.appendIRNode('ScopeEnter', value.location, {});
+    }
+    for (let i = 0; i < value.children.length; i++) {
+      const expr = value.children[i];
+      this.compile(expr);
+      if (i < value.children.length - 1) {
+        this.appendIRNode('Pop', value.location, {
+          inBlock: !value.forceNotWidget,
+        });
+      }
+    }
+    if (enterScope) {
+      this.appendIRNode('ScopeLeave', value.location, {
+        inBlock: !value.forceNotWidget,
+        count: value.children.length,
+      });
+    } else {
+      this.appendIRNode('MakeArrayForBlock', value.location, {
+        count: value.children.length,
+      });
+    }
+  }
+
   private compileFunction(functionExpression: FunctionExpression): string {
     const funcName = this.createFunction(functionExpression);
 
@@ -409,7 +429,11 @@ export class Compiler {
     this.currentLabel = 'entry';
     this.currentFunction = funcName;
 
-    this.compile(functionExpression.body);
+    if (functionExpression.body.kind === 'BlockOfExpressions') {
+      this.compileBlockOfExpressions(functionExpression.body, false);
+    } else {
+      this.compile(functionExpression.body);
+    }
 
     this.currentFunction = oldFunction;
     this.currentLabel = oldLabel;

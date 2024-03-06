@@ -432,6 +432,17 @@ export class VM {
         this.pc++;
         break;
       }
+      case 'MakeArrayForBlock': {
+        if (this.keepUpmostStack) {
+          const array = [];
+          for (let i = 0; i < node.count; i++) {
+            array.unshift(this.stack.pop());
+          }
+          this.stack.push(array);
+        }
+        this.pc++;
+        break;
+      }
       case 'MakeObject': {
         const length = this.popNumber();
         const intermediateResult: [string, unknown][] = [];

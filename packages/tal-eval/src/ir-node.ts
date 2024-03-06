@@ -91,6 +91,8 @@ export type IRNodeImport = {
   path: string;
 } & IRNodeMetadata;
 
+export type IRNodeMakeArrayForBlock = { count: number } & IRNodeMetadata;
+
 export type IRNodeByKind2 = {
   Literal: IRNodeLiteral;
   MakeArray: IRNodeMakeArray;
@@ -117,6 +119,7 @@ export type IRNodeByKind2 = {
   Provide: IRNodeProvide;
   GetProvided: IRNodeGetProvided;
   Import: IRNodeImport;
+  MakeArrayForBlock: IRNodeMakeArrayForBlock;
 };
 
 export type IRNodeByKind = {

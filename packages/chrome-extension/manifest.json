@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Tiny App Platform",
+  "version": "0.0.1",
+  "description": "Chrome extension for Tiny App Platform",
+  "action": {
+    "default_title": "Click to open tiny apps"
+  },
+  "host_permissions": ["https://*/*", "http://*/*"],
+  "background": { "service_worker": "background.js", "type": "module" }
+}

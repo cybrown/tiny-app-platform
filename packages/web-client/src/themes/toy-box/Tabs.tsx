@@ -7,7 +7,7 @@ export default function Tabs({ value, onChange, tabs, after }: TabsProps) {
       <div className={styles.tabs}>
         {tabs.map((tab) => (
           <div
-            key={tab.value}
+            key={tab.label}
             className={`${styles.tab} ${
               tab.value === value ? styles.selected : ""
             }`}

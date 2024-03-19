@@ -18,7 +18,7 @@ import {
   array_skip,
   array_sort,
   array_take,
-  array_to_object,
+  array_to_record,
 } from './functions/array';
 import { bytes_to_string } from './functions/bytes';
 import { cheerio_find, cheerio_load } from './functions/cheerio';
@@ -138,7 +138,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(array_skip);
   ctx.registerFunction(array_sort);
   ctx.registerFunction(array_take);
-  ctx.registerFunction(array_to_object);
+  ctx.registerFunction(array_to_record);
   ctx.registerFunction(bytes_to_string);
   ctx.registerFunction(cheerio_find);
   ctx.registerFunction(cheerio_load);

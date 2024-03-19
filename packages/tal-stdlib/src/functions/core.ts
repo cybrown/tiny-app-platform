@@ -6,7 +6,7 @@ export const on_create = defineFunction(
   [{ name: 'handler' }],
   (ctx, { handler }) => {
     if (!ctx.isWidgetState) {
-      throw new Error("on_create is only usable inside Widgets")
+      throw new Error('on_create is only usable inside Widgets');
     }
     if (!ctx.isCreated) {
       ctx.callFunctionAsync(handler, []).catch(err => {
@@ -22,7 +22,7 @@ export const on_destroy = defineFunction(
   [{ name: 'handler' }],
   (ctx, { handler }) => {
     if (!ctx.isWidgetState) {
-      throw new Error("on_destroy is only usable inside Widgets")
+      throw new Error('on_destroy is only usable inside Widgets');
     }
     if (ctx.isCreated) return;
     ctx.addDestructor(handler);
@@ -36,7 +36,7 @@ export const watch = defineFunction(
   [{ name: 'expr' }, { name: 'action' }],
   (ctx, { expr, action }) => {
     if (!ctx.isWidgetState) {
-      throw new Error("watch is only usable inside Widgets")
+      throw new Error('watch is only usable inside Widgets');
     }
     if (ctx.isCreated) {
       return;
@@ -95,7 +95,8 @@ export const typeof$ = defineFunction(
     } else if (Array.isArray(value)) {
       return 'array';
     } else {
-      return typeof value;
+      const type = typeof value;
+      return type === 'object' ? 'record' : type;
     }
   }
 );

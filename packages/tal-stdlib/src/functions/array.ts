@@ -19,8 +19,8 @@ export const array_group = defineFunction(
   }
 );
 
-export const array_to_object = defineFunction(
-  'array_to_object',
+export const array_to_record = defineFunction(
+  'array_to_record',
   [
     { name: 'array' },
     { name: 'key_extractor' },

@@ -450,7 +450,7 @@ class Lowerer {
     returnArrayFromBlock: boolean
   ): ExpressionByKind['BlockOfExpressions'] {
     let loweredElements = block.children
-      .map(expr => this.lowerSingle(expr))
+      .map(expr => this.lowerSingle(expr, returnArrayFromBlock))
       .filter(removeNodes);
 
     if (returnArrayFromBlock) {
@@ -459,6 +459,7 @@ class Lowerer {
 
     return {
       ...block,
+      forceNotWidget: !returnArrayFromBlock,
       children: loweredElements,
     };
   }

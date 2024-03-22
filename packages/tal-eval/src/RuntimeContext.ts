@@ -70,6 +70,16 @@ export class RuntimeContext {
     this.sourceFetcher = importer;
   }
 
+  public get ctxForWidgetState(): RuntimeContext | null {
+    if (this._isWidgetState) {
+      return this;
+    }
+    if (this.parent) {
+      return this.parent.ctxForWidgetState;
+    }
+    return null;
+  }
+
   private _program?: Program;
 
   public get program(): Program | undefined {
@@ -131,10 +141,6 @@ export class RuntimeContext {
   private isValueRedeclarationAllowed = false;
   private mutableLocals = new Set<string>();
   private _isWidgetState = false;
-
-  public get isWidgetState() {
-    return this._isWidgetState;
-  }
 
   forceRefresh() {
     this.triggerStateChangedListeners();

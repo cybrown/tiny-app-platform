@@ -5,12 +5,13 @@ export const on_create = defineFunction(
   'on_create',
   [{ name: 'handler' }],
   (ctx, { handler }) => {
-    if (!ctx.isWidgetState) {
+    const ctxForWidget = ctx.ctxForWidgetState;
+    if (!ctxForWidget) {
       throw new Error('on_create is only usable inside Widgets');
     }
-    if (!ctx.isCreated) {
+    if (!ctxForWidget.isCreated) {
       ctx.callFunctionAsync(handler, []).catch(err => {
-        ctx.onCreateError = err;
+        ctxForWidget.onCreateError = err;
         ctx.forceRefresh();
       });
     }
@@ -21,11 +22,12 @@ export const on_destroy = defineFunction(
   'on_destroy',
   [{ name: 'handler' }],
   (ctx, { handler }) => {
-    if (!ctx.isWidgetState) {
+    const ctxForWidget = ctx.ctxForWidgetState;
+    if (!ctxForWidget) {
       throw new Error('on_destroy is only usable inside Widgets');
     }
-    if (ctx.isCreated) return;
-    ctx.addDestructor(handler);
+    if (ctxForWidget.isCreated) return;
+    ctxForWidget.addDestructor(handler);
   }
 );
 
@@ -35,16 +37,17 @@ export const watch = defineFunction(
   'watch',
   [{ name: 'expr' }, { name: 'action' }],
   (ctx, { expr, action }) => {
-    if (!ctx.isWidgetState) {
+    const ctxForWidget = ctx.ctxForWidgetState;
+    if (!ctxForWidget) {
       throw new Error('watch is only usable inside Widgets');
     }
-    if (ctx.isCreated) {
+    if (ctxForWidget.isCreated) {
       return;
     }
-    let currentCtxMap = watches.get(ctx);
+    let currentCtxMap = watches.get(ctxForWidget);
     if (!currentCtxMap) {
       currentCtxMap = new Map();
-      watches.set(ctx, currentCtxMap);
+      watches.set(ctxForWidget, currentCtxMap);
     }
     currentCtxMap.set(expr, ctx.callFunction(expr, []));
 
@@ -62,7 +65,7 @@ export const watch = defineFunction(
       // TODO: Show errors in UI
     }
 
-    ctx.registerStateChangedListener(() => {
+    ctxForWidget.registerStateChangedListener(() => {
       if (!currentCtxMap) return;
       const oldValue = currentCtxMap.get(expr);
       const newValue = ctx.callFunction(expr, []);

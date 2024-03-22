@@ -267,7 +267,11 @@ export class VM {
             err instanceof EvaluationError
               ? err
               : new EvaluationError(
-                  'Uncaught exception',
+                  'Uncaught exception: <' +
+                    (typeof err == 'object' && err
+                      ? (err as any).message
+                      : '') +
+                    '>',
                   this.currentOpcode(),
                   err
                 ),

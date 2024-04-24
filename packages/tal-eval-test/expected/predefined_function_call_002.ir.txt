@@ -1,8 +1,0 @@
-main: 
-  Block
-    Intrinsic {"operation":"INTRINSIC_ADD"}
-      Call
-        Local {"name":"give_hello"}
-        MakeArray
-        MakeObject
-      Literal {"value":" Toto"}

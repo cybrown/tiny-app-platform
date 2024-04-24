@@ -1,9 +1,0 @@
-main: 
-  Block
-    DeclareLocal {"name":"a","mutable":false}
-      Literal {"value":"1"}
-    Block
-      DeclareLocal {"name":"a","mutable":false}
-        Literal {"value":"2"}
-      Local {"name":"a"}
-    Local {"name":"a"}

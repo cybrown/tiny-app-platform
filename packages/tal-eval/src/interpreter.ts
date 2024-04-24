@@ -179,7 +179,7 @@ export class VM {
     );
     this.ctx = closure.ctx
       .createChild(namedArguments, false)
-      .createChildWithProvideParent({}, this.ctx);
+      .createChild({});
     this.ctxStack.push(this.ctx);
     return this.run();
   }
@@ -307,7 +307,7 @@ export class VM {
           );
           const childContext = closure.ctx
             .createChild(namedArguments, false)
-            .createChildWithProvideParent({}, this.ctx);
+            .createChild({});
           this.pushFrame(closure.name, childContext);
         } else {
           if (
@@ -371,12 +371,6 @@ export class VM {
       }
       case 'FunctionRef': {
         this.stack.push({ name: node.name, ctx: this.ctx });
-        this.pc++;
-        break;
-      }
-      case 'GetProvided': {
-        const providedKey = this.stack.pop();
-        this.stack.push(this.ctx.getProvidedValue(providedKey));
         this.pc++;
         break;
       }
@@ -463,18 +457,6 @@ export class VM {
       case 'Pop': {
         if (!node.inBlock || !this.keepUpmostStack) {
           this.stack.pop();
-        }
-        this.pc++;
-        break;
-      }
-      case 'Provide': {
-        const length = this.popNumber();
-        let newCtx = this.ctx;
-        for (let i = 0; i < length; i++) {
-          const value = this.stack.pop();
-          const key = this.stack.pop();
-          newCtx = newCtx.createChildWithProvider(key, value);
-          this.pushContext(newCtx);
         }
         this.pc++;
         break;

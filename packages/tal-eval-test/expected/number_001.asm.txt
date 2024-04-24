@@ -1,0 +1,2 @@
+main: 
+  undefined {"entry":[{"kind":"Literal","value":42}]}

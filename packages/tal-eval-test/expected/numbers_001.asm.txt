@@ -1,0 +1,2 @@
+main: 
+  undefined {"entry":[{"kind":"Literal","value":1},{"kind":"Pop","inBlock":false},{"kind":"Literal","value":42},{"kind":"Pop","inBlock":false},{"kind":"Literal","value":13},{"kind":"Pop","inBlock":false},{"kind":"Literal","value":3.14}]}

@@ -1,9 +1,0 @@
-main: 
-  Block
-    Block
-      DeclareLocal {"mutable":false,"name":"tmp_for_or"}
-        Literal {"value":2}
-      Condition
-        Local {"name":"tmp_for_or"}
-        Literal {"value":2}
-        Literal {"value":0}

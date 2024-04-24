@@ -1,6 +1,0 @@
-main: 
-  Block
-    Call
-      Local {"name":"give_hello"}
-      MakeArray
-      MakeObject

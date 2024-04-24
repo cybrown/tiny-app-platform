@@ -235,24 +235,6 @@ export class Compiler {
         }
         this.setCurrentLabel(endTryLabel);
         break;
-      case 'Provide':
-        for (let entry of value.entries) {
-          this.compile(entry.key);
-          this.compile(entry.value);
-        }
-        this.appendOpcode('Literal', value.location, {
-          value: value.entries.length,
-        });
-        this.appendOpcode('Provide', value.location, {});
-        this.compile(value.body);
-        for (let i = 0; i < value.entries.length; i++) {
-          this.appendOpcode('ScopeLeave', value.location, { inBlock: false });
-        }
-        break;
-      case 'Provided':
-        this.compile(value.key);
-        this.appendOpcode('GetProvided', value.location, {});
-        break;
       case 'UnaryOperator':
         this.compile(value.operand);
         this.appendOpcode('Intrinsic', value.location, {

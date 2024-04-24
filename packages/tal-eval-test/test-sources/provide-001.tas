@@ -1,7 +1,0 @@
-fun usingProvidedValue() {
-    & "http.timeoutMs"
-}
-
-with ("http.timeoutMs" = 250) {
-    usingProvidedValue()
-}

@@ -1,0 +1,6 @@
+<error: 'Error: Pipe expression not supported
+    at Compiler.compile (/home/cy/perso/tiny-app-platform/packages/tal-eval/dist/tal-eval.cjs.development.js:840:15)
+    at Compiler.compileMain (/home/cy/perso/tiny-app-platform/packages/tal-eval/dist/tal-eval.cjs.development.js:524:12)
+    at compile (/home/cy/perso/tiny-app-platform/packages/tal-eval/dist/tal-eval.cjs.development.js:929:12)
+    at file:///home/cy/perso/tiny-app-platform/packages/tal-eval-test/compile.mjs:65:19
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)'>

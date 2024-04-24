@@ -83,10 +83,6 @@ type OpcodeKinded = {} & OpcodeMetadata;
 
 type OpcodeCtxRender = {} & OpcodeMetadata;
 
-type OpcodeProvide = {} & OpcodeMetadata;
-
-type OpcodeGetProvided = {} & OpcodeMetadata;
-
 type OpcodeImport = {
   path: string;
 } & OpcodeMetadata;
@@ -116,8 +112,6 @@ type OpcodeByKind2 = {
   Pop: OpcodePop;
   Kinded: OpcodeKinded;
   CtxRender: OpcodeCtxRender;
-  Provide: OpcodeProvide;
-  GetProvided: OpcodeGetProvided;
   Import: OpcodeImport;
   MakeArrayForBlock: OpcodeMakeArrayForBlock;
 };

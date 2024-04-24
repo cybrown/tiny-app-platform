@@ -1,3 +1,0 @@
-<void>
-<void>
-<error: 'Local not found: value'>

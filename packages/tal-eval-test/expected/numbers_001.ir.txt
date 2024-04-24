@@ -1,6 +1,0 @@
-main: 
-  Block
-    Literal {"value":1}
-    Literal {"value":42}
-    Literal {"value":13}
-    Literal {"value":3.14}

@@ -35,7 +35,12 @@ export interface SourceFetcher {
   normalizePath(path: string): Promise<string>;
 }
 
+let globalContextCount = 0;
+
 export class RuntimeContext {
+  public id: string;
+  private childIdCounter = 0;
+
   constructor(
     onStateChange: () => void,
     private _locals: { [key: string]: unknown } = {},
@@ -44,6 +49,9 @@ export class RuntimeContext {
   ) {
     this.stateChangedListeners.add(onStateChange);
     this._moduleCache = !parent ? new Map<string, unknown>() : undefined;
+    this.id = parent
+      ? parent.id + '/' + parent.childIdCounter++
+      : String(globalContextCount++);
   }
 
   private sourceFetcher?: SourceFetcher;
@@ -254,31 +262,6 @@ export class RuntimeContext {
     throw new GetEnvError(name);
   }
 
-  private providedKey: unknown;
-  private providedValue: unknown;
-  private providedParent?: RuntimeContext;
-
-  createChildWithProvider(key: unknown, value: unknown): RuntimeContext {
-    const childContext = this.createChild({});
-    childContext.providedKey = key;
-    childContext.providedValue = value;
-    childContext.providedParent = this;
-    return childContext;
-  }
-
-  getProvidedValue(key: unknown): unknown {
-    if (this.providedKey === key) {
-      return this.providedValue;
-    }
-    if (this.providedParent) {
-      return this.providedParent.getProvidedValue(key);
-    }
-    if (this.parent) {
-      return this.parent.getProvidedValue(key);
-    }
-    return null;
-  }
-
   // TODO: To remove
   getLocalOr(name: string, value: unknown): unknown {
     return this.hasLocal(name) ? this.getLocal(name) : value;
@@ -324,15 +307,6 @@ export class RuntimeContext {
       this,
       extendable
     );
-  }
-
-  createChildWithProvideParent(
-    initialValue: Record<string, unknown>,
-    parentCtx: RuntimeContext
-  ) {
-    const childCtx = this.createChild(initialValue);
-    childCtx.providedParent = parentCtx;
-    return childCtx;
   }
 
   createChildForWidget(initialValues: {

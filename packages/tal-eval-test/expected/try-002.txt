@@ -1,0 +1,3 @@
+<void>
+<void>
+"value from toto2"

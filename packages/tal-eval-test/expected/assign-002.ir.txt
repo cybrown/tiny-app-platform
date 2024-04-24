@@ -1,9 +1,0 @@
-main: 
-  Block
-    DeclareLocal {"name":"toto","mutable":false}
-      MakeObject
-    SetAttribute {"name":"property","forceRender":true}
-      Local {"name":"toto"}
-      Literal {"value":"value"}
-    Attribute {"name":"property"}
-      Local {"name":"toto"}

@@ -361,22 +361,6 @@ class Lowerer {
           doRemoveFromBlock: true,
         };
       }
-      case 'Provide': {
-        return {
-          ...expr,
-          entries: expr.entries.map(({ key, value }) => ({
-            key: this.lowerSingle(key),
-            value: this.lowerSingle(value),
-          })),
-          body: this.lowerBlockOfExpressions(expr.body, returnArrayFromBlock),
-        };
-      }
-      case 'Provided': {
-        return {
-          ...expr,
-          key: this.lowerSingle(expr.key),
-        };
-      }
       case 'Switch': {
         const valueExpr: Expression = expr.value
           ? this.lowerSingle(expr.value)

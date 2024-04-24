@@ -161,17 +161,6 @@ export type FunctionExpression = ExpressionMetadata & {
   body: Expression;
 };
 
-export type ProvideExpression = ExpressionMetadata & {
-  kind: 'Provide';
-  entries: { key: Expression; value: Expression }[];
-  body: BlockOfExpressionsExpression;
-};
-
-export type ProvidedExpression = ExpressionMetadata & {
-  kind: 'Provided';
-  key: Expression;
-};
-
 export type CommentExpression = ExpressionMetadata & {
   kind: 'Comment';
   text: string;
@@ -225,8 +214,6 @@ export type ExpressionByKind = {
   BlockOfExpressions: BlockOfExpressionsExpression;
   DeclareLocal: DeclareLocalExpression;
   KindedRecord: KindedRecordExpression;
-  Provide: ProvideExpression;
-  Provided: ProvidedExpression;
   Import: ImportExpression;
   Export: ExportExpression;
   Comment: CommentExpression;

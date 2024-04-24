@@ -74,10 +74,10 @@ MultiplicationOperators
     	{ return buildBinaryOperator(left, right); }
 
 UnaryPrefixOperatorExpression
-	= operator:("-" / "+" / "!" / "&")? _ operand:ExpressionLevel2
+	= operator:("-" / "+" / "!")? _ operand:ExpressionLevel2
      	{
             if (!operator) return operand;
-            return (operator == "&" ? { location: buildLocation(), kind: "Provided", key: operand } : { location: buildLocation(), kind: "UnaryOperator", operator, operand });
+            return { location: buildLocation(), kind: "UnaryOperator", operator, operand };
         }
 
 ExpressionLevel2 // Dotted and indexed expression
@@ -113,7 +113,6 @@ ExpressionLevel1
     / Switch
     / Try
     / Import
-    / Provide
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -173,14 +172,6 @@ Try
             const catchBlock = catchBlockArray ? catchBlockArray[3] : undefined
             return { location: buildLocation(), kind: "Try", expr, catchBlock };
         }
-
-Provide
-    = 'with' _  '(' _ entries:(ProvideKeyValuePair (_ ',')? _ )+ _ ')' _ body:BlockOfExpressions
-        { return { location: buildLocation(), kind: "Provide", entries: entries.map(entry => entry[0]), body }; }
-
-ProvideKeyValuePair
-    = key:Expression _ '=' _ value:Expression
-        { return { key, value}; }
 
 SubExpression
 	= '(' _ expr:Expression _ ')'

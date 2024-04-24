@@ -1,6 +1,0 @@
-main: 
-  Block
-    Call
-      Local {"name":"sync_or_async"}
-      MakeArray
-      MakeObject

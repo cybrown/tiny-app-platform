@@ -1,7 +1,0 @@
-main: 
-  Block
-    Try
-      Block
-        Local {"name":"missing_variable"}
-      Block
-        Literal {"value":"value on error"}

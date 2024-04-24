@@ -1,6 +1,0 @@
-main: 
-  Block
-    Index
-      Literal {"value":0}
-      MakeArray
-        Literal {"value":1}

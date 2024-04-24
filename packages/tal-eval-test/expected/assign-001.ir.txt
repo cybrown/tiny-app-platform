@@ -1,6 +1,0 @@
-main: 
-  Block
-    DeclareLocal {"name":"toto","mutable":true}
-    SetLocal {"name":"toto"}
-      Literal {"value":"value"}
-    Local {"name":"toto"}

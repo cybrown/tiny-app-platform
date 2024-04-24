@@ -8,16 +8,16 @@ export const pg_query = defineFunction(
   pg_query_impl
 );
 
-function getUri(uri: string, ctx: RuntimeContext) {
-  return uri ?? ctx.getProvidedValue('pg.uri');
+function getUri(uri: string) {
+  return uri;
 }
 
 async function pg_query_impl(
-  ctx: RuntimeContext,
+  _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
   const response = await pgQuery({
-    uri: getUri(value.uri, ctx),
+    uri: getUri(value.uri),
     query: value.query,
     params: value.params,
   });

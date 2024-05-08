@@ -89,6 +89,7 @@ import {
   string_to_bytes,
   string_to_number,
   string_trim,
+  string_length,
 } from './functions/string';
 import { time_parse, time_day_of_week } from './functions/time';
 import { uuid_v4 } from './functions/uuid';
@@ -194,6 +195,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(string_contains);
   ctx.registerFunction(string_ends_with);
   ctx.registerFunction(string_format);
+  ctx.registerFunction(string_length);
   ctx.registerFunction(string_locale_compare);
   ctx.registerFunction(string_lower);
   ctx.registerFunction(string_split);

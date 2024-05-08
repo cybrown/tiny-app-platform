@@ -124,6 +124,12 @@ export const string_pad_end = defineFunction(
   (_ctx, { string, length, fill }) => (string as string).padEnd(length, fill)
 );
 
+export const string_length = defineFunction(
+  'string_length',
+  [{ name: 'string' }],
+  (_ctx, { string }) => (string as string).length
+);
+
 // Replace this implementation
 const extractPlaceholdersRegexp = /\$[a-zA-Z_$]+[a-zA-Z_$0-9]*/g;
 

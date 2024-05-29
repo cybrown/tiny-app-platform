@@ -83,6 +83,7 @@ export default function Button({
           link={link}
         />
       )}
+      {/* TODO: Try react overlay here and other error popins */}
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
   );

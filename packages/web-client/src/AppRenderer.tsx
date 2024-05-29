@@ -25,7 +25,7 @@ function AppRenderer({
         // TODO: Move that elsewhere later
         ctx.declareLocal(APP_DEBUG_MODE_ENV, { mutable: true });
 
-        const uiClosure: Closure = await runAsync(ctx) as any;
+        const uiClosure: Closure = (await runAsync(ctx)) as any;
 
         ctx.endReinit();
         const ui: any = await runAsync(uiClosure.ctx, uiClosure.name);

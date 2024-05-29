@@ -28,6 +28,7 @@ import Image, { ImageDocumentation } from "./widgets/Image";
 import Column, { ColumnDocumentation } from "./widgets/Column";
 import Loader, { LoaderDocumentation } from "./widgets/Loader";
 import Html, { HtmlDocumentation } from "./widgets/Html";
+import Modal, { ModalDocumentation } from "./widgets/Modal";
 import Layout, { LayoutDocumentation } from "./widgets/Layout";
 import { backendUrl } from "./runtime/configuration";
 import Debug, { DebugDocumentation } from "./widgets/Debug";
@@ -145,6 +146,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Link", Link, LinkDocumentation);
   ctx.registerWidget("Loader", Loader, LoaderDocumentation);
   ctx.registerWidget("Html", Html, HtmlDocumentation);
+  ctx.registerWidget("Modal", Modal, ModalDocumentation);
   ctx.registerWidget("Layout", Layout, LayoutDocumentation);
   ctx.registerWidget("Pager", Pager, PagerDocumentation);
   ctx.registerWidget("Row", Row, RowDocumentation);

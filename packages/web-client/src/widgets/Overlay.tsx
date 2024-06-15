@@ -7,35 +7,35 @@ import {
 } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import React, { useCallback } from "react";
-import LowLevelModal from "./internal/LowLevelModal";
+import LowLevelOverlay from "./internal/LowLevelOverlay";
 
-type ModalProps = {
+type OverlayProps = {
   ctx: RuntimeContext;
   children?: Opcode[];
   onClose?: Closure;
   position?: string;
-  hasBackdrop?: boolean;
+  modal?: boolean;
   size?: string;
 };
 
-export default function Modal({
+export default function Overlay({
   ctx,
   children,
   onClose,
   position,
-  hasBackdrop,
+  modal,
   size,
-}: ModalProps) {
+}: OverlayProps) {
   const childContext = ctx.createChild({});
   const onCloseHandler = useCallback(() => {
     onClose && ctx.callFunctionAsync(onClose, []);
   }, [ctx, onClose]);
 
   return (
-    <LowLevelModal
+    <LowLevelOverlay
       onClose={onCloseHandler}
       position={position}
-      hasBackdrop={hasBackdrop ?? true}
+      modal={modal ?? true}
       size={size}
     >
       {(children ?? [])
@@ -48,17 +48,18 @@ export default function Modal({
         .map((child, index) => (
           <React.Fragment key={index}>{child.node}</React.Fragment>
         ))}
-    </LowLevelModal>
+    </LowLevelOverlay>
   );
 }
 
-export const ModalDocumentation: WidgetDocumentation<ModalProps> = {
-  description: "Open an Modal",
+export const OverlayDocumentation: WidgetDocumentation<OverlayProps> = {
+  description: "Open an Overlay",
   props: {
     children: "Widgets to render",
-    onClose: "Function to call when Modal is closing",
-    position: "Modal position: center (default) | left | right | top | bottom",
-    hasBackdrop: "Show a backdrop behind the modal (default true)",
+    onClose: "Function to call when Overlay is closing",
+    position:
+      "Overlay position: center (default) | left | right | top | bottom",
+    modal: "Make the Overlay modal (default true)",
     size: "Size: xl",
   },
 };

@@ -1,4 +1,4 @@
-.modal {
+.overlay {
   position: fixed;
   /* TODO: Define theme compatible background color */
   background-color: white;
@@ -6,7 +6,7 @@
   transition-property: transform;
 }
 
-.modal {
+.overlay {
   box-shadow: 0px 0px 5px grey;
 }
 

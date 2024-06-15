@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import styles from "./LowLevelModal.module.css";
+import styles from "./LowLevelOverlay.module.css";
 import ReactDOM from "react-dom";
 
 const variantToClassName = {
@@ -10,29 +10,29 @@ const variantToClassName = {
   bottom: styles.bottom,
 };
 
-type LowLevelModalProps = {
+type LowLevelOverlayProps = {
   position?: string;
-  hasBackdrop?: boolean;
+  modal?: boolean;
   size?: string;
   onClose?: () => void;
 } & React.PropsWithChildren;
 
-export default function LowLevelModal({
+export default function LowLevelOverlay({
   children,
   onClose,
   position,
-  hasBackdrop,
+  modal,
   size,
-}: LowLevelModalProps) {
+}: LowLevelOverlayProps) {
   const onCloseRef = useRef(onClose);
-  const hasBackdropRef = useRef(hasBackdrop);
+  const modalRef = useRef(modal);
 
   useEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
 
   const backdropElement = useMemo<HTMLDivElement | null>(() => {
-    if (!hasBackdropRef.current) {
+    if (!modalRef.current) {
       return null;
     }
     const element = document.createElement("div");
@@ -44,9 +44,9 @@ export default function LowLevelModal({
     return element;
   }, []);
 
-  const modalElement = useMemo<HTMLDivElement>(() => {
+  const overlayElement = useMemo<HTMLDivElement>(() => {
     const element = document.createElement("div");
-    element.classList.add(styles.modal);
+    element.classList.add(styles.overlay);
     element.classList.add(
       (variantToClassName as any)[position ?? "center"] ?? styles.center
     );
@@ -60,18 +60,18 @@ export default function LowLevelModal({
   useEffect(() => {
     setTimeout(() => {
       backdropElement?.classList.add(styles.openVisible);
-      modalElement.classList.add(styles.openVisible);
+      overlayElement.classList.add(styles.openVisible);
     });
 
     return () => {
       backdropElement?.classList.remove(styles.openVisible);
-      modalElement.classList.remove(styles.openVisible);
+      overlayElement.classList.remove(styles.openVisible);
       setTimeout(() => {
         backdropElement && document.body.removeChild(backdropElement);
-        document.body.removeChild(modalElement);
+        document.body.removeChild(overlayElement);
       }, 150);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return ReactDOM.createPortal(children, modalElement);
+  return ReactDOM.createPortal(children, overlayElement);
 }

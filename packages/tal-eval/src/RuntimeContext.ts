@@ -27,7 +27,7 @@ export type WidgetDocumentation<T> = {
 
 export interface FetchedSource {
   path: string;
-  source: string;
+  source: string | null;
 }
 
 export interface SourceFetcher {

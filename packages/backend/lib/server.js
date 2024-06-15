@@ -8,6 +8,7 @@ const {
   okText,
   noContent,
   sendResponse,
+  notFound,
 } = require("./http-utils");
 const https = require("https");
 const http = require("http");
@@ -352,7 +353,11 @@ const routes = [
         const db = client.db(dbName);
         const collection = db.collection("apps");
         const doc = await collection.findOne({ name: appName });
-        return okText(doc ? doc.source : "\n");
+        if (doc) {
+          return okText(doc.source);
+        } else {
+          return notFound();
+        }
       } finally {
         client.close();
       }

@@ -177,9 +177,7 @@ export class VM {
       namedArgs,
       positionalArgs
     );
-    this.ctx = closure.ctx
-      .createChild(namedArguments, false)
-      .createChild({});
+    this.ctx = closure.ctx.createChild(namedArguments, false).createChild({});
     this.ctxStack.push(this.ctx);
     return this.run();
   }
@@ -780,6 +778,11 @@ async function resolveModule(
     source: moduleSource,
     path: modulePath,
   } = await ctx.getSourceFetcher().fetch(path);
+
+  if (!moduleSource) {
+    throw new Error('Source not found: ' + path);
+  }
+
   const ast = lower(parse(moduleSource, modulePath));
   const module = compile(ast, path);
   Object.entries(module).forEach(([name, func]) => {

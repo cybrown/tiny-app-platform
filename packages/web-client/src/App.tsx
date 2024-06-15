@@ -22,14 +22,13 @@ import Table, { TableDocumentation } from "./widgets/Table";
 import InputText, { InputTextDocumentation } from "./widgets/InputText";
 import Switch, { SwitchDocumentation } from "./widgets/Switch";
 import Snippet, { SnippetDocumentation } from "./widgets/Snippet";
-import Box, { BoxDocumentation } from "./widgets/Box";
 import Row, { RowDocumentation } from "./widgets/Row";
 import Image, { ImageDocumentation } from "./widgets/Image";
 import Column, { ColumnDocumentation } from "./widgets/Column";
 import Loader, { LoaderDocumentation } from "./widgets/Loader";
 import Html, { HtmlDocumentation } from "./widgets/Html";
 import Overlay, { OverlayDocumentation } from "./widgets/Overlay";
-import Layout, { LayoutDocumentation } from "./widgets/Layout";
+import View, { ViewDocumentation } from "./widgets/View";
 import { backendUrl } from "./runtime/configuration";
 import Debug, { DebugDocumentation } from "./widgets/Debug";
 import { APP_DEBUG_MODE_ENV } from "./constants";
@@ -79,6 +78,9 @@ async function getRemoteConfiguration() {
 
 async function getApp(name: string): Promise<FetchedSource> {
   const response = await fetch(backendUrl + "/apps/read/" + name);
+  if (response.status === 404) {
+    return { path: name, source: null };
+  }
   if (response.status < 200 || response.status >= 300) {
     throw new Error(
       "Failed to fetch remote app with status: " + response.status
@@ -135,28 +137,27 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   );
   importStdlibInContext(ctx);
 
-  ctx.registerWidget("Box", Box, BoxDocumentation);
   ctx.registerWidget("Button", Button, ButtonDocumentation);
   ctx.registerWidget("CheckBox", CheckBox, CheckBoxDocumentation);
   ctx.registerWidget("Column", Column, ColumnDocumentation);
   ctx.registerWidget("Debug", Debug, DebugDocumentation);
+  ctx.registerWidget("Html", Html, HtmlDocumentation);
   ctx.registerWidget("Image", Image, ImageDocumentation);
   ctx.registerWidget("InputFile", InputFile, InputFileDocumentation);
   ctx.registerWidget("InputText", InputText, InputTextDocumentation);
   ctx.registerWidget("Link", Link, LinkDocumentation);
   ctx.registerWidget("Loader", Loader, LoaderDocumentation);
-  ctx.registerWidget("Html", Html, HtmlDocumentation);
   ctx.registerWidget("Overlay", Overlay, OverlayDocumentation);
-  ctx.registerWidget("Layout", Layout, LayoutDocumentation);
   ctx.registerWidget("Pager", Pager, PagerDocumentation);
+  ctx.registerWidget("Radio", Radio, RadioDocumentation);
   ctx.registerWidget("Row", Row, RowDocumentation);
   ctx.registerWidget("Select", Select, SelectDocumentation);
   ctx.registerWidget("Snippet", Snippet, SnippetDocumentation);
   ctx.registerWidget("Switch", Switch, SwitchDocumentation);
   ctx.registerWidget("Table", Table, TableDocumentation);
-  ctx.registerWidget("Text", Text, TextDocumentation);
-  ctx.registerWidget("Radio", Radio, RadioDocumentation);
   ctx.registerWidget("Tabs", Tabs, TabsDocumentation);
+  ctx.registerWidget("Text", Text, TextDocumentation);
+  ctx.registerWidget("View", View, ViewDocumentation);
 
   return ctx;
 }
@@ -266,7 +267,7 @@ function App() {
           appNameFromUrl
         ) {
           const remoteAppSource = await getApp(appNameFromUrl);
-          sourceToExecute = remoteAppSource.source;
+          sourceToExecute = remoteAppSource.source ?? DEFAULT_APP_SOURCE;
         } else if (sourceFromFile && sourcePath) {
           sourceToExecute = sourceFromFile ?? DEFAULT_APP_SOURCE;
         } else {

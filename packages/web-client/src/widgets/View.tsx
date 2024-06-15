@@ -1,35 +1,45 @@
 import { Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
-import styles from "./Layout.module.css";
+import styles from "./View.module.css";
 import { useTheme } from "../theme";
 import { metadataGet } from "tal-eval";
 
-type LayoutDescription = {
-  direction?: "row" | "column";
+type ViewDescription = {
+  layout?: "flex-row" | "flex-column";
   gap?: number;
+  width?: string | number;
+  height?: string | number;
   padding?: number;
   wrap?: boolean;
   scroll?: boolean;
+  backgroundColor?: string;
 };
 
-export type LayoutProps = {
+export type ViewProps = {
   ctx: RuntimeContext;
   children: Opcode[];
-} & LayoutDescription;
+} & ViewDescription;
 
-function computeLayoutStyles(d: LayoutDescription, baseSize: number) {
+function computeViewStyles(d: ViewDescription, baseSize: number) {
   return {
     ...(d.padding ? { padding: d.padding * baseSize } : {}),
+    ...(d.backgroundColor ? { backgroundColor: d.backgroundColor } : {}),
+    ...(d.height
+      ? { width: typeof d.width == "number" ? d.width * baseSize : d.width }
+      : {}),
+    ...(d.height
+      ? { height: typeof d.height == "number" ? d.height * baseSize : d.height }
+      : {}),
   };
 }
 
 function computeChildStyles(
   index: number,
-  d: LayoutDescription,
+  d: ViewDescription,
   baseSize: number,
   meta: any
 ) {
-  const isRow = d.direction === "row";
+  const isRow = d.layout === "flex-row";
   return {
     ...(index > 0
       ? isRow
@@ -42,9 +52,9 @@ function computeChildStyles(
   };
 }
 
-export default function Layout({ ctx, children, ...d }: LayoutProps) {
+export default function View({ ctx, children, ...d }: ViewProps) {
   const childContext = ctx.createChild({});
-  const isRow = d.direction === "row";
+  const isRow = d.layout === "flex-row";
   const theme = useTheme();
   const baseSize = theme.baseSize ?? 12;
 
@@ -53,7 +63,7 @@ export default function Layout({ ctx, children, ...d }: LayoutProps) {
       className={`${isRow ? styles.directionRow : styles.directionColumn} ${
         d.wrap ? styles.wrap : ""
       } ${d.scroll ? styles.scroll : ""}`}
-      style={computeLayoutStyles(d, baseSize)}
+      style={computeViewStyles(d, baseSize)}
     >
       {children
         .flat(Infinity)
@@ -75,14 +85,17 @@ export default function Layout({ ctx, children, ...d }: LayoutProps) {
   );
 }
 
-export const LayoutDocumentation: WidgetDocumentation<LayoutProps> = {
-  description: "A Layout to contain and place multiple widgets",
+export const ViewDocumentation: WidgetDocumentation<ViewProps> = {
+  description: "A View to contain and layout multiple widgets",
   props: {
     children: "Widgets to render",
-    direction: "row | column",
+    backgroundColor: "Background color",
+    layout: "Layout to apply to children: flex-row | flex-column",
     gap: "Space between children",
     padding: "Space around children",
     wrap: "Return to avoid scrolling",
     scroll: "Scroll content on overflow",
+    height: "Height, standard unit as a number or a CSS string",
+    width: "Width, standard unit as a number or a CSS string",
   },
 };

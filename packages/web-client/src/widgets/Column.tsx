@@ -1,13 +1,13 @@
 import { WidgetDocumentation } from "tal-eval";
-import Layout, { LayoutDocumentation, LayoutProps } from "./Layout";
+import View, { ViewDocumentation, ViewProps } from "./View";
 
-type ColumnProps = Omit<LayoutProps, "direction">;
+type ColumnProps = Omit<ViewProps, "layout">;
 
-export default function Column(props: Exclude<LayoutProps, "direction">) {
-  return <Layout {...props} direction="column" />;
+export default function Column(props: Exclude<ViewProps, "layout">) {
+  return <View {...props} layout="flex-column" />;
 }
 
-const { direction, ...propsDocumentation } = LayoutDocumentation.props;
+const { layout, ...propsDocumentation } = ViewDocumentation.props;
 
 export const ColumnDocumentation: WidgetDocumentation<ColumnProps> = {
   description: "Show content in a vertical layout",

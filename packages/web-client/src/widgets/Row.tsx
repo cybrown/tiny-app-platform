@@ -1,19 +1,19 @@
 import { WidgetDocumentation } from "tal-eval";
-import Layout, { LayoutDocumentation, LayoutProps } from "./Layout";
+import View, { ViewDocumentation, ViewProps } from "./View";
 
-type RowProps = Omit<LayoutProps, "direction">;
+type RowProps = Omit<ViewProps, "layout">;
 
 export default function Row({
   wrap,
   scroll,
   ...props
-}: Exclude<LayoutProps, "direction">) {
+}: Exclude<ViewProps, "layout">) {
   const doWrap = wrap ?? false;
   const doScroll = scroll ?? !wrap;
-  return <Layout wrap={doWrap} scroll={doScroll} {...props} direction="row" />;
+  return <View wrap={doWrap} scroll={doScroll} {...props} layout="flex-row" />;
 }
 
-const { direction, ...propsDocumentation } = LayoutDocumentation.props;
+const { layout, ...propsDocumentation } = ViewDocumentation.props;
 
 export const RowDocumentation: WidgetDocumentation<RowProps> = {
   description:

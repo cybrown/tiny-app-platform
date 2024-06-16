@@ -25,7 +25,7 @@ function computeViewStyles(d: ViewDescription, baseSize: number) {
     ...{ gap: (d.gap ?? 0.5) * baseSize },
     ...(d.padding ? { padding: d.padding * baseSize } : {}),
     ...(d.backgroundColor ? { backgroundColor: d.backgroundColor } : {}),
-    ...(d.height
+    ...(d.width
       ? { width: typeof d.width == "number" ? d.width * baseSize : d.width }
       : {}),
     ...(d.height

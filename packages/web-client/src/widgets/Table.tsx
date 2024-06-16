@@ -116,7 +116,7 @@ export default function Table({
           };
         })}
       />
-      {ctx.getEnvOr(APP_DEBUG_MODE_ENV, false) ? (
+      {ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) ? (
         <Debug value={values} />
       ) : null}
     </div>

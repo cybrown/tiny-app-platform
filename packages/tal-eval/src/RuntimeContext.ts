@@ -7,12 +7,6 @@ class GetLocalError extends Error {
   }
 }
 
-class GetEnvError extends Error {
-  constructor(localName: string) {
-    super('Env value not found: ' + localName);
-  }
-}
-
 type DeclareLocalOptions = {
   initialValue?: unknown;
   mutable?: boolean;
@@ -239,30 +233,6 @@ export class RuntimeContext {
       return this.parent.getLocal(name);
     }
     throw new GetLocalError(name);
-  }
-
-  getEnv(name: string): unknown {
-    if (!this.hasLocal(name)) {
-      throw new GetEnvError(name);
-    }
-    if (this._locals.hasOwnProperty(name)) {
-      return this._locals[name];
-    } else if (this.parent) {
-      return this.parent.getLocal(name);
-    }
-    throw new GetEnvError(name);
-  }
-
-  getEnvOr(name: string, defaultValue: unknown): unknown {
-    if (!this.hasLocal(name)) {
-      return defaultValue;
-    }
-    if (this._locals.hasOwnProperty(name)) {
-      return this._locals[name];
-    } else if (this.parent) {
-      return this.parent.getLocal(name);
-    }
-    throw new GetEnvError(name);
   }
 
   // TODO: To remove

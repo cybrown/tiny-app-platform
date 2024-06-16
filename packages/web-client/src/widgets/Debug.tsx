@@ -12,7 +12,7 @@ type DebugProps = {
 
 export default function Debug({ ctx, value, force }: DebugProps) {
   // If ctx is null, the value is a raw value to show to the user
-  if (force || !ctx || ctx.getEnvOr(APP_DEBUG_MODE_ENV, false)) {
+  if (force || !ctx || ctx.getLocalOr(APP_DEBUG_MODE_ENV, false)) {
     return (
       <div className={styles.Debug}>
         <RenderAny value={value} path="" />

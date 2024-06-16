@@ -1,7 +1,5 @@
 .overlay {
   position: fixed;
-  /* TODO: Define theme compatible background color */
-  background-color: white;
   transition-duration: 150ms;
   transition-property: transform;
   overflow: auto;

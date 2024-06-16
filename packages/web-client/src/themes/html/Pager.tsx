@@ -85,6 +85,7 @@ export default function Pager(props: PagerProps) {
       />
       {(values ?? []).map((index) => (
         <PagerButton
+          key={index}
           p={props}
           updateValue={updateValue}
           pos="PAGE"

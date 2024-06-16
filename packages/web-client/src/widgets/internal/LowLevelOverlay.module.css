@@ -4,6 +4,7 @@
   background-color: white;
   transition-duration: 150ms;
   transition-property: transform;
+  overflow: auto;
 }
 
 .overlay {

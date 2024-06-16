@@ -22,6 +22,7 @@ export type ViewProps = {
 
 function computeViewStyles(d: ViewDescription, baseSize: number) {
   return {
+    ...{ gap: (d.gap ?? 0.5) * baseSize },
     ...(d.padding ? { padding: d.padding * baseSize } : {}),
     ...(d.backgroundColor ? { backgroundColor: d.backgroundColor } : {}),
     ...(d.height
@@ -33,19 +34,8 @@ function computeViewStyles(d: ViewDescription, baseSize: number) {
   };
 }
 
-function computeChildStyles(
-  index: number,
-  d: ViewDescription,
-  baseSize: number,
-  meta: any
-) {
-  const isRow = d.layout === "flex-row";
+function computeChildStyles(meta: any) {
   return {
-    ...(index > 0
-      ? isRow
-        ? { paddingLeft: (d.gap ?? 0.5) * baseSize }
-        : { paddingTop: (d.gap ?? 0.5) * baseSize }
-      : {}),
     ...(meta.flexGrow ? { flexGrow: meta.flexGrow } : {}),
     ...(meta.backgroundColor ? { backgroundColor: meta.backgroundColor } : {}),
     ...(meta.scroller ? { overflowY: "auto" as const } : {}),
@@ -75,7 +65,7 @@ export default function View({ ctx, children, ...d }: ViewProps) {
         .map((child, index) => (
           <div
             className={styles.child}
-            style={computeChildStyles(index, d, baseSize, child.meta)}
+            style={computeChildStyles(child.meta)}
             key={index}
           >
             {child.node}

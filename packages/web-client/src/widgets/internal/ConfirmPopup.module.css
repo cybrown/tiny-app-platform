@@ -1,0 +1,12 @@
+.popupContent {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.popupFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}

@@ -227,8 +227,8 @@ export interface Theme {
   Text(props: TextProps): any;
   Pager(props: PagerProps): any;
   Table(props: TableProps): any;
-  Modal(props: ModalProps): any;
-  ModalBackdrop(props: ModalBackdropProps): any;
+  Modal?(props: ModalProps): any;
+  ModalBackdrop?(props: ModalBackdropProps): any;
   Link(props: LinkProps): any;
   Radio(props: RadioProps): any;
   Tabs?(props: TabsProps): any;
@@ -285,11 +285,15 @@ export function Table(props: TableProps) {
 
 export function Modal(props: ModalProps) {
   const theme = useTheme();
+  if (!theme.Modal)
+    return <Text text="Warning: Modal not supported with this theme" />;
   return <theme.Modal {...props} />;
 }
 
 export function ModalBackdrop(props: ModalBackdropProps) {
   const theme = useTheme();
+  if (!theme.ModalBackdrop)
+    return <Text text="Warning: ModalBackdrop not supported with this theme" />;
   return <theme.ModalBackdrop {...props} />;
 }
 

@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import usePressEscape from "./usePressEscape";
-import { Button, Modal } from "../../theme";
+import { Button, Text, useTheme } from "../../theme";
+import LowLevelOverlay from "./LowLevelOverlay";
+import styles from "./ConfirmPopup.module.css";
 
 type ConfirmPopupProps = {
   show: boolean;
@@ -30,17 +32,44 @@ export default function ConfirmPopup({
 
   usePressEscape(cancelPopup);
 
-  return show ? (
-    <Modal
-      header="Confirmation"
-      body={typeof confirm === "boolean" ? "Are you sure ?" : confirm}
-      footer={
-        <>
-          <Button text="Cancel" onClick={clickCancelHandler} secondary />
-          <Button text="Ok" onClick={clickOkHandler} />
-        </>
-      }
-      onClose={clickCancelHandler}
-    />
-  ) : null;
+  const theme = useTheme();
+
+  if (theme.Modal) {
+    return show ? (
+      <theme.Modal
+        header="Confirmation"
+        body={typeof confirm === "boolean" ? "Are you sure ?" : confirm}
+        footer={
+          <>
+            <Button text="Cancel" onClick={clickCancelHandler} secondary />
+            <Button text="Ok" onClick={clickOkHandler} />
+          </>
+        }
+        onClose={clickCancelHandler}
+      />
+    ) : null;
+  } else {
+    return show ? (
+      <LowLevelOverlay
+        modal
+        onClose={clickCancelHandler}
+        position="center"
+        size="m"
+      >
+        <div className={styles.popupContent}>
+          <Text text="Confirmation" size={1.4} weight="light" />
+          <Text
+            text={
+              (typeof confirm === "boolean" ? "Are you sure ?" : confirm) ??
+              "Are you sure ?"
+            }
+          />
+          <div className={styles.popupFooter}>
+            <Button text="Cancel" onClick={clickCancelHandler} outline />
+            <Button text="Ok" onClick={clickOkHandler} />
+          </div>
+        </div>
+      </LowLevelOverlay>
+    ) : null;
+  }
 }

@@ -8,9 +8,7 @@ import Select from "./Select";
 import Text from "./Text";
 import Pager from "./Pager";
 import Table from "./Table";
-import Modal from "./Modal";
 import Link from "./Link";
-import ModalBackdrop from "./ModalBackdrop";
 import Radio from "./Radio";
 
 const htmlTheme: Theme = {
@@ -28,9 +26,7 @@ const htmlTheme: Theme = {
   Text,
   Pager,
   Table,
-  Modal,
   Link,
-  ModalBackdrop,
   Radio,
   Loader: (props: LoaderProps) => "Loading...",
   Container: (props) => props.children,

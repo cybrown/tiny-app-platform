@@ -8,7 +8,6 @@ import InputFile from "./InputFile";
 import Text from "./Text";
 import htmlTheme from "../html";
 import Pager from "./Pager";
-import Modal from "./Modal";
 import Radio from "./Radio";
 import Tabs from "./Tabs";
 import { baseSize, colors, sizes } from "./constants";
@@ -113,8 +112,6 @@ const toyBoxTheme: Theme = {
   Text,
   Pager,
   Table: htmlTheme.Table,
-  Modal,
-  ModalBackdrop: htmlTheme.ModalBackdrop,
   Link: htmlTheme.Link,
   Radio,
   Tabs,

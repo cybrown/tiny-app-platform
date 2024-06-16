@@ -155,6 +155,9 @@ export class RuntimeContext {
   }
 
   private triggerStateChangedListeners() {
+    if (this.parent) {
+      this.parent.triggerStateChangedListeners();
+    }
     this.stateChangedListeners.forEach(listener => listener());
   }
 

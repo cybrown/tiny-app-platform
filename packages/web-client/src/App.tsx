@@ -44,6 +44,7 @@ import twbsTheme from "./themes/twbs";
 import { Select as ThemedSelect } from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
+import theme98 from "./themes/98";
 import darkOrangeTheme from "./themes/dark-orange";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 import { lowerForApp } from "tal-eval";
@@ -202,6 +203,7 @@ const themes = [
   twbsTheme,
   twbsDarkTheme,
   nesCssTheme,
+  theme98,
   darkOrangeTheme,
 ];
 

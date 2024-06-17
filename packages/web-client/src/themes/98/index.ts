@@ -30,7 +30,7 @@ const nesCssTheme: Theme = {
   },
   id: "98",
   name: "98",
-  baseSize: 28,
+  baseSize: 8,
   Button,
   CheckBox,
   Switch,

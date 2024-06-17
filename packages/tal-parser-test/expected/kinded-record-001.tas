@@ -1,0 +1,5 @@
+App { hello: "world" }
+
+Text { text: "Hello, World !" }
+
+View { Text { text: "Hello, World ! 2" } }

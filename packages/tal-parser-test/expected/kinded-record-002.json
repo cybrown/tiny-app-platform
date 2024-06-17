@@ -1,0 +1,23 @@
+[
+  {
+    "kind": "KindedRecord",
+    "value": {
+      "kind": {
+        "kind": "Local",
+        "name": "View"
+      },
+      "children": [
+        {
+          "kind": "Local",
+          "name": "Text"
+        },
+        {
+          "kind": "Record",
+          "value": {
+            "text": "Hello, World ! 2"
+          }
+        }
+      ]
+    }
+  }
+]

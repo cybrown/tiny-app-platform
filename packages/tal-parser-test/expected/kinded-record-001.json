@@ -1,0 +1,43 @@
+[
+  {
+    "kind": "KindedRecord",
+    "value": {
+      "kind": {
+        "kind": "Local",
+        "name": "App"
+      },
+      "hello": "world"
+    }
+  },
+  {
+    "kind": "KindedRecord",
+    "value": {
+      "kind": {
+        "kind": "Local",
+        "name": "Text"
+      },
+      "text": "Hello, World !"
+    }
+  },
+  {
+    "kind": "KindedRecord",
+    "value": {
+      "kind": {
+        "kind": "Local",
+        "name": "View"
+      },
+      "children": [
+        {
+          "kind": "KindedRecord",
+          "value": {
+            "kind": {
+              "kind": "Local",
+              "name": "Text"
+            },
+            "text": "Hello, World ! 2"
+          }
+        }
+      ]
+    }
+  }
+]

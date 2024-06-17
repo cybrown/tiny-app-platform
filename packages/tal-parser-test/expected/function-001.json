@@ -23,24 +23,19 @@
   {
     "kind": "Function",
     "body": {
-      "kind": "Call",
-      "args": [
-        {
-          "argKind": "Positional",
-          "value": {
-            "kind": "Local",
-            "name": "a"
-          }
-        }
-      ],
-      "value": {
-        "kind": "BlockOfExpressions",
-        "children": [
-          "A",
-          42
-        ]
-      }
+      "kind": "BlockOfExpressions",
+      "children": [
+        "A",
+        42
+      ]
     },
     "parameters": []
+  },
+  {
+    "kind": "SubExpression",
+    "expr": {
+      "kind": "Local",
+      "name": "a"
+    }
   }
 ]

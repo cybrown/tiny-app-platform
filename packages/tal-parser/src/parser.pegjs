@@ -88,9 +88,9 @@ ExpressionLevel2 // Dotted and indexed expression
 
 ExpressionLevel2Right
 	= DottedExpressionTail
-    / _ '[' _ index:Expression _ ']'
+    / _NoNewLine_ '[' _ index:Expression _ ']'
     	{ return { location: buildLocation(), kind: 'Index', index }; }
-    / _ "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
+    / _NoNewLine_ "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
         & { return !isLambda; }
         { return { location: buildLocation(), kind: "Call", args: values.map(a => a[0]) }; }
 
@@ -188,7 +188,7 @@ Function
         { return { location: buildLocation(), kind: "Function", body: body, parameters: [parameter] }; }
 
 KindedRecord
-    = kind:DottedExpression _ "{" _ values:((KindedRecordKeyValuePair / Expression) _ ','? _)* "}"
+    = kind:DottedExpression _NoNewLine_ "{" _ values:((KindedRecordKeyValuePair / Expression) _ ','? _)* "}"
         {
             const children = values.filter(a => !Array.isArray(a[0]))
                 .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
@@ -338,4 +338,8 @@ _ "whitespace"
 
 __ "mandatory whitespace"
 	= chars:([ \t\n\r]+)
+    	{ return [...chars].filter(c => c === "\n").length; }
+
+_NoNewLine_ "whitespace expect newline"
+	= chars:([ \t]*)
     	{ return [...chars].filter(c => c === "\n").length; }

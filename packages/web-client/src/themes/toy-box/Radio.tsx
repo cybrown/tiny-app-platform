@@ -11,7 +11,7 @@ export default function Radio({
   label,
 }: RadioProps) {
   return (
-    <div className={styles.RadioContainer}>
+    <label className={styles.RadioContainer}>
       <div
         className={`${styles.Radio} ${
           secondary ? " " + styles.secondary : ""
@@ -26,6 +26,6 @@ export default function Radio({
         <div className={styles.checkMark}></div>
       </div>
       <Text text={label ?? ""} />
-    </div>
+    </label>
   );
 }

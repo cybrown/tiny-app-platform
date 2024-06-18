@@ -26,6 +26,7 @@ export interface CheckBoxProps {
   onChange?(newValue: boolean): Promise<void>;
   value?: boolean;
   secondary?: boolean;
+  label?: string;
 }
 
 export interface SwitchProps {
@@ -33,6 +34,7 @@ export interface SwitchProps {
   onChange?(newValue: boolean): Promise<void> | void;
   value?: boolean;
   secondary?: boolean;
+  label?: string;
 }
 
 export interface InputTextProps {
@@ -157,6 +159,7 @@ export type RadioProps = {
   onChange?(): void;
   disabled?: boolean;
   secondary?: boolean;
+  label?: string;
 };
 
 export type TabsProps = {

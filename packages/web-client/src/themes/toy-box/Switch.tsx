@@ -1,14 +1,16 @@
 import styles from "./Switch.module.css";
 import { SwitchProps } from "../../theme";
+import Text from "./Text";
 
 export default function Switch({
   onChange,
   value,
   disabled,
   secondary,
+  label,
 }: SwitchProps) {
   return (
-    <>
+    <label className={styles.SwitchOuterContainer}>
       <div
         className={`${styles.SwitchContainer} ${
           secondary ? styles.secondary : ""
@@ -33,6 +35,7 @@ export default function Switch({
           }
         ></div>
       </div>
-    </>
+      <Text text={label ?? ""} />
+    </label>
   );
 }

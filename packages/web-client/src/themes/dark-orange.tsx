@@ -7,6 +7,7 @@ import {
   Theme,
 } from "../theme";
 import htmlTheme from "./html";
+import { useMakeId } from "./utils";
 
 const style = document.createElement("style");
 style.textContent = `
@@ -86,6 +87,8 @@ body {
 
 .tap-checkbox {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .tap-checkbox > input {
@@ -108,7 +111,7 @@ body {
 
 .tap-checkbox > input:checked + div::after {
   position: absolute;
-  top: -1px;
+  top: 5px;
   left: 8px;
   border-bottom: black 2px solid;
   border-right: black 2px solid;
@@ -119,8 +122,14 @@ body {
   transform: rotate(45deg);
 }
 
+.tap-checkbox > span {
+  margin-left: 4px;
+}
+
 .tap-radio {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .tap-radio > input {
@@ -139,7 +148,7 @@ body {
 
 .tap-radio > input:checked + div::after {
   position: absolute;
-  top: -4px;
+  top: 2px;
   left: 2px;
   height: 16px;
   width: 16px;
@@ -151,6 +160,10 @@ body {
 
 .tap-radio > input:checked:disabled + div::after {
   background-color: #f4b659;
+}
+
+.tap-radio > span {
+  margin-left: 4px;
 }
 
 .tap-link.is-disabled {
@@ -168,6 +181,7 @@ function CheckBox(props: CheckBoxProps) {
         onChange={(e) => props.onChange && props.onChange(e.target.checked)}
       />
       <div />
+      <span>{props.label}</span>
     </label>
   );
 }
@@ -182,6 +196,7 @@ function Radio(props: RadioProps) {
         onChange={() => props.onChange && props.onChange()}
       />
       <div />
+      <span>{props.label}</span>
     </label>
   );
 }

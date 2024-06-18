@@ -1,3 +1,11 @@
+.CheckBoxContainer {
+  display: flex;
+}
+
+.CheckBox + * {
+  margin-left: 6px;
+}
+
 .CheckBox {
   height: var(--toy-box-size-200);
   width: var(--toy-box-size-200);

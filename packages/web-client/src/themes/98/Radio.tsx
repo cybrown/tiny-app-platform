@@ -1,15 +1,16 @@
 import { RadioProps } from "../../theme";
-import { useMakeId } from "./utils";
+import { useMakeId } from "../utils";
 
 export default function Radio({
   disabled,
   onChange,
   value,
   option,
+  label,
 }: RadioProps) {
   const id = useMakeId();
   return (
-    <>
+    <div>
       <input
         id={id}
         type="radio"
@@ -17,7 +18,7 @@ export default function Radio({
         onChange={() => onChange && onChange()}
         disabled={disabled}
       />
-      <label htmlFor={id}>{"\u00A0"}</label>
-    </>
+      <label htmlFor={id}>{label}</label>
+    </div>
   );
 }

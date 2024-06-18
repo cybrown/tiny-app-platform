@@ -1,5 +1,6 @@
 import { RadioProps } from "../../theme";
 import styles from "./Radio.module.css";
+import Text from "./Text";
 
 export default function Radio({
   disabled,
@@ -7,9 +8,10 @@ export default function Radio({
   value,
   option,
   secondary,
+  label,
 }: RadioProps) {
   return (
-    <>
+    <div className={styles.RadioContainer}>
       <div
         className={`${styles.Radio} ${
           secondary ? " " + styles.secondary : ""
@@ -23,6 +25,7 @@ export default function Radio({
         />
         <div className={styles.checkMark}></div>
       </div>
-    </>
+      <Text text={label ?? ""} />
+    </div>
   );
 }

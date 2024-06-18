@@ -4,11 +4,16 @@ import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { CheckBox as ThemedCheckBox } from "../theme";
+import {
+  InputLabelProps,
+  InputLabelPropsDocs,
+} from "./internal/inputLabelProps";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
   secondary?: boolean;
-} & InputProps<boolean>;
+} & InputProps<boolean> &
+  InputLabelProps;
 
 export default function CheckBox({
   ctx,
@@ -16,6 +21,7 @@ export default function CheckBox({
   onChange,
   value,
   secondary,
+  label,
 }: CheckBoxProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -39,6 +45,7 @@ export default function CheckBox({
         value={value}
         disabled={disabled}
         secondary={secondary}
+        label={label}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
@@ -49,6 +56,7 @@ export const CheckBoxDocumentation: WidgetDocumentation<CheckBoxProps> = {
   description: "A checkbox to input a boolean value",
   props: {
     ...InputPropsDocs,
+    ...InputLabelPropsDocs,
     secondary: "Give the secondary style",
   },
 };

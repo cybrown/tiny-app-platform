@@ -5,6 +5,7 @@ export default function Radio({
   onChange,
   value,
   option,
+  label,
 }: RadioProps) {
   return (
     <label>
@@ -15,7 +16,7 @@ export default function Radio({
         onChange={() => onChange && onChange()}
         disabled={disabled}
       />
-      <span></span>
+      <span>{label}</span>
     </label>
   );
 }

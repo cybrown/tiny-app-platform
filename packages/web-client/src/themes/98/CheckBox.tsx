@@ -1,10 +1,15 @@
 import { CheckBoxProps } from "../../theme";
-import { useMakeId } from "./utils";
+import { useMakeId } from "../utils";
 
-export default function CheckBox({ disabled, onChange, value }: CheckBoxProps) {
+export default function CheckBox({
+  disabled,
+  onChange,
+  value,
+  label,
+}: CheckBoxProps) {
   const id = useMakeId();
   return (
-    <>
+    <div>
       <input
         id={id}
         type="checkbox"
@@ -12,7 +17,7 @@ export default function CheckBox({ disabled, onChange, value }: CheckBoxProps) {
         onChange={(e) => onChange && onChange(e.target.checked)}
         disabled={disabled}
       />
-      <label htmlFor={id}>{"\u00A0"}</label>
-    </>
+      <label htmlFor={id}>{label}</label>
+    </div>
   );
 }

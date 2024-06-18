@@ -1,6 +1,15 @@
+.SwitchOuterContainer {
+  display: flex;
+  align-items: center;
+}
+
 .SwitchContainer {
   position: relative;
   height: var(--toy-box-size-200);
+}
+
+.SwitchContainer + * {
+  margin-left: 6px;
 }
 
 .Switch,

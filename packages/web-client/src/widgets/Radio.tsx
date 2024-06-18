@@ -4,12 +4,17 @@ import ErrorPopin from "./internal/ErrorPopin";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { Radio as ThemedRadio } from "../theme";
+import {
+  InputLabelProps,
+  InputLabelPropsDocs,
+} from "./internal/inputLabelProps";
 
 type RadioProps = {
   ctx: RuntimeContext;
   option: string | { value: string; label: string };
   secondary?: boolean;
-} & InputProps<string>;
+} & InputProps<string> &
+  InputLabelProps;
 
 export default function Radio({
   ctx,
@@ -18,6 +23,7 @@ export default function Radio({
   value,
   option = "",
   secondary,
+  label,
 }: RadioProps) {
   const [lastError, setLastError] = useState(null as any);
 
@@ -41,6 +47,7 @@ export default function Radio({
         value={value}
         disabled={disabled}
         secondary={secondary}
+        label={label}
       />
       <ErrorPopin lastError={lastError} setLastError={setLastError} />
     </>
@@ -51,6 +58,7 @@ export const RadioDocumentation: WidgetDocumentation<RadioProps> = {
   description: "Radio to select a value",
   props: {
     ...InputPropsDocs,
+    ...InputLabelPropsDocs,
     option:
       "Value to set when this radio is checked, string | {value: string, label: string}",
     secondary: "Give the secondary style",

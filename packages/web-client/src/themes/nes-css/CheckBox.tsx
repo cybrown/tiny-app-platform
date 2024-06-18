@@ -1,6 +1,11 @@
 import { CheckBoxProps } from "../../theme";
 
-export default function CheckBox({ disabled, onChange, value }: CheckBoxProps) {
+export default function CheckBox({
+  disabled,
+  onChange,
+  value,
+  label,
+}: CheckBoxProps) {
   return (
     <label>
       <input
@@ -10,7 +15,7 @@ export default function CheckBox({ disabled, onChange, value }: CheckBoxProps) {
         onChange={(e) => onChange && onChange(e.target.checked)}
         disabled={disabled}
       />
-      <span></span>
+      <span>{label}</span>
     </label>
   );
 }

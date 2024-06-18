@@ -1,0 +1,7 @@
+.WindowFrame {
+  background-color: white;
+}
+
+.drawer {
+  height: calc(100% - 8px);
+}

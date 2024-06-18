@@ -27,7 +27,6 @@ export default function LowLevelOverlay({
 }: LowLevelOverlayProps) {
   const onCloseRef = useRef(onClose);
   const modalRef = useRef(modal);
-  const theme = useTheme();
 
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -48,7 +47,6 @@ export default function LowLevelOverlay({
 
   const overlayElement = useMemo<HTMLDivElement>(() => {
     const element = document.createElement("div");
-    element.style.backgroundColor = theme.colors.background;
     element.classList.add(styles.overlay);
     element.classList.add(
       (variantToClassName as any)[position ?? "center"] ?? styles.center

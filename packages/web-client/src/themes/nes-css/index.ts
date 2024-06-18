@@ -10,6 +10,7 @@ import Modal from "./Modal";
 import htmlTheme from "../html";
 import Radio from "./Radio";
 import Loader from "./Loader";
+import { WindowFrame } from "./WindowFrame";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -44,6 +45,7 @@ const nesCssTheme: Theme = {
   Modal,
   Radio,
   Loader,
+  WindowFrame,
   onLoad() {
     document.body.appendChild(cssLink);
     document.body.appendChild(styleElement);

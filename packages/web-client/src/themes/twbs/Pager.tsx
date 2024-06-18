@@ -60,6 +60,7 @@ export default function Pager({
       ) : null}
       {(values ?? []).map((index) => (
         <li
+          key={index}
           className={`page-item ${currentPage === index ? "active" : ""} ${
             disabled ? "disabled" : ""
           }`}

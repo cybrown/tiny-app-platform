@@ -8,6 +8,7 @@ import {
 import RenderExpression from "../runtime/RenderExpression";
 import React, { useCallback } from "react";
 import LowLevelOverlay from "./internal/LowLevelOverlay";
+import { useTheme } from "../theme";
 
 type OverlayProps = {
   ctx: RuntimeContext;
@@ -16,6 +17,7 @@ type OverlayProps = {
   position?: string;
   modal?: boolean;
   size?: string;
+  title?: string;
 };
 
 export default function Overlay({
@@ -25,11 +27,13 @@ export default function Overlay({
   position,
   modal,
   size,
+  title,
 }: OverlayProps) {
   const childContext = ctx.createChild({});
   const onCloseHandler = useCallback(() => {
     onClose && ctx.callFunctionAsync(onClose, []);
   }, [ctx, onClose]);
+  const theme = useTheme();
 
   return (
     <LowLevelOverlay
@@ -38,16 +42,22 @@ export default function Overlay({
       modal={modal ?? true}
       size={size}
     >
-      {(children ?? [])
-        .flat(Infinity)
-        .filter((child) => child)
-        .map((child) => ({
-          node: <RenderExpression ctx={childContext} ui={child} />,
-          meta: metadataGet(child) ?? {},
-        }))
-        .map((child, index) => (
-          <React.Fragment key={index}>{child.node}</React.Fragment>
-        ))}
+      <theme.WindowFrame
+        title={title}
+        onClose={onCloseHandler}
+        position={position}
+      >
+        {(children ?? [])
+          .flat(Infinity)
+          .filter((child) => child)
+          .map((child) => ({
+            node: <RenderExpression ctx={childContext} ui={child} />,
+            meta: metadataGet(child) ?? {},
+          }))
+          .map((child, index) => (
+            <React.Fragment key={index}>{child.node}</React.Fragment>
+          ))}
+      </theme.WindowFrame>
     </LowLevelOverlay>
   );
 }
@@ -61,5 +71,6 @@ export const OverlayDocumentation: WidgetDocumentation<OverlayProps> = {
       "Overlay position: center (default) | left | right | top | bottom",
     modal: "Make the Overlay modal (default true)",
     size: "Size: xl",
+    title: "Title to display",
   },
 };

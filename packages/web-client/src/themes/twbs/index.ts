@@ -12,6 +12,7 @@ import Modal from "./Modal";
 import htmlTheme from "../html";
 import Radio from "./Radio";
 import Loader from "./Loader";
+import { WindowFrame } from "./WindowFrame";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -46,6 +47,7 @@ const twbsTheme: Theme = {
   Link: htmlTheme.Link,
   Container: htmlTheme.Container,
   ModalBackdrop: htmlTheme.ModalBackdrop,
+  WindowFrame,
   onLoad() {
     document.body.appendChild(cssLink);
   },

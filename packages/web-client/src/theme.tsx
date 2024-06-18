@@ -181,6 +181,12 @@ export type LoaderProps = {
   size?: LoaderSize;
 };
 
+export type WindowFrameProps = {
+  title?: string;
+  position?: string;
+  onClose(): void;
+} & React.PropsWithChildren;
+
 interface ColorScale {
   "100": string;
   "200": string;
@@ -237,6 +243,7 @@ export interface Theme {
   Tabs?(props: TabsProps): any;
   Container(props: ContainerProps): any;
   Loader(props: LoaderProps): any;
+  WindowFrame(props: WindowFrameProps): any;
   onLoad?(): void;
   onUnload?(): void;
 }
@@ -325,4 +332,9 @@ export function Container(props: ContainerProps) {
 export function Loader(props: LoaderProps) {
   const theme = useTheme();
   return <theme.Loader {...props} />;
+}
+
+export function WindowFrame(props: WindowFrameProps) {
+  const theme = useTheme();
+  return <theme.WindowFrame {...props} />;
 }

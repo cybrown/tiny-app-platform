@@ -1,0 +1,8 @@
+.WindowFrame {
+  background-color: var(--toy-box-color-gray-400);
+}
+
+.WindowFrame.center {
+  box-shadow: 0px 0px 5px grey;
+  margin: 5px; /* Add a margin to show the box-shadow */
+}

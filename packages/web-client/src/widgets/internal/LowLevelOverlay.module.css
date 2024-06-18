@@ -5,10 +5,6 @@
   overflow: auto;
 }
 
-.overlay {
-  box-shadow: 0px 0px 5px grey;
-}
-
 .m {
   /* Empty m size */
 }
@@ -34,6 +30,13 @@
   width: min(440px, calc(100% - 20px));
   top: 0;
   bottom: 0;
+}
+
+.left > *,
+.right > *,
+.top > *,
+.bottom > * {
+  height: 100%;
 }
 
 .left {

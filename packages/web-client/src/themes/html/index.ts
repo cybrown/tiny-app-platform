@@ -10,6 +10,7 @@ import Pager from "./Pager";
 import Table from "./Table";
 import Link from "./Link";
 import Radio from "./Radio";
+import { WindowFrame } from "./WindowFrame";
 
 const htmlTheme: Theme = {
   id: "html",
@@ -28,6 +29,7 @@ const htmlTheme: Theme = {
   Table,
   Link,
   Radio,
+  WindowFrame,
   Loader: (props: LoaderProps) => "Loading...",
   Container: (props) => props.children,
 };

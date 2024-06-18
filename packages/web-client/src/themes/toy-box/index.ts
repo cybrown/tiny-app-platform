@@ -13,6 +13,7 @@ import Tabs from "./Tabs";
 import { baseSize, colors, sizes } from "./constants";
 import Container from "./Container";
 import Loader from "./Loader";
+import { WindowFrame } from "./WindowFrame";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -117,6 +118,7 @@ const toyBoxTheme: Theme = {
   Tabs,
   Container,
   Loader,
+  WindowFrame,
   onLoad() {
     document.body.appendChild(styleElement);
   },

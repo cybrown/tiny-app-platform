@@ -7,7 +7,6 @@ import {
   Theme,
 } from "../theme";
 import htmlTheme from "./html";
-import { useMakeId } from "./utils";
 
 const style = document.createElement("style");
 style.textContent = `

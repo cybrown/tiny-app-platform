@@ -1,8 +1,9 @@
 import { TabsProps } from "../../theme";
+import styles from "./Tabs.module.css";
 
 export default function Tabs({ value, onChange, tabs, after }: TabsProps) {
   return (
-    <menu role="tablist">
+    <menu className={styles.Tabs} role="tablist">
       {tabs.map((tab) => {
         return (
           <li role="tab" aria-selected={tab.value === value}>

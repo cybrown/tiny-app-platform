@@ -1,0 +1,4 @@
+.Tabs {
+  /* Prevent tabs to appear on top of Overlays */
+  z-index: 0;
+}

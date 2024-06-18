@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import styles from "./LowLevelOverlay.module.css";
 import ReactDOM from "react-dom";
-import { useTheme } from "../../theme";
 
 const variantToClassName = {
   center: styles.center,

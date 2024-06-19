@@ -139,7 +139,7 @@ export interface ModalBackdropProps extends React.PropsWithChildren {
 }
 
 export interface ModalProps {
-  header: any;
+  header: string;
   body: any;
   footer: any;
   onClose(): void;
@@ -184,6 +184,7 @@ export type LoaderProps = {
 export type WindowFrameProps = {
   title?: string;
   position?: string;
+  footer?: React.ReactElement;
   onClose(): void;
 } & React.PropsWithChildren;
 

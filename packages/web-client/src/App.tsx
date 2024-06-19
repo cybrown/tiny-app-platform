@@ -46,6 +46,7 @@ import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import theme98 from "./themes/98";
 import darkOrangeTheme from "./themes/dark-orange";
+import mozaicLmTheme from "./themes/mozaic-lm";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 import { lowerForApp } from "tal-eval";
 
@@ -205,6 +206,7 @@ const themes = [
   nesCssTheme,
   theme98,
   darkOrangeTheme,
+  mozaicLmTheme,
 ];
 
 const selectedThemeFromQueryString = themes.find(

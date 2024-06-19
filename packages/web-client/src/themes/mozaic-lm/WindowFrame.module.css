@@ -1,0 +1,4 @@
+.WindowFrame.fixMaxDimensions {
+  max-height: initial;
+  max-width: initial;
+}

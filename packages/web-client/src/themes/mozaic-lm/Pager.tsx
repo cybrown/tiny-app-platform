@@ -34,7 +34,7 @@ export default function Pager(props: PagerProps) {
   return (
     <nav className="mc-pagination" role="navigation" aria-label="pagination">
       <button
-        className="mc-button mc-button--solid-neutral mc-button--square mc-button--s@from-l"
+        className="mc-button mc-button--solid-neutral mc-button--square mc-button--s"
         aria-label="Previous page"
         onClick={goPrevious}
         disabled={disabled || value === 1}
@@ -56,7 +56,7 @@ export default function Pager(props: PagerProps) {
 
       <button
         type="button"
-        className="mc-button mc-button--solid-neutral mc-button--square mc-button--s@from-l"
+        className="mc-button mc-button--solid-neutral mc-button--square mc-button--s"
         aria-label="Next Page"
         onClick={goNext}
         disabled={disabled || value === lastIndex}

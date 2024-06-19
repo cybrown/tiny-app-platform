@@ -42,7 +42,7 @@ export default function InputText({
     <>
       {multiline ? (
         <textarea
-          className="mc-field__input mc-textarea"
+          className="mc-field__input mc-textarea mc-textarea--s"
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
           disabled={disabled}
@@ -50,7 +50,7 @@ export default function InputText({
         />
       ) : (
         <input
-          className="mc-text-input mc-field__input"
+          className="mc-text-input mc-text-input--s mc-field__input"
           placeholder={placeholder}
           type={type ?? "text"}
           onChange={onInputChangeHandler}

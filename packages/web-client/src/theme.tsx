@@ -185,6 +185,7 @@ export type WindowFrameProps = {
   title?: string;
   position?: string;
   footer?: React.ReactElement;
+  modal: boolean;
   onClose(): void;
 } & React.PropsWithChildren;
 

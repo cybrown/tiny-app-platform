@@ -46,6 +46,7 @@ export default function Overlay({
         title={title}
         onClose={onCloseHandler}
         position={position}
+        modal={modal ?? true}
       >
         {(children ?? [])
           .flat(Infinity)

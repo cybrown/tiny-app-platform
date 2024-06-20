@@ -56,19 +56,25 @@ export default function ConfirmPopup({
         position="center"
         size="m"
       >
-        <div className={styles.popupContent}>
-          <Text text="Confirmation" size={1.4} weight="light" />
-          <Text
-            text={
-              (typeof confirm === "boolean" ? "Are you sure ?" : confirm) ??
-              "Are you sure ?"
-            }
-          />
-          <div className={styles.popupFooter}>
-            <Button text="Cancel" onClick={clickCancelHandler} outline />
-            <Button text="Ok" onClick={clickOkHandler} />
+        <theme.WindowFrame
+          onClose={clickCancelHandler}
+          position="center"
+          title="Confirmation"
+          modal
+        >
+          <div className={styles.popupContent}>
+            <Text
+              text={
+                (typeof confirm === "boolean" ? "Are you sure ?" : confirm) ??
+                "Are you sure ?"
+              }
+            />
+            <div className={styles.popupFooter}>
+              <Button text="Cancel" onClick={clickCancelHandler} outline />
+              <Button text="Ok" onClick={clickOkHandler} />
+            </div>
           </div>
-        </div>
+        </theme.WindowFrame>
       </LowLevelOverlay>
     ) : null;
   }

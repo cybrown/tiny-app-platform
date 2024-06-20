@@ -10,6 +10,7 @@ export default function Modal({ header, body, footer, onClose }: ModalProps) {
         position="center"
         title={header}
         footer={footer}
+        modal
       >
         {body}
       </WindowFrame>

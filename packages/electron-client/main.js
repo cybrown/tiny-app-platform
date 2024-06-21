@@ -11,7 +11,7 @@ const PORT = findFreePort(16384 + Math.floor(Math.random() * 16384)).then(
   (ports) => ports[0]
 );
 
-function createWindow() {
+async function createWindow() {
   /** @type BrowserWindow */
   let sideBrowserWindow;
 
@@ -30,7 +30,7 @@ function createWindow() {
 
   let sourcePath = null;
   openInSystemBrowser = false;
-  new Promise((resolve, reject) => {
+  let sourceFromFile = await new Promise((resolve, reject) => {
     if (process.argv.length > 1) {
       sourcePath = process.argv[1];
     }
@@ -47,111 +47,111 @@ function createWindow() {
       sourcePath = sourcePaths[0];
     }
     fs.readFile(sourcePath, (err, data) => {
-      if (err) return reject(err);
+      if (err) {
+        console.error("Failed to load file", err);
+        return reject(err);
+      }
       resolve(data.toString("utf-8"));
     });
-  })
-    .then((sourceFromFile) => {
-      let mainWindowState = windowStateKeeper({
-        defaultWidth: 1000,
-        defaultHeight: 800,
-      });
+  });
 
-      const noNativeFrame = sourceFromFile.includes("//no-native-frame");
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 1000,
+    defaultHeight: 800,
+  });
 
-      // Create the browser window.
-      const mainWindow = new BrowserWindow({
-        x: mainWindowState.x,
-        y: mainWindowState.y,
-        width: mainWindowState.width,
-        height: mainWindowState.height,
-        autoHideMenuBar: true,
-        webPreferences: {
-          preload: path.join(__dirname, "preload.js"),
-        },
-        frame: !noNativeFrame,
-      });
+  const noNativeFrame = sourceFromFile.includes("//no-native-frame");
 
-      mainWindowState.manage(mainWindow);
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    autoHideMenuBar: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+    frame: !noNativeFrame,
+  });
 
-      mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        if (openInSystemBrowser) {
-          shell.openExternal(url);
-        } else {
-          const sideBrowserWindow = grabBrowserWindow();
-          sideBrowserWindow.loadURL(url.slice(0, -1));
-          sideBrowserWindow.focus();
-        }
-        return { action: "deny" };
-      });
+  mainWindowState.manage(mainWindow);
 
-      // Open the DevTools.
-      // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (openInSystemBrowser) {
+      shell.openExternal(url);
+    } else {
+      const sideBrowserWindow = grabBrowserWindow();
+      sideBrowserWindow.loadURL(url.slice(0, -1));
+      sideBrowserWindow.focus();
+    }
+    return { action: "deny" };
+  });
 
-      // and load the index.html of the app.
-      mainWindow.loadFile("index.html");
-      mainWindow.webContents.on("did-navigate", async function() {
-        const port = await PORT;
-        const sourcePathDirname = path.dirname(sourcePath);
-        mainWindow.webContents.send("config", {
-          backendUrl: "http://localhost:" + port,
-          sourceFromFile,
-          sourcePath,
-          sourcePathDirname,
-        });
-        ipcMain.on("set-property", (e, key, value) => {
-          switch (key) {
-            case "useSystemBrowser":
-              openInSystemBrowser = value;
-              break;
-            default:
-              throw new Error("Unknown property key: " + key);
-          }
-        });
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools();
 
-        ipcMain.on("save-file", (e, source) => {
-          fs.writeFile(sourcePath, source, (err) => {
-            if (err) throw err;
-          });
-        });
-
-        ipcMain.on("exit", (e) => {
-          process.exit(0);
-        });
-
-        ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
-          const modulePath = path.join(
-            sourcePathDirname,
-            sourceRelativePath + ".tas"
-          );
-          fs.readFile(modulePath, (err, data) => {
-            if (err) {
-              mainWindow.webContents.send(
-                "getSourceForImport-response",
-                requestId,
-                err
-              );
-              return;
-            }
-            mainWindow.webContents.send(
-              "getSourceForImport-response",
-              requestId,
-              null,
-              { path: modulePath, source: data.toString("utf-8") }
-            );
-          });
-        });
-      });
-
-      mainWindow.on("close", () => {
-        if (sideBrowserWindow && !sideBrowserWindow.isDestroyed()) {
-          sideBrowserWindow.close();
-        }
-      });
-    })
-    .catch((err) => {
-      console.error("Failed to load file", err);
+  // and load the index.html of the app.
+  mainWindow.loadFile("index.html");
+  mainWindow.webContents.on("did-navigate", async function() {
+    const port = await PORT;
+    const sourcePathDirname = path.dirname(sourcePath);
+    mainWindow.webContents.send("config", {
+      backendUrl: "http://localhost:" + port,
+      sourceFromFile,
+      sourcePath,
+      sourcePathDirname,
     });
+    ipcMain.on("set-property", (e, key, value) => {
+      switch (key) {
+        case "useSystemBrowser":
+          openInSystemBrowser = value;
+          break;
+        default:
+          throw new Error("Unknown property key: " + key);
+      }
+    });
+
+    ipcMain.on("save-file", (e, source) => {
+      sourceFromFile = source;
+      fs.writeFile(sourcePath, source, (err) => {
+        if (err) throw err;
+      });
+    });
+
+    ipcMain.on("exit", (e) => {
+      mainWindow.close();
+    });
+
+    ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
+      const modulePath = path.join(
+        sourcePathDirname,
+        sourceRelativePath + ".tas"
+      );
+      fs.readFile(modulePath, (err, data) => {
+        if (err) {
+          mainWindow.webContents.send(
+            "getSourceForImport-response",
+            requestId,
+            err
+          );
+          return;
+        }
+        mainWindow.webContents.send(
+          "getSourceForImport-response",
+          requestId,
+          null,
+          { path: modulePath, source: data.toString("utf-8") }
+        );
+      });
+    });
+  });
+
+  mainWindow.on("close", () => {
+    if (sideBrowserWindow && !sideBrowserWindow.isDestroyed()) {
+      sideBrowserWindow.close();
+    }
+  });
 }
 
 // This method will be called when Electron has finished

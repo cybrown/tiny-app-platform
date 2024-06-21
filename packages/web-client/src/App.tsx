@@ -63,6 +63,8 @@ const queryParams = window.location.search
     return prev;
   }, {} as { [key: string]: string[] | undefined });
 
+const showEditButton = queryParams.hasOwnProperty("edit");
+
 const pathNameComponents = window.location.pathname.split("/");
 const appNameFromPathName: string | undefined = pathNameComponents[1];
 const appNameFromQueryParams: string | undefined = (queryParams?.name || [])[0];
@@ -438,7 +440,7 @@ function App() {
             isDebugMode ? styles.hasEditor : "",
           ].join(" ")}
         >
-          {!isDebugMode ? (
+          {!isDebugMode && showEditButton ? (
             <button
               className={styles.BtnEdit}
               type="button"

@@ -46,4 +46,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.send("getSourceForImport", requestId, sourceRelativePath);
     });
   },
+  exit() {
+    ipcRenderer.send("exit");
+  },
 });

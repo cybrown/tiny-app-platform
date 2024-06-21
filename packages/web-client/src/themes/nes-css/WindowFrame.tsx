@@ -6,6 +6,7 @@ export function WindowFrame({
   position,
   title,
   onClose,
+  drag,
 }: WindowFrameProps) {
   const isLayer = position !== "center";
   return (
@@ -14,8 +15,15 @@ export function WindowFrame({
         isLayer ? styles.drawer : ""
       } ${title != null ? "with-title" : ""}`}
     >
-      <p className="title">
-        <i className="nes-icon close is-small" onClick={onClose}></i>
+      <p
+        className="title"
+        style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
+      >
+        <i
+          className="nes-icon close is-small"
+          onClick={onClose}
+          style={{ "-webkit-app-region": "no-drag" } as any}
+        ></i>
         {"\u00A0"}
         {title}
       </p>

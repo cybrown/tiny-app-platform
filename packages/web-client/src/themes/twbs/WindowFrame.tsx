@@ -6,6 +6,7 @@ export function WindowFrame({
   children,
   onClose,
   position,
+  drag,
 }: WindowFrameProps) {
   const isDrawer = position !== "center";
   return (
@@ -17,7 +18,10 @@ export function WindowFrame({
         style={{ height: "100%" }}
       >
         <div className={`modal-content ${isDrawer ? styles.drawer : ""}`}>
-          <div className="modal-header">
+          <div
+            className="modal-header"
+            style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
+          >
             <h5 className="modal-title">{title}</h5>
             <button
               type="button"
@@ -25,6 +29,7 @@ export function WindowFrame({
               data-bs-dismiss="modal"
               aria-label="Close"
               onClick={onClose}
+              style={{ "-webkit-app-region": "no-drag" } as any}
             ></button>
           </div>
           <div className="modal-body">{children}</div>

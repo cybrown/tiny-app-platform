@@ -12,25 +12,6 @@ const PORT = findFreePort(16384 + Math.floor(Math.random() * 16384)).then(
 );
 
 function createWindow() {
-  let mainWindowState = windowStateKeeper({
-    defaultWidth: 1000,
-    defaultHeight: 800,
-  });
-
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    x: mainWindowState.x,
-    y: mainWindowState.y,
-    width: mainWindowState.width,
-    height: mainWindowState.height,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-    },
-  });
-
-  mainWindowState.manage(mainWindow);
-
   /** @type BrowserWindow */
   let sideBrowserWindow;
 
@@ -47,108 +28,130 @@ function createWindow() {
 
   let openInSystemBrowser = false;
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (openInSystemBrowser) {
-      shell.openExternal(url);
-    } else {
-      const sideBrowserWindow = grabBrowserWindow();
-      sideBrowserWindow.loadURL(url.slice(0, -1));
-      sideBrowserWindow.focus();
+  let sourcePath = null;
+  openInSystemBrowser = false;
+  new Promise((resolve, reject) => {
+    if (process.argv.length > 1) {
+      sourcePath = process.argv[1];
     }
-    return { action: "deny" };
-  });
+    if (sourcePath == null) {
+      const sourcePaths = dialog.showOpenDialogSync({
+        buttonLabel: "File to load or create",
+        filters: [{ name: "Tiny app scripts", extensions: ["tas"] }],
+        properties: ["createDirectory", "promptToCreate", "dontAddToRecent"],
+      });
+      if (sourcePaths === undefined) {
+        dialog.showErrorBox("Error", "A file must be selected to continue");
+        process.exit(0);
+      }
+      sourcePath = sourcePaths[0];
+    }
+    fs.readFile(sourcePath, (err, data) => {
+      if (err) return reject(err);
+      resolve(data.toString("utf-8"));
+    });
+  })
+    .then((sourceFromFile) => {
+      let mainWindowState = windowStateKeeper({
+        defaultWidth: 1000,
+        defaultHeight: 800,
+      });
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+      const noNativeFrame = sourceFromFile.includes("//no-native-frame");
 
-  // and load the index.html of the app.
-  mainWindow.loadFile("index.html");
-  mainWindow.webContents.on("did-navigate", async function() {
-    let sourceFromFile = null;
-    let sourcePath = null;
-    openInSystemBrowser = false;
-    try {
-      sourceFromFile = await new Promise((resolve, reject) => {
-        if (process.argv.length > 1) {
-          sourcePath = process.argv[1];
+      // Create the browser window.
+      const mainWindow = new BrowserWindow({
+        x: mainWindowState.x,
+        y: mainWindowState.y,
+        width: mainWindowState.width,
+        height: mainWindowState.height,
+        autoHideMenuBar: true,
+        webPreferences: {
+          preload: path.join(__dirname, "preload.js"),
+        },
+        frame: !noNativeFrame,
+      });
+
+      mainWindowState.manage(mainWindow);
+
+      mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        if (openInSystemBrowser) {
+          shell.openExternal(url);
+        } else {
+          const sideBrowserWindow = grabBrowserWindow();
+          sideBrowserWindow.loadURL(url.slice(0, -1));
+          sideBrowserWindow.focus();
         }
-        if (sourcePath == null) {
-          const sourcePaths = dialog.showOpenDialogSync({
-            buttonLabel: "File to load or create",
-            filters: [{ name: "Tiny app scripts", extensions: ["tas"] }],
-            properties: [
-              "createDirectory",
-              "promptToCreate",
-              "dontAddToRecent",
-            ],
-          });
-          if (sourcePaths === undefined) {
-            dialog.showErrorBox("Error", "A file must be selected to continue");
-            process.exit(0);
+        return { action: "deny" };
+      });
+
+      // Open the DevTools.
+      // mainWindow.webContents.openDevTools();
+
+      // and load the index.html of the app.
+      mainWindow.loadFile("index.html");
+      mainWindow.webContents.on("did-navigate", async function() {
+        const port = await PORT;
+        const sourcePathDirname = path.dirname(sourcePath);
+        mainWindow.webContents.send("config", {
+          backendUrl: "http://localhost:" + port,
+          sourceFromFile,
+          sourcePath,
+          sourcePathDirname,
+        });
+        ipcMain.on("set-property", (e, key, value) => {
+          switch (key) {
+            case "useSystemBrowser":
+              openInSystemBrowser = value;
+              break;
+            default:
+              throw new Error("Unknown property key: " + key);
           }
-          sourcePath = sourcePaths[0];
-        }
-        fs.readFile(sourcePath, (err, data) => {
-          if (err) return reject(err);
-          resolve(data.toString("utf-8"));
+        });
+
+        ipcMain.on("save-file", (e, source) => {
+          fs.writeFile(sourcePath, source, (err) => {
+            if (err) throw err;
+          });
+        });
+
+        ipcMain.on("exit", (e) => {
+          process.exit(0);
+        });
+
+        ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
+          const modulePath = path.join(
+            sourcePathDirname,
+            sourceRelativePath + ".tas"
+          );
+          fs.readFile(modulePath, (err, data) => {
+            if (err) {
+              mainWindow.webContents.send(
+                "getSourceForImport-response",
+                requestId,
+                err
+              );
+              return;
+            }
+            mainWindow.webContents.send(
+              "getSourceForImport-response",
+              requestId,
+              null,
+              { path: modulePath, source: data.toString("utf-8") }
+            );
+          });
         });
       });
-    } catch (err) {
-      console.error("Failed to load file", err);
-    }
-    const port = await PORT;
-    const sourcePathDirname = path.dirname(sourcePath);
-    mainWindow.webContents.send("config", {
-      backendUrl: "http://localhost:" + port,
-      sourceFromFile,
-      sourcePath,
-      sourcePathDirname,
-    });
-    ipcMain.on("set-property", (e, key, value) => {
-      switch (key) {
-        case "useSystemBrowser":
-          openInSystemBrowser = value;
-          break;
-        default:
-          throw new Error("Unknown property key: " + key);
-      }
-    });
 
-    ipcMain.on("save-file", (e, source) => {
-      fs.writeFile(sourcePath, source, (err) => {
-        if (err) throw err;
-      });
-    });
-
-    ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
-      const modulePath = path.join(
-        sourcePathDirname,
-        sourceRelativePath + ".tas"
-      );
-      fs.readFile(modulePath, (err, data) => {
-        if (err) {
-          mainWindow.webContents.send(
-            "getSourceForImport-response",
-            requestId,
-            err
-          );
-          return;
+      mainWindow.on("close", () => {
+        if (sideBrowserWindow && !sideBrowserWindow.isDestroyed()) {
+          sideBrowserWindow.close();
         }
-        mainWindow.webContents.send(
-          "getSourceForImport-response",
-          requestId,
-          null,
-          { path: modulePath, source: data.toString("utf-8") }
-        );
       });
+    })
+    .catch((err) => {
+      console.error("Failed to load file", err);
     });
-  });
-
-  mainWindow.on("close", () => {
-    if (sideBrowserWindow && !sideBrowserWindow.isDestroyed()) {
-      sideBrowserWindow.close();
-    }
-  });
 }
 
 // This method will be called when Electron has finished

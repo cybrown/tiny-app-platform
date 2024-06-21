@@ -34,6 +34,7 @@ import {
   copy,
   on_create,
   on_destroy,
+  exit,
 } from './functions/core';
 import { http_request_form, http_request } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
@@ -159,6 +160,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(date_to_iso_string_utc);
 
   ctx.registerFunction(eval_js);
+  ctx.registerFunction(exit);
   ctx.registerFunction(http_request_form);
   ctx.registerFunction(http_request);
   ctx.registerFunction(is_defined);

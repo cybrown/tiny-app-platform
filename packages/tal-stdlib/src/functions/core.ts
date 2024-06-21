@@ -197,3 +197,11 @@ export const eval_js = defineFunction(
     return evalInContext();
   }
 );
+
+export const exit = defineFunction('exit', [], () => {
+  try {
+    (window as any).electronAPI.exit();
+  } catch (err) {
+    console.error('Failed to exit, make sure it is running on Electron', err);
+  }
+});

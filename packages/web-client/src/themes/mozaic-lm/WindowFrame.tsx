@@ -7,6 +7,7 @@ export function WindowFrame({
   onClose,
   title,
   footer,
+  drag,
 }: WindowFrameProps) {
   const id = useMakeId();
 
@@ -15,11 +16,19 @@ export function WindowFrame({
       className={`mc-modal__dialog is-open ${styles.WindowFrame} ${styles.fixMaxDimensions}`}
       role="document"
     >
-      <header className="mc-modal__header mc-divider-bottom mc-divider-bottom--light">
+      <header
+        className="mc-modal__header mc-divider-bottom mc-divider-bottom--light"
+        style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
+      >
         <h2 className="mc-modal__title" id={id}>
           {title}
         </h2>
-        <button className="mc-modal__close" onClick={onClose} type="button">
+        <button
+          className="mc-modal__close"
+          onClick={onClose}
+          type="button"
+          style={{ "-webkit-app-region": "no-drag" } as any}
+        >
           <span className="mc-modal__close-text">Close</span>
         </button>
       </header>

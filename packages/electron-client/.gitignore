@@ -6,3 +6,5 @@ out/
 /asset-manifest.json
 /static/
 /index.html
+/fonts
+/mozaic-lm.css

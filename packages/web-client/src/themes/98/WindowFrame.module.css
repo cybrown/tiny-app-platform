@@ -1,0 +1,8 @@
+.WindowFrame {
+  display: flex;
+  flex-direction: column;
+}
+
+.Body {
+  overflow: auto;
+}

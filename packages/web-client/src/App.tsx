@@ -49,6 +49,7 @@ import darkOrangeTheme from "./themes/dark-orange";
 import mozaicLmTheme from "./themes/mozaic-lm";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 import { lowerForApp } from "tal-eval";
+import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
 
 const queryParams = window.location.search
   .slice(1)
@@ -160,6 +161,7 @@ function buildContext(onStateChange: () => void): RuntimeContext {
   ctx.registerWidget("Tabs", Tabs, TabsDocumentation);
   ctx.registerWidget("Text", Text, TextDocumentation);
   ctx.registerWidget("View", View, ViewDocumentation);
+  ctx.registerWidget("WindowFrame", WindowFrame, WindowFrameDocumentation);
 
   return ctx;
 }

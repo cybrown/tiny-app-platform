@@ -539,7 +539,6 @@ function App() {
             >
               <Documentation
                 ctx={ctx}
-                onClose={toggleShowDocumentationHandler}
                 onWriteInEditor={onWriteInEditorHandler}
               />
             </ThemedWindowFrame>

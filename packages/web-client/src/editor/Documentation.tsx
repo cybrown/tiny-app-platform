@@ -1,15 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { FunctionDef } from "tal-eval/dist/core";
-import { Button, InputText, Text, View } from "../theme";
+import { InputText, Text, View } from "../theme";
 
 export default function Documentation({
   ctx,
-  onClose,
   onWriteInEditor: writeInEditor,
 }: {
   ctx: RuntimeContext;
-  onClose(): void;
   onWriteInEditor(text: string): void;
 }) {
   const widgetsData = useMemo(() => {
@@ -43,7 +41,6 @@ export default function Documentation({
       <View layout="flex-row">
         <Text text="Search :" />
         <InputText value={searchTerm} onChange={onSearchChange} />
-        <Button onClick={onClose} text="Close" />
       </View>
       <div style={{ overflow: "auto" }}>
         <Text text="Functions" size={1.4} />

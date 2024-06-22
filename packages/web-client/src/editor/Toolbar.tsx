@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Button, Link, Switch, Text } from "../theme";
+import { Button, Link, Switch } from "../theme";
 
 export default function ToolBar({
   onFormat,

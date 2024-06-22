@@ -18,7 +18,7 @@ export default function Radio({
         onChange={() => onChange && onChange()}
         disabled={disabled}
       />
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{label || "\u00A0"}</label>
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function CheckBox({
         onChange={(e) => onChange && onChange(e.target.checked)}
         disabled={disabled}
       />
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{label || "\u00A0"}</label>
     </div>
   );
 }

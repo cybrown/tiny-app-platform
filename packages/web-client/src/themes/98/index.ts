@@ -11,6 +11,7 @@ import htmlTheme from "../html";
 import Radio from "./Radio";
 import Tabs from "./Tabs";
 import WindowFrame from "./WindowFrame";
+import Pager from "./Pager";
 
 const styleElement = document.createElement("style");
 styleElement.textContent = `
@@ -43,6 +44,7 @@ const nesCssTheme: Theme = {
   Radio,
   Tabs,
   WindowFrame,
+  Pager,
   onLoad() {
     document.body.appendChild(styleElement);
     document.body.appendChild(cssLink);

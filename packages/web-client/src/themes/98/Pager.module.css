@@ -1,0 +1,13 @@
+.noMinWidthButton > div {
+  display: inline;
+}
+
+.noMinWidthButton > button,
+.noMinWidthButton > div > button {
+  min-width: initial;
+}
+
+.selected > button {
+  font-weight: bold;
+  text-decoration: underline;
+}

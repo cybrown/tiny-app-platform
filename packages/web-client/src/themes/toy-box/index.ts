@@ -118,6 +118,7 @@ const toyBoxTheme: Theme = {
   Tabs,
   Container,
   Loader,
+  View: htmlTheme.View,
   WindowFrame,
   onLoad() {
     document.body.appendChild(styleElement);

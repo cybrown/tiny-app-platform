@@ -1,6 +1,6 @@
 import { Closure, Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
-import { useTheme } from "../theme";
+import { WindowFrame as ThemedWindowFrame } from "../theme";
 import { metadataGet } from "tal-eval";
 import React, { useCallback } from "react";
 
@@ -18,7 +18,6 @@ export default function WindowFrame({
   onClose,
 }: WindowFrameProps) {
   const childContext = ctx.createChild({});
-  const theme = useTheme();
 
   const doOnCloseAction = useCallback(() => {
     (async () => {
@@ -35,7 +34,7 @@ export default function WindowFrame({
   }, [ctx, onClose]);
 
   return (
-    <theme.WindowFrame
+    <ThemedWindowFrame
       modal
       onClose={doOnCloseAction}
       title={document.title}
@@ -51,7 +50,7 @@ export default function WindowFrame({
         .map((child, index) => (
           <React.Fragment key={index}>{child.node}</React.Fragment>
         ))}
-    </theme.WindowFrame>
+    </ThemedWindowFrame>
   );
 }
 

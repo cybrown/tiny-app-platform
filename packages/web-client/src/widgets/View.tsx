@@ -1,10 +1,12 @@
 import { Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./View.module.css";
-import { useTheme } from "../theme";
+import { View as ThemedView } from "../theme";
 import { metadataGet } from "tal-eval";
 
-type ViewDescription = {
+export type ViewProps = {
+  ctx: RuntimeContext;
+  children: Opcode[];
   layout?: "flex-row" | "flex-column";
   gap?: number;
   width?: string | number;
@@ -14,25 +16,6 @@ type ViewDescription = {
   scroll?: boolean;
   backgroundColor?: string;
 };
-
-export type ViewProps = {
-  ctx: RuntimeContext;
-  children: Opcode[];
-} & ViewDescription;
-
-function computeViewStyles(d: ViewDescription, baseSize: number) {
-  return {
-    ...{ gap: (d.gap ?? 0.5) * baseSize },
-    ...(d.padding ? { padding: d.padding * baseSize } : {}),
-    ...(d.backgroundColor ? { backgroundColor: d.backgroundColor } : {}),
-    ...(d.width
-      ? { width: typeof d.width == "number" ? d.width * baseSize : d.width }
-      : {}),
-    ...(d.height
-      ? { height: typeof d.height == "number" ? d.height * baseSize : d.height }
-      : {}),
-  };
-}
 
 function computeChildStyles(meta: any) {
   return {
@@ -44,17 +27,9 @@ function computeChildStyles(meta: any) {
 
 export default function View({ ctx, children, ...d }: ViewProps) {
   const childContext = ctx.createChild({});
-  const isRow = d.layout === "flex-row";
-  const theme = useTheme();
-  const baseSize = theme.baseSize ?? 12;
 
   return (
-    <div
-      className={`${isRow ? styles.directionRow : styles.directionColumn} ${
-        d.wrap ? styles.wrap : ""
-      } ${d.scroll ? styles.scroll : ""}`}
-      style={computeViewStyles(d, baseSize)}
-    >
+    <ThemedView {...d}>
       {children
         .flat(Infinity)
         .filter((child) => child)
@@ -71,7 +46,7 @@ export default function View({ ctx, children, ...d }: ViewProps) {
             {child.node}
           </div>
         ))}
-    </div>
+    </ThemedView>
   );
 }
 

@@ -1,0 +1,26 @@
+.directionColumn {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.directionRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.child > * {
+  width: 100%;
+}
+
+.child:empty {
+  display: none;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.scroll {
+  overflow: auto;
+}

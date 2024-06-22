@@ -14,3 +14,7 @@ div.WindowCustomStyles {
 .drawer {
   height: 100%;
 }
+
+.Body {
+  overflow-y: auto;
+}

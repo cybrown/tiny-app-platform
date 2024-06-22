@@ -8,7 +8,7 @@ import {
 import RenderExpression from "../runtime/RenderExpression";
 import React, { useCallback } from "react";
 import LowLevelOverlay from "./internal/LowLevelOverlay";
-import { useTheme } from "../theme";
+import { WindowFrame } from "../theme";
 
 type OverlayProps = {
   ctx: RuntimeContext;
@@ -33,8 +33,6 @@ export default function Overlay({
   const onCloseHandler = useCallback(() => {
     onClose && ctx.callFunctionAsync(onClose, []);
   }, [ctx, onClose]);
-  const theme = useTheme();
-
   return (
     <LowLevelOverlay
       onClose={onCloseHandler}
@@ -42,7 +40,7 @@ export default function Overlay({
       modal={modal ?? true}
       size={size}
     >
-      <theme.WindowFrame
+      <WindowFrame
         title={title}
         onClose={onCloseHandler}
         position={position}
@@ -58,7 +56,7 @@ export default function Overlay({
           .map((child, index) => (
             <React.Fragment key={index}>{child.node}</React.Fragment>
           ))}
-      </theme.WindowFrame>
+      </WindowFrame>
     </LowLevelOverlay>
   );
 }

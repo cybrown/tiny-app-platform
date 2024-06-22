@@ -32,7 +32,7 @@ export function WindowFrame({
               style={{ "-webkit-app-region": "no-drag" } as any}
             ></button>
           </div>
-          <div className="modal-body">{children}</div>
+          <div className={`modal-body ${styles.Body}`}>{children}</div>
         </div>
       </div>
     </div>

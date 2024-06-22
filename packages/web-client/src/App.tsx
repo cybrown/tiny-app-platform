@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./App.module.css";
 import {
   Program,
@@ -41,7 +41,11 @@ import { ThemeProvider, Theme } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
-import { Select as ThemedSelect } from "./theme";
+import {
+  Select as ThemedSelect,
+  WindowFrame as ThemedWindowFrame,
+  View as ThemedView,
+} from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import theme98 from "./themes/98";
@@ -237,6 +241,7 @@ function App() {
         setApp(null);
         return;
       }
+      latestExecutedSource.current = newSource;
       try {
         const hlast = tal.parse(newSource, path);
         const llast = lowerForApp(hlast);
@@ -301,9 +306,8 @@ function App() {
     () => buildContext(() => dummyStateUpdate(Math.random())),
     []
   );
-  const [updateSourceFunc, setUpdateSource] = useState<(() => string) | null>(
-    null
-  );
+
+  const updateSourceFunc = useRef<(() => string) | null>(null);
 
   const [parseError, setParseError] = useState<Error | null>(null);
 
@@ -354,8 +358,8 @@ function App() {
   );
 
   const onFormatHandler = useCallback(() => {
-    if (!updateSourceFunc) return;
-    let sourceToFormat = updateSourceFunc();
+    if (!updateSourceFunc.current) return;
+    let sourceToFormat = updateSourceFunc.current();
     try {
       editorApi?.replaceAll(
         tal.stringify(tal.parse(sourceToFormat, getSourcePath()))
@@ -382,15 +386,24 @@ function App() {
   );
 
   const onApplyAndFormatHandler = useCallback(() => {
-    if (!updateSourceFunc) return;
-    onApplyAndFormatWithSourceHandler(updateSourceFunc());
+    if (!updateSourceFunc.current) return;
+    onApplyAndFormatWithSourceHandler(updateSourceFunc.current());
   }, [onApplyAndFormatWithSourceHandler, updateSourceFunc]);
 
+  const latestExecutedSource = useRef<string | null>(null);
+
   const onCloseHandler = useCallback(() => {
-    // TODO: Find user friendly confirm dialogs
-    // eslint-disable-next-line no-restricted-globals
-    if (confirm("Close without saving ?")) {
-      closeEditorHandle();
+    if (updateSourceFunc.current) {
+      const sourceFromEditor = updateSourceFunc.current();
+      if (latestExecutedSource.current !== sourceFromEditor) {
+        // TODO: Find user friendly confirm dialogs
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm("Close without saving ?")) {
+          closeEditorHandle();
+        }
+      } else {
+        closeEditorHandle();
+      }
     }
   }, [closeEditorHandle]);
 
@@ -434,13 +447,7 @@ function App() {
   return (
     <ThemeProvider value={theme}>
       <>
-        <div
-          className={[
-            sourceFromFile && !isDebugMode ? styles.electron : "",
-            styles.App,
-            isDebugMode ? styles.hasEditor : "",
-          ].join(" ")}
-        >
+        <div className={styles.App}>
           {!isDebugMode && showEditButton ? (
             <button
               className={styles.BtnEdit}
@@ -450,49 +457,7 @@ function App() {
               Edit
             </button>
           ) : null}
-          {isDebugMode ? (
-            <LowLevelOverlay
-              size="xl"
-              position="left"
-              onClose={onCloseHandler}
-              modal
-            >
-              <theme.WindowFrame
-                title="Editor"
-                position="left"
-                onClose={onCloseHandler}
-                modal
-              >
-                <div className={styles.EditorContainer}>
-                  <div className={styles.ToolBarContainer}>
-                    <ToolBar
-                      onFormat={onFormatHandler}
-                      onApplyAndFormat={onApplyAndFormatHandler}
-                      onShowDocumentation={toggleShowDocumentationHandler}
-                      appDebugMode={
-                        ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
-                      }
-                      setAppDebugMode={setAppDebutModeHandler}
-                    />
-                    <ThemedSelect
-                      options={themes.map((theme) => ({
-                        label: theme.name,
-                        value: theme.id,
-                      }))}
-                      value={theme.id}
-                      onChange={(newIndex) => applyTheme(themes[newIndex])}
-                    />
-                  </div>
-                  <Editor
-                    grabSetSource={setUpdateSource}
-                    onApiReady={setEditorApi}
-                    onSaveAndFormat={onApplyAndFormatWithSourceHandler}
-                    onCloseEditor={onCloseHandler}
-                  />
-                </div>
-              </theme.WindowFrame>
-            </LowLevelOverlay>
-          ) : null}
+
           <div className={styles.AppRendererContainer}>
             {app ? (
               <AppRenderer ctx={ctx} app={app} />
@@ -516,6 +481,49 @@ function App() {
             )}
           </div>
         </div>
+
+        {isDebugMode ? (
+          <LowLevelOverlay
+            size="xl"
+            position="left"
+            onClose={onCloseHandler}
+            modal
+          >
+            <ThemedWindowFrame
+              title="Editor"
+              position="left"
+              onClose={onCloseHandler}
+              modal
+            >
+              <ThemedView>
+                <ToolBar
+                  onFormat={onFormatHandler}
+                  onApplyAndFormat={onApplyAndFormatHandler}
+                  onShowDocumentation={toggleShowDocumentationHandler}
+                  appDebugMode={
+                    ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
+                  }
+                  setAppDebugMode={setAppDebutModeHandler}
+                />
+                <ThemedSelect
+                  options={themes.map((theme) => ({
+                    label: theme.name,
+                    value: theme.id,
+                  }))}
+                  value={theme.id}
+                  onChange={(newIndex) => applyTheme(themes[newIndex])}
+                />
+                <Editor
+                  grabSetSource={(a) => (updateSourceFunc.current = a())}
+                  onApiReady={setEditorApi}
+                  onSaveAndFormat={onApplyAndFormatWithSourceHandler}
+                  onCloseEditor={onCloseHandler}
+                />
+              </ThemedView>
+            </ThemedWindowFrame>
+          </LowLevelOverlay>
+        ) : null}
+
         {showDocumentation ? (
           <LowLevelOverlay
             size="l"
@@ -523,7 +531,7 @@ function App() {
             onClose={toggleShowDocumentationHandler}
             modal
           >
-            <theme.WindowFrame
+            <ThemedWindowFrame
               title="Documentation"
               position="right"
               onClose={toggleShowDocumentationHandler}
@@ -534,7 +542,7 @@ function App() {
                 onClose={toggleShowDocumentationHandler}
                 onWriteInEditor={onWriteInEditorHandler}
               />
-            </theme.WindowFrame>
+            </ThemedWindowFrame>
           </LowLevelOverlay>
         ) : null}
       </>

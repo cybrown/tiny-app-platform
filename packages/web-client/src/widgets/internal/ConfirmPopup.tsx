@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import usePressEscape from "./usePressEscape";
-import { Button, Text, useTheme } from "../../theme";
+import { Button, Text, WindowFrame, useTheme } from "../../theme";
 import LowLevelOverlay from "./LowLevelOverlay";
 import styles from "./ConfirmPopup.module.css";
 
@@ -56,7 +56,7 @@ export default function ConfirmPopup({
         position="center"
         size="m"
       >
-        <theme.WindowFrame
+        <WindowFrame
           onClose={clickCancelHandler}
           position="center"
           title="Confirmation"
@@ -74,7 +74,7 @@ export default function ConfirmPopup({
               <Button text="Ok" onClick={clickOkHandler} />
             </div>
           </div>
-        </theme.WindowFrame>
+        </WindowFrame>
       </LowLevelOverlay>
     ) : null;
   }

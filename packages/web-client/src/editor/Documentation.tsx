@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { FunctionDef } from "tal-eval/dist/core";
-import { Button, InputText, Text } from "../theme";
+import { Button, InputText, Text, View } from "../theme";
 
 export default function Documentation({
   ctx,
@@ -39,12 +39,12 @@ export default function Documentation({
   }, []);
 
   return (
-    <div>
-      <div style={{ display: "flex" }}>
+    <View>
+      <View layout="flex-row">
         <Text text="Search :" />
         <InputText value={searchTerm} onChange={onSearchChange} />
         <Button onClick={onClose} text="Close" />
-      </div>
+      </View>
       <div style={{ overflow: "auto" }}>
         <Text text="Functions" size={1.4} />
         <Text text="Click on any function to copy a code snippet" />
@@ -105,7 +105,7 @@ export default function Documentation({
             </div>
           ))}
       </div>
-    </div>
+    </View>
   );
 }
 

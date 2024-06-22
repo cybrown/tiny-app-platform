@@ -11,6 +11,7 @@ import Table from "./Table";
 import Link from "./Link";
 import Radio from "./Radio";
 import { WindowFrame } from "./WindowFrame";
+import View from "./View";
 
 const htmlTheme: Theme = {
   id: "html",
@@ -29,6 +30,7 @@ const htmlTheme: Theme = {
   Table,
   Link,
   Radio,
+  View,
   WindowFrame,
   Loader: (props: LoaderProps) => "Loading...",
   Container: (props) => props.children,

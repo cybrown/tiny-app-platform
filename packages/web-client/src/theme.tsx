@@ -181,6 +181,17 @@ export type LoaderProps = {
   size?: LoaderSize;
 };
 
+export type ViewProps = {
+  layout?: "flex-row" | "flex-column";
+  gap?: number;
+  width?: string | number;
+  height?: string | number;
+  padding?: number;
+  wrap?: boolean;
+  scroll?: boolean;
+  backgroundColor?: string;
+} & React.PropsWithChildren;
+
 export type WindowFrameProps = {
   title?: string;
   position?: string;
@@ -246,6 +257,7 @@ export interface Theme {
   Tabs?(props: TabsProps): any;
   Container(props: ContainerProps): any;
   Loader(props: LoaderProps): any;
+  View(props: ViewProps): any;
   WindowFrame(props: WindowFrameProps): any;
   onLoad?(): void;
   onUnload?(): void;
@@ -335,6 +347,11 @@ export function Container(props: ContainerProps) {
 export function Loader(props: LoaderProps) {
   const theme = useTheme();
   return <theme.Loader {...props} />;
+}
+
+export function View(props: ViewProps) {
+  const theme = useTheme();
+  return <theme.View {...props} />;
 }
 
 export function WindowFrame(props: WindowFrameProps) {

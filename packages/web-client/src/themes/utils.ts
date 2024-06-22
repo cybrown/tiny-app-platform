@@ -1,6 +1,5 @@
-import { useRef } from "react";
+import { useMemo } from "react";
 
 export function useMakeId() {
-  const ref = useRef(Math.random().toString());
-  return ref.current;
+  return useMemo(() => Math.random().toString(), []);
 }

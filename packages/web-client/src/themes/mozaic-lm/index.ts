@@ -14,12 +14,13 @@ import { Tabs } from "./Tabs";
 import Modal from "./Modal";
 import { Loader } from "./Loader";
 import Text from "../html/Text";
+import htmlTheme from "../html";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute("href", "mozaic-lm.css");
 cssLink.setAttribute("rel", "stylesheet");
 
-const htmlTheme: Theme = {
+const theme: Theme = {
   id: "mozaic-lm",
   name: "Mozaic LM",
   colors: {
@@ -40,6 +41,7 @@ const htmlTheme: Theme = {
   Tabs,
   Modal,
   Loader,
+  View: htmlTheme.View,
   Container: (props) => props.children,
   onLoad() {
     document.head.appendChild(cssLink);
@@ -49,4 +51,4 @@ const htmlTheme: Theme = {
   },
 };
 
-export default htmlTheme;
+export default theme;

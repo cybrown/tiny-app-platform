@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { PagerProps, PagerOnChangeAction } from "../../theme";
+import styles from "./Pager.module.css";
 
 export default function Pager({
   firstState = "HIDDEN",
@@ -21,7 +22,7 @@ export default function Pager({
   );
 
   return (
-    <ul className="pagination">
+    <ul className={`pagination ${styles.Pager}`}>
       {firstState !== "HIDDEN" ? (
         <li className="page-item">
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

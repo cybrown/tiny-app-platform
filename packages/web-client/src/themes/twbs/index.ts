@@ -47,6 +47,7 @@ const twbsTheme: Theme = {
   Link: htmlTheme.Link,
   Container: htmlTheme.Container,
   ModalBackdrop: htmlTheme.ModalBackdrop,
+  View: htmlTheme.View,
   WindowFrame,
   onLoad() {
     document.body.appendChild(cssLink);

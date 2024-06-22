@@ -8,6 +8,10 @@
 }
 
 .Loader {
+  overflow: hidden;
+}
+
+.LoaderInner {
   border-radius: 100%;
   border: 2px solid;
   border-color: var(--toy-box-color-gray-700);
@@ -16,27 +20,27 @@
   animation-iteration-count: infinite;
 }
 
-.Loader.sm {
+.LoaderInner.sm {
   height: var(--toy-box-size-100);
   width: var(--toy-box-size-100);
 }
 
-.Loader.md {
+.LoaderInner.md {
   height: var(--toy-box-size-200);
   width: var(--toy-box-size-200);
 }
 
-.Loader.lg {
+.LoaderInner.lg {
   height: var(--toy-box-size-400);
   width: var(--toy-box-size-400);
 }
 
-.Loader.primary {
+.LoaderInner.primary {
   border-color: var(--toy-box-color-primary-500);
   border-bottom-color: transparent;
 }
 
-.Loader.secondary {
+.LoaderInner.secondary {
   border-color: var(--toy-box-color-secondary-500);
   border-bottom-color: transparent;
 }

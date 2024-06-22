@@ -452,7 +452,7 @@ function App() {
           ) : null}
           {isDebugMode ? (
             <LowLevelOverlay
-              size="l"
+              size="xl"
               position="left"
               onClose={onCloseHandler}
               modal

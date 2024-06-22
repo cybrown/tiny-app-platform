@@ -1,0 +1,11 @@
+ul.Tabs {
+  flex-wrap: nowrap;
+}
+
+ul.Tabs > li > a {
+  white-space: nowrap;
+}
+
+.afterSpacer {
+  flex-grow: 1;
+}

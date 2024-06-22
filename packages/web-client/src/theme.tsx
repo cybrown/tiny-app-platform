@@ -252,7 +252,7 @@ export interface Theme {
   Table(props: TableProps): any;
   Link(props: LinkProps): any;
   Radio(props: RadioProps): any;
-  Tabs?(props: TabsProps): any;
+  Tabs(props: TabsProps): any;
   Container(props: ContainerProps): any;
   Loader(props: LoaderProps): any;
   View(props: ViewProps): any;

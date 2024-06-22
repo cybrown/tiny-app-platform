@@ -12,6 +12,7 @@ import Link from "./Link";
 import Radio from "./Radio";
 import { WindowFrame } from "./WindowFrame";
 import View from "./View";
+import Tabs from "./Tabs";
 
 const htmlTheme: Theme = {
   id: "html",
@@ -30,6 +31,7 @@ const htmlTheme: Theme = {
   Table,
   Link,
   Radio,
+  Tabs,
   View,
   WindowFrame,
   Loader: (props: LoaderProps) => "Loading...",

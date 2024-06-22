@@ -12,6 +12,7 @@ import htmlTheme from "../html";
 import Radio from "./Radio";
 import Loader from "./Loader";
 import { WindowFrame } from "./WindowFrame";
+import Tabs from "./Tabs";
 
 const cssLink = document.createElement("link");
 cssLink.setAttribute(
@@ -45,6 +46,7 @@ const twbsTheme: Theme = {
   Link: htmlTheme.Link,
   Container: htmlTheme.Container,
   View: htmlTheme.View,
+  Tabs,
   WindowFrame,
   onLoad() {
     document.body.appendChild(cssLink);

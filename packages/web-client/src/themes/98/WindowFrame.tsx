@@ -1,4 +1,5 @@
 import { WindowFrameProps } from "../../theme";
+import { ELECTRON_DRAG, ELECTRON_NO_DRAG } from "../utils";
 import styles from "./WindowFrame.module.css";
 
 export default function WindowFrame({
@@ -9,15 +10,9 @@ export default function WindowFrame({
 }: WindowFrameProps) {
   return (
     <div className={`window ${styles.WindowFrame}`}>
-      <div
-        className="title-bar"
-        style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
-      >
+      <div className="title-bar" style={drag ? ELECTRON_DRAG : {}}>
         <div className="title-bar-text">{title}</div>
-        <div
-          className="title-bar-controls"
-          style={{ "-webkit-app-region": "no-drag" } as any}
-        >
+        <div className="title-bar-controls" style={ELECTRON_NO_DRAG}>
           <button aria-label="Close" onClick={onClose}></button>
         </div>
       </div>

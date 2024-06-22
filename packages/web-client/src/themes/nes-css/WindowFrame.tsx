@@ -1,4 +1,5 @@
 import { WindowFrameProps } from "../../theme";
+import { ELECTRON_DRAG, ELECTRON_NO_DRAG } from "../utils";
 import styles from "./WindowFrame.module.css";
 
 export function WindowFrame({
@@ -15,14 +16,11 @@ export function WindowFrame({
         isLayer ? styles.drawer : ""
       } ${title != null ? "with-title" : ""}`}
     >
-      <p
-        className="title"
-        style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
-      >
+      <p className="title" style={drag ? ELECTRON_DRAG : {}}>
         <i
           className="nes-icon close is-small"
           onClick={onClose}
-          style={{ "-webkit-app-region": "no-drag" } as any}
+          style={ELECTRON_NO_DRAG}
         ></i>
         {"\u00A0"}
         {title}

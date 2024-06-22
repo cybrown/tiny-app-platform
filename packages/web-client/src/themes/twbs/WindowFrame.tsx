@@ -1,4 +1,5 @@
 import { WindowFrameProps } from "../../theme";
+import { ELECTRON_DRAG, ELECTRON_NO_DRAG } from "../utils";
 import styles from "./WindowFrame.module.css";
 
 export function WindowFrame({
@@ -18,10 +19,7 @@ export function WindowFrame({
         style={{ height: "100%" }}
       >
         <div className={`modal-content ${isDrawer ? styles.drawer : ""}`}>
-          <div
-            className="modal-header"
-            style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
-          >
+          <div className="modal-header" style={drag ? ELECTRON_DRAG : {}}>
             <h5 className="modal-title">{title}</h5>
             <button
               type="button"
@@ -29,7 +27,7 @@ export function WindowFrame({
               data-bs-dismiss="modal"
               aria-label="Close"
               onClick={onClose}
-              style={{ "-webkit-app-region": "no-drag" } as any}
+              style={ELECTRON_NO_DRAG}
             ></button>
           </div>
           <div className={`modal-body ${styles.Body}`}>{children}</div>

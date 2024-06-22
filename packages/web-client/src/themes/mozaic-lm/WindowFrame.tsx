@@ -1,5 +1,5 @@
 import { WindowFrameProps } from "../../theme";
-import { useMakeId } from "../utils";
+import { ELECTRON_DRAG, ELECTRON_NO_DRAG, useMakeId } from "../utils";
 import styles from "./WindowFrame.module.css";
 
 export function WindowFrame({
@@ -18,7 +18,7 @@ export function WindowFrame({
     >
       <header
         className="mc-modal__header mc-divider-bottom mc-divider-bottom--light"
-        style={drag ? ({ "-webkit-app-region": "drag" } as any) : {}}
+        style={drag ? ELECTRON_DRAG : {}}
       >
         <h2 className="mc-modal__title" id={id}>
           {title}
@@ -27,7 +27,7 @@ export function WindowFrame({
           className="mc-modal__close"
           onClick={onClose}
           type="button"
-          style={{ "-webkit-app-region": "no-drag" } as any}
+          style={ELECTRON_NO_DRAG}
         >
           <span className="mc-modal__close-text">Close</span>
         </button>

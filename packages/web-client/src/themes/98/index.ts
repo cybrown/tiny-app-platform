@@ -6,7 +6,6 @@ import InputText from "./InputText";
 import InputFile from "./InputFile";
 import Select from "./Select";
 import Table from "./Table";
-import Modal from "./Modal";
 import htmlTheme from "../html";
 import Radio from "./Radio";
 import Tabs from "./Tabs";
@@ -40,7 +39,6 @@ const nesCssTheme: Theme = {
   InputFile,
   Select,
   Table,
-  Modal,
   Radio,
   Tabs,
   WindowFrame,

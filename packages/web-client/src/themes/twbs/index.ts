@@ -8,7 +8,6 @@ import Select from "./Select";
 import Text from "./Text";
 import Pager from "./Pager";
 import Table from "./Table";
-import Modal from "./Modal";
 import htmlTheme from "../html";
 import Radio from "./Radio";
 import Loader from "./Loader";
@@ -41,12 +40,10 @@ const twbsTheme: Theme = {
   Text,
   Pager,
   Table,
-  Modal,
   Radio,
   Loader,
   Link: htmlTheme.Link,
   Container: htmlTheme.Container,
-  ModalBackdrop: htmlTheme.ModalBackdrop,
   View: htmlTheme.View,
   WindowFrame,
   onLoad() {

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import usePressEscape from "./usePressEscape";
-import { Button, Text, WindowFrame, useTheme } from "../../theme";
+import { Button, Text, WindowFrame } from "../../theme";
 import LowLevelOverlay from "./LowLevelOverlay";
 import styles from "./ConfirmPopup.module.css";
 
@@ -32,50 +32,32 @@ export default function ConfirmPopup({
 
   usePressEscape(cancelPopup);
 
-  const theme = useTheme();
-
-  if (theme.Modal) {
-    return show ? (
-      <theme.Modal
-        header="Confirmation"
-        body={typeof confirm === "boolean" ? "Are you sure ?" : confirm}
-        footer={
-          <>
-            <Button text="Cancel" onClick={clickCancelHandler} secondary />
-            <Button text="Ok" onClick={clickOkHandler} />
-          </>
-        }
-        onClose={clickCancelHandler}
-      />
-    ) : null;
-  } else {
-    return show ? (
-      <LowLevelOverlay
-        modal
+  return show ? (
+    <LowLevelOverlay
+      modal
+      onClose={clickCancelHandler}
+      position="center"
+      size="m"
+    >
+      <WindowFrame
         onClose={clickCancelHandler}
         position="center"
-        size="m"
+        title="Confirmation"
+        modal
       >
-        <WindowFrame
-          onClose={clickCancelHandler}
-          position="center"
-          title="Confirmation"
-          modal
-        >
-          <div className={styles.popupContent}>
-            <Text
-              text={
-                (typeof confirm === "boolean" ? "Are you sure ?" : confirm) ??
-                "Are you sure ?"
-              }
-            />
-            <div className={styles.popupFooter}>
-              <Button text="Cancel" onClick={clickCancelHandler} outline />
-              <Button text="Ok" onClick={clickOkHandler} />
-            </div>
+        <div className={styles.popupContent}>
+          <Text
+            text={
+              (typeof confirm === "boolean" ? "Are you sure ?" : confirm) ??
+              "Are you sure ?"
+            }
+          />
+          <div className={styles.popupFooter}>
+            <Button text="Cancel" onClick={clickCancelHandler} outline />
+            <Button text="Ok" onClick={clickOkHandler} />
           </div>
-        </WindowFrame>
-      </LowLevelOverlay>
-    ) : null;
-  }
+        </div>
+      </WindowFrame>
+    </LowLevelOverlay>
+  ) : null;
 }

@@ -11,7 +11,6 @@ import Link from "./Link";
 import Radio from "./Radio";
 import { WindowFrame } from "./WindowFrame";
 import { Tabs } from "./Tabs";
-import Modal from "./Modal";
 import { Loader } from "./Loader";
 import Text from "../html/Text";
 import htmlTheme from "../html";
@@ -39,7 +38,6 @@ const theme: Theme = {
   Radio,
   WindowFrame,
   Tabs,
-  Modal,
   Loader,
   View: htmlTheme.View,
   Container: (props) => props.children,

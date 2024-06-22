@@ -55,6 +55,11 @@
   width: calc(100% - 20px);
 }
 
+.left.l,
+.right.l {
+  width: min(calc(100% - 20px), 640px);
+}
+
 .left.openVisible,
 .right.openVisible {
   transform: translateX(0);
@@ -70,6 +75,11 @@
 .top.xl,
 .bottom.xl {
   height: calc(100% - 20px);
+}
+
+.top.l,
+.bottom.l {
+  height: min(800px, calc(100% - 20px));
 }
 
 .top {

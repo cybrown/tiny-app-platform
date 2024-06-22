@@ -50,6 +50,7 @@ import mozaicLmTheme from "./themes/mozaic-lm";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 import { lowerForApp } from "tal-eval";
 import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
+import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
 
 const queryParams = window.location.search
   .slice(1)
@@ -450,34 +451,47 @@ function App() {
             </button>
           ) : null}
           {isDebugMode ? (
-            <div className={styles.EditorContainer}>
-              <div className={styles.ToolBarContainer}>
-                <ToolBar
-                  onFormat={onFormatHandler}
-                  onApplyAndFormat={onApplyAndFormatHandler}
-                  onClose={onCloseHandler}
-                  onShowDocumentation={toggleShowDocumentationHandler}
-                  appDebugMode={
-                    ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
-                  }
-                  setAppDebugMode={setAppDebutModeHandler}
-                />
-                <ThemedSelect
-                  options={themes.map((theme) => ({
-                    label: theme.name,
-                    value: theme.id,
-                  }))}
-                  value={theme.id}
-                  onChange={(newIndex) => applyTheme(themes[newIndex])}
-                />
-              </div>
-              <Editor
-                grabSetSource={setUpdateSource}
-                onApiReady={setEditorApi}
-                onSaveAndFormat={onApplyAndFormatWithSourceHandler}
-                onCloseEditor={onCloseHandler}
-              />
-            </div>
+            <LowLevelOverlay
+              size="l"
+              position="left"
+              onClose={onCloseHandler}
+              modal
+            >
+              <theme.WindowFrame
+                title="Editor"
+                position="left"
+                onClose={onCloseHandler}
+                modal
+              >
+                <div className={styles.EditorContainer}>
+                  <div className={styles.ToolBarContainer}>
+                    <ToolBar
+                      onFormat={onFormatHandler}
+                      onApplyAndFormat={onApplyAndFormatHandler}
+                      onShowDocumentation={toggleShowDocumentationHandler}
+                      appDebugMode={
+                        ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
+                      }
+                      setAppDebugMode={setAppDebutModeHandler}
+                    />
+                    <ThemedSelect
+                      options={themes.map((theme) => ({
+                        label: theme.name,
+                        value: theme.id,
+                      }))}
+                      value={theme.id}
+                      onChange={(newIndex) => applyTheme(themes[newIndex])}
+                    />
+                  </div>
+                  <Editor
+                    grabSetSource={setUpdateSource}
+                    onApiReady={setEditorApi}
+                    onSaveAndFormat={onApplyAndFormatWithSourceHandler}
+                    onCloseEditor={onCloseHandler}
+                  />
+                </div>
+              </theme.WindowFrame>
+            </LowLevelOverlay>
           ) : null}
           <div className={styles.AppRendererContainer}>
             {app ? (
@@ -503,11 +517,25 @@ function App() {
           </div>
         </div>
         {showDocumentation ? (
-          <Documentation
-            ctx={ctx}
+          <LowLevelOverlay
+            size="l"
+            position="right"
             onClose={toggleShowDocumentationHandler}
-            onWriteInEditor={onWriteInEditorHandler}
-          />
+            modal
+          >
+            <theme.WindowFrame
+              title="Documentation"
+              position="right"
+              onClose={toggleShowDocumentationHandler}
+              modal
+            >
+              <Documentation
+                ctx={ctx}
+                onClose={toggleShowDocumentationHandler}
+                onWriteInEditor={onWriteInEditorHandler}
+              />
+            </theme.WindowFrame>
+          </LowLevelOverlay>
         ) : null}
       </>
     </ThemeProvider>

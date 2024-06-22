@@ -20,10 +20,6 @@
   height: 100%;
 }
 
-.App.hasEditor .AppRendererContainer {
-  width: 50%;
-}
-
 @media (max-width: 480px) {
   .App.hasEditor .AppRendererContainer {
     display: none;
@@ -31,13 +27,13 @@
 }
 
 .EditorContainer {
-  width: 50%;
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
-@media (max-width: 480px) {
-  .EditorContainer {
-    width: 100%;
-  }
+.ToolBarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }

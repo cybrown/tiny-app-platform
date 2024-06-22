@@ -1,17 +1,15 @@
 import { useCallback } from "react";
-import { Button, Switch, Text } from "../theme";
+import { Button, Link, Switch, Text } from "../theme";
 
 export default function ToolBar({
   onFormat,
   onApplyAndFormat,
-  onClose,
   onShowDocumentation,
   appDebugMode,
   setAppDebugMode,
 }: {
   onFormat(): void;
   onApplyAndFormat(): void;
-  onClose(): void;
   onShowDocumentation(): void;
   appDebugMode: boolean;
   setAppDebugMode(debugModeEnabled: boolean): void;
@@ -24,20 +22,15 @@ export default function ToolBar({
   );
 
   return (
-    <div>
-      <div style={{ display: "flex" }}>
-        <Button onClick={onFormat} text="Format" />
-        <Button onClick={onApplyAndFormat} text="Save" />
-        <Button onClick={onClose} text="Close" />
-        <Button onClick={onShowDocumentation} text="Docs" />
-      </div>
-      <div style={{ display: "flex" }}>
-        <Switch
-          value={appDebugMode ?? false}
-          onChange={onAppDebugModeChangeHandler}
-        />
-        <Text text="Debug" />
-      </div>
+    <div style={{ display: "flex", gap: "4px" }}>
+      <Button outline onClick={onFormat} text="Format" />
+      <Button outline onClick={onApplyAndFormat} text="💾" />
+      <Switch
+        value={appDebugMode ?? false}
+        onChange={onAppDebugModeChangeHandler}
+        label="Debug"
+      />
+      <Link text="Show documentation" onClick={onShowDocumentation} url="#" />
     </div>
   );
 }

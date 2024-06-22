@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { FunctionDef } from "tal-eval/dist/core";
-import { Button, InputText, Text, useTheme } from "../theme";
+import { Button, InputText, Text } from "../theme";
 
 export default function Documentation({
   ctx,
@@ -38,21 +38,8 @@ export default function Documentation({
     setSearchTerm(searchString);
   }, []);
 
-  const theme = useTheme();
-
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: "50%",
-        right: 0,
-        background: theme.colors.background,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div>
       <div style={{ display: "flex" }}>
         <Text text="Search :" />
         <InputText value={searchTerm} onChange={onSearchChange} />

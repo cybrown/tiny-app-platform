@@ -1,7 +1,13 @@
 .WindowFrame {
   background-color: white;
+  display: flex;
+  flex-direction: column;
 }
 
 .drawer {
   height: calc(100% - 8px);
+}
+
+.Body {
+  overflow: auto;
 }

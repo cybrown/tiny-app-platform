@@ -27,8 +27,7 @@ export function WindowFrame({
         {"\u00A0"}
         {title}
       </p>
-
-      {children}
+      <div className={styles.Body}>{children}</div>
     </div>
   );
 }

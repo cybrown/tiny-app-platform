@@ -1,4 +1,8 @@
 .Tabs {
+  padding: 2px 0;
+}
+
+.Tabs > menu {
   /* Prevent tabs to appear on top of Overlays */
   z-index: 0;
 }

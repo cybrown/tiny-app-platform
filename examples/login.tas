@@ -1,72 +1,78 @@
+//no-native-frame
 var user
 var password
 
 fun Centered(children, flexTop) {
-  Box {
+  View {
     height: "100dvh"
 
     Column {
       gap: 0
 
-      Box {} | flex(flexTop)
+      View {} | flex(flexTop)
 
       Row {
         gap: 0
 
-        Box {} | flex(1)
+        View {} | flex(1)
 
         children
 
-        Box {} | flex(1)
+        View {} | flex(1)
       }
 
-      Box {} | flex(1)
+      View {} | flex(1)
     }
   }
 }
 
-Centered {
-  flexTop: 0.2
+WindowFrame {
+  drag:    true
+  onClose: () => exit()
 
-  Box {
-    width: "360px"
+  Centered {
+    flexTop: 0.2
 
-    Column {
-      Text {
-        text:   "Login Screen"
-        size:   2
-        align:  "center"
-        weight: "light"
-        color:  "#566"
-      }
+    View {
+      width: "360px"
 
       Column {
-        Text { text: "Username:" }
-        InputText { bindTo: user }
-
-        Text { text: "Password:" }
-        InputText { bindTo: password, type: "password" }
-
-        Box { Text { text: "" } }
-
-        Button {
-          text:    "Login"
-          onClick: () => http_request(method: "get", url: "https://www.google.com")
+        Text {
+          text:   "Login Screen"
+          size:   2
+          align:  "center"
+          weight: "light"
+          color:  "#566"
         }
 
-        Row {
-          Link {
-            text: "Forgot password ?"
-            url:  "https://www.google.com"
+        Column {
+          Text { text: "Username:" }
+          InputText { bindTo: user }
+
+          Text { text: "Password:" }
+          InputText { bindTo: password, type: "password" }
+
+          View { Text { text: "" } }
+
+          Button {
+            text:    "Login"
+            onClick: () => http_request(method: "get", url: "https://www.google.com")
+          }
+
+          Row {
+            Link {
+              text: "Forgot password ?"
+              url:  "https://www.google.com"
+            }
           }
         }
-      }
 
-      Text {
-        text:  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean felis magna, consectetur ut dolor at, ultricies laoreet lectus. Vestibulum eu eros ac nulla lobortis aliquet id ut justo. Suspendisse nec velit sapien. Mauris congue vitae magna et posuere. Proin vestibulum ultrices magna, non consectetur turpis condimentum ut. Nulla mattis sapien in metus congue ultricies. Sed efficitur, sapien quis aliquam porta, libero ligula elementum dolor, ut tempus quam leo ac purus. Sed vel dui purus."
-        wrap:  true
-        size:  0.6
-        color: "#444"
+        Text {
+          text:  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean felis magna, consectetur ut dolor at, ultricies laoreet lectus. Vestibulum eu eros ac nulla lobortis aliquet id ut justo. Suspendisse nec velit sapien. Mauris congue vitae magna et posuere. Proin vestibulum ultrices magna, non consectetur turpis condimentum ut. Nulla mattis sapien in metus congue ultricies. Sed efficitur, sapien quis aliquam porta, libero ligula elementum dolor, ut tempus quam leo ac purus. Sed vel dui purus."
+          wrap:  true
+          size:  0.6
+          color: "#444"
+        }
       }
     }
   }

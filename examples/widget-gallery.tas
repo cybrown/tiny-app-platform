@@ -88,32 +88,46 @@ fun GalleryCheckbox() {
   Column {
     Title { text: "CheckBox Switch" }
     Row {
-      CheckBox { bindTo: value }
-      Switch { bindTo: value }
-      Text { text: "primary" }
+      CheckBox { bindTo: value, label: "primary" }
+      Switch { bindTo: value, label: "primary" }
     }
     Row {
-      CheckBox { bindTo: value, disabled: true }
-      Switch { bindTo: value, disabled: true }
-      Text { text: "primary disabled" }
+      CheckBox {
+        bindTo:   value
+        disabled: true
+        label:    "primary disabled"
+      }
+      Switch {
+        bindTo:   value
+        disabled: true
+        label:    "primary disabled"
+      }
     }
     Row {
-      CheckBox { bindTo: value, secondary: true }
-      Switch { bindTo: value, secondary: true }
-      Text { text: "secondary" }
+      CheckBox {
+        bindTo:    value
+        secondary: true
+        label:     "secondary"
+      }
+      Switch {
+        bindTo:    value
+        secondary: true
+        label:     "secondary"
+      }
     }
     Row {
       CheckBox {
         bindTo:    value
         disabled:  true
         secondary: true
+        label:     "secondary disabled"
       }
       Switch {
         bindTo:    value
         disabled:  true
         secondary: true
+        label:     "secondary disabled"
       }
-      Text { text: "secondary disabled" }
     }
   }
 }
@@ -125,10 +139,7 @@ fun GalleryButton() {
   Column {
     Title { text: "Button" }
 
-    Row {
-      Switch { bindTo: disabled }
-      Text { text: "Disabled" }
-    }
+    Switch { bindTo: disabled, label: "Disabled" }
 
     Button { text: "Click me", disabled: disabled }
 
@@ -193,15 +204,12 @@ fun GalleryPager() {
   Column {
     Title { text: "Pager" }
 
-    Row {
-      Switch { bindTo: showPrevNext }
-      Text { text: "showPrevNext" }
+    Switch {
+      bindTo: showPrevNext
+      label:  "showPrevNext"
     }
 
-    Row {
-      Switch { bindTo: disabled }
-      Text { text: "disabled" }
-    }
+    Switch { bindTo: disabled, label: "disabled" }
 
     Row {
       Select {
@@ -231,10 +239,7 @@ fun GallerySelect() {
   Column {
     Title { text: "Select Radio" }
 
-    Row {
-      Switch { bindTo: disabled }
-      Text { text: "Disabled" }
-    }
+    Switch { bindTo: disabled, label: "Disabled" }
 
     Select {
       options:     values
@@ -263,26 +268,30 @@ fun GallerySelect() {
 
     Row {
       values
-         | array_map((option) => Row {
-            Radio {
-              option:   option
-              bindTo:   value
-              disabled: disabled
+         | array_map(option => Radio {
+            option:   option
+            bindTo:   value
+            disabled: disabled
+            label:    if (typeof(option) == "record") {
+              option.label
+            } else {
+              option
             }
-            Text { text: default(option.label, option) }
           })
     }
 
     Row {
       values
-         | array_map((option) => Row {
-            Radio {
-              option:    option
-              bindTo:    value
-              disabled:  disabled
-              secondary: true
+         | array_map(option => Radio {
+            option:    option
+            bindTo:    value
+            disabled:  disabled
+            secondary: true
+            label:     if (typeof(option) == "record") {
+              option.label
+            } else {
+              option
             }
-            Text { text: default(option.label, option) }
           })
     }
   }
@@ -305,35 +314,24 @@ fun GalleryTable() {
   Column {
     Title { text: "Table" }
 
-    Row {
-      CheckBox { bindTo: useRemaining }
-      Text {
-        text: "Name column must use remaining space"
-      }
+    CheckBox {
+      bindTo: useRemaining
+      label:  "Name column must use remaining space"
     }
 
-    Row {
-      CheckBox { bindTo: noHeader }
-      Text { text: "No header" }
+    CheckBox { bindTo: noHeader, label: "No header" }
+
+    CheckBox { bindTo: striped, label: "Striped" }
+
+    CheckBox {
+      bindTo: noHighlight
+      label:  "No Highlight"
     }
 
-    Row {
-      CheckBox { bindTo: striped }
-      Text { text: "Striped" }
-    }
-
-    Row {
-      CheckBox { bindTo: noHighlight }
-      Text { text: "No Highlight" }
-    }
-
-    Row {
-      CheckBox { bindTo: bordered }
-      Text { text: "Bordered" }
-    }
+    CheckBox { bindTo: bordered, label: "Bordered" }
 
     Table {
-      _key:        (row) => row.name
+      _key:        row => row.name
       noHeader:    noHeader
       striped:     striped
       noHighlight: noHighlight
@@ -341,18 +339,16 @@ fun GalleryTable() {
       columns:     [
         {
           description:  "Name"
-          display:      (row) => Text { text: row.name }
+          display:      row => Text { text: row.name }
           useRemaining: useRemaining
         }
-        {
-          description: "Age"
-          display:     (row) => Text { text: row.age }
-        }
+        {description: "Age", display: row => Text { text: row.age }}
       ]
       values:      data
     }
 
     Table {
+      _key:        row => row.name
       values:      data
       noHeader:    noHeader
       noHighlight: noHighlight
@@ -361,6 +357,7 @@ fun GalleryTable() {
     }
 
     Table {
+      _key:        row => row.name
       noHeader:    noHeader
       noHighlight: noHighlight
       striped:     striped
@@ -369,7 +366,7 @@ fun GalleryTable() {
         "name"
         {
           description: "Age"
-          display:     (row) => Text { text: row.age + " years old" }
+          display:     row => Text { text: row.age + " years old" }
         }
       ]
       values:      data
@@ -379,9 +376,12 @@ fun GalleryTable() {
 
 fun GalleryTabs() {
   var currentTab = "first"
+  var hasAfter = false
 
   Column {
     Title { text: "Tabs" }
+
+    Switch { bindTo: hasAfter, label: "Has after" }
 
     Tabs {
       bindTo:  currentTab
@@ -389,6 +389,14 @@ fun GalleryTabs() {
         {label: "First tab", value: "first"}
         {label: "Second tab", value: "second"}
       ]
+      after:   if (hasAfter) {
+        Row {
+          View {} | flex(1)
+          Button { text: "After", outline: true }
+        }
+      } else {
+        null
+      }
     }
 
     switch (currentTab) {
@@ -400,12 +408,74 @@ fun GalleryTabs() {
 
 fun GalleryLoader() {
   Column {
+    Title { text: "Loader" }
+
     Loader {}
     Loader { primary: true }
     Loader { secondary: true }
     Loader { size: "sm" }
     Loader { size: "md" }
     Loader { size: "lg" }
+  }
+}
+
+fun GalleryOverlay() {
+  var showOverlay
+  var position
+  var modal
+
+  Column {
+    Title { text: "Overlay" }
+
+    Button {
+      text:    "Show Dialog"
+      onClick: () => {
+        set position = "center"
+        set modal = false
+        set showOverlay = true
+      }
+    }
+
+    Button {
+      text:    "Show Modal"
+      onClick: () => {
+        set position = "center"
+        set modal = true
+        set showOverlay = true
+      }
+    }
+
+    Button {
+      text:    "Show Drawer Left"
+      onClick: () => {
+        set position = "left"
+        set modal = true
+        set showOverlay = true
+      }
+    }
+
+    Button {
+      text:    "Show Drawer Bottom"
+      onClick: () => {
+        set position = "bottom"
+        set modal = true
+        set showOverlay = true
+      }
+    }
+
+    if (showOverlay) {
+      Overlay {
+        position: position
+        modal:    modal
+        title:    "Title here"
+        onClose:  () => set showOverlay = false
+
+        Text { text: "Overlay content" }
+        Text {
+          text: "Press on the backdrop to close it"
+        }
+      }
+    }
   }
 }
 
@@ -423,6 +493,8 @@ fun App() {
       "twbs-dark"
       "nes-css"
       "dark-orange"
+      "98"
+      "mozaic-lm"
     ]
 
     Column {
@@ -430,7 +502,7 @@ fun App() {
         Text { text: "Change theme: " }
         Select {
           value:    currentTheme
-          onChange: (newVal) => {
+          onChange: newVal => {
             set currentTheme = newVal
             set_system_property("theme", newVal)
           }
@@ -441,16 +513,17 @@ fun App() {
       Row {
         wrap: true
 
-        Box { width: "360px", GalleryInputText {} }
-        Box { width: "360px", GalleryText {} }
-        Box { width: "360px", GalleryCheckbox {} }
-        Box { width: "360px", GalleryButton {} }
-        Box { width: "360px", GalleryLink {} }
-        Box { width: "360px", GalleryPager {} }
-        Box { width: "360px", GallerySelect {} }
-        Box { width: "360px", GalleryTable {} }
-        Box { width: "360px", GalleryTabs {} }
-        Box { width: "360px", GalleryLoader {} }
+        View { width: "360px", GalleryInputText {} }
+        View { width: "360px", GalleryText {} }
+        View { width: "360px", GalleryCheckbox {} }
+        View { width: "360px", GalleryButton {} }
+        View { width: "360px", GalleryLink {} }
+        View { width: "360px", GalleryPager {} }
+        View { width: "360px", GallerySelect {} }
+        View { width: "360px", GalleryTable {} }
+        View { width: "360px", GalleryTabs {} }
+        View { width: "360px", GalleryLoader {} }
+        View { width: "360px", GalleryOverlay {} }
       }
     }
   }

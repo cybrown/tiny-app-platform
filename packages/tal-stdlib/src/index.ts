@@ -221,3 +221,5 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(flex);
   ctx.registerFunction(scroller);
 }
+
+export { HttpLogItemData } from './functions/http';

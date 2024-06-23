@@ -355,7 +355,45 @@ export class RuntimeContext {
       initialValue: func,
     });
   }
+
+  private _logs: LogItem<unknown>[] = [];
+
+  public get logs(): LogItem<unknown>[] {
+    if (this.parent) {
+      return this.parent.logs;
+    }
+    return this._logs;
+  }
+
+  log<T>(type: string, value: T): LogItem<T> {
+    if (this.parent) {
+      return this.parent.log(type, value);
+    }
+    const logItem: LogItem<T> = {
+      id: Math.random()
+        .toString(16)
+        .slice(2, 8),
+      timestamp: Date.now(),
+      type,
+      data: value,
+      isDisplayed: true,
+    };
+    this._logs.push(logItem);
+    while (this._logs.length > 100) {
+      const item = this._logs.shift();
+      item && (item.isDisplayed = false);
+    }
+    return logItem;
+  }
 }
+
+export type LogItem<T> = {
+  id: string;
+  type: string;
+  timestamp: number;
+  data: T;
+  isDisplayed: boolean;
+};
 
 type ParameterDeclaration<T extends string> = {
   name: T;
@@ -365,12 +403,12 @@ type ParameterDeclaration<T extends string> = {
 export function defineFunction<T extends string>(
   name: string,
   parameters: ParameterDeclaration<T>[],
-  func?: (
+  synchronousImplementation?: (
     ctx: RuntimeContext,
     namedArguments: { [key in T]: any },
     positionalArguments: any[]
   ) => any,
-  funcAsync?: (
+  asynchronousImplementation?: (
     ctx: RuntimeContext,
     namedArguments: { [key in T]: any },
     positionalArguments: any[]
@@ -385,14 +423,22 @@ export function defineFunction<T extends string>(
       return prev;
     }, {} as RegisterableFunction<T>['parametersByName']),
   };
-  if (func) {
+  if (synchronousImplementation) {
     result.call = (ctx, namedArguments, positionalArguments) => {
-      return func(ctx, namedArguments, positionalArguments ?? []);
+      return synchronousImplementation(
+        ctx,
+        namedArguments,
+        positionalArguments ?? []
+      );
     };
   }
-  if (funcAsync) {
+  if (asynchronousImplementation) {
     result.callAsync = (ctx, namedArguments, positionalArguments) => {
-      return funcAsync(ctx, namedArguments, positionalArguments ?? []);
+      return asynchronousImplementation(
+        ctx,
+        namedArguments,
+        positionalArguments ?? []
+      );
     };
   }
   return result;

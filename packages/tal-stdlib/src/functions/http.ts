@@ -93,16 +93,43 @@ async function httpRequestFormData({
   };
 }
 
+export type HttpLogItemData = {
+  request: {
+    method: string;
+    url: string;
+    headers: [string, string][];
+    body: any;
+  };
+  response: {
+    status: number;
+    headers: Record<string, string>;
+    body: any;
+  } | null;
+  stage: 'pending' | 'fulfilled';
+};
+
 async function http_request_impl(
-  _ctx: RuntimeContext,
+  ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const response = await httpRequest({
+  const requestConfiguration = {
     method: value.method ?? 'get',
     url: value.url,
     headers: value.headers,
     ...(value.body ? { body: value.body } : {}),
-  });
+  };
+  const logItem = ctx.log('http-request', {
+    request: requestConfiguration,
+    stage: 'pending',
+    response: null,
+  } as HttpLogItemData);
+  const response = await httpRequest(requestConfiguration);
+  logItem.data.stage = 'fulfilled';
+  logItem.data.response = {
+    status: response.status,
+    headers: response.headers,
+    body: response.body,
+  };
   if (
     !value.allowErrorStatusCode &&
     (response.status < 200 || response.status >= 400)

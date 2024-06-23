@@ -1,4 +1,4 @@
-import { LoaderProps, Theme } from "../../theme";
+import { Theme } from "../../theme";
 import Button from "./Button";
 import CheckBox from "./CheckBox";
 import Switch from "./Switch";

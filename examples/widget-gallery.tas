@@ -375,33 +375,55 @@ fun GalleryTable() {
 }
 
 fun GalleryTabs() {
-  var currentTab = "first"
+  var currentTab = "1"
   var hasAfter = false
+  let options = [
+    {label: "First tab", value: "1"}
+    {label: "Second tab", value: "2"}
+    {label: "Third tab", value: "3"}
+    {label: "Fourth tab", value: "4"}
+    {label: "Fifth tab", value: "5"}
+    {label: "Sixth tab", value: "6"}
+    {label: "Seventh tab", value: "7"}
+    {label: "Eighth tab", value: "8"}
+  ]
 
   Column {
     Title { text: "Tabs" }
 
     Switch { bindTo: hasAfter, label: "Has after" }
 
-    Tabs {
-      bindTo:  currentTab
-      options: [
-        {label: "First tab", value: "first"}
-        {label: "Second tab", value: "second"}
-      ]
-      after:   if (hasAfter) {
-        Row {
-          View {} | flex(1)
-          Button { text: "After", outline: true }
+    Row {
+      Tabs {
+        bindTo:  currentTab
+        options: options | array_take(2)
+        after:   if (hasAfter) {
+          Row {
+            View {} | flex(1)
+            Button { text: "After", outline: true }
+          }
         }
-      } else {
-        null
       }
     }
 
+    Row {
+      Tabs {
+        bindTo:  currentTab
+        options: options
+        after:   if (hasAfter) {
+          Row {
+            View {} | flex(1)
+            Button { text: "After", outline: true }
+          }
+        }
+      }
+
+    }
+
     switch (currentTab) {
-      "first"  => Text { text: "First tab" }
-      "second" => Text { text: "Second tab" }
+      "1" => Text { text: "First tab" }
+      "2" => Text { text: "Second tab" }
+      _   => Text { text: "Unknown tab" }
     }
   }
 }
@@ -479,6 +501,30 @@ fun GalleryOverlay() {
   }
 }
 
+fun GallerySnippet() {
+  var noMaxHeight = false
+  var language = "javascript"
+  var format = false
+
+  Column {
+    Title { text: "Snippet" }
+
+    Switch {
+      bindTo: noMaxHeight
+      label:  "No max height"
+    }
+
+    Switch { bindTo: format, label: "Format" }
+
+    Snippet {
+      format:      format
+      language:    language
+      noMaxHeight: noMaxHeight
+      text:        "function filter(array, predicate) {\n    let index = -1;\n    let resIndex = 0;\n    const length = array == null ? 0 : array.length;\n    const result = [];\n\n    while (++index < length) {\n        const value = array[index];\n        if (predicate(value, index, array)) {\n            result[resIndex++] = value;\n        }\n    }\n    return result;\n}"
+    }
+  }
+}
+
 fun App() {
   Column {
     padding: 0.5
@@ -524,6 +570,7 @@ fun App() {
         View { width: "360px", GalleryTabs {} }
         View { width: "360px", GalleryLoader {} }
         View { width: "360px", GalleryOverlay {} }
+        View { width: "360px", GallerySnippet {} }
       }
     }
   }

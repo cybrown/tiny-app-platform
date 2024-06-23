@@ -38,10 +38,11 @@ export default function Documentation({
 
   return (
     <View>
-      <View layout="flex-row">
-        <Text text="Search :" />
-        <InputText value={searchTerm} onChange={onSearchChange} />
-      </View>
+      <InputText
+        value={searchTerm}
+        onChange={onSearchChange}
+        placeholder="Search functions, widgets..."
+      />
       <div style={{ overflow: "auto" }}>
         <Text text="Functions" size={1.4} />
         <Text text="Click on any function to copy a code snippet" />

@@ -166,7 +166,7 @@ export type TabsProps = {
   value: string;
   onChange(newValue: string): void;
   tabs: { value: string; label: string }[];
-  after: React.ReactElement;
+  after?: React.ReactElement;
 };
 
 export type ContainerProps = {

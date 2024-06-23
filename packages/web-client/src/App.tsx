@@ -8,7 +8,7 @@ import {
   SourceFetcher,
 } from "tal-eval";
 import * as tal from "tal-parser";
-import { Editor, EditorApi } from "./editor/Editor";
+import { EditorApi } from "./editor/Editor";
 import AppRenderer from "./AppRenderer";
 import { useHotkeys } from "react-hotkeys-hook";
 import Button, { ButtonDocumentation } from "./widgets/Button";
@@ -35,17 +35,12 @@ import { APP_DEBUG_MODE_ENV } from "./constants";
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
 import Documentation from "./editor/Documentation";
-import ToolBar from "./editor/Toolbar";
 import { importStdlibInContext } from "tal-stdlib";
 import { ThemeProvider, Theme } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
-import {
-  Select as ThemedSelect,
-  WindowFrame as ThemedWindowFrame,
-  View as ThemedView,
-} from "./theme";
+import { WindowFrame as ThemedWindowFrame } from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import theme98 from "./themes/98";
@@ -55,6 +50,7 @@ import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 import { lowerForApp } from "tal-eval";
 import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
 import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
+import Devtools from "./editor/Devtools";
 
 const queryParams = window.location.search
   .slice(1)
@@ -489,36 +485,27 @@ function App() {
             modal
           >
             <ThemedWindowFrame
-              title="Editor"
+              title="Devtools"
               position="left"
               onClose={onCloseHandler}
               modal
             >
-              <ThemedView>
-                <ToolBar
-                  onFormat={onFormatHandler}
-                  onApplyAndFormat={onApplyAndFormatHandler}
-                  onShowDocumentation={toggleShowDocumentationHandler}
-                  appDebugMode={
-                    ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
-                  }
-                  setAppDebugMode={setAppDebugModeHandler}
-                />
-                <ThemedSelect
-                  options={themes.map((theme) => ({
-                    label: theme.name,
-                    value: theme.id,
-                  }))}
-                  value={theme.id}
-                  onChange={(newIndex) => applyTheme(themes[newIndex])}
-                />
-                <Editor
-                  grabSetSource={(a) => (updateSourceFunc.current = a())}
-                  onApiReady={setEditorApi}
-                  onSaveAndFormat={onApplyAndFormatWithSourceHandler}
-                  onCloseEditor={onCloseHandler}
-                />
-              </ThemedView>
+              <Devtools
+                ctx={ctx}
+                themes={themes}
+                onFormatHandler={onFormatHandler}
+                onApplyAndFormatHandler={onApplyAndFormatHandler}
+                onToggleShowDocumentation={toggleShowDocumentationHandler}
+                onDebugModeChange={setAppDebugModeHandler}
+                theme={theme}
+                onApplyTheme={applyTheme}
+                updateSourceFunc={updateSourceFunc}
+                setEditorApi={setEditorApi}
+                onApplyAndFormatWithSourceHandler={
+                  onApplyAndFormatWithSourceHandler
+                }
+                onCloseHandler={onCloseHandler}
+              />
             </ThemedWindowFrame>
           </LowLevelOverlay>
         ) : null}

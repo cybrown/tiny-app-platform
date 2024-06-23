@@ -68,7 +68,7 @@ const queryParams = window.location.search
     return prev;
   }, {} as { [key: string]: string[] | undefined });
 
-const showEditButton = queryParams.hasOwnProperty("edit");
+const isDevModeEnabled = queryParams.hasOwnProperty("dev");
 
 const pathNameComponents = window.location.pathname.split("/");
 const appNameFromPathName: string | undefined = pathNameComponents[1];
@@ -311,20 +311,20 @@ function App() {
 
   const [parseError, setParseError] = useState<Error | null>(null);
 
-  const [isDebugMode, setIsDebugMode] = useState(
-    queryParams.hasOwnProperty("debug")
+  const [devtoolsVisible, setDevtoolsVisible] = useState(
+    queryParams.hasOwnProperty("devtools")
   );
 
-  const toggleDebugModeKeyboardHandler = useCallback(
+  const toggleDevtoolsVisibleKeyboardHandler = useCallback(
     (e: KeyboardEvent) => {
       e.preventDefault();
-      setIsDebugMode(!isDebugMode);
+      setDevtoolsVisible(!devtoolsVisible);
     },
-    [setIsDebugMode, isDebugMode]
+    [setDevtoolsVisible, devtoolsVisible]
   );
 
-  useHotkeys("ctrl+shift+d", toggleDebugModeKeyboardHandler, [
-    toggleDebugModeKeyboardHandler,
+  useHotkeys("ctrl+shift+d", toggleDevtoolsVisibleKeyboardHandler, [
+    toggleDevtoolsVisibleKeyboardHandler,
   ]);
 
   const [showDocumentation, setShowDocumentation] = useState(false);
@@ -345,14 +345,14 @@ function App() {
   }, []);
 
   const openEditorHandler = useCallback(() => {
-    setIsDebugMode(true);
+    setDevtoolsVisible(true);
   }, []);
 
   const closeEditorHandle = useCallback(() => {
-    setIsDebugMode(false);
+    setDevtoolsVisible(false);
   }, []);
 
-  const setAppDebutModeHandler = useCallback(
+  const setAppDebugModeHandler = useCallback(
     (appDebugMode: boolean) => ctx.setLocal(APP_DEBUG_MODE_ENV, appDebugMode),
     [ctx]
   );
@@ -448,16 +448,6 @@ function App() {
     <ThemeProvider value={theme}>
       <>
         <div className={styles.App}>
-          {!isDebugMode && showEditButton ? (
-            <button
-              className={styles.BtnEdit}
-              type="button"
-              onClick={openEditorHandler}
-            >
-              Edit
-            </button>
-          ) : null}
-
           <div className={styles.AppRendererContainer}>
             {app ? (
               <AppRenderer ctx={ctx} app={app} />
@@ -480,9 +470,18 @@ function App() {
               <div>Unknown failure</div>
             )}
           </div>
+          {!devtoolsVisible && isDevModeEnabled ? (
+            <button
+              className={styles.BtnEdit}
+              type="button"
+              onClick={openEditorHandler}
+            >
+              Edit
+            </button>
+          ) : null}
         </div>
 
-        {isDebugMode ? (
+        {devtoolsVisible ? (
           <LowLevelOverlay
             size="xl"
             position="left"
@@ -503,7 +502,7 @@ function App() {
                   appDebugMode={
                     ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean
                   }
-                  setAppDebugMode={setAppDebutModeHandler}
+                  setAppDebugMode={setAppDebugModeHandler}
                 />
                 <ThemedSelect
                   options={themes.map((theme) => ({

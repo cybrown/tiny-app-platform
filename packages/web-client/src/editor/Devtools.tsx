@@ -219,9 +219,8 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
             />
             {detailsTabToShow === "request" ? (
               <>
-                {item.data.request.headers.length === 0 ? (
-                  <Text text="No headers" />
-                ) : (
+                {item.data.request.headers &&
+                item.data.request.headers.length > 0 ? (
                   <Table
                     titles={[{ text: "Key" }, { text: "Value" }]}
                     rows={item.data.request.headers.map((entry) => ({
@@ -232,6 +231,8 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
                       ],
                     }))}
                   />
+                ) : (
+                  <Text text="No headers" />
                 )}
                 <Text text="Body" size={1.1} />
                 <Text preformatted text={item.data.request.body} />

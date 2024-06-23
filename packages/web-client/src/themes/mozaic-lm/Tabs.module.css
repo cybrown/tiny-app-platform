@@ -1,4 +1,8 @@
 .Tabs {
+  height: 60px; /* Prevent Tabs fro mscrolling inside Rows */
+}
+
+.Tabs > * {
   width: 100% !important;
   display: flex;
   align-items: center;

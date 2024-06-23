@@ -40,7 +40,7 @@ const theme: Theme = {
   Tabs,
   Loader,
   View: htmlTheme.View,
-  Container: (props) => props.children,
+  Container: htmlTheme.Container,
   onLoad() {
     document.head.appendChild(cssLink);
   },

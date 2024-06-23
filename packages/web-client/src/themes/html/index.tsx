@@ -34,8 +34,8 @@ const htmlTheme: Theme = {
   Tabs,
   View,
   WindowFrame,
-  Loader: (props: LoaderProps) => "Loading...",
-  Container: (props) => props.children,
+  Loader: (props) => <>Loading...</>,
+  Container: (props) => <>{props.children}</>,
 };
 
 export default htmlTheme;

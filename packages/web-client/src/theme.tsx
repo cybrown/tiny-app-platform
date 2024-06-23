@@ -23,7 +23,7 @@ export interface ButtonProps {
 
 export interface CheckBoxProps {
   disabled?: boolean;
-  onChange?(newValue: boolean): Promise<void>;
+  onChange?(newValue: boolean): Promise<void> | void;
   value?: boolean;
   secondary?: boolean;
   label?: string;
@@ -241,22 +241,22 @@ export interface Theme {
   };
   sizes?: SizeScale;
   baseSize?: number;
-  Button(props: ButtonProps): any;
-  CheckBox(props: CheckBoxProps): any;
-  Switch(props: SwitchProps): any;
-  InputText(props: InputTextProps): any;
-  InputFile(props: InputFileProps): any;
-  Select(props: SelectProps): any;
-  Text(props: TextProps): any;
-  Pager(props: PagerProps): any;
-  Table(props: TableProps): any;
-  Link(props: LinkProps): any;
-  Radio(props: RadioProps): any;
-  Tabs(props: TabsProps): any;
-  Container(props: ContainerProps): any;
-  Loader(props: LoaderProps): any;
-  View(props: ViewProps): any;
-  WindowFrame(props: WindowFrameProps): any;
+  Button: React.FC<ButtonProps>;
+  CheckBox: React.FC<CheckBoxProps>;
+  Switch: React.FC<SwitchProps>;
+  InputText: React.FC<InputTextProps>;
+  InputFile: React.FC<InputFileProps>;
+  Select: React.FC<SelectProps>;
+  Text: React.FC<TextProps>;
+  Pager: React.FC<PagerProps>;
+  Table: React.FC<TableProps>;
+  Link: React.FC<LinkProps>;
+  Radio: React.FC<RadioProps>;
+  Tabs: React.FC<TabsProps>;
+  Loader: React.FC<LoaderProps>;
+  Container: React.FC<ContainerProps>;
+  View: React.FC<ViewProps>;
+  WindowFrame: React.FC<WindowFrameProps>;
   onLoad?(): void;
   onUnload?(): void;
 }

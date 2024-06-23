@@ -313,7 +313,7 @@ function requestToCurl(request: HttpLogItemData["request"]): string {
     "curl " +
     [
       [
-        method ? `-X '${method.replaceAll("'", "'\\''")}'` : null,
+        method ? `-X '${method.replaceAll("'", "'\\''").toUpperCase()}'` : null,
         url ? `'${escapeShellQuote(url)}'` : null,
       ]
         .filter(Boolean)

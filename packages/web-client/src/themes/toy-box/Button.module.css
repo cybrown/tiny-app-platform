@@ -4,6 +4,7 @@
   min-height: var(--toy-box-size-200);
   border-style: solid;
   border-width: 1px;
+  white-space: nowrap;
 }
 
 .Button {

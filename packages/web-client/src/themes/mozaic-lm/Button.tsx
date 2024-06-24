@@ -1,4 +1,5 @@
 import { ButtonProps } from "../../theme";
+import styles from './Button.module.css';
 
 export default function Button({
   onClick,
@@ -10,7 +11,7 @@ export default function Button({
   return (
     <button
       type="button"
-      className={`mc-button mc-button--s ${
+      className={`mc-button mc-button--s ${styles.Button} ${
         secondary ? "mc-button--solid-primary-02" : ""
       } ${outline ? "mc-button--bordered" : ""}${
         secondary ? "-primary-02" : ""

@@ -1,4 +1,5 @@
 import { ButtonProps } from "../../theme";
+import styles from './Button.module.css';
 
 export default function Button({
   onClick,
@@ -10,7 +11,7 @@ export default function Button({
   return (
     <button
       type="button"
-      className={`tap-button ${secondary ? "is-secondary" : ""} ${
+      className={`tap-button ${styles.Button} ${secondary ? "is-secondary" : ""} ${
         outline ? "is-outline" : ""
       }`}
       onClick={onClick}

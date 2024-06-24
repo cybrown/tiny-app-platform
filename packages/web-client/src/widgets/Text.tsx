@@ -13,6 +13,7 @@ export type TextProps = {
   weight?: "light" | "normal" | "bold";
   wrap?: boolean;
   color?: string;
+  ellipsis?: boolean;
 };
 
 export default function Text({
@@ -25,6 +26,7 @@ export default function Text({
   color,
   weight,
   wrap,
+  ellipsis,
 }: TextProps) {
   if (
     preformatted &&
@@ -60,6 +62,7 @@ export default function Text({
         size={size}
         weight={weight}
         wrap={wrap}
+        ellipsis={ellipsis}
       />
     </div>
   );
@@ -77,5 +80,6 @@ export const TextDocumentation: WidgetDocumentation<TextProps> = {
     weight: "Font weight: light, normal, bold",
     wrap: "True if text must wrap, false by default",
     color: "Text color",
+    ellipsis: "Truncate the text with an ellipsis if it is too long",
   },
 };

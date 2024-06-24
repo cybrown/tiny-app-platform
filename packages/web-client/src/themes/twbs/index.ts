@@ -5,7 +5,7 @@ import Switch from "./Switch";
 import InputText from "./InputText";
 import InputFile from "./InputFile";
 import Select from "./Select";
-import Text from "./Text";
+import Text from "../html/Text";
 import Pager from "./Pager";
 import Table from "./Table";
 import htmlTheme from "../html";

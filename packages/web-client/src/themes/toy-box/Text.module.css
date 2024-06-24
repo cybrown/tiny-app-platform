@@ -6,6 +6,16 @@
   position: relative;
 }
 
+.ellipsis {
+  /* Text with ellipsis can not have display flex */
+  display: initial;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  /* Find a better way to align text with ellipsis */
+  position: relative;
+  top: 2px;
+}
+
 .Text pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;

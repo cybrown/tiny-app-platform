@@ -71,6 +71,7 @@ export interface TextProps {
   weight?: "light" | "normal" | "bold";
   wrap?: boolean;
   color?: string;
+  ellipsis?: boolean;
 }
 
 export type TableTitle = {

@@ -9,6 +9,7 @@ export default function Text({
   color,
   weight,
   wrap,
+  ellipsis,
 }: TextProps) {
   if (
     preformatted &&
@@ -16,10 +17,11 @@ export default function Text({
       align != null ||
       weight != null ||
       wrap != null ||
-      color != null)
+      color != null ||
+      ellipsis != null)
   ) {
     throw new Error(
-      "preformatted is not compatible with size, align, weight, wrap or color"
+      "preformatted is not compatible with size, align, weight, wrap, color or ellipsis"
     );
   }
 
@@ -30,8 +32,9 @@ export default function Text({
       fontWeight: weight ?? "normal",
       whiteSpace: wrap ? undefined : "nowrap",
       color: color,
+      ...(ellipsis ? { textOverflow: "ellipsis", overflowX: "hidden" } : {}),
     }),
-    [align, size, weight, wrap, color]
+    [align, size, weight, wrap, color, ellipsis]
   );
 
   return preformatted ? <pre>{text}</pre> : <div style={style}>{text}</div>;

@@ -144,12 +144,8 @@ function ConsoleTab({ ctx }: ConsoleTabProps) {
         .map((logItem) => (
           <View key={logItem.id} layout="flex-row">
             <Text
-              weight="light"
-              text={
-                new Date(logItem.timestamp).toISOString().slice(11, 16) +
-                " " +
-                logItem.type
-              }
+              preformatted
+              text={new Date(logItem.timestamp).toISOString().slice(11, 23)}
             />
             <RenderLogItem item={logItem} />
           </View>
@@ -180,19 +176,23 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
     navigator.clipboard.writeText(requestToCurl(request));
   }, [item.data]);
 
+  const copyUrl = useCallback(() => {
+    const request = (item.data as HttpLogItemData).request;
+    navigator.clipboard.writeText(request.url);
+  }, [item.data]);
+
   return (
-    <View layout="flex-row">
-      <Text
-        text={(item.data as any).response?.status}
-        weight="bold"
-        color={statusToColor((item.data as any).response?.status?.toString())}
-      />
-      <Text weight="bold" text={(item.data as any).request.method} />
-      <Text text={(item.data as any).request.url} />
-      <Button text="Show details" onClick={showDetailsHandler} outline />
-      <Button text="Copy as cURL" onClick={copyAsCurl} outline />
+    <>
+      <Text text="🌐" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      <HttpRequestSummary data={item.data} />
       {detailsTabToShow ? (
-        <LowLevelOverlay onClose={hideDetailsHandler} modal position="right">
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
           <WindowFrame
             modal
             position="right"
@@ -200,13 +200,11 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
             onClose={hideDetailsHandler}
           >
             <View layout="flex-row">
-              {item.data.response ? (
-                <Text text={item.data.response.status + ""} />
-              ) : (
-                <Loader size="sm" />
-              )}
-              <Text text={item.data.request.method} />
-              <Text text={item.data.request.url} />
+              <HttpRequestSummary data={item.data} />
+            </View>
+            <View layout="flex-row">
+              <Button text="Copy URL" onClick={copyUrl} outline />
+              <Button text="Copy as cURL" onClick={copyAsCurl} outline />
             </View>
             <Tabs
               value={detailsTabToShow}
@@ -286,7 +284,25 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}
-    </View>
+    </>
+  );
+}
+
+function HttpRequestSummary({ data }: { data: HttpLogItemData }) {
+  return (
+    <>
+      {data.response ? (
+        <Text
+          text={data.response?.status + ""}
+          weight="bold"
+          color={statusToColor(data.response?.status)}
+        />
+      ) : (
+        <Loader size="sm" />
+      )}
+      <Text weight="bold" text={data.request.method.toUpperCase()} />
+      <Text text={data.request.url} ellipsis />
+    </>
   );
 }
 
@@ -321,13 +337,14 @@ function requestToCurl(request: HttpLogItemData["request"]): string {
       ...(request.headers.length
         ? request.headers.map(
             ([name, value]) =>
-              `-H '${escapeShellQuote(name)}: ${value.replaceAll(
-                "'",
-                "'\\''"
-              )}'`
+              `-H '${escapeShellQuote(name)}: ${escapeShellQuote(value)}'`
           )
         : []),
-      body ? `-d '${escapeShellQuote(body)}'` : null,
+      body
+        ? `-d '${escapeShellQuote(
+            typeof body === "string" ? body : JSON.stringify(body)
+          )}'`
+        : null,
     ]
       .filter(Boolean)
       .join(" \\\n     ")

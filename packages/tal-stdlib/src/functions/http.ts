@@ -155,7 +155,7 @@ async function http_request_impl(
   }
 }
 
-const HEADER_PREFIX = 'X-Fetch-Header-';
+const HEADER_PREFIX = 'x-fetch-header-';
 
 async function httpRequest({
   method,

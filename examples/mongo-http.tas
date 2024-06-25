@@ -1,0 +1,94 @@
+fun App() {
+  Column {
+    Row {
+      Button {
+        text:    "mongo find ok"
+        onClick: () => {
+          mongodb_find(
+            uri:        "mongodb://172.17.0.2"
+            collection: "toto"
+          )
+        }
+      }
+
+      Button {
+        text:    "mongo delete-one ok"
+        onClick: () => {
+          mongodb_delete_one(
+            uri:        "mongodb://172.17.0.2"
+            collection: "toto"
+            query:      {hello: "World !"}
+          )
+        }
+      }
+
+      Button {
+        text:    "mongo insert-one ok"
+        onClick: () => {
+          mongodb_insert_one(
+            uri:        "mongodb://172.17.0.2"
+            collection: "toto"
+            data:       {hello: "World !"}
+          )
+        }
+      }
+
+      Button {
+        text:    "mongo update-one ok"
+        onClick: () => {
+          mongodb_update_one(
+            uri:        "mongodb://172.17.0.2"
+            collection: "toto"
+            query:      {hello: "World !"}
+            data:       {$set: {hello: "World updated !"}}
+          )
+        }
+      }
+
+      Button {
+        text:    "mongo insert-one ko"
+        onClick: () => {
+          mongodb_insert_one(
+            uri:        "mongodb://0.0.0.0"
+            collection: "toto"
+            data:       {hello: "World !"}
+          )
+        }
+      }
+    }
+
+    Row {
+      Button {
+        text:    "http meteofrance"
+        onClick: () => { http_request(method: "get", url: "https://meteofrance.fr") }
+      }
+
+      Button {
+        text:    "http get 500"
+        onClick: () => { http_request(method: "get", url: "https://httpstat.us/500") }
+      }
+
+      Button {
+        text:    "http get 401"
+        onClick: () => { http_request(method: "get", url: "https://httpstat.us/401") }
+      }
+
+      Button {
+        text:    "http get ko"
+        onClick: () => {
+          http_request(
+            method: "get"
+            url:    "https://www.example278654354.com"
+          )
+        }
+      }
+
+      Button {
+        text:    "http get 200"
+        onClick: () => { http_request(method: "get", url: "https://www.example.com") }
+      }
+    }
+  }
+}
+
+App {}

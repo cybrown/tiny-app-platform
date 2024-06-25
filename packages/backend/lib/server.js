@@ -305,7 +305,9 @@ const routes = [
 
         const res = await client.query(query, params);
 
-        let result = {};
+        let result = {
+          command: res.command
+        };
 
         switch (res.command) {
           case "SELECT":
@@ -322,7 +324,10 @@ const routes = [
             result.rowCount = res.rowCount;
             break;
           default:
-            result = res;
+            result.rowCount = res.rowCount;
+            result.oid = res.oid;
+            result.rows = res.rows;
+            result.fields = res.fields;
         }
 
         return okJson(result);

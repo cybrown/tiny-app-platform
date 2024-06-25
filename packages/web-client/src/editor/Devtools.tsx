@@ -190,6 +190,11 @@ function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
       )}
       <Text text={query.operation.toUpperCase()} weight="bold" />
       <Text text={query.collection} />
+      {query.operation === "find" ||
+      query.operation === "delete-one" ||
+      query.operation === "update-one" ? (
+        <Text text={JSON.stringify(query.query)} ellipsis />
+      ) : null}
       <Text text={JSON.stringify(query.data)} ellipsis />
       {detailsTabToShow ? (
         <LowLevelOverlay

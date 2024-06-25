@@ -16,7 +16,7 @@ import ToolBar from "./Toolbar";
 import { useCallback, useState } from "react";
 import Debug from "../widgets/Debug";
 import { LogItem } from "tal-eval/dist/RuntimeContext";
-import { HttpLogItemData, MongoLogItemData } from "tal-stdlib";
+import { HttpLogItemData, MongoLogItemData, PgLogItemData } from "tal-stdlib";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 
 type DevtoolsProps = {
@@ -161,6 +161,8 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
       return <RenderHttpLogItem item={item as LogItem<HttpLogItemData>} />;
     case "mongo":
       return <RenderMongoLogItem item={item as LogItem<MongoLogItemData>} />;
+    case "pg":
+      return <RenderPgLogItem item={item as LogItem<PgLogItemData>} />;
   }
   return <Debug force value={item} />;
 }
@@ -242,6 +244,59 @@ function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
                 <Debug force value={result} extend={2} />
               </>
             ) : null}
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+    </>
+  );
+}
+
+function RenderPgLogItem({ item }: { item: LogItem<PgLogItemData> }) {
+  const { uri, query, stage, params, result } = item.data;
+
+  const [isDetailsTabVisible, setDetailsTabVisible] = useState<boolean>(false);
+  const showDetailsHandler = useCallback(() => setDetailsTabVisible(true), []);
+  const hideDetailsHandler = useCallback(() => setDetailsTabVisible(false), []);
+
+  return (
+    <>
+      <Text text="🐘" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      {stage === "fulfilled" ? (
+        <Text text="OK" color="green" weight="bold" />
+      ) : stage === "rejected" ? (
+        <Text text="KO" color="red" weight="bold" />
+      ) : (
+        <Loader size="md" />
+      )}
+      <Text text={query} ellipsis />
+      {isDetailsTabVisible ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Query details"
+            onClose={hideDetailsHandler}
+          >
+            <View layout="flex-row">
+              <Text text="URI:" />
+              <Text text={uri} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Query:" />
+              <Text text={query} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Params:" />
+              <Text text={JSON.stringify(params)} />
+            </View>
+            <Text text="Result" size={1.1} />
+            <Debug force value={result} extend={3} />
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}

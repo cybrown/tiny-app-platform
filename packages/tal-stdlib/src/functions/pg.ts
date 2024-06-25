@@ -12,16 +12,38 @@ function getUri(uri: string) {
   return uri;
 }
 
+export type PgLogItemData = {
+  uri: string;
+  query: string;
+  params: unknown;
+  result?: unknown;
+  stage: 'pending' | 'fulfilled' | 'rejected';
+};
+
 async function pg_query_impl(
   _ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const response = await pgQuery({
-    uri: getUri(value.uri),
-    query: value.query,
+  const logItemData: PgLogItemData = {
+    uri: value.uri,
     params: value.params,
-  });
-  return response;
+    query: value.query,
+    stage: 'pending',
+  };
+  const logItem = _ctx.log('pg', logItemData);
+  try {
+    const response = await pgQuery({
+      uri: getUri(value.uri),
+      query: value.query,
+      params: value.params,
+    });
+    logItem.data.result = response;
+    logItem.data.stage = 'fulfilled';
+    return response;
+  } catch (e) {
+    logItem.data.stage = 'rejected';
+    throw e;
+  }
 }
 
 async function pgQuery(params: {

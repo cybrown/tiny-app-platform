@@ -8,27 +8,36 @@ type DebugProps = {
   ctx?: RuntimeContext;
   value: unknown;
   force?: boolean;
+  extend?: number;
 };
 
-export default function Debug({ ctx, value, force }: DebugProps) {
+export default function Debug({ ctx, value, force, extend }: DebugProps) {
   // If ctx is null, the value is a raw value to show to the user
   if (force || !ctx || ctx.getLocalOr(APP_DEBUG_MODE_ENV, false)) {
     return (
       <div className={styles.Debug}>
-        <RenderAny value={value} path="" />
+        <RenderAny value={value} path="" extended={extend} />
       </div>
     );
   }
   return null;
 }
 
-function RenderAny({ value, path }: { value: unknown; path: string }): any {
+function RenderAny({
+  value,
+  path,
+  extended,
+}: {
+  value: unknown;
+  path: string;
+  extended?: number;
+}): any {
   if (value === null) {
     return <span>null</span>;
   } else if (value === undefined) {
     return <span>undefined</span>;
   } else if (Array.isArray(value)) {
-    return <RenderArray value={value} path={path} />;
+    return <RenderArray value={value} path={path} extended={extended} />;
   } else if (typeof value === "object") {
     if ("kind" in value && typeof value.kind === "string") {
       const kind = value.kind;
@@ -36,7 +45,7 @@ function RenderAny({ value, path }: { value: unknown; path: string }): any {
         return <RenderKindedRecord value={value} path={path} kind={kind} />;
       }
     }
-    return <RenderObject value={value} path={path} />;
+    return <RenderObject value={value} path={path} extended={extended} />;
   } else if (["string", "number", "boolean"].includes(typeof value)) {
     const valueAsJson = JSON.stringify(value);
     const hasMore = valueAsJson.length > 250;
@@ -55,16 +64,24 @@ function RenderAny({ value, path }: { value: unknown; path: string }): any {
   }
 }
 
-function useIsOpen() {
-  const [isOpen, setIsOpen] = useState(false);
+function useIsOpen(defaultValue?: boolean) {
+  const [isOpen, setIsOpen] = useState(defaultValue ?? false);
   const toggleIsOpen = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
   return [isOpen, toggleIsOpen] as const;
 }
 
-function RenderArray({ value, path }: { value: unknown[]; path: string }) {
-  const [isOpen, toggleIsOpen] = useIsOpen();
+function RenderArray({
+  value,
+  path,
+  extended,
+}: {
+  value: unknown[];
+  path: string;
+  extended?: number;
+}) {
+  const [isOpen, toggleIsOpen] = useIsOpen(!!extended);
   const [showAll, setShowAll] = useState(false);
   const handleClickMore = useCallback(() => {
     setShowAll(true);
@@ -81,7 +98,11 @@ function RenderArray({ value, path }: { value: unknown[]; path: string }) {
             {(showAll ? value : value.slice(0, 10)).map((sub, i) => (
               <div key={i}>
                 <CopyOnClick value={path + "[" + i + "]"}>{i}</CopyOnClick>:{" "}
-                <RenderAny value={sub} path={path + "[" + i + "]"} />
+                <RenderAny
+                  value={sub}
+                  path={path + "[" + i + "]"}
+                  extended={extended ? extended - 1 : undefined}
+                />
               </div>
             ))}
             {value.length > 10 && !showAll ? (
@@ -140,8 +161,16 @@ function RenderKindedRecord({
   }
 }
 
-function RenderObject({ value, path }: { value: object; path: string }) {
-  const [isOpen, toggleIsOpen] = useIsOpen();
+function RenderObject({
+  value,
+  path,
+  extended,
+}: {
+  value: object;
+  path: string;
+  extended?: number;
+}) {
+  const [isOpen, toggleIsOpen] = useIsOpen(!!extended);
   return (
     <span>
       <span onClick={toggleIsOpen}>
@@ -162,6 +191,7 @@ function RenderObject({ value, path }: { value: object; path: string }) {
               <RenderAny
                 value={sub}
                 path={(path !== "" ? path + "." : "") + key}
+                extended={extended ? extended - 1 : undefined}
               />
             </div>
           ))}
@@ -209,5 +239,6 @@ export const DebugDocumentation: WidgetDocumentation<DebugProps> = {
   props: {
     value: "Value to inspect, when debug env is true",
     force: "Force enable debug mode locally",
+    extend: "Number of levels to extends by default",
   },
 };

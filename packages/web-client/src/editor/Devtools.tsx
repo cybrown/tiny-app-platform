@@ -166,10 +166,21 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
 }
 
 function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
-  const { query, stage } = item.data;
+  const { query, stage, result } = item.data;
+
+  const [detailsTabToShow, setDetailsTabToShow] = useState<
+    null | "query" | "result"
+  >(null);
+  const showDetailsHandler = useCallback(
+    () => setDetailsTabToShow("query"),
+    []
+  );
+  const hideDetailsHandler = useCallback(() => setDetailsTabToShow(null), []);
+
   return (
     <>
       <Text text="🌱" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
       {stage === "fulfilled" ? (
         <Text text="OK" color="green" weight="bold" />
       ) : stage === "rejected" ? (
@@ -180,6 +191,55 @@ function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
       <Text text={query.operation.toUpperCase()} weight="bold" />
       <Text text={query.collection} />
       <Text text={JSON.stringify(query.data)} ellipsis />
+      {detailsTabToShow ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Query details"
+            onClose={hideDetailsHandler}
+          >
+            <View layout="flex-row">
+              <Text text="URL:" />
+              <Text text={query.uri} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Operation:" />
+              <Text text={query.operation} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Collection:" />
+              <Text text={query.collection} />
+            </View>
+            <Tabs
+              value={detailsTabToShow}
+              onChange={(newValue) => setDetailsTabToShow(newValue as any)}
+              tabs={[
+                { label: "Query", value: "query" },
+                { label: "Result", value: "result" },
+              ]}
+            />
+            {detailsTabToShow === "query" ? (
+              <>
+                <Text text="Query" size={1.1} />
+                <Debug force value={query.query} extend={2} />
+                <Text text="Data" size={1.1} />
+                <Debug force value={query.data} extend={2} />
+              </>
+            ) : detailsTabToShow === "result" ? (
+              <>
+                <Text text="Result" size={1.1} />
+                <Debug force value={result} extend={2} />
+              </>
+            ) : null}
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
     </>
   );
 }

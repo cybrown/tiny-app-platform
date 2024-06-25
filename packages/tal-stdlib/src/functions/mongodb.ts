@@ -59,16 +59,17 @@ function getCollection(collection: string) {
 }
 
 async function mongodb_delete_one_impl(
-  _ctx: RuntimeContext,
+  ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const response = await mongodbDeleteOne({
-    uri: getUri(value.uri),
-    collection: getCollection(value.collection),
-    query: value.query,
-    options: value.options,
-  });
-  return response;
+  return withLog(ctx, 'delete-one', value, () =>
+    mongodbDeleteOne({
+      uri: getUri(value.uri),
+      collection: getCollection(value.collection),
+      query: value.query,
+      options: value.options,
+    })
+  );
 }
 
 async function mongodbDeleteOne(params: {
@@ -86,16 +87,17 @@ async function mongodbDeleteOne(params: {
 }
 
 async function mongodb_find_impl(
-  _ctx: RuntimeContext,
+  ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const response = await mongodbQuery({
-    uri: getUri(value.uri),
-    collection: getCollection(value.collection),
-    query: value.query,
-    options: value.options,
-  });
-  return response;
+  return withLog(ctx, 'find', value, () =>
+    mongodbQuery({
+      uri: getUri(value.uri),
+      collection: getCollection(value.collection),
+      query: value.query,
+      options: value.options,
+    })
+  );
 }
 
 async function mongodbQuery(params: {
@@ -112,45 +114,18 @@ async function mongodbQuery(params: {
   return response.json();
 }
 
-export type MongoLogItemData = {
-  query: {
-    operation: string;
-    uri: string;
-    collection: string;
-    data: unknown;
-  };
-  stage: 'pending' | 'fulfilled' | 'rejected';
-  result?: unknown;
-};
-
 async function mongodb_insert_one_impl(
   ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const logItemData: MongoLogItemData = {
-    query: {
-      operation: 'insert-one',
-      uri: value.uri,
-      collection: value.collection,
-      data: value.data,
-    },
-    stage: 'pending'
-  };
-  const logItem = ctx.log('mongo', logItemData);
-  try {
-    const response = await mongodbInsertOne({
+  return withLog(ctx, 'insert-one', value, () =>
+    mongodbInsertOne({
       uri: getUri(value.uri),
       collection: getCollection(value.collection),
       data: value.data,
       options: value.options,
-    });
-    logItem.data.result = response;
-    logItem.data.stage = 'fulfilled';
-    return response;
-  } catch (err) {
-    logItem.data.stage = 'rejected';
-    throw err;
-  }
+    })
+  );
 }
 
 async function mongodbInsertOne(params: {
@@ -168,17 +143,18 @@ async function mongodbInsertOne(params: {
 }
 
 async function mongodb_update_one_impl(
-  _ctx: RuntimeContext,
+  ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const response = await mongodbUpdateOne({
-    uri: getUri(value.uri),
-    collection: getCollection(value.collection),
-    query: value.query,
-    data: value.data,
-    options: value.options,
-  });
-  return response;
+  return withLog(ctx, 'update-one', value, () =>
+    mongodbUpdateOne({
+      uri: getUri(value.uri),
+      collection: getCollection(value.collection),
+      query: value.query,
+      data: value.data,
+      options: value.options,
+    })
+  );
 }
 
 async function mongodbUpdateOne(params: {
@@ -194,4 +170,41 @@ async function mongodbUpdateOne(params: {
     throw new Error(errorJson.message);
   }
   return response.json();
+}
+
+export type MongoLogItemData = {
+  query: {
+    operation: string;
+    uri: string;
+    collection: string;
+    query: unknown;
+    data: unknown;
+  };
+  stage: 'pending' | 'fulfilled' | 'rejected';
+  result?: unknown;
+};
+
+async function withLog(
+  ctx: RuntimeContext,
+  operation: string,
+  query: any,
+  fn: () => Promise<any>
+) {
+  const logItemData: MongoLogItemData = {
+    query: {
+      ...query,
+      operation,
+    },
+    stage: 'pending',
+  };
+  const logItem = ctx.log('mongo', logItemData);
+  try {
+    const response = await fn();
+    logItem.data.result = response;
+    logItem.data.stage = 'fulfilled';
+    return response;
+  } catch (err) {
+    logItem.data.stage = 'rejected';
+    throw err;
+  }
 }

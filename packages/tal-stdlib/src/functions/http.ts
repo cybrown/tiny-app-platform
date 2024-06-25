@@ -105,8 +105,10 @@ export type HttpLogItemData = {
     headers: Record<string, string>;
     body: any;
   } | null;
-  stage: 'pending' | 'fulfilled';
+  stage: 'pending' | 'fulfilled' | 'rejected';
 };
+
+class HttpErrorStatus extends Error {}
 
 async function http_request_impl(
   ctx: RuntimeContext,
@@ -123,21 +125,37 @@ async function http_request_impl(
     stage: 'pending',
     response: null,
   } as HttpLogItemData);
-  const response = await httpRequest(requestConfiguration);
-  logItem.data.stage = 'fulfilled';
-  logItem.data.response = {
-    status: response.status,
-    headers: response.headers,
-    body: response.body,
-  };
-  if (
-    !value.allowErrorStatusCode &&
-    (response.status < 200 || response.status >= 400)
-  ) {
-    throw new Error('HTTP Request failed with status: ' + response.status);
+  try {
+    const response = await httpRequest(requestConfiguration);
+    logItem.data.stage = 'fulfilled';
+    logItem.data.response = {
+      status: response.status,
+      headers: response.headers,
+      body: response.body,
+    };
+    if (response.status === 0) {
+      throw new Error(
+        'HTTP Request failed: Internal error, check backend logs'
+      );
+    }
+    if (
+      !value.allowErrorStatusCode &&
+      (response.status < 200 || response.status >= 400)
+    ) {
+      throw new HttpErrorStatus(
+        'HTTP Request failed with status: ' + response.status
+      );
+    }
+    return response;
+  } catch (e) {
+    if (!(e instanceof HttpErrorStatus)) {
+      logItem.data.stage = 'rejected';
+    }
+    throw e;
   }
-  return response;
 }
+
+const HEADER_PREFIX = 'X-Fetch-Header-';
 
 async function httpRequest({
   method,
@@ -163,12 +181,16 @@ async function httpRequest({
       ] as [string, string][])
   );
   return {
-    status: response.status,
+    status: Number(response.headers.get('x-fetch-status-code') ?? 0),
     // TODO: Allow one header to have multiple values
     headers: Object.fromEntries(
       (() => {
         const headers: [string, string][] = [];
-        response.headers.forEach((value, key) => headers.push([key, value]));
+        response.headers.forEach((value, key) => {
+          if (key.startsWith(HEADER_PREFIX)) {
+            headers.push([key.slice(HEADER_PREFIX.length), value]);
+          }
+        });
         return headers;
       })()
     ),

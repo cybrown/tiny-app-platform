@@ -35,12 +35,14 @@ function httpRequest(method, urlStr, headers, body) {
       (response) => {
         readBody(response)
           .then((body) => {
-            if ("set-cookie" in response.headers) {
-              response.headers["x-set-cookie"] = response.headers["set-cookie"];
-            }
-            return resolve(
-              createResponse(response.statusCode, response.headers, body)
+            const responseHeaders = Object.fromEntries(
+              Object.entries(response.headers).map(([key, value]) => [
+                "x-fetch-header-" + key,
+                value,
+              ])
             );
+            responseHeaders["x-fetch-status-code"] = response.statusCode;
+            return resolve(createResponse(200, responseHeaders, body));
           })
           .catch(reject);
       }

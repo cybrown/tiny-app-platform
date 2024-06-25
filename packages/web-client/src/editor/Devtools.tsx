@@ -16,7 +16,7 @@ import ToolBar from "./Toolbar";
 import { useCallback, useState } from "react";
 import Debug from "../widgets/Debug";
 import { LogItem } from "tal-eval/dist/RuntimeContext";
-import { HttpLogItemData } from "tal-stdlib";
+import { HttpLogItemData, MongoLogItemData } from "tal-stdlib";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 
 type DevtoolsProps = {
@@ -156,10 +156,32 @@ function ConsoleTab({ ctx }: ConsoleTabProps) {
 }
 
 function RenderLogItem({ item }: { item: LogItem<unknown> }) {
-  if (item.type === "http-request") {
-    return <RenderHttpLogItem item={item as LogItem<HttpLogItemData>} />;
+  switch (item.type) {
+    case "http-request":
+      return <RenderHttpLogItem item={item as LogItem<HttpLogItemData>} />;
+    case "mongo":
+      return <RenderMongoLogItem item={item as LogItem<MongoLogItemData>} />;
   }
   return <Debug force value={item} />;
+}
+
+function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
+  const { query, stage } = item.data;
+  return (
+    <>
+      <Text text="🌱" />
+      {stage === "fulfilled" ? (
+        <Text text="OK" color="green" weight="bold" />
+      ) : stage === "rejected" ? (
+        <Text text="KO" color="red" weight="bold" />
+      ) : (
+        <Loader size="md" />
+      )}
+      <Text text={query.operation.toUpperCase()} weight="bold" />
+      <Text text={query.collection} />
+      <Text text={JSON.stringify(query.data)} ellipsis />
+    </>
+  );
 }
 
 function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
@@ -291,14 +313,16 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
 function HttpRequestSummary({ data }: { data: HttpLogItemData }) {
   return (
     <>
-      {data.response ? (
+      {data.response && data.stage === "fulfilled" ? (
         <Text
           text={data.response?.status + ""}
           weight="bold"
           color={statusToColor(data.response?.status)}
         />
+      ) : data.stage === "rejected" ? (
+        <Text text="KO" weight="bold" color="red" />
       ) : (
-        <Loader size="sm" />
+        <Loader size="md" />
       )}
       <Text weight="bold" text={data.request.method.toUpperCase()} />
       <Text text={data.request.url} ellipsis />
@@ -334,7 +358,7 @@ function requestToCurl(request: HttpLogItemData["request"]): string {
       ]
         .filter(Boolean)
         .join(" "),
-      ...(request.headers.length
+      ...(request.headers && request.headers.length
         ? request.headers.map(
             ([name, value]) =>
               `-H '${escapeShellQuote(name)}: ${escapeShellQuote(value)}'`

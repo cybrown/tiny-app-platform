@@ -112,17 +112,45 @@ async function mongodbQuery(params: {
   return response.json();
 }
 
+export type MongoLogItemData = {
+  query: {
+    operation: string;
+    uri: string;
+    collection: string;
+    data: unknown;
+  };
+  stage: 'pending' | 'fulfilled' | 'rejected';
+  result?: unknown;
+};
+
 async function mongodb_insert_one_impl(
-  _ctx: RuntimeContext,
+  ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  const response = await mongodbInsertOne({
-    uri: getUri(value.uri),
-    collection: getCollection(value.collection),
-    data: value.data,
-    options: value.options,
-  });
-  return response;
+  const logItemData: MongoLogItemData = {
+    query: {
+      operation: 'insert-one',
+      uri: value.uri,
+      collection: value.collection,
+      data: value.data,
+    },
+    stage: 'pending'
+  };
+  const logItem = ctx.log('mongo', logItemData);
+  try {
+    const response = await mongodbInsertOne({
+      uri: getUri(value.uri),
+      collection: getCollection(value.collection),
+      data: value.data,
+      options: value.options,
+    });
+    logItem.data.result = response;
+    logItem.data.stage = 'fulfilled';
+    return response;
+  } catch (err) {
+    logItem.data.stage = 'rejected';
+    throw err;
+  }
 }
 
 async function mongodbInsertOne(params: {

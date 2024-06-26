@@ -8,6 +8,7 @@ import {
   InputLabelProps,
   InputLabelPropsDocs,
 } from "./internal/inputLabelProps";
+import commonStyles from "./common.module.css";
 
 type CheckBoxProps = {
   ctx: RuntimeContext;
@@ -40,7 +41,7 @@ export default function CheckBox({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedCheckBox
         onChange={handleChange}
         value={value}

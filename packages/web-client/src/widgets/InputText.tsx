@@ -3,6 +3,7 @@ import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { InputText as ThemedInputText } from "../theme";
+import commonStyles from "./common.module.css";
 
 type InputTextProps = {
   ctx: RuntimeContext;
@@ -55,7 +56,7 @@ export default function InputText({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedInputText
         multiline={multiline}
         placeholder={placeholder}

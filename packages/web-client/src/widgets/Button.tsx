@@ -3,6 +3,7 @@ import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
 import ErrorPopover from "./internal/ErrorPopover";
 import { Link, Button as ThemedButton } from "../theme";
+import commonStyles from "./common.module.css";
 
 type ButtonProps = {
   ctx: RuntimeContext;
@@ -60,7 +61,7 @@ export default function Button({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ConfirmPopup
         show={showConfirmPopup}
         setShow={setShowConfirmPopup}

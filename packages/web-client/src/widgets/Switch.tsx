@@ -7,6 +7,7 @@ import {
   InputLabelProps,
   InputLabelPropsDocs,
 } from "./internal/inputLabelProps";
+import commonStyles from "./common.module.css";
 
 type SwitchProps = {
   ctx: RuntimeContext;
@@ -40,7 +41,7 @@ export default function Switch({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedSwitch
         disabled={disabled}
         onChange={handleChange}

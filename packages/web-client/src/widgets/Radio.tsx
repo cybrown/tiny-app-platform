@@ -8,6 +8,7 @@ import {
   InputLabelProps,
   InputLabelPropsDocs,
 } from "./internal/inputLabelProps";
+import commonStyles from "./common.module.css";
 
 type RadioProps = {
   ctx: RuntimeContext;
@@ -42,7 +43,7 @@ export default function Radio({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedRadio
         option={typeof option === "string" ? option : option.value}
         onChange={handleChange}

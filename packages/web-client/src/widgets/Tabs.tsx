@@ -3,6 +3,7 @@ import { Tabs as ThemedTabs } from "../theme";
 import { useCallback, useRef, useState } from "react";
 import ErrorPopover from "./internal/ErrorPopover";
 import RenderExpression from "../runtime/RenderExpression";
+import commonStyles from "./common.module.css";
 
 type TabOptions = {
   value: string;
@@ -40,7 +41,7 @@ export default function Tabs({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedTabs
         value={value}
         onChange={handleOnChange}

@@ -4,6 +4,7 @@ import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { Select as ThemedSelect } from "../theme";
+import commonStyles from "./common.module.css";
 
 type SelectProps = {
   ctx: RuntimeContext;
@@ -46,7 +47,7 @@ export default function Select({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedSelect
         options={options.map((option) =>
           typeof option === "string" ? { label: option, value: option } : option

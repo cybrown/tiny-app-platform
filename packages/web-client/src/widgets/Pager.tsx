@@ -4,6 +4,7 @@ import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import ErrorPopover from "./internal/ErrorPopover";
 import { Closure } from "tal-eval";
 import { PagerOnChangeAction, Pager as ThemedPager } from "../theme";
+import commonStyles from "./common.module.css";
 
 type PagerProps = {
   ctx: RuntimeContext;
@@ -75,7 +76,7 @@ export default function Pager({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedPager
         firstState={currentPage === 1 ? "DISABLED" : "ENABLED"}
         previousState={

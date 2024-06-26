@@ -4,6 +4,7 @@ import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { InputFile as ThemedInputFile } from "../theme";
+import commonStyles from "./common.module.css";
 
 type InputFileProps = {
   ctx: RuntimeContext;
@@ -37,7 +38,7 @@ export default function InputFile({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={popoverTargetRef}>
+    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ThemedInputFile
         disabled={disabled}
         placeholder={placeholder}

@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopin from "./internal/ErrorPopin";
+import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { CheckBox as ThemedCheckBox } from "../theme";
@@ -37,9 +37,10 @@ export default function CheckBox({
     },
     [ctx, onChange]
   );
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <>
+    <div ref={popoverTargetRef}>
       <ThemedCheckBox
         onChange={handleChange}
         value={value}
@@ -47,8 +48,12 @@ export default function CheckBox({
         secondary={secondary}
         label={label}
       />
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
-    </>
+      <ErrorPopover
+        target={popoverTargetRef.current}
+        lastError={lastError}
+        setLastError={setLastError}
+      />
+    </div>
   );
 }
 

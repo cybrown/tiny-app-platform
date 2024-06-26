@@ -1,7 +1,7 @@
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { Tabs as ThemedTabs } from "../theme";
-import { useCallback, useState } from "react";
-import ErrorPopin from "./internal/ErrorPopin";
+import { useCallback, useRef, useState } from "react";
+import ErrorPopover from "./internal/ErrorPopover";
 import RenderExpression from "../runtime/RenderExpression";
 
 type TabOptions = {
@@ -37,8 +37,10 @@ export default function Tabs({
     [ctx, onChange]
   );
 
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <>
+    <div ref={popoverTargetRef}>
       <ThemedTabs
         value={value}
         onChange={handleOnChange}
@@ -48,8 +50,12 @@ export default function Tabs({
         }))}
         after={<RenderExpression ctx={ctx} ui={after} />}
       />
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
-    </>
+      <ErrorPopover
+        target={popoverTargetRef.current}
+        lastError={lastError}
+        setLastError={setLastError}
+      />
+    </div>
   );
 }
 

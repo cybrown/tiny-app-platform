@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation, Closure } from "tal-eval";
-import ErrorPopin from "./internal/ErrorPopin";
+import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Switch as ThemedSwitch } from "../theme";
 import {
@@ -37,8 +37,10 @@ export default function Switch({
     [ctx, onChange]
   );
 
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <>
+    <div ref={popoverTargetRef}>
       <ThemedSwitch
         disabled={disabled}
         onChange={handleChange}
@@ -46,8 +48,12 @@ export default function Switch({
         secondary={secondary}
         label={label}
       />
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
-    </>
+      <ErrorPopover
+        target={popoverTargetRef.current}
+        lastError={lastError}
+        setLastError={setLastError}
+      />
+    </div>
   );
 }
 

@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopin from "./internal/ErrorPopin";
+import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { Select as ThemedSelect } from "../theme";
@@ -43,8 +43,10 @@ export default function Select({
     [ctx, options, showEmpty, onChange]
   );
 
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <>
+    <div ref={popoverTargetRef}>
       <ThemedSelect
         options={options.map((option) =>
           typeof option === "string" ? { label: option, value: option } : option
@@ -55,8 +57,12 @@ export default function Select({
         showEmpty={showEmpty}
         value={value ?? ""}
       />
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
-    </>
+      <ErrorPopover
+        target={popoverTargetRef.current}
+        lastError={lastError}
+        setLastError={setLastError}
+      />
+    </div>
   );
 }
 

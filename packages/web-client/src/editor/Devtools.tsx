@@ -163,8 +163,20 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
       return <RenderMongoLogItem item={item as LogItem<MongoLogItemData>} />;
     case "pg":
       return <RenderPgLogItem item={item as LogItem<PgLogItemData>} />;
+    case "error":
+      return <RenderErrorLogItem item={item} />;
   }
   return <Debug force value={item} />;
+}
+
+function RenderErrorLogItem({ item }: { item: LogItem<unknown> }) {
+  return (
+    <>
+      <Text text="🪲" />
+      <Text text={(item as any).message} />
+      <Debug force value={item.data} />
+    </>
+  );
 }
 
 function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {

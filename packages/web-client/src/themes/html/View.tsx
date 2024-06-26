@@ -24,7 +24,7 @@ export default function View({ children, ...d }: ViewProps) {
     <div
       className={`${isRow ? styles.directionRow : styles.directionColumn} ${
         d.wrap ? styles.wrap : ""
-      } ${d.scroll ? styles.scroll : ""}`}
+      } ${d.scroll ? styles.scroll : ""} ${d.className ?? ""}`}
       style={computeViewStyles(d, baseSize)}
     >
       {children}

@@ -1,6 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopin from "./internal/ErrorPopin";
+import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import { Closure } from "tal-eval";
 import { Radio as ThemedRadio } from "../theme";
@@ -39,8 +39,10 @@ export default function Radio({
     }
   }, [ctx, onChange, option]);
 
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <>
+    <div ref={popoverTargetRef}>
       <ThemedRadio
         option={typeof option === "string" ? option : option.value}
         onChange={handleChange}
@@ -49,8 +51,12 @@ export default function Radio({
         secondary={secondary}
         label={label}
       />
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
-    </>
+      <ErrorPopover
+        target={popoverTargetRef.current}
+        lastError={lastError}
+        setLastError={setLastError}
+      />
+    </div>
   );
 }
 

@@ -1,0 +1,98 @@
+fun App() {
+  var maxRange1 = 10
+  var maxRange2 = 10
+  var inputValue
+
+  Column {
+    Row {
+      Button {
+        text:    "-"
+        onClick: () => set maxRange1 = maxRange1 - 1
+      }
+
+      Button {
+        text:    "+"
+        onClick: () => set maxRange1 = maxRange1 + 1
+      }
+    }
+
+    Row {
+      Button {
+        text:    "-"
+        onClick: () => set maxRange2 = maxRange2 - 1
+      }
+
+      Button {
+        text:    "+"
+        onClick: () => set maxRange2 = maxRange2 + 1
+      }
+    }
+
+    Column {
+      array_range(1, maxRange1) | array_map(value => Text { text: value })
+    }
+
+    Row {
+      InputText {
+        bindTo:   inputValue
+        onSubmit: () => {
+          log("err")
+          unknown_function()
+        }
+      }
+    }
+
+    Row {
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      CheckBox {
+        label:    "test"
+        onChange: () => unknown_function()
+      }
+      Switch {
+        label:    "test"
+        onChange: () => unknown_function()
+      }
+      Radio {
+        label:    "test"
+        onChange: () => unknown_function()
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+      Button {
+        text:    "trigger error"
+        onClick: () => { unknown_function() }
+      }
+    }
+
+    Column {
+      array_range(1, maxRange2) | array_map(value => Text { text: value })
+    }
+  }
+}
+
+App {}

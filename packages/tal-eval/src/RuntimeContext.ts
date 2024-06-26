@@ -258,7 +258,12 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return run(func.ctx, func.name, kwargs, args);
+    try {
+      return run(func.ctx, func.name, kwargs, args);
+    } catch (e) {
+      this.log('error', e);
+      throw e;
+    }
   }
 
   async callFunctionAsync(
@@ -267,7 +272,12 @@ export class RuntimeContext {
     kwargs: { [name: string]: unknown } = {}
   ) {
     if (!this.program) throw new Error('missing program');
-    return runAsync(func.ctx, func.name, kwargs, args);
+    try {
+      return await runAsync(func.ctx, func.name, kwargs, args);
+    } catch (e) {
+      this.log('error', e);
+      throw e;
+    }
   }
 
   createChild(

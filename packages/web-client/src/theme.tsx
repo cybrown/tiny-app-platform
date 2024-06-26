@@ -183,6 +183,7 @@ export type LoaderProps = {
 };
 
 export type ViewProps = {
+  className?: string;
   layout?: "flex-row" | "flex-column";
   gap?: number;
   width?: string | number;

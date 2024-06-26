@@ -1,7 +1,7 @@
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import ErrorPopin from "./internal/ErrorPopin";
+import ErrorPopover from "./internal/ErrorPopover";
 import { Closure } from "tal-eval";
 import { PagerOnChangeAction, Pager as ThemedPager } from "../theme";
 
@@ -72,8 +72,10 @@ export default function Pager({
     [currentPage, maxPage, updateValue]
   );
 
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <div>
+    <div ref={popoverTargetRef}>
       <ThemedPager
         firstState={currentPage === 1 ? "DISABLED" : "ENABLED"}
         previousState={
@@ -94,7 +96,11 @@ export default function Pager({
         lastIndex={maxPage}
         size={difference}
       />
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
+      <ErrorPopover
+        target={popoverTargetRef.current}
+        lastError={lastError}
+        setLastError={setLastError}
+      />
     </div>
   );
 }

@@ -1,0 +1,11 @@
+.ErrorPopover {
+  background-color: rgb(203, 37, 73);
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(167, 31, 60);
+  color: white;
+  padding: 4px 6px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+}

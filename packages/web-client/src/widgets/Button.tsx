@@ -1,7 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ConfirmPopup from "./internal/ConfirmPopup";
-import ErrorPopin from "./internal/ErrorPopin";
+import ErrorPopover from "./internal/ErrorPopover";
 import { Link, Button as ThemedButton } from "../theme";
 
 type ButtonProps = {
@@ -57,8 +57,10 @@ export default function Button({
 
   const [lastError, setLastError] = useState(null as any);
 
+  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <>
+    <div ref={popoverTargetRef}>
       <ConfirmPopup
         show={showConfirmPopup}
         setShow={setShowConfirmPopup}
@@ -83,9 +85,12 @@ export default function Button({
           link={link}
         />
       )}
-      {/* TODO: Try react overlay here and other error popins */}
-      <ErrorPopin lastError={lastError} setLastError={setLastError} />
-    </>
+      <ErrorPopover
+        lastError={lastError}
+        setLastError={setLastError}
+        target={popoverTargetRef.current}
+      />
+    </div>
   );
 }
 

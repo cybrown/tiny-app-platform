@@ -88,6 +88,58 @@ fun App() {
         onClick: () => { http_request(method: "get", url: "https://www.example.com") }
       }
     }
+
+    Row {
+      Button {
+        text:    "pg create table"
+        onClick: () => {
+          pg_query(
+            uri: "postgresql://postgres:pass@172.17.0.3/toto"
+            "create table data (id serial, name varchar)"
+          )
+        }
+      }
+
+      Button {
+        text:    "pg drop table"
+        onClick: () => {
+          pg_query(
+            uri: "postgresql://postgres:pass@172.17.0.3/toto"
+            "drop table data"
+          )
+        }
+      }
+
+      Button {
+        text:    "pg insert"
+        onClick: () => {
+          pg_query(
+            uri: "postgresql://postgres:pass@172.17.0.3/toto"
+            "insert into data (name) values ('toto')"
+          )
+        }
+      }
+
+      Button {
+        text:    "pg select"
+        onClick: () => {
+          pg_query(
+            uri: "postgresql://postgres:pass@172.17.0.3/toto"
+            "select * from data"
+          )
+        }
+      }
+
+      Button {
+        text:    "pg delete"
+        onClick: () => {
+          pg_query(
+            uri: "postgresql://postgres:pass@172.17.0.3/toto"
+            "delete from data where id in (select id from data limit 1)"
+          )
+        }
+      }
+    }
   }
 }
 

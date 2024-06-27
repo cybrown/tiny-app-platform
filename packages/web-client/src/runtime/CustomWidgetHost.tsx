@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Closure, RuntimeContext, runForAllStack } from "tal-eval";
 import RenderError from "./RenderError";
 import RenderExpression from "./RenderExpression";
@@ -20,6 +20,13 @@ export default function CustomWidgetHost({
     oldProps: props,
     oldChildren: children,
   });
+
+  useEffect(
+    () => () => {
+      state.current.childCtx.triggerDestructors();
+    },
+    []
+  );
 
   if (widget.name !== state.current.name) {
     state.current.childCtx.triggerDestructors();
@@ -57,6 +64,7 @@ export default function CustomWidgetHost({
 
   const { childCtx } = state.current;
 
+  // TODO: Show expected render but have an error popover arround the widget
   if (childCtx.onCreateError) {
     return (
       <RenderError

@@ -5,15 +5,20 @@ export const on_create = defineFunction(
   'on_create',
   [{ name: 'handler' }],
   (ctx, { handler }) => {
-    const ctxForWidget = ctx.ctxForWidgetState;
-    if (!ctxForWidget) {
-      throw new Error('on_create is only usable inside Widgets');
-    }
-    if (!ctxForWidget.isCreated) {
-      ctx.callFunctionAsync(handler, []).catch(err => {
-        ctxForWidget.onCreateError = err;
-        ctx.forceRefresh();
-      });
+    try {
+      const ctxForWidget = ctx.ctxForWidgetState;
+      if (!ctxForWidget) {
+        throw new Error('on_create is only usable inside Widgets');
+      }
+      if (!ctxForWidget.isCreated) {
+        ctx.callFunctionAsync(handler, []).catch(err => {
+          ctxForWidget.onCreateError = err;
+          ctx.forceRefresh();
+        });
+      }
+    } catch (err) {
+      // TODO: Show errors in UI
+      ctx.log('error', err);
     }
   }
 );
@@ -49,7 +54,13 @@ export const watch = defineFunction(
       currentCtxMap = new Map();
       watches.set(ctxForWidget, currentCtxMap);
     }
-    currentCtxMap.set(expr, ctx.callFunction(expr, []));
+    try {
+      currentCtxMap.set(expr, ctx.callFunction(expr, []));
+    } catch (err) {
+      // TODO: Show errors in UI
+      ctx.log('error', err);
+      return;
+    }
 
     function run(
       currentCtxMap: Map<Expression, unknown>,
@@ -57,18 +68,25 @@ export const watch = defineFunction(
       newValue: unknown
     ) {
       currentCtxMap.set(expr, newValue);
-      ctx.callFunctionAsync(action, [
-        oldValue,
-        newValue,
-        oldValue === undefined,
-      ]);
-      // TODO: Show errors in UI
+      ctx
+        .callFunctionAsync(action, [oldValue, newValue, oldValue === undefined])
+        .catch(err => {
+          // TODO: Show errors in UI
+          ctx.log('error', err);
+        });
     }
 
     ctxForWidget.registerStateChangedListener(() => {
       if (!currentCtxMap) return;
       const oldValue = currentCtxMap.get(expr);
-      const newValue = ctx.callFunction(expr, []);
+      let newValue;
+      try {
+        newValue = ctx.callFunction(expr, []);
+      } catch (err) {
+        // TODO: Show errors in UI
+        ctx.log('error', err);
+        return;
+      }
       if (!currentCtxMap.has(expr)) {
         run(currentCtxMap, oldValue, newValue);
       } else if (

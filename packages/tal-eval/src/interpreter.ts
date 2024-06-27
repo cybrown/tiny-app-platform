@@ -7,11 +7,11 @@ import { lower } from './lowerer';
 
 export class EvaluationError extends Error {
   constructor(
-    message: string,
+    public readonly detailedMessage: string,
     public readonly node: Opcode,
     public readonly cause: unknown
   ) {
-    super(message);
+    super('Evaluation error');
   }
 }
 
@@ -265,11 +265,7 @@ export class VM {
             err instanceof EvaluationError
               ? err
               : new EvaluationError(
-                  'Uncaught exception: <' +
-                    (typeof err == 'object' && err
-                      ? (err as any).message
-                      : '') +
-                    '>',
+                  typeof err == 'object' && err ? (err as any).message : '',
                   this.currentOpcode(),
                   err
                 ),

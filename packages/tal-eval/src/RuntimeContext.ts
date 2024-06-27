@@ -135,7 +135,10 @@ export class RuntimeContext {
       return;
     }
     this.destructors.forEach(destructor => {
-      this.callFunctionAsync(destructor, []);
+      this.callFunctionAsync(destructor, []).catch(err => {
+        // TODO: Show notification
+        this.log('error', err);
+      });
     });
   }
 
@@ -165,10 +168,18 @@ export class RuntimeContext {
   }
 
   registerStateChangedListener(stateChangedListener: () => void) {
+    if (this.parent) {
+      this.parent.registerStateChangedListener(stateChangedListener);
+      return;
+    }
     this.stateChangedListeners.add(stateChangedListener);
   }
 
   unregisterStateChangedListener(stateChangedListener: () => void) {
+    if (this.parent) {
+      this.parent.unregisterStateChangedListener(stateChangedListener);
+      return;
+    }
     this.stateChangedListeners.delete(stateChangedListener);
   }
 

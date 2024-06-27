@@ -1,4 +1,4 @@
-import { RuntimeContext } from "tal-eval";
+import { EvaluationError, RuntimeContext } from "tal-eval";
 import { APP_DEBUG_MODE_ENV } from "../constants";
 import {
   Button,
@@ -173,7 +173,13 @@ function RenderErrorLogItem({ item }: { item: LogItem<unknown> }) {
   return (
     <>
       <Text text="🪲" />
-      <Text text={(item as any).message} />
+      <Text
+        text={
+          item.data instanceof EvaluationError
+            ? item.data.detailedMessage
+            : (item as any).message ?? "<No error message>"
+        }
+      />
       <Debug force value={item.data} />
     </>
   );

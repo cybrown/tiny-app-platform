@@ -42,6 +42,10 @@ function httpRequest(method, urlStr, headers, body) {
               ])
             );
             responseHeaders["x-fetch-status-code"] = response.statusCode;
+            if (response.headers["content-encoding"]) {
+              responseHeaders["content-encoding"] =
+                response.headers["content-encoding"];
+            }
             return resolve(createResponse(200, responseHeaders, body));
           })
           .catch(reject);
@@ -306,7 +310,7 @@ const routes = [
         const res = await client.query(query, params);
 
         let result = {
-          command: res.command
+          command: res.command,
         };
 
         switch (res.command) {

@@ -25,7 +25,7 @@ function AppRenderer({
         // TODO: Do not assign _notificationController to ctx here
         ctx._notificationController = {
           notify: (message: string) =>
-            notificationController.notify(<Text text={message} />),
+            notificationController.notify(<Text text={message} wrap />),
         };
         // TODO: Do not assign program to ctx here
         ctx.program = app;

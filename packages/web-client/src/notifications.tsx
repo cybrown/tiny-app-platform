@@ -112,6 +112,7 @@ export function NotificationDisplay() {
           align="center"
           color="rgb(167, 31, 60)"
           weight="bold"
+          wrap
         />
       ) : notificationState.list.length === MAX_DISPLAYED_NOTIFICATIONS + 1 ? (
         <Text
@@ -119,6 +120,7 @@ export function NotificationDisplay() {
           align="center"
           color="rgb(167, 31, 60)"
           weight="bold"
+          wrap
         />
       ) : null}
       {notificationState.list.slice(-MAX_DISPLAYED_NOTIFICATIONS).map((id) => (

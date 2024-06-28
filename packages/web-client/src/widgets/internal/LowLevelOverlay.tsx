@@ -40,7 +40,7 @@ export default function LowLevelOverlay({
     element.addEventListener("click", () => {
       onCloseRef.current && onCloseRef.current();
     });
-    document.body.appendChild(element);
+    document.getElementById("tap-overlays")!.appendChild(element);
     return element;
   }, []);
 
@@ -53,7 +53,7 @@ export default function LowLevelOverlay({
     if (size) {
       element.classList.add(styles[size] ?? "");
     }
-    document.body.appendChild(element);
+    document.getElementById("tap-overlays")!.appendChild(element);
     return element;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -67,8 +67,9 @@ export default function LowLevelOverlay({
       backdropElement?.classList.remove(styles.openVisible);
       overlayElement.classList.remove(styles.openVisible);
       setTimeout(() => {
-        backdropElement && document.body.removeChild(backdropElement);
-        document.body.removeChild(overlayElement);
+        backdropElement &&
+          document.getElementById("tap-overlays")!.removeChild(backdropElement);
+        document.getElementById("tap-overlays")!.removeChild(overlayElement);
       }, 150);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

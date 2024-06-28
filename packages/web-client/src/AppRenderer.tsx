@@ -3,6 +3,8 @@ import RenderExpression from "./runtime/RenderExpression";
 import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
 import RenderError from "./runtime/RenderError";
+import { useNotificationController } from "./notifications";
+import { Text } from "./theme";
 
 function AppRenderer({
   app,
@@ -14,11 +16,17 @@ function AppRenderer({
   const [appUi, setAppUi] = useState(null as unknown);
   const [lastError, setLastError] = useState<unknown>(null);
   const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
+  const notificationController = useNotificationController();
 
   useEffect(() => {
     async function run() {
       try {
         if (!app) return;
+        // TODO: Do not assign _notificationController to ctx here
+        ctx._notificationController = {
+          notify: (message: string) =>
+            notificationController.notify(<Text text={message} />),
+        };
         // TODO: Do not assign program to ctx here
         ctx.program = app;
         ctx.beginReinit();
@@ -37,7 +45,7 @@ function AppRenderer({
       }
     }
     run();
-  }, [app, ctx]);
+  }, [app, ctx, notificationController]);
   return lastError ? (
     <RenderError
       expression={null}

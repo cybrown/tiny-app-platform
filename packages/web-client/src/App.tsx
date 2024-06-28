@@ -51,6 +51,7 @@ import { lowerForApp } from "tal-eval";
 import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
 import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
 import Devtools from "./editor/Devtools";
+import { NotificationDisplay, NotificationProvider } from "./notifications";
 
 const queryParams = window.location.search
   .slice(1)
@@ -441,8 +442,8 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider value={theme}>
-      <>
+    <NotificationProvider>
+      <ThemeProvider value={theme}>
         <div className={styles.App}>
           <div className={styles.AppRendererContainer}>
             {app ? (
@@ -530,8 +531,10 @@ function App() {
             </ThemedWindowFrame>
           </LowLevelOverlay>
         ) : null}
-      </>
-    </ThemeProvider>
+        <div id="tap-overlays"></div>
+        <NotificationDisplay />
+      </ThemeProvider>
+    </NotificationProvider>
   );
 }
 

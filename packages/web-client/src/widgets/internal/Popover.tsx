@@ -13,7 +13,7 @@ export default function Popover({ target, children }: PopoverProps) {
     const element = document.createElement("div");
     element.style.position = "fixed";
     element.style.maxWidth = "100vw";
-    document.body.appendChild(element);
+    document.getElementById("tap-overlays")!.appendChild(element);
     return element;
   }, []);
 
@@ -26,7 +26,7 @@ export default function Popover({ target, children }: PopoverProps) {
     element.style.borderStyle = "solid";
     element.style.borderWidth = ARROW_SIZE + "px";
     element.style.borderBottomColor = "rgb(203, 37, 73)";
-    document.body.appendChild(element);
+    document.getElementById("tap-overlays")!.appendChild(element);
     return element;
   }, []);
 
@@ -36,7 +36,7 @@ export default function Popover({ target, children }: PopoverProps) {
     element.style.borderStyle = "solid";
     element.style.borderWidth = TARGET_WIDTH + "px";
     element.style.borderColor = "rgb(203, 37, 73)";
-    document.body.appendChild(element);
+    document.getElementById("tap-overlays")!.appendChild(element);
     return element;
   }, []);
 
@@ -134,9 +134,9 @@ export default function Popover({ target, children }: PopoverProps) {
 
     return () => {
       doContinue = false;
-      popoverArrowElement && document.body.removeChild(popoverArrowElement);
-      popoverMainElement && document.body.removeChild(popoverMainElement);
-      highlightElement && document.body.removeChild(highlightElement);
+      popoverArrowElement && document.getElementById("tap-overlays")!.removeChild(popoverArrowElement);
+      popoverMainElement && document.getElementById("tap-overlays")!.removeChild(popoverMainElement);
+      highlightElement && document.getElementById("tap-overlays")!.removeChild(highlightElement);
     };
   }, [target, popoverMainElement, popoverArrowElement, highlightElement]);
 

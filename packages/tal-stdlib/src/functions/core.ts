@@ -11,13 +11,17 @@ export const on_create = defineFunction(
         throw new Error('on_create is only usable inside Widgets');
       }
       if (!ctxForWidget.isCreated) {
-        ctx.callFunctionAsync(handler, []).catch(err => {
-          ctxForWidget.onCreateError = err;
+        ctx.callFunctionAsync(handler, []).catch(() => {
+          ctx.notify(
+            'An error occurred while creating a widget, check devtools for details'
+          );
           ctx.forceRefresh();
         });
       }
     } catch (err) {
-      // TODO: Show errors in UI
+      ctx.notify(
+        'An error occurred while creating a widget, check devtools for details'
+      );
       ctx.log('error', err);
     }
   }
@@ -57,7 +61,9 @@ export const watch = defineFunction(
     try {
       currentCtxMap.set(expr, ctx.callFunction(expr, []));
     } catch (err) {
-      // TODO: Show errors in UI
+      ctx.notify(
+        'An error occurred while watching an expression, check devtools for details'
+      );
       ctx.log('error', err);
       return;
     }
@@ -71,19 +77,23 @@ export const watch = defineFunction(
       ctx
         .callFunctionAsync(action, [oldValue, newValue, oldValue === undefined])
         .catch(err => {
-          // TODO: Show errors in UI
+          ctx.notify(
+            'An error occurred while watching an expression, check devtools for details'
+          );
           ctx.log('error', err);
         });
     }
 
-    ctxForWidget.registerStateChangedListener(() => {
+    const handler = () => {
       if (!currentCtxMap) return;
       const oldValue = currentCtxMap.get(expr);
       let newValue;
       try {
         newValue = ctx.callFunction(expr, []);
       } catch (err) {
-        // TODO: Show errors in UI
+        ctx.notify(
+          'An error occurred while watching an expression, check devtools for details'
+        );
         ctx.log('error', err);
         return;
       }
@@ -103,6 +113,11 @@ export const watch = defineFunction(
       } else if (oldValue !== newValue) {
         run(currentCtxMap, oldValue, newValue);
       }
+    };
+
+    ctxForWidget.registerStateChangedListener(handler);
+    ctxForWidget.addDestructor(() => {
+      ctxForWidget.unregisterStateChangedListener(handler);
     });
   }
 );

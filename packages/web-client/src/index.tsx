@@ -5,9 +5,10 @@ import "normalize.css";
 import "font-proxima-nova/style.css";
 import "./reset.css";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const rootElement = document.createElement("div");
+document.body.appendChild(rootElement);
+
+const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   // TODO: Enable strict mode later

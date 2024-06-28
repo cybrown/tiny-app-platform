@@ -119,9 +119,9 @@ export class RuntimeContext {
     this._onCreateError = error;
   }
 
-  private destructors: Closure[] = [];
+  private destructors: (Closure | (() => void))[] = [];
 
-  public addDestructor(func: Closure) {
+  public addDestructor(func: Closure | (() => void)) {
     if (!this._isWidgetState) {
       this.parent?.addDestructor(func);
       return;
@@ -135,10 +135,23 @@ export class RuntimeContext {
       return;
     }
     this.destructors.forEach(destructor => {
-      this.callFunctionAsync(destructor, []).catch(err => {
-        // TODO: Show notification
-        this.log('error', err);
-      });
+      if (typeof destructor === 'function') {
+        try {
+          destructor();
+        } catch (err) {
+          this.notify(
+            'An error occurred while destroying a widget, check devtools for details'
+          );
+          this.log('error', err);
+        }
+      } else {
+        this.callFunctionAsync(destructor, []).catch(err => {
+          this.notify(
+            'An error occurred while destroying a widget, check devtools for details'
+          );
+          this.log('error', err);
+        });
+      }
     });
   }
 
@@ -405,6 +418,18 @@ export class RuntimeContext {
       item && (item.isDisplayed = false);
     }
     return logItem;
+  }
+
+  public _notificationController: {
+    notify: (message: string) => void;
+  } | null = null;
+
+  notify(message: string) {
+    if (this.parent) {
+      this.parent.notify(message);
+      return;
+    }
+    this._notificationController?.notify(message);
   }
 }
 

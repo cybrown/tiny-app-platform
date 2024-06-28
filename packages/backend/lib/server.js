@@ -42,10 +42,13 @@ function httpRequest(method, urlStr, headers, body) {
               ])
             );
             responseHeaders["x-fetch-status-code"] = response.statusCode;
+
+            // Forward this header as is to let the browser decompress the body
             if (response.headers["content-encoding"]) {
               responseHeaders["content-encoding"] =
                 response.headers["content-encoding"];
             }
+
             return resolve(createResponse(200, responseHeaders, body));
           })
           .catch(reject);

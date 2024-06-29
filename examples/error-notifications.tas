@@ -1,0 +1,34 @@
+var value = 1
+var value2 = 1
+
+fun Hello() {
+  on_destroy(() => unknown_function_destroy())
+  on_create(() => unknown_function_create())
+  watch(() => value, () => unknown_function_watch1())
+  watch(() => value, () => set value2 = value + 1)
+  watch(
+    () => unknown_function_watch2()
+    () => unknown_function_watch3()
+  )
+  "Hello: " + number_to_string(value2)
+}
+
+fun App() {
+  var showHello = false
+
+  Column {
+    Switch {
+      label:  "Show hello"
+      bindTo: showHello
+    }
+
+    Button {
+      text:    "inc"
+      onClick: () => set value = value + 1
+    }
+
+    if (showHello) { Hello {} }
+  }
+}
+
+App {}

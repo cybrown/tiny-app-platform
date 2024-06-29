@@ -2,7 +2,16 @@ import { useCallback, useState } from "react";
 import { RuntimeContext, EvaluationError } from "tal-eval";
 import { LogItem } from "tal-eval/dist/RuntimeContext";
 import { HttpLogItemData, MongoLogItemData, PgLogItemData } from "tal-stdlib";
-import { View, Button, Loader, WindowFrame, Tabs, Table, Text } from "../theme";
+import {
+  View,
+  Button,
+  Loader,
+  WindowFrame,
+  Tabs,
+  Table,
+  Text,
+  CheckBox,
+} from "../theme";
 import Debug from "../widgets/Debug";
 import ViewChild from "../widgets/ViewChild";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
@@ -20,6 +29,10 @@ function useForceRender() {
 export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const logs = ctx.logs;
   const forceRender = useForceRender();
+  const [includeBugs, setIncludeBugs] = useState(true);
+  const [includeMongo, setIncludeMongo] = useState(true);
+  const [includePg, setIncludePg] = useState(true);
+  const [includeHttp, setIncludeHttp] = useState(true);
 
   const clearConsoleHandler = useCallback(() => {
     ctx.clearLogs();
@@ -32,10 +45,21 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   return (
     <View>
       <View layout="flex-row">
+        <CheckBox label="🪲" value={includeBugs} onChange={setIncludeBugs} />
+        <CheckBox label="🌱" value={includeMongo} onChange={setIncludeMongo} />
+        <CheckBox label="🐘" value={includePg} onChange={setIncludePg} />
+        <CheckBox label="🌐" value={includeHttp} onChange={setIncludeHttp} />
         <ViewChild flexGrow={1}> </ViewChild>
         <Button outline text="Clear" onClick={clearConsoleHandler} />
       </View>
       {logs
+        .filter(
+          (logItem) =>
+            (logItem.type === "error" && includeBugs) ||
+            (logItem.type === "pg" && includePg) ||
+            (logItem.type === "mongo" && includeMongo) ||
+            (logItem.type === "http-request" && includeHttp)
+        )
         .map((logItem) => (
           <View key={logItem.id} layout="flex-row">
             <Text

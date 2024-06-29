@@ -17,6 +17,43 @@ type LowLevelOverlayProps = {
   onClose?: () => void;
 } & React.PropsWithChildren;
 
+type CloseOverlayRef = {
+  current?: () => void;
+};
+
+let escapeStack: CloseOverlayRef[] = [];
+let escapeListenerRegistered = false;
+
+function escapeListenerHandler(event: KeyboardEvent) {
+  if (event.key === "Escape") {
+    const onClose = escapeStack.pop();
+    if (escapeStack.length === 0) {
+      document.removeEventListener("keydown", escapeListenerHandler);
+      escapeListenerRegistered = false;
+    }
+    if (!onClose) {
+      return;
+    }
+    if (onClose.current) {
+      onClose.current();
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+}
+
+function registerEscapeListener(callback: CloseOverlayRef) {
+  escapeStack.push(callback);
+  if (!escapeListenerRegistered) {
+    document.addEventListener("keydown", escapeListenerHandler);
+    escapeListenerRegistered = true;
+  }
+}
+
+function unregisterEscapeListener(callback: CloseOverlayRef) {
+  escapeStack = escapeStack.filter((a) => a !== callback);
+}
+
 export default function LowLevelOverlay({
   children,
   onClose,
@@ -46,6 +83,15 @@ export default function LowLevelOverlay({
 
   const overlayElement = useMemo<HTMLDivElement>(() => {
     const element = document.createElement("div");
+
+    if (onCloseRef.current) {
+      registerEscapeListener(onCloseRef);
+    }
+
+    // Make element focusable
+    element.setAttribute("tabindex", "0");
+    element.focus();
+
     element.classList.add(styles.overlay);
     element.classList.add(
       (variantToClassName as any)[position ?? "center"] ?? styles.center
@@ -64,6 +110,7 @@ export default function LowLevelOverlay({
     });
 
     return () => {
+      unregisterEscapeListener(onCloseRef);
       backdropElement?.classList.remove(styles.openVisible);
       overlayElement.classList.remove(styles.openVisible);
       setTimeout(() => {

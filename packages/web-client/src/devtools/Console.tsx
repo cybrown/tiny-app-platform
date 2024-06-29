@@ -65,9 +65,14 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
 }
 
 function RenderErrorLogItem({ item }: { item: LogItem<unknown> }) {
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+  const showDetailsHandler = useCallback(() => setShowDetails(true), []);
+  const hideDetailsHandler = useCallback(() => setShowDetails(false), []);
+
   return (
     <>
       <Text text="🪲" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
       <Text
         text={
           item.data instanceof EvaluationError
@@ -75,7 +80,23 @@ function RenderErrorLogItem({ item }: { item: LogItem<unknown> }) {
             : (item as any).message ?? "<No error message>"
         }
       />
-      <Debug force value={item.data} />
+      {showDetails ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Error details"
+            onClose={hideDetailsHandler}
+          >
+            <Debug force value={item.data} extend={3} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
     </>
   );
 }

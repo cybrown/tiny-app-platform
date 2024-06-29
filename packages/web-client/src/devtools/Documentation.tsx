@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { FunctionDef } from "tal-eval/dist/core";
-import { InputText, Text, View } from "../theme";
+import { InputText, Link, Tabs, Text, View } from "../theme";
 
 export default function Documentation({
   ctx,
@@ -36,6 +36,8 @@ export default function Documentation({
     setSearchTerm(searchString);
   }, []);
 
+  const [tabValue, setTabValue] = useState<"widgets" | "functions">("widgets");
+
   return (
     <View>
       <InputText
@@ -43,65 +45,86 @@ export default function Documentation({
         onChange={onSearchChange}
         placeholder="Search functions, widgets..."
       />
+      <Tabs
+        value={tabValue}
+        onChange={setTabValue as any}
+        tabs={[
+          { label: "Widgets", value: "widgets" },
+          { label: "Functions", value: "functions" },
+        ]}
+      />
       <div style={{ overflow: "auto" }}>
-        <Text text="Functions" size={1.4} />
-        <Text text="Click on any function to copy a code snippet" />
-        {functionsData
-          .filter(
-            ([name]) =>
-              !searchTerm ||
-              searchTerm === "" ||
-              name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-          )
-          .map(([name, doc]) => (
-            <div
-              key={name}
-              onClick={() => copyFunctionSnippet(writeInEditor, name, doc)}
-            >
-              <Text text={name} weight="bold" />
-              <ul style={{ paddingLeft: 16 }}>
-                {doc.map((d) => (
-                  <li key={d.name}>
-                    <Text text={d.name} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        <Text text="Widgets" size={1.4} />
-        <Text text="Click on any widget to copy a code snippet" />
-        {Object.entries(widgetsData)
-          .filter(
-            ([name]) =>
-              !searchTerm ||
-              searchTerm === "" ||
-              name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-          )
-          .map(([name, documentation]) => (
-            <div
-              key={name}
-              onClick={() =>
-                copyWidgetSnippet(writeInEditor, name, documentation)
-              }
-            >
-              <div style={{ display: "flex" }}>
-                <Text text={name + ":\u00A0"} weight="bold" size={1.1} />
-                <Text text={documentation.description} />
-              </div>
-              <ul style={{ paddingLeft: 16 }}>
-                {Object.entries(documentation.props).map(
-                  ([name, description]) => (
-                    <li key={name}>
-                      <div style={{ display: "flex" }}>
-                        <Text text={name + ":\u00A0"} weight="bold" />
-                        <Text text={description} weight="light" />
-                      </div>
-                    </li>
-                  )
-                )}
-              </ul>
-            </div>
-          ))}
+        {tabValue === "functions" ? (
+          <View>
+            {functionsData
+              .filter(
+                ([name]) =>
+                  !searchTerm ||
+                  searchTerm === "" ||
+                  name
+                    .toLocaleLowerCase()
+                    .includes(searchTerm.toLocaleLowerCase())
+              )
+              .map(([name, doc]) => (
+                <View key={name} layout="flex-column">
+                  <View key={name} layout="flex-row">
+                    <Text text={name} weight="bold" />
+                    <Link
+                      text="copy"
+                      onClick={() =>
+                        copyFunctionSnippet(writeInEditor, name, doc)
+                      }
+                    />
+                  </View>
+                  <ul style={{ paddingLeft: 16 }}>
+                    {doc.map((d) => (
+                      <li key={d.name}>
+                        <Text text={d.name} />
+                      </li>
+                    ))}
+                  </ul>
+                </View>
+              ))}
+          </View>
+        ) : (
+          <View>
+            {Object.entries(widgetsData)
+              .filter(
+                ([name]) =>
+                  !searchTerm ||
+                  searchTerm === "" ||
+                  name
+                    .toLocaleLowerCase()
+                    .includes(searchTerm.toLocaleLowerCase())
+              )
+              .map(([name, documentation]) => (
+                <div key={name}>
+                  <View layout="flex-row">
+                    <Text text={name} weight="bold" size={1.1} />
+                    <Link
+                      text="copy"
+                      onClick={() =>
+                        copyWidgetSnippet(writeInEditor, name, documentation)
+                      }
+                    />
+                    <Text text={documentation.description} />
+                  </View>
+                  <ul style={{ paddingLeft: 16 }}>
+                    {Object.entries(documentation.props).map(
+                      ([name, description]) => (
+                        <li key={name}>
+                          <View layout="flex-row">
+                            <Text text={name} weight="bold" />
+                            <Text text={description} weight="light" />
+                          </View>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              ))}
+          </View>
+        )}
       </div>
     </View>
   );

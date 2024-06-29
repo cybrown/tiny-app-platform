@@ -2,12 +2,14 @@ import { useRef, useState, useMemo, useEffect } from "react";
 import { javascript } from "@codemirror/lang-javascript";
 import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
-import { indentWithTab } from "@codemirror/commands";
+import { indentWithTab, undo, redo } from "@codemirror/commands";
 import styles from "./Editor.module.css";
 
 export interface EditorApi {
   replaceSelection(text: string): void;
   replaceAll(text: string): void;
+  undo(): void;
+  redo(): void;
 }
 
 export function Editor({
@@ -35,6 +37,12 @@ export function Editor({
   );
   const editorApi = useMemo<EditorApi>(
     () => ({
+      undo() {
+        editor && undo(editor);
+      },
+      redo() {
+        editor && redo(editor);
+      },
       replaceSelection(text) {
         editor?.dispatch(editor?.state.replaceSelection(text));
       },
@@ -89,7 +97,14 @@ export function Editor({
       );
     }
     grabSetSource(setUpdateSourceFunc);
-  }, [editor, editorApi, grabSetSource, onCloseEditor, onSaveAndFormat, setUpdateSourceFunc]);
+  }, [
+    editor,
+    editorApi,
+    grabSetSource,
+    onCloseEditor,
+    onSaveAndFormat,
+    setUpdateSourceFunc,
+  ]);
 
   useEffect(() => {
     onApiReady(editorApi);

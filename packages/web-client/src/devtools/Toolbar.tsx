@@ -6,7 +6,11 @@ export default function ToolBar({
   onShowDocumentation,
   appDebugMode,
   setAppDebugMode,
+  onRedo,
+  onUndo,
 }: {
+  onUndo(): void;
+  onRedo(): void;
   onFormat(): void;
   onApplyAndFormat(): void;
   onShowDocumentation(): void;
@@ -15,6 +19,8 @@ export default function ToolBar({
 }) {
   return (
     <View layout="flex-row">
+      <Button outline onClick={onUndo} text="↩️" />
+      <Button outline onClick={onRedo} text="↪️" />
       <Button outline onClick={onFormat} text="Format" />
       <Button outline onClick={onApplyAndFormat} text="💾" />
       <Switch

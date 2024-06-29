@@ -56,6 +56,14 @@ export default function SourceTab({
     [showDocumentation]
   );
 
+  const onUndoHandler = useCallback(() => {
+    editorApiRef.current?.undo();
+  }, []);
+
+  const onRedoHandler = useCallback(() => {
+    editorApiRef.current?.redo();
+  }, []);
+
   return (
     <>
       <ToolBar
@@ -64,6 +72,8 @@ export default function SourceTab({
         onShowDocumentation={toggleShowDocumentationHandler}
         appDebugMode={ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean}
         setAppDebugMode={onDebugModeChange}
+        onUndo={onUndoHandler}
+        onRedo={onRedoHandler}
       />
       <Editor
         grabSetSource={(a) => (updateSourceFunc.current = a())}

@@ -263,12 +263,14 @@ function App() {
     return "localstorage";
   }, []);
 
+  const remoteConfiguration = useMemo(() => getRemoteConfiguration(), []);
+
   useEffect(() => {
     (async function() {
       try {
         setIsLoadingApp(true);
         setIsLoadError(false);
-        const configuration = (await getRemoteConfiguration()) as {
+        const configuration = (await remoteConfiguration) as {
           features: string[];
         };
         let sourceToExecute: string;
@@ -294,7 +296,7 @@ function App() {
         setIsLoadingApp(false);
       }
     })();
-  }, [editorApi, executeSource, getSourcePath]);
+  }, [editorApi, executeSource, getSourcePath, remoteConfiguration]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, dummyStateUpdate] = useState(0);

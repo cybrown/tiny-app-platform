@@ -422,8 +422,9 @@ const handleRequest = superHandler(routes, (req, res) => {
   );
 });
 
-server.on("request", (req, res) =>
-  staticHandler(req, res, () => handleRequest(req, res))
-);
+server.on("request", (req, res) => {
+  console.log(req.method, req.url);
+  staticHandler(req, res, () => handleRequest(req, res));
+});
 
 module.exports = server;

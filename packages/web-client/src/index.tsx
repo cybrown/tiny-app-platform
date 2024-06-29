@@ -5,6 +5,20 @@ import "normalize.css";
 import "font-proxima-nova/style.css";
 import "./reset.css";
 
+if (!(window as any).electronAPI && "serviceWorker" in navigator) {
+  const registerServiceWorker = async () => {
+    try {
+      await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+      });
+    } catch (error) {
+      console.error("Registration failed", error);
+    }
+  };
+
+  registerServiceWorker();
+}
+
 const rootElement = document.createElement("div");
 document.body.appendChild(rootElement);
 

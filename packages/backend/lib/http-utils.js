@@ -1,21 +1,5 @@
 const Route = require("route-parser");
 
-function readAllRequestBody(req) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-
-    req.on("data", (chunk) => {
-      chunks.push(chunk);
-    });
-
-    req.on("close", () => {
-      const bodyString = Buffer.concat(chunks).toString();
-      const bodyJson = JSON.parse(bodyString);
-      resolve(bodyJson);
-    });
-  });
-}
-
 function createResponse(status, headers, body) {
   return { status, headers, body };
 }
@@ -52,8 +36,13 @@ function sendResponse(res, response) {
   }
 
   if (response.body !== undefined) {
-    res.write(response.body);
+    const responseBody = Buffer.from(response.body);
+    res.setHeader("Content-Length", responseBody.length);
+    res.write(responseBody);
+  } else {
+    res.setHeader("Content-Length", 0);
   }
+
   res.end();
 }
 
@@ -64,8 +53,6 @@ const superHandler = (routes, defaultHandler) => {
   });
 
   return async (req, res) => {
-    console.log(req.url);
-
     let routeFound = false;
     for (let routeDefinition of compiledRoutes) {
       const matching = routeDefinition.compiledRoute.match(req.url);
@@ -107,7 +94,6 @@ function readBody(req) {
 }
 
 module.exports = {
-  readAllRequestBody,
   okJson,
   okText,
   noContent,

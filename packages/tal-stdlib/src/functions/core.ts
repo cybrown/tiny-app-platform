@@ -24,6 +24,15 @@ export const on_create = defineFunction(
       );
       ctx.log('error', err);
     }
+  },
+  undefined,
+  {
+    description:
+      'Run a function when the widget is created, only available inside Widgets',
+    parameters: {
+      handler: 'The function to run',
+    },
+    returns: 'Never',
   }
 );
 
@@ -37,6 +46,15 @@ export const on_destroy = defineFunction(
     }
     if (ctxForWidget.isCreated) return;
     ctxForWidget.addDestructor(handler);
+  },
+  undefined,
+  {
+    description:
+      'Run a function when the widget is destroyed, only available inside Widgets',
+    parameters: {
+      handler: 'The function to run',
+    },
+    returns: 'Never',
   }
 );
 
@@ -119,6 +137,16 @@ export const watch = defineFunction(
     ctxForWidget.addDestructor(() => {
       ctxForWidget.unregisterStateChangedListener(handler);
     });
+  },
+  undefined,
+  {
+    description:
+      'Run a function when an expression changes, only available inside Widgets',
+    parameters: {
+      expr: 'The expression to watch',
+      action: 'The function to run when the expression changes',
+    },
+    returns: 'Never',
   }
 );
 
@@ -134,23 +162,50 @@ export const typeof$ = defineFunction(
       const type = typeof value;
       return type === 'object' ? 'record' : type;
     }
+  },
+  undefined,
+  {
+    description: 'Returns the type of a value',
+    parameters: {
+      value: 'The value to get the type of',
+    },
+    returns:
+      'The type of the value: number, string, boolean, array, record, null',
   }
 );
 
-export const default$ = defineFunction('default', [], (_ctx, _kwargs, args) => {
-  for (let arg of args) {
-    if (arg != null) {
-      return arg;
+export const default$ = defineFunction(
+  'default',
+  [],
+  (_ctx, _kwargs, args) => {
+    for (let arg of args) {
+      if (arg != null) {
+        return arg;
+      }
     }
+    return null;
+  },
+  undefined,
+  {
+    description: 'Returns the first non null value',
+    parameters: {},
+    returns: 'The first non null value or null if all are null',
   }
-  return null;
-});
+);
 
 export const throw$ = defineFunction(
   'throw',
   [{ name: 'error' }],
   (_ctx, { error }) => {
     throw error instanceof Error ? error : new Error(error);
+  },
+  undefined,
+  {
+    description: 'Throws an error',
+    parameters: {
+      error: 'The error to throw',
+    },
+    returns: 'Never',
   }
 );
 
@@ -160,6 +215,14 @@ export const log = defineFunction(
   (_ctx, { value }, args) => {
     console.log(value, ...args);
     return value;
+  },
+  undefined,
+  {
+    description: 'Log a value to the console, and returns it back',
+    parameters: {
+      value: 'The value to log',
+    },
+    returns: 'The value that was logged',
   }
 );
 
@@ -169,6 +232,14 @@ export const copy = defineFunction(
   (_ctx, { text }) => {
     navigator.clipboard.writeText(text);
     return text;
+  },
+  undefined,
+  {
+    description: 'Copy text to the clipboard',
+    parameters: {
+      text: 'The text to copy',
+    },
+    returns: 'The text that was copied',
   }
 );
 
@@ -178,6 +249,15 @@ export const set_system_property = defineFunction(
   (_ctx, { key, value }) => {
     setSystemProperty(key, value);
     return null;
+  },
+  undefined,
+  {
+    description: 'Set a system property',
+    parameters: {
+      key: 'The property to set: theme, useSystemBrowser, title...',
+      value: 'The value to set the property to',
+    },
+    returns: 'null',
   }
 );
 
@@ -214,6 +294,14 @@ export const is_defined = defineFunction(
   [{ name: 'name' }],
   (ctx, { name }) => {
     return ctx.hasLocal(name);
+  },
+  undefined,
+  {
+    description: 'Check if a variable is defined',
+    parameters: {
+      name: 'The name of the variable to check',
+    },
+    returns: 'true if the variable is defined, false otherwise',
   }
 );
 
@@ -228,13 +316,32 @@ export const eval_js = defineFunction(
       }.call(context);
     }
     return evalInContext();
+  },
+  undefined,
+  {
+    description: 'Evaluate JavaScript code with given attributes on this',
+    parameters: {
+      code: 'The code to evaluate',
+      context: 'The attributes available on this',
+    },
+    returns: 'The result of the evaluation',
   }
 );
 
-export const exit = defineFunction('exit', [], () => {
-  try {
-    (window as any).electronAPI.exit();
-  } catch (err) {
-    console.error('Failed to exit, make sure it is running on Electron', err);
+export const exit = defineFunction(
+  'exit',
+  [],
+  () => {
+    try {
+      (window as any).electronAPI.exit();
+    } catch (err) {
+      console.error('Failed to exit, make sure it is running on Electron', err);
+    }
+  },
+  undefined,
+  {
+    description: 'Exit the application, only available on Electron',
+    parameters: {},
+    returns: 'Never',
   }
-});
+);

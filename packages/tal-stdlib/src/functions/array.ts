@@ -16,6 +16,18 @@ export const array_group = defineFunction(
       result[key].push(value);
     });
     return result;
+  },
+  undefined,
+  {
+    description: 'Groups an array by a key',
+    parameters: {
+      array: 'The array to group',
+      key_extractor: 'A function to extract the key from an element',
+      value_extractor:
+        'A function to extract the value from an element, optional',
+    },
+    returns:
+      'A record with the keys extracted by key_extractor and the values extracted by value_extractor',
   }
 );
 
@@ -54,6 +66,19 @@ export const array_to_record = defineFunction(
       });
     }
     return result;
+  },
+  undefined,
+  {
+    description: 'Converts an array to a record',
+    parameters: {
+      array: 'The array to convert',
+      key_extractor: 'A function to extract the key from an element',
+      value_extractor:
+        'A function to extract the value from an element, optional',
+      accumulator: 'A function to accumulate values for the same key, optional',
+    },
+    returns:
+      'A record with the keys extracted by key_extractor and the values extracted by value_extractor',
   }
 );
 

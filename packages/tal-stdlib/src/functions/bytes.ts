@@ -15,5 +15,14 @@ export const bytes_to_string = defineFunction(
       default:
         throw new Error('Encoding not supported: ' + encoding);
     }
+  },
+  undefined,
+  {
+    description: 'Converts bytes to a string using the specified encoding',
+    parameters: {
+      bytes: 'The bytes to convert',
+      encoding: 'The encoding to use: utf-8 (default), base64, base64url',
+    },
+    returns: 'The string representation of the bytes',
   }
 );

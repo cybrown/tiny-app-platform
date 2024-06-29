@@ -454,6 +454,17 @@ type ParameterDeclaration<T extends string> = {
   onlyNamed?: boolean;
 };
 
+export type FunctionDocumentation<T extends string> = {
+  description: string;
+  parameters: {
+    [key in T]: string;
+  };
+  parameterExamples?: {
+    [key in T]: string;
+  };
+  returns: string;
+};
+
 export function defineFunction<T extends string>(
   name: string,
   parameters: ParameterDeclaration<T>[],
@@ -466,11 +477,13 @@ export function defineFunction<T extends string>(
     ctx: RuntimeContext,
     namedArguments: { [key in T]: any },
     positionalArguments: any[]
-  ) => any
+  ) => any,
+  documentation?: FunctionDocumentation<T>
 ) {
   // TODO: Define one parameter as the pipe entry point
   const result: RegisterableFunction<T> = {
     name,
+    documentation,
     parameters,
     parametersByName: parameters.reduce((prev, cur) => {
       prev[cur.name] = cur;
@@ -500,6 +513,7 @@ export function defineFunction<T extends string>(
 
 export type RegisterableFunction<T extends string> = {
   name: string;
+  documentation?: FunctionDocumentation<T>;
   parameters: ParameterDeclaration<T>[];
   parametersByName: Record<T, ParameterDeclaration<T>>;
   call?: (

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { FunctionDef } from "tal-eval/dist/core";
 import { InputText, Link, Tabs, Text, View } from "../theme";
+import { RegisterableFunction } from "tal-eval/dist/RuntimeContext";
 
 export default function Documentation({
   ctx,
@@ -25,8 +25,7 @@ export default function Documentation({
             ("callAsync" in value && typeof value.callAsync == "function"))
       )
       .map(([name, value]) => {
-        const parameters = (value as FunctionDef).parameters;
-        return [name, parameters] as const;
+        return [name, value as RegisterableFunction<any>] as const;
       });
   }, [ctx]);
 
@@ -65,24 +64,57 @@ export default function Documentation({
                     .toLocaleLowerCase()
                     .includes(searchTerm.toLocaleLowerCase())
               )
-              .map(([name, doc]) => (
+              .map(([name, registerableFunction]) => (
                 <View key={name} layout="flex-column">
                   <View key={name} layout="flex-row">
                     <Text text={name} weight="bold" />
-                    <Link
-                      text="copy"
-                      onClick={() =>
-                        copyFunctionSnippet(writeInEditor, name, doc)
+                    {registerableFunction.documentation ? (
+                      <Text
+                        text={registerableFunction.documentation?.description}
+                      />
+                    ) : null}
+                  </View>
+                  <Link
+                    text="Insert in editor"
+                    url="#"
+                    onClick={() =>
+                      copyFunctionSnippet(
+                        writeInEditor,
+                        name,
+                        registerableFunction
+                      )
+                    }
+                  />
+                  {registerableFunction.documentation ? (
+                    <Text
+                      text={
+                        "Returns: " +
+                        registerableFunction.documentation?.returns
                       }
                     />
-                  </View>
-                  <ul style={{ paddingLeft: 16 }}>
-                    {doc.map((d) => (
-                      <li key={d.name}>
-                        <Text text={d.name} />
-                      </li>
-                    ))}
-                  </ul>
+                  ) : null}
+                  {registerableFunction.documentation ? (
+                    <ul style={{ paddingLeft: 16 }}>
+                      {Object.entries(
+                        registerableFunction.documentation.parameters
+                      ).map(([name, description]) => (
+                        <li key={name}>
+                          <View layout="flex-row">
+                            <Text text={name} weight="bold" />
+                            <Text text={description} />
+                          </View>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <ul style={{ paddingLeft: 16 }}>
+                      {registerableFunction.parameters.map((d) => (
+                        <li key={d.name}>
+                          <Text text={d.name} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </View>
               ))}
           </View>
@@ -101,14 +133,15 @@ export default function Documentation({
                 <div key={name}>
                   <View layout="flex-row">
                     <Text text={name} weight="bold" size={1.1} />
-                    <Link
-                      text="copy"
-                      onClick={() =>
-                        copyWidgetSnippet(writeInEditor, name, documentation)
-                      }
-                    />
                     <Text text={documentation.description} />
                   </View>
+                  <Link
+                    text="Insert in editor"
+                    url="#"
+                    onClick={() =>
+                      copyWidgetSnippet(writeInEditor, name, documentation)
+                    }
+                  />
                   <ul style={{ paddingLeft: 16 }}>
                     {Object.entries(documentation.props).map(
                       ([name, description]) => (
@@ -133,12 +166,21 @@ export default function Documentation({
 function copyFunctionSnippet(
   writeInEditor: (text: string) => void,
   name: string,
-  documentation: any[]
+  registerableFunction: RegisterableFunction<any>
 ): void {
   writeInEditor(
     name +
       "(" +
-      documentation.map(({ name }) => name + ": null").join(", ") +
+      registerableFunction.parameters
+        .map(
+          (parameterDeclaration) =>
+            parameterDeclaration.name +
+            ": " +
+            (registerableFunction.documentation?.parameterExamples?.[
+              parameterDeclaration.name
+            ] ?? "null")
+        )
+        .join(", ") +
       ")"
   );
 }

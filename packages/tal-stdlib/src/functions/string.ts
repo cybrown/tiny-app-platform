@@ -24,6 +24,17 @@ export const string_to_number = defineFunction(
   [{ name: 'string' }],
   (_ctx, { string }) => {
     return Number(string);
+  },
+  undefined,
+  {
+    description: 'Converts a string to a number',
+    parameters: {
+      string: 'The string to convert',
+    },
+    parameterExamples: {
+      string: '"42"',
+    },
+    returns: 'The number representation of the string',
   }
 );
 

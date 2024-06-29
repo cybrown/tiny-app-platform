@@ -8,7 +8,7 @@ import {
   SourceFetcher,
 } from "tal-eval";
 import * as tal from "tal-parser";
-import { EditorApi } from "./editor/Editor";
+import { EditorApi } from "./devtools/Editor";
 import AppRenderer from "./AppRenderer";
 import { useHotkeys } from "react-hotkeys-hook";
 import Button, { ButtonDocumentation } from "./widgets/Button";
@@ -34,7 +34,6 @@ import Debug, { DebugDocumentation } from "./widgets/Debug";
 import { APP_DEBUG_MODE_ENV } from "./constants";
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
-import Documentation from "./editor/Documentation";
 import { importStdlibInContext } from "tal-stdlib";
 import { ThemeProvider, Theme } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
@@ -50,7 +49,7 @@ import Tabs, { TabsDocumentation } from "./widgets/Tabs";
 import { lowerForApp } from "tal-eval";
 import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
 import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
-import Devtools from "./editor/Devtools";
+import Devtools from "./devtools/Devtools";
 import { NotificationDisplay, NotificationProvider } from "./notifications";
 
 const queryParams = window.location.search
@@ -324,13 +323,6 @@ function App() {
     toggleDevtoolsVisibleKeyboardHandler,
   ]);
 
-  const [showDocumentation, setShowDocumentation] = useState(false);
-
-  const toggleShowDocumentationHandler = useCallback(
-    () => setShowDocumentation(!showDocumentation),
-    [showDocumentation]
-  );
-
   const persistSource = useCallback((sourceFromEditor: string) => {
     localStorage.setItem(currentAppName, sourceFromEditor);
     // TODO: Find a better way to differentiate where the source is from
@@ -403,17 +395,6 @@ function App() {
       }
     }
   }, [closeEditorHandle]);
-
-  const onWriteInEditorHandler = useCallback(
-    (text: string) => {
-      if (!editorApi) {
-        return;
-      }
-      editorApi.replaceSelection(text);
-      onFormatHandler();
-    },
-    [editorApi, onFormatHandler]
-  );
 
   const applyTheme = useCallback(
     (newTheme: Theme) => {
@@ -496,7 +477,6 @@ function App() {
                 themes={themes}
                 onFormatHandler={onFormatHandler}
                 onApplyAndFormatHandler={onApplyAndFormatHandler}
-                onToggleShowDocumentation={toggleShowDocumentationHandler}
                 onDebugModeChange={setAppDebugModeHandler}
                 theme={theme}
                 onApplyTheme={applyTheme}
@@ -506,27 +486,6 @@ function App() {
                   onApplyAndFormatWithSourceHandler
                 }
                 onCloseHandler={onCloseHandler}
-              />
-            </ThemedWindowFrame>
-          </LowLevelOverlay>
-        ) : null}
-
-        {showDocumentation ? (
-          <LowLevelOverlay
-            size="l"
-            position="right"
-            onClose={toggleShowDocumentationHandler}
-            modal
-          >
-            <ThemedWindowFrame
-              title="Documentation"
-              position="right"
-              onClose={toggleShowDocumentationHandler}
-              modal
-            >
-              <Documentation
-                ctx={ctx}
-                onWriteInEditor={onWriteInEditorHandler}
               />
             </ThemedWindowFrame>
           </LowLevelOverlay>

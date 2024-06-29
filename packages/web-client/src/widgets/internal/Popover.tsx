@@ -36,6 +36,7 @@ export default function Popover({ target, children }: PopoverProps) {
     element.style.borderStyle = "solid";
     element.style.borderWidth = TARGET_WIDTH + "px";
     element.style.borderColor = "rgb(203, 37, 73)";
+    element.style.pointerEvents = "none";
     document.getElementById("tap-overlays")!.appendChild(element);
     return element;
   }, []);
@@ -98,7 +99,8 @@ export default function Popover({ target, children }: PopoverProps) {
           Math.max(0, targetRect.top)
         ) -
           ARROW_SIZE -
-          popoverRect.height + 1}px`;
+          popoverRect.height +
+          1}px`;
         popoverArrowElement.style.top = `${Math.min(
           window.innerHeight,
           Math.max(0, targetRect.top)
@@ -134,9 +136,16 @@ export default function Popover({ target, children }: PopoverProps) {
 
     return () => {
       doContinue = false;
-      popoverArrowElement && document.getElementById("tap-overlays")!.removeChild(popoverArrowElement);
-      popoverMainElement && document.getElementById("tap-overlays")!.removeChild(popoverMainElement);
-      highlightElement && document.getElementById("tap-overlays")!.removeChild(highlightElement);
+      popoverArrowElement &&
+        document
+          .getElementById("tap-overlays")!
+          .removeChild(popoverArrowElement);
+      popoverMainElement &&
+        document
+          .getElementById("tap-overlays")!
+          .removeChild(popoverMainElement);
+      highlightElement &&
+        document.getElementById("tap-overlays")!.removeChild(highlightElement);
     };
   }, [target, popoverMainElement, popoverArrowElement, highlightElement]);
 

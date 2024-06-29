@@ -1,8 +1,8 @@
 import { Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
-import styles from "./View.module.css";
 import { View as ThemedView } from "../theme";
 import { metadataGet } from "tal-eval";
+import ViewChild from "./ViewChild";
 
 export type ViewProps = {
   ctx: RuntimeContext;
@@ -17,14 +17,6 @@ export type ViewProps = {
   backgroundColor?: string;
 };
 
-function computeChildStyles(meta: any) {
-  return {
-    ...(meta.flexGrow ? { flexGrow: meta.flexGrow } : {}),
-    ...(meta.backgroundColor ? { backgroundColor: meta.backgroundColor } : {}),
-    ...(meta.scroller ? { overflowY: "auto" as const } : {}),
-  };
-}
-
 export default function View({ ctx, children, ...d }: ViewProps) {
   const childContext = ctx.createChild({});
 
@@ -38,13 +30,9 @@ export default function View({ ctx, children, ...d }: ViewProps) {
           meta: metadataGet(child) ?? {},
         }))
         .map((child, index) => (
-          <div
-            className={styles.child}
-            style={computeChildStyles(child.meta)}
-            key={index}
-          >
+          <ViewChild key={index} {...child.meta}>
             {child.node}
-          </div>
+          </ViewChild>
         ))}
     </ThemedView>
   );

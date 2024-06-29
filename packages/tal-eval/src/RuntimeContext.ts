@@ -420,6 +420,14 @@ export class RuntimeContext {
     return logItem;
   }
 
+  clearLogs() {
+    if (this.parent) {
+      this.parent.clearLogs();
+      return;
+    }
+    this._logs = [];
+  }
+
   public _notificationController: {
     notify: (message: string) => void;
   } | null = null;

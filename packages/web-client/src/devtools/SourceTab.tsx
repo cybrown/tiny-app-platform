@@ -1,7 +1,7 @@
 import { RuntimeContext } from "tal-eval";
 import { Editor, EditorApi } from "./Editor";
 import ToolBar from "./Toolbar";
-import { APP_DEBUG_MODE_ENV } from "../constants";
+import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
 import { WindowFrame } from "../theme";

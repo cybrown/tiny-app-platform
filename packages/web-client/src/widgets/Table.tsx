@@ -3,7 +3,7 @@ import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
 import { Table as ThemedTable } from "../theme";
-import { APP_DEBUG_MODE_ENV } from "../constants";
+import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 
 type TableModelColumn =
   | ({

@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { ExpressionLocation, FunctionExpression } from "tal-parser";
-import { APP_DEBUG_MODE_ENV } from "../constants";
+import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 import styles from "./Debug.module.css";
 
 type DebugProps = {

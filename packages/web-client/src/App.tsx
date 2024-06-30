@@ -9,7 +9,7 @@ import {
 } from "tal-eval";
 import * as tal from "tal-parser";
 import { EditorApi } from "./devtools/Editor";
-import AppRenderer from "./AppRenderer";
+import AppRenderer from "./runtime/AppRenderer";
 import { useHotkeys } from "react-hotkeys-hook";
 import Button, { ButtonDocumentation } from "./widgets/Button";
 import CheckBox, { CheckBoxDocumentation } from "./widgets/CheckBox";
@@ -31,15 +31,18 @@ import Overlay, { OverlayDocumentation } from "./widgets/Overlay";
 import View, { ViewDocumentation } from "./widgets/View";
 import { backendUrl } from "./runtime/configuration";
 import Debug, { DebugDocumentation } from "./widgets/Debug";
-import { APP_DEBUG_MODE_ENV } from "./constants";
+import { APP_DEBUG_MODE_ENV } from "./runtime/constants";
 import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
 import { importStdlibInContext } from "tal-stdlib";
-import { ThemeProvider, Theme } from "./theme";
+import {
+  ThemeProvider,
+  Theme,
+  WindowFrame as ThemedWindowFrame,
+} from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
-import { WindowFrame as ThemedWindowFrame } from "./theme";
 import twbsDarkTheme from "./themes/twbs-dark";
 import nesCssTheme from "./themes/nes-css";
 import theme98 from "./themes/98";
@@ -50,7 +53,12 @@ import { lowerForApp } from "tal-eval";
 import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
 import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
 import Devtools from "./devtools/Devtools";
-import { NotificationDisplay, NotificationProvider } from "./notifications";
+import {
+  NotificationDisplay,
+  NotificationProvider,
+} from "./runtime/notifications";
+import UpdateAppNotification from "./runtime/UpdateAppNotification";
+import { useForceRender } from "./utils";
 
 const queryParams = window.location.search
   .slice(1)
@@ -82,7 +90,19 @@ async function getRemoteConfiguration() {
   return await response.json();
 }
 
-async function getApp(name: string): Promise<FetchedSource> {
+let showUpdateNotificationCallback: { value: (() => void) | null } = {
+  value: null,
+};
+
+function getAppFromCache(name: string) {
+  return localStorage.getItem("app-src-" + name);
+}
+
+function saveAppToCache(name: string, source: string) {
+  localStorage.setItem("app-src-" + name, source);
+}
+
+async function getAppInBackground(name: string): Promise<FetchedSource> {
   const response = await fetch(backendUrl + "/apps/read/" + name);
   if (response.status === 404) {
     return { path: name, source: null };
@@ -92,7 +112,29 @@ async function getApp(name: string): Promise<FetchedSource> {
       "Failed to fetch remote app with status: " + response.status
     );
   }
-  return { path: name, source: await response.text() };
+  const appSource = await response.text();
+  saveAppToCache(name, appSource);
+  return { path: name, source: appSource };
+}
+
+async function getApp(name: string): Promise<FetchedSource> {
+  const cachedApp = getAppFromCache(name);
+  if (cachedApp != null) {
+    // Check for updates in the background and show a notification if there is one
+    getAppInBackground(name).then((fetchedSource) => {
+      if (fetchedSource.source !== cachedApp && fetchedSource.source != null) {
+        saveAppToCache(name, fetchedSource.source);
+        showUpdateNotificationCallback.value &&
+          showUpdateNotificationCallback.value();
+      }
+    });
+    return { path: name, source: cachedApp };
+  }
+  const fetchedSource = await getAppInBackground(name);
+  if (fetchedSource.source != null) {
+    saveAppToCache(name, fetchedSource.source);
+  }
+  return fetchedSource;
 }
 
 const webSourceFetcher: SourceFetcher = {
@@ -114,6 +156,7 @@ const electronSourceFetcher: SourceFetcher = {
 };
 
 async function saveApp(name: string, source: string) {
+  saveAppToCache(name, source);
   const response = await fetch(backendUrl + "/apps/write/" + name, {
     method: "POST",
     body: source,
@@ -265,6 +308,9 @@ function App() {
 
   const remoteConfiguration = useMemo(() => getRemoteConfiguration(), []);
 
+  const [showUpdateNotification, setShowUpdateNotification] = useState(false);
+  showUpdateNotificationCallback.value = () => setShowUpdateNotification(true);
+
   useEffect(() => {
     (async function() {
       try {
@@ -298,12 +344,10 @@ function App() {
     })();
   }, [editorApi, executeSource, getSourcePath, remoteConfiguration]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, dummyStateUpdate] = useState(0);
-  const ctx: RuntimeContext = useMemo(
-    () => buildContext(() => dummyStateUpdate(Math.random())),
-    []
-  );
+  const forceRender = useForceRender();
+  const ctx: RuntimeContext = useMemo(() => buildContext(forceRender), [
+    forceRender,
+  ]);
 
   const updateSourceFunc = useRef<(() => string) | null>(null);
 
@@ -424,6 +468,11 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const closeUpdateAppNotificationHandler = useCallback(
+    () => setShowUpdateNotification(false),
+    []
+  );
+
   return (
     <NotificationProvider>
       <ThemeProvider value={theme}>
@@ -493,6 +542,9 @@ function App() {
           </LowLevelOverlay>
         ) : null}
         <div id="tap-overlays"></div>
+        {showUpdateNotification ? (
+          <UpdateAppNotification close={closeUpdateAppNotificationHandler} />
+        ) : null}
         <NotificationDisplay />
       </ThemeProvider>
     </NotificationProvider>

@@ -15,19 +15,15 @@ import {
 import Debug from "../widgets/Debug";
 import ViewChild from "../widgets/ViewChild";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
+import { useForceRender } from "../utils";
 
 type ConsoleTabProps = {
   ctx: RuntimeContext;
 };
 
-// TODO: Remove this when logs are immutable
-function useForceRender() {
-  const [, set] = useState({});
-  return useCallback(() => set({}), []);
-}
-
 export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const logs = ctx.logs;
+  // TODO: Remove this when logs are immutable
   const forceRender = useForceRender();
   const [includeBugs, setIncludeBugs] = useState(true);
   const [includeMongo, setIncludeMongo] = useState(true);

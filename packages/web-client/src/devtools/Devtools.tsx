@@ -52,20 +52,21 @@ export default function Devtools({
         value={currentTab}
         onChange={setCurrentTab}
       />
-      {currentTab === "source" ? (
-        <SourceTab
-          ctx={ctx}
-          onFormatHandler={onFormatHandler}
-          onApplyAndFormatHandler={onApplyAndFormatHandler}
-          onDebugModeChange={onDebugModeChange}
-          updateSourceFunc={updateSourceFunc}
-          setEditorApi={setEditorApi}
-          onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
-          onCloseHandler={onCloseHandler}
-        />
-      ) : currentTab === "console" ? (
-        <ConsoleTab ctx={ctx} />
-      ) : null}
+
+      {/* Avoid unloading SourceTab component to keep the editor state in memory even in other tabs */}
+      <SourceTab
+        ctx={ctx}
+        onFormatHandler={onFormatHandler}
+        onApplyAndFormatHandler={onApplyAndFormatHandler}
+        onDebugModeChange={onDebugModeChange}
+        updateSourceFunc={updateSourceFunc}
+        setEditorApi={setEditorApi}
+        onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
+        onCloseHandler={onCloseHandler}
+        hidden={currentTab !== "source"}
+      />
+
+      {currentTab === "console" ? <ConsoleTab ctx={ctx} /> : null}
     </View>
   );
 }

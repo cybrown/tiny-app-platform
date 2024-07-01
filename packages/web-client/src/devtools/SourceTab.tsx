@@ -10,6 +10,7 @@ import { useCallback, useRef, useState } from "react";
 type SourceTabProps = {
   ctx: RuntimeContext;
   updateSourceFunc: React.MutableRefObject<(() => string) | null>;
+  hidden: boolean;
   setEditorApi(api: EditorApi): void;
   onFormatHandler(): void;
   onApplyAndFormatHandler(): void;
@@ -20,6 +21,7 @@ type SourceTabProps = {
 
 export default function SourceTab({
   ctx,
+  hidden,
   onFormatHandler,
   onApplyAndFormatHandler,
   onDebugModeChange,
@@ -66,22 +68,25 @@ export default function SourceTab({
 
   return (
     <>
-      <ToolBar
-        onFormat={onFormatHandler}
-        onApplyAndFormat={onApplyAndFormatHandler}
-        onShowDocumentation={toggleShowDocumentationHandler}
-        appDebugMode={ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean}
-        setAppDebugMode={onDebugModeChange}
-        onUndo={onUndoHandler}
-        onRedo={onRedoHandler}
-      />
+      {!hidden ? (
+        <ToolBar
+          onFormat={onFormatHandler}
+          onApplyAndFormat={onApplyAndFormatHandler}
+          onShowDocumentation={toggleShowDocumentationHandler}
+          appDebugMode={ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean}
+          setAppDebugMode={onDebugModeChange}
+          onUndo={onUndoHandler}
+          onRedo={onRedoHandler}
+        />
+      ) : null}
       <Editor
         grabSetSource={(a) => (updateSourceFunc.current = a())}
         onApiReady={setEditorApiHandler}
         onSaveAndFormat={onApplyAndFormatWithSourceHandler}
         onCloseEditor={onCloseHandler}
+        hidden={hidden}
       />
-      {showDocumentation ? (
+      {!hidden && showDocumentation ? (
         <LowLevelOverlay
           size="l"
           position="right"

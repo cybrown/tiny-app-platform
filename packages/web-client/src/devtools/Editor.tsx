@@ -13,11 +13,13 @@ export interface EditorApi {
 }
 
 export function Editor({
+  hidden,
   grabSetSource,
   onApiReady,
   onSaveAndFormat,
   onCloseEditor,
 }: {
+  hidden?: boolean;
   grabSetSource(arg: () => () => string): void;
   onApiReady(api: EditorApi): void;
   onSaveAndFormat(source: string): void;
@@ -110,5 +112,11 @@ export function Editor({
     onApiReady(editorApi);
   }, [editorApi, onApiReady]);
 
-  return <div ref={ref} className={styles.Editor} id="editor"></div>;
+  return (
+    <div
+      ref={ref}
+      className={`${styles.Editor} ${hidden ? styles.hidden : ""}`}
+      id="editor"
+    ></div>
+  );
 }

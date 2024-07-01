@@ -39,6 +39,7 @@ import {
   ThemeProvider,
   Theme,
   WindowFrame as ThemedWindowFrame,
+  useTheme,
 } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
@@ -511,35 +512,20 @@ function App() {
         </div>
 
         {devtoolsVisible ? (
-          <LowLevelOverlay
-            size="xl"
-            position="left"
-            onClose={onCloseHandler}
-            modal
-          >
-            <ThemedWindowFrame
-              title="Devtools"
-              position="left"
-              onClose={onCloseHandler}
-              modal
-            >
-              <Devtools
-                ctx={ctx}
-                themes={themes}
-                onFormatHandler={onFormatHandler}
-                onApplyAndFormatHandler={onApplyAndFormatHandler}
-                onDebugModeChange={setAppDebugModeHandler}
-                theme={theme}
-                onApplyTheme={applyTheme}
-                updateSourceFunc={updateSourceFunc}
-                setEditorApi={setEditorApi}
-                onApplyAndFormatWithSourceHandler={
-                  onApplyAndFormatWithSourceHandler
-                }
-                onCloseHandler={onCloseHandler}
-              />
-            </ThemedWindowFrame>
-          </LowLevelOverlay>
+          <DevtoolsDrawer
+            ctx={ctx}
+            latestExecutedSource={latestExecutedSource}
+            updateSourceFunc={updateSourceFunc}
+            onCloseHandler={onCloseHandler}
+            onFormatHandler={onFormatHandler}
+            onApplyAndFormatHandler={onApplyAndFormatHandler}
+            setAppDebugModeHandler={setAppDebugModeHandler}
+            applyTheme={applyTheme}
+            setEditorApi={setEditorApi}
+            onApplyAndFormatWithSourceHandler={
+              onApplyAndFormatWithSourceHandler
+            }
+          />
         ) : null}
         <div id="tap-overlays"></div>
         {showUpdateNotification ? (
@@ -552,3 +538,69 @@ function App() {
 }
 
 export default App;
+
+type DevtoolsDrawerProps = {
+  ctx: RuntimeContext;
+  updateSourceFunc: React.MutableRefObject<(() => string) | null>;
+  latestExecutedSource: React.MutableRefObject<string | null>;
+  onCloseHandler(): void;
+  onFormatHandler(): void;
+  onApplyAndFormatHandler(): void;
+  setAppDebugModeHandler(appDebugModeValue: boolean): void;
+  applyTheme(newTheme: Theme): void;
+  setEditorApi(editorApi: EditorApi): void;
+  onApplyAndFormatWithSourceHandler(source: string): void;
+};
+
+function DevtoolsDrawer({
+  ctx,
+  latestExecutedSource,
+  onCloseHandler,
+  onFormatHandler,
+  onApplyAndFormatHandler,
+  setAppDebugModeHandler,
+  applyTheme,
+  updateSourceFunc,
+  setEditorApi,
+  onApplyAndFormatWithSourceHandler,
+}: DevtoolsDrawerProps) {
+  const theme = useTheme();
+
+  useEffect(() => {
+    const handler = (event: BeforeUnloadEvent) => {
+      if (
+        updateSourceFunc.current &&
+        latestExecutedSource.current !== updateSourceFunc.current()
+      ) {
+        event.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [latestExecutedSource, updateSourceFunc]);
+
+  return (
+    <LowLevelOverlay size="xl" position="left" onClose={onCloseHandler} modal>
+      <ThemedWindowFrame
+        title="Devtools"
+        position="left"
+        onClose={onCloseHandler}
+        modal
+      >
+        <Devtools
+          ctx={ctx}
+          themes={themes}
+          onFormatHandler={onFormatHandler}
+          onApplyAndFormatHandler={onApplyAndFormatHandler}
+          onDebugModeChange={setAppDebugModeHandler}
+          theme={theme}
+          onApplyTheme={applyTheme}
+          updateSourceFunc={updateSourceFunc}
+          setEditorApi={setEditorApi}
+          onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
+          onCloseHandler={onCloseHandler}
+        />
+      </ThemedWindowFrame>
+    </LowLevelOverlay>
+  );
+}

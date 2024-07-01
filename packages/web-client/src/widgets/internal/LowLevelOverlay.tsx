@@ -26,7 +26,7 @@ let escapeListenerRegistered = false;
 
 function escapeListenerHandler(event: KeyboardEvent) {
   if (event.key === "Escape") {
-    const onClose = escapeStack.pop();
+    const onClose = escapeStack[escapeStack.length - 1];
     if (escapeStack.length === 0) {
       document.removeEventListener("keydown", escapeListenerHandler);
       escapeListenerRegistered = false;

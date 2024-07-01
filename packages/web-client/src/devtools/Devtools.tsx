@@ -1,9 +1,10 @@
 import { RuntimeContext } from "tal-eval";
-import { Select, Tabs, Theme, View } from "../theme";
+import { Select, Switch, Tabs, Theme, View } from "../theme";
 import { EditorApi } from "./Editor";
 import { useState } from "react";
 import SourceTab from "./SourceTab";
 import ConsoleTab from "./Console";
+import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 
 type DevtoolsProps = {
   ctx: RuntimeContext;
@@ -51,6 +52,15 @@ export default function Devtools({
         ]}
         value={currentTab}
         onChange={setCurrentTab}
+        after={
+          <Switch
+            value={
+              (ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean) ?? false
+            }
+            onChange={onDebugModeChange}
+            label="Debug"
+          />
+        }
       />
 
       {/* Avoid unloading SourceTab component to keep the editor state in memory even in other tabs */}
@@ -58,7 +68,6 @@ export default function Devtools({
         ctx={ctx}
         onFormatHandler={onFormatHandler}
         onApplyAndFormatHandler={onApplyAndFormatHandler}
-        onDebugModeChange={onDebugModeChange}
         updateSourceFunc={updateSourceFunc}
         setEditorApi={setEditorApi}
         onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}

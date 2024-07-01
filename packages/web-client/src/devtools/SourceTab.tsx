@@ -1,7 +1,6 @@
 import { RuntimeContext } from "tal-eval";
 import { Editor, EditorApi } from "./Editor";
 import ToolBar from "./Toolbar";
-import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
 import { WindowFrame } from "../theme";
@@ -14,7 +13,6 @@ type SourceTabProps = {
   setEditorApi(api: EditorApi): void;
   onFormatHandler(): void;
   onApplyAndFormatHandler(): void;
-  onDebugModeChange(mode: boolean): void;
   onApplyAndFormatWithSourceHandler(source: string): void;
   onCloseHandler(): void;
 };
@@ -24,7 +22,6 @@ export default function SourceTab({
   hidden,
   onFormatHandler,
   onApplyAndFormatHandler,
-  onDebugModeChange,
   updateSourceFunc,
   setEditorApi,
   onApplyAndFormatWithSourceHandler,
@@ -73,8 +70,6 @@ export default function SourceTab({
           onFormat={onFormatHandler}
           onApplyAndFormat={onApplyAndFormatHandler}
           onShowDocumentation={toggleShowDocumentationHandler}
-          appDebugMode={ctx.getLocalOr(APP_DEBUG_MODE_ENV, false) as boolean}
-          setAppDebugMode={onDebugModeChange}
           onUndo={onUndoHandler}
           onRedo={onRedoHandler}
         />

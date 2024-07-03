@@ -273,29 +273,26 @@ function App() {
     selectedThemeFromQueryString ?? toyBoxTheme
   );
   const [editorApi, setEditorApi] = useState<EditorApi>();
+  const [sourceToExecute, setSourceToExecute] = useState<string | null>(null);
 
-  const executeSource = useCallback(
-    (newSource: string, path: string) => {
-      console.log("execute at path: ", path);
-      if (newSource == null) {
-        setApp(null);
-        return;
-      }
-      latestExecutedSource.current = newSource;
-      try {
-        const hlast = tal.parse(newSource, path);
-        const llast = lowerForApp(hlast);
-        const bin = compile(llast);
-        setApp(bin);
-      } catch (err) {
-        setParseError(err as Error);
-        setApp(null);
-      } finally {
-        editorApi?.replaceAll(newSource);
-      }
-    },
-    [editorApi]
-  );
+  const executeSource = useCallback((newSource: string, path: string) => {
+    console.log("execute at path: ", path);
+    setSourceToExecute(newSource);
+    if (newSource == null) {
+      setApp(null);
+      return;
+    }
+    latestExecutedSource.current = newSource;
+    try {
+      const hlast = tal.parse(newSource, path);
+      const llast = lowerForApp(hlast);
+      const bin = compile(llast);
+      setApp(bin);
+    } catch (err) {
+      setParseError(err as Error);
+      setApp(null);
+    }
+  }, []);
 
   const getSourcePath = useCallback(() => {
     if (sourcePath) {
@@ -333,7 +330,6 @@ function App() {
           sourceToExecute =
             localStorage.getItem(currentAppName) ?? DEFAULT_APP_SOURCE;
         }
-        editorApi?.replaceAll(sourceToExecute);
         executeSource(sourceToExecute, getSourcePath());
       } catch (err) {
         console.error("Failed to get server features");
@@ -343,7 +339,11 @@ function App() {
         setIsLoadingApp(false);
       }
     })();
-  }, [editorApi, executeSource, getSourcePath, remoteConfiguration]);
+  }, [executeSource, getSourcePath, remoteConfiguration]);
+
+  useEffect(() => {
+    editorApi?.replaceAll(sourceToExecute ?? "");
+  }, [sourceToExecute, editorApi]);
 
   const forceRender = useForceRender();
   const ctx: RuntimeContext = useMemo(() => buildContext(forceRender), [

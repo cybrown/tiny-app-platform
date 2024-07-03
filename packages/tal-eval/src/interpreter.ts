@@ -487,7 +487,7 @@ export class VM {
       case 'SetIndex': {
         const value = this.stack.pop();
         const target = this.popObject();
-        const index = this.popNumber();
+        const index = this.popStringOrNumber();
         target[index] = value;
         this.stack.push(value);
         if (node.forceRender) {

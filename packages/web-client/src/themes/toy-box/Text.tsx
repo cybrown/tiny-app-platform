@@ -2,6 +2,12 @@ import { useMemo } from "react";
 import styles from "./Text.module.css";
 import { TextProps } from "../../theme";
 
+const LINE_TO_CSS = {
+  under: "underline",
+  over: "overline",
+  through: "line-through",
+};
+
 export default function Text({
   preformatted,
   text,
@@ -11,6 +17,7 @@ export default function Text({
   weight,
   wrap,
   ellipsis,
+  line,
 }: TextProps) {
   if (
     preformatted &&
@@ -34,8 +41,9 @@ export default function Text({
       fontWeight: weight ?? "normal",
       whiteSpace: wrap ? undefined : "nowrap",
       color: color,
+      textDecoration: line ? LINE_TO_CSS[line] : undefined,
     }),
-    [align, size, weight, wrap, color]
+    [align, size, weight, wrap, color, line]
   );
 
   return preformatted ? (

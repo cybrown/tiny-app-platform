@@ -72,6 +72,7 @@ export interface TextProps {
   wrap?: boolean;
   color?: string;
   ellipsis?: boolean;
+  line?: "under" | "over" | "through";
 }
 
 export type TableTitle = {

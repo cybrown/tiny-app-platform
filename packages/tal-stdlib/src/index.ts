@@ -59,7 +59,9 @@ import {
   number_randint,
 } from './functions/number';
 import {
+  record_delete,
   record_entries,
+  record_exclude,
   record_get,
   record_has,
   record_keys,
@@ -194,6 +196,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(record_merge);
   ctx.registerFunction(record_set);
   ctx.registerFunction(record_values);
+  ctx.registerFunction(record_delete);
+  ctx.registerFunction(record_exclude);
   ctx.registerFunction(pg_query);
   ctx.registerFunction(process_exec);
   ctx.registerFunction(regex_match);

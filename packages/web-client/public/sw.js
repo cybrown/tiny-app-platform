@@ -71,6 +71,11 @@ function fetchMutableResource(cacheKey, request) {
   });
 }
 
+function deleteAllCache() {
+  log("Delete cache");
+  return caches.delete("v1");
+}
+
 const CACHE_MAX_AGE_MS = 1000 * 60 * 60; // 1 hour
 
 self.addEventListener("fetch", async (event) => {
@@ -98,7 +103,14 @@ self.addEventListener("fetch", async (event) => {
     event.respondWith(
       caches.match(cacheKey, { ignoreSearch: true }).then((response) => {
         if (!response) {
-          return fetchMutableResource(cacheKey, event.request);
+          return fetchMutableResource(cacheKey, event.request)
+            .then((response) => {
+              if (response.status >= 400) {
+                return deleteAllCache().then(() => response);
+              }
+              return response;
+            })
+            .catch(deleteAllCache);
         }
 
         // If the cache is too old, refetch it, update the cache and return the original response
@@ -109,11 +121,15 @@ self.addEventListener("fetch", async (event) => {
           log("Cache update", cacheKey);
           fetchMutableResource(cacheKey, event.request)
             .then(() => {
+              if (response.status >= 400) {
+                return deleteAllCache().then(() => response);
+              }
               log("Cache updated", cacheKey);
               // TODO: Notify app that an update is available ?
             })
             .catch((err) => {
               // TODO: Notify app that an update failed ?
+              return deleteAllCache();
             });
         }
 
@@ -133,12 +149,16 @@ self.addEventListener("fetch", async (event) => {
     event.respondWith(
       caches.match(event.request.url).then((response) => {
         if (!response) {
-          return fetch(event.request).then((response) => {
-            if (response.status === 200) {
-              cachePut(event.request.url, response.clone());
-            }
-            return response;
-          });
+          return fetch(event.request)
+            .then((response) => {
+              if (response.status === 200) {
+                cachePut(event.request.url, response.clone());
+              } else if (response.status >= 400) {
+                return deleteAllCache().then(() => response);
+              }
+              return response;
+            })
+            .catch(deleteAllCache);
         }
         return response;
       })

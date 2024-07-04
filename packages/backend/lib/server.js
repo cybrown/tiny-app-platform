@@ -410,21 +410,29 @@ const routes = [
   },
 ];
 
-const staticHandler = serveStatic("./public");
-const staticHandlerFinal = serveStatic("./public", {
+const servePublic = serveStatic("./public");
+const servePublicWithoutFallThrough = serveStatic("./public", {
   fallthrough: false,
 });
 
+// Consider URL not containing a dot as a request to index.html
+function isUrlAllowedForIndexHtml(url) {
+  return !url.includes(".");
+}
+
 const handleRequest = superHandler(routes, (req, res) => {
-  req.url = "/";
-  staticHandlerFinal(req, res, (err) =>
+  // If the URL is suitable for index.html, change it to "/" to force the static handler to serve it
+  if (isUrlAllowedForIndexHtml(req.url)) {
+    req.url = "/";
+  }
+  servePublicWithoutFallThrough(req, res, (err) =>
     sendResponse(res, { status: err.statusCode ?? 500 })
   );
 });
 
 server.on("request", (req, res) => {
   console.log(req.method, req.url);
-  staticHandler(req, res, () => handleRequest(req, res));
+  servePublic(req, res, () => handleRequest(req, res));
 });
 
 module.exports = server;

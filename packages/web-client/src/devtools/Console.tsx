@@ -25,6 +25,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const logs = ctx.logs;
   // TODO: Remove this when logs are immutable
   const forceRender = useForceRender();
+  const [includeLogs, setIncludeLogs] = useState(true);
   const [includeBugs, setIncludeBugs] = useState(true);
   const [includeMongo, setIncludeMongo] = useState(true);
   const [includePg, setIncludePg] = useState(true);
@@ -41,7 +42,8 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   return (
     <View>
       <View layout="flex-row">
-        <CheckBox label="🪲" value={includeBugs} onChange={setIncludeBugs} />
+        <CheckBox label="📜" value={includeLogs} onChange={setIncludeLogs} />
+        <CheckBox label="🐞" value={includeBugs} onChange={setIncludeBugs} />
         <CheckBox label="🌱" value={includeMongo} onChange={setIncludeMongo} />
         <CheckBox label="🐘" value={includePg} onChange={setIncludePg} />
         <CheckBox label="🌐" value={includeHttp} onChange={setIncludeHttp} />
@@ -51,6 +53,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
       {logs
         .filter(
           (logItem) =>
+            (logItem.type === "log" && includeLogs) ||
             (logItem.type === "error" && includeBugs) ||
             (logItem.type === "pg" && includePg) ||
             (logItem.type === "mongo" && includeMongo) ||
@@ -72,6 +75,8 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
 
 function RenderLogItem({ item }: { item: LogItem<unknown> }) {
   switch (item.type) {
+    case "log":
+      return <RenderLogLogItem item={item as LogItem<unknown>} />;
     case "http-request":
       return <RenderHttpLogItem item={item as LogItem<HttpLogItemData>} />;
     case "mongo":
@@ -91,7 +96,7 @@ function RenderErrorLogItem({ item }: { item: LogItem<unknown> }) {
 
   return (
     <>
-      <Text text="🪲" />
+      <Text text="🐞" />
       <Button text="🔎" onClick={showDetailsHandler} outline />
       <Text
         text={
@@ -251,6 +256,68 @@ function RenderPgLogItem({ item }: { item: LogItem<PgLogItemData> }) {
             </View>
             <Text text="Result" size={1.1} />
             <Debug force value={result} extend={3} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+    </>
+  );
+}
+
+function RenderLogLogItem({ item }: { item: LogItem<unknown> }) {
+  const [isDetailsVisible, setDetailsVisible] = useState<boolean>(false);
+  const showDetailsHandler = useCallback(() => setDetailsVisible(true), []);
+  const hideDetailsHandler = useCallback(() => setDetailsVisible(false), []);
+
+  const copyAsString = useCallback(() => {
+    try {
+      navigator.clipboard.writeText(String(item.data));
+    } catch (err) {
+      console.error(err);
+    }
+  }, [item.data]);
+
+  const copyAsJSON = useCallback(() => {
+    try {
+      navigator.clipboard.writeText(JSON.stringify(item.data));
+    } catch (err) {
+      console.error(err);
+    }
+  }, [item.data]);
+
+  return (
+    <>
+      <Text text="📜" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      <Text
+        text={
+          item.data === null
+            ? "null"
+            : item.data === undefined
+            ? "undefined"
+            : typeof item.data == "object"
+            ? "{" + Object.keys(item.data).join(", ") + "}"
+            : String(item.data)
+        }
+      />
+      {isDetailsVisible ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Log details"
+            onClose={hideDetailsHandler}
+          >
+            <View layout="flex-row">
+              <Button text="Copy as String" onClick={copyAsString} outline />
+              <Button text="Copy as JSON" onClick={copyAsJSON} outline />
+            </View>
+            <Text text={new Date(item.timestamp).toISOString()} />
+            <Debug value={item.data} extend={2} />
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}

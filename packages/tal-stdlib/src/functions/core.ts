@@ -212,17 +212,22 @@ export const throw$ = defineFunction(
 export const log = defineFunction(
   'log',
   [{ name: 'value' }],
-  (_ctx, { value }, args) => {
+  (ctx, { value }, args) => {
+    ctx.log('log', value);
+    for (const arg of args) {
+      ctx.log('log', arg);
+    }
     console.log(value, ...args);
     return value;
   },
   undefined,
   {
-    description: 'Log a value to the console, and returns it back',
+    description:
+      'Log all its arguments to the console, and returns the first argument',
     parameters: {
-      value: 'The value to log',
+      value: 'The argument to return',
     },
-    returns: 'The value that was logged',
+    returns: 'The first argument  was logged',
   }
 );
 

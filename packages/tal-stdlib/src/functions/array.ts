@@ -157,9 +157,20 @@ export const array_get = defineFunction(
 export const array_set = defineFunction(
   'array_set',
   [{ name: 'array' }, { name: 'index' }, { name: 'value' }],
-  (_ctx, { array, index, value }) => {
+  (ctx, { array, index, value }) => {
     array[index] = value;
+    ctx.forceRefresh();
     return value;
+  },
+  undefined,
+  {
+    description: 'Mutates an array and set a value at the specified index',
+    parameters: {
+      array: 'Array to mutate',
+      index: 'Index to place the new value to',
+      value: 'New value',
+    },
+    returns: 'The mutated array',
   }
 );
 

@@ -40,6 +40,7 @@ function AppRenderer({
         setAppUi(ui);
         setLastError(null);
       } catch (err) {
+        ctx.log("error", err);
         setLastError(err);
         setAppUi(null);
       }
@@ -48,6 +49,7 @@ function AppRenderer({
   }, [app, ctx, notificationController]);
   return lastError ? (
     <RenderError
+      ctx={ctx}
       expression={null}
       err={lastError}
       phase="startup"

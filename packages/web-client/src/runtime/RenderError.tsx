@@ -1,12 +1,14 @@
-import { EvaluationError, Opcode } from "tal-eval";
-import styles from "./styles.module.css";
+import { EvaluationError, Opcode, RuntimeContext } from "tal-eval";
+import { Button, Text, View } from "../theme";
 
 export default function RenderError({
+  ctx,
   expression,
   err,
   phase,
   retry,
 }: {
+  ctx: RuntimeContext;
   expression: Opcode | null;
   err: unknown;
   phase: "startup" | "render" | "on_create";
@@ -22,19 +24,27 @@ export default function RenderError({
   }
 
   return (
-    <div className={styles.RenderError}>
-      {`Failed to evaluate ${
-        expression ? nameKindOfExpression(expression) : "an expression"
-      } during ${phase} because of: <${err}>${locationMessage}`}
-      <button
-        onClick={() =>
-          err && console.error(err instanceof EvaluationError ? err.cause : err)
-        }
-      >
-        Dump error in console
-      </button>
-      {retry ? <button onClick={retry}>Retry</button> : null}
-    </div>
+    <View backgroundColor="rgb(230, 104, 104)" padding={0.5}>
+      <Text
+        text={`Failed to evaluate ${
+          expression ? nameKindOfExpression(expression) : "an expression"
+        } during ${phase} because of: <${err}>${locationMessage}`}
+        wrap
+        color="rgb(245, 242, 242)"
+      />
+      <View layout="flex-row">
+        <Button
+          text="Dump error in console"
+          onClick={() => {
+            if (err) {
+              console.error(err instanceof EvaluationError ? err.cause : err);
+              ctx.log("error", err);
+            }
+          }}
+        />
+        {retry ? <Button onClick={retry} text="Retry" /> : null}
+      </View>
+    </View>
   );
 }
 

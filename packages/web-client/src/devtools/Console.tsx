@@ -100,10 +100,11 @@ function RenderErrorLogItem({ item }: { item: LogItem<unknown> }) {
       <Button text="🔎" onClick={showDetailsHandler} outline />
       <Text
         text={
-          item.data instanceof EvaluationError
+          (item.data instanceof EvaluationError
             ? item.data.detailedMessage
-            : (item as any).message ?? "<No error message>"
+            : (item.data as any).message) ?? "<No error message>"
         }
+        ellipsis
       />
       {showDetails ? (
         <LowLevelOverlay

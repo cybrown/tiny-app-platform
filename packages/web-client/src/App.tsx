@@ -32,15 +32,9 @@ import View, { ViewDocumentation } from "./widgets/View";
 import { backendUrl } from "./runtime/configuration";
 import Debug, { DebugDocumentation } from "./widgets/Debug";
 import { APP_DEBUG_MODE_ENV } from "./runtime/constants";
-import errorStyles from "./runtime/styles.module.css";
 import Pager, { PagerDocumentation } from "./widgets/Pager";
 import { importStdlibInContext } from "tal-stdlib";
-import {
-  ThemeProvider,
-  Theme,
-  WindowFrame as ThemedWindowFrame,
-  useTheme,
-} from "./theme";
+import { ThemeProvider, Theme, useTheme } from "./theme";
 import toyBoxTheme from "./themes/toy-box";
 import htmlTheme from "./themes/html";
 import twbsTheme from "./themes/twbs";
@@ -405,12 +399,23 @@ function App() {
     }
   }, [editorApi, getSourcePath, updateSourceFunc]);
 
+  const [lastCompileErrorToLog, setLastCompileErrorToLog] = useState<unknown>(
+    null
+  );
+
+  useEffect(() => {
+    if (!lastCompileErrorToLog) return;
+    ctx.log("error", lastCompileErrorToLog);
+    setLastCompileErrorToLog(null);
+  }, [ctx, lastCompileErrorToLog]);
+
   const onApplyAndFormatWithSourceHandler = useCallback(
     (source: string) => {
       try {
         const app = tal.parse(source, getSourcePath());
         source = tal.stringify(app);
       } catch (err) {
+        setLastCompileErrorToLog(err);
         console.error("Failed to format because of syntax error", err);
       } finally {
         persistSource(source);
@@ -482,22 +487,44 @@ function App() {
             {app ? (
               <AppRenderer ctx={ctx} app={app} />
             ) : parseError ? (
-              <div className={errorStyles.RenderError}>
-                <div>Error parsing source: {parseError.message}</div>
-                <div>
-                  At line {(parseError as any)?.location?.start?.line} column{" "}
-                  {(parseError as any)?.location?.start?.column}
-                </div>
-                <button onClick={() => console.error(parseError)}>
-                  Click to console.error
-                </button>
-              </div>
+              <theme.View backgroundColor="rgb(230, 104, 104)" padding={0.5}>
+                <theme.Text
+                  text={`Error parsing source: ${parseError.message}`}
+                  wrap
+                  color="rgb(245, 242, 242)"
+                />
+                <theme.Text
+                  text={`At line ${
+                    (parseError as any)?.location?.start?.line
+                  } column 
+                ${(parseError as any)?.location?.start?.column}`}
+                  wrap
+                  color="rgb(245, 242, 242)"
+                />
+              </theme.View>
             ) : isLoadingApp ? (
-              <div>Loading app...</div>
+              <theme.View layout="flex-column" padding={0.5}>
+                <theme.View layout="flex-row">
+                  <theme.Loader />
+                  <theme.Text text="Loading app..." />
+                </theme.View>
+              </theme.View>
             ) : isLoadError ? (
-              <div>Error while loading app</div>
+              <theme.View backgroundColor="rgb(230, 104, 104)" padding={0.5}>
+                <theme.Text
+                  text="Error while loading app"
+                  wrap
+                  color="rgb(245, 242, 242)"
+                />
+              </theme.View>
             ) : (
-              <div>Unknown failure</div>
+              <theme.View backgroundColor="rgb(230, 104, 104)" padding={0.5}>
+                <theme.Text
+                  text="Unknown failure"
+                  wrap
+                  color="rgb(245, 242, 242)"
+                />
+              </theme.View>
             )}
           </div>
           {!devtoolsVisible && isDevModeEnabled ? (
@@ -581,7 +608,7 @@ function DevtoolsDrawer({
 
   return (
     <LowLevelOverlay size="xl" position="left" onClose={onCloseHandler} modal>
-      <ThemedWindowFrame
+      <theme.WindowFrame
         title="Devtools"
         position="left"
         onClose={onCloseHandler}
@@ -600,7 +627,7 @@ function DevtoolsDrawer({
           onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
           onCloseHandler={onCloseHandler}
         />
-      </ThemedWindowFrame>
+      </theme.WindowFrame>
     </LowLevelOverlay>
   );
 }

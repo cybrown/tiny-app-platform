@@ -68,6 +68,7 @@ export default function CustomWidgetHost({
   if (childCtx.onCreateError) {
     return (
       <RenderError
+        ctx={childCtx}
         phase="on_create"
         expression={null}
         err={childCtx.onCreateError}

@@ -56,6 +56,7 @@ export default function RenderExpression({
         ctx={ctx}
         onError={(err, retry) => (
           <RenderError
+            ctx={ctx}
             phase="render"
             expression={
               /*expression ?? (evaluatedUI as any).kind ?? null*/ null
@@ -71,6 +72,7 @@ export default function RenderExpression({
   } catch (err) {
     return (
       <RenderError
+        ctx={ctx}
         phase="render"
         expression={/*expression ?? (evaluatedUI as any).kind ?? null*/ null}
         err={err}

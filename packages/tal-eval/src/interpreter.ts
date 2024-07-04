@@ -240,11 +240,16 @@ export class VM {
     };
   }
 
+  private latestError: unknown;
+
   private handleError(err: unknown): VmExit | null {
     while (true) {
       // Get top most try state and jump to its catch or end label if present
       const previousTryState = this.tryStack.pop();
       if (previousTryState) {
+        if (previousTryState.catchLabel) {
+          this.latestError = err;
+        }
         this.jumpToLabel(
           previousTryState.catchLabel ?? previousTryState.endTryLabel
         );
@@ -359,7 +364,7 @@ export class VM {
           mutable: node.mutable,
           initialValue: initialValue,
         });
-        this.stack.push(undefined);
+        this.stack.push(null);
         this.pc++;
         break;
       }
@@ -527,6 +532,12 @@ export class VM {
           children,
           props,
         });
+        this.pc++;
+        break;
+      }
+      case 'PushLatestError': {
+        this.stack.push(this.latestError);
+        this.latestError = null;
         this.pc++;
         break;
       }

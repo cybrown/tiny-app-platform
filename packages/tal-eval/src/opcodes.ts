@@ -89,6 +89,8 @@ type OpcodeImport = {
 
 type OpcodeMakeArrayForBlock = { count: number } & OpcodeMetadata;
 
+type OpcodePushLatestError = {} & OpcodeMetadata;
+
 type OpcodeByKind2 = {
   Literal: OpcodeLiteral;
   MakeArray: OpcodeMakeArray;
@@ -114,6 +116,7 @@ type OpcodeByKind2 = {
   CtxRender: OpcodeCtxRender;
   Import: OpcodeImport;
   MakeArrayForBlock: OpcodeMakeArrayForBlock;
+  PushLatestError: OpcodePushLatestError;
 };
 
 export type OpcodeByKind = {

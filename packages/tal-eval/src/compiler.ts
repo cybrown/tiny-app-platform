@@ -230,7 +230,18 @@ export class Compiler {
         this.appendOpcode('Jump', value.location, { label: endTryLabel });
         if (value.catchExpr && catchLabel) {
           this.setCurrentLabel(catchLabel);
+          this.appendOpcode('ScopeEnter', value.location, {});
+          this.appendOpcode('PushLatestError', value.location, {})
+          this.appendOpcode('DeclareLocal', value.location, {
+            mutable: false,
+            name: 'err',
+            hasInitialValue: true,
+          });
+          this.appendOpcode('Pop', value.location, { inBlock: false });
           this.compile(value.catchExpr);
+          this.appendOpcode('ScopeLeave', value.location, {
+            inBlock: false,
+          });
           this.appendOpcode('Jump', value.location, { label: endTryLabel });
         }
         this.setCurrentLabel(endTryLabel);

@@ -1,0 +1,13 @@
+[
+  {
+    "kind": "Try",
+    "expr": {
+      "kind": "Local",
+      "name": "missing_variable"
+    },
+    "catchExpr": {
+      "kind": "Local",
+      "name": "error"
+    }
+  }
+]

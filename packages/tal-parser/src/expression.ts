@@ -73,7 +73,7 @@ export type SwitchExpression = ExpressionMetadata & {
 export type TryExpression = ExpressionMetadata & {
   kind: 'Try';
   expr: Expression;
-  catchBlock: Expression | undefined;
+  catchExpr: Expression | undefined;
 };
 
 export type CallExpression = ExpressionMetadata & {

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "oneLinerTry",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "BlockOfExpressions",
+        "children": [
+          {
+            "kind": "Try",
+            "expr": {
+              "kind": "Call",
+              "args": [
+                {
+                  "argKind": "Named",
+                  "name": "arg",
+                  "value": {
+                    "kind": "Local",
+                    "name": "arg1"
+                  }
+                }
+              ],
+              "value": {
+                "kind": "Local",
+                "name": "some_function_that_throws"
+              }
+            },
+            "catchExpr": {
+              "kind": "Call",
+              "args": [
+                {
+                  "argKind": "Positional",
+                  "value": {
+                    "kind": "Local",
+                    "name": "error"
+                  }
+                }
+              ],
+              "value": {
+                "kind": "Local",
+                "name": "log"
+              }
+            }
+          }
+        ]
+      },
+      "parameters": []
+    }
+  }
+]

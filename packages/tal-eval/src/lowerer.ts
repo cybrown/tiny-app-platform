@@ -412,8 +412,8 @@ class Lowerer {
         return {
           ...expr,
           expr: this.lowerSingle(expr.expr, returnArrayFromBlock),
-          catchBlock: expr.catchBlock
-            ? this.lowerSingle(expr.catchBlock, returnArrayFromBlock)
+          catchExpr: expr.catchExpr
+            ? this.lowerSingle(expr.catchExpr, returnArrayFromBlock)
             : undefined,
         };
       }

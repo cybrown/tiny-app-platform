@@ -592,12 +592,12 @@ class Stringifier {
     } else {
       result += this.stringify(obj.expr);
     }
-    if (obj.catchBlock) {
-      if (isExpr(obj.catchBlock, 'BlockOfExpressions')) {
+    if (obj.catchExpr) {
+      if (isExpr(obj.catchExpr, 'BlockOfExpressions')) {
         result +=
-          ' catch ' + this.stringifyBlockOfExpressionsOneLine(obj.catchBlock);
+          ' catch ' + this.stringifyBlockOfExpressionsOneLine(obj.catchExpr);
       } else {
-        throw new Error('Unreachable');
+        result += ' catch ' + this.stringify(obj.catchExpr);
       }
     }
     return result;
@@ -608,15 +608,15 @@ class Stringifier {
     if (isExpr(obj.expr, 'BlockOfExpressions')) {
       result += this.stringifyBlockOfExpressionsMultiLine(obj.expr);
     } else {
-      throw new Error('Unreachable');
+      result += this.stringify(obj.expr);
     }
 
-    if (obj.catchBlock) {
-      if (isExpr(obj.catchBlock, 'BlockOfExpressions')) {
+    if (obj.catchExpr) {
+      if (isExpr(obj.catchExpr, 'BlockOfExpressions')) {
         result +=
-          ' catch ' + this.stringifyBlockOfExpressionsMultiLine(obj.catchBlock);
+          ' catch ' + this.stringifyBlockOfExpressionsMultiLine(obj.catchExpr);
       } else {
-        throw new Error('Unreachable');
+        result += ' catch ' + this.stringify(obj.catchExpr);
       }
     }
     return result;

@@ -167,10 +167,10 @@ SwitchDefaultBranch
         { return { value }; }
 
 Try
-    = 'try' _ expr:BlockOfExpressions catchBlockArray:(_ 'catch' _ BlockOfExpressions)?
+    = 'try' _ expr:Expression catchExprArray:(_ 'catch' _ Expression)?
         {
-            const catchBlock = catchBlockArray ? catchBlockArray[3] : undefined
-            return { location: buildLocation(), kind: "Try", expr, catchBlock };
+            const catchExpr = catchExprArray ? catchExprArray[3] : undefined
+            return { location: buildLocation(), kind: "Try", expr, catchExpr };
         }
 
 SubExpression

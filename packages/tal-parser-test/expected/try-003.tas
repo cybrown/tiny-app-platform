@@ -1,0 +1,1 @@
+fun oneLinerTry() { try some_function_that_throws(arg: arg1) catch log(error) }

@@ -10,7 +10,7 @@
         }
       ]
     },
-    "catchBlock": {
+    "catchExpr": {
       "kind": "BlockOfExpressions",
       "children": [
         {

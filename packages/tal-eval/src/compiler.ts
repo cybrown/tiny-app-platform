@@ -220,7 +220,7 @@ export class Compiler {
         this.setCurrentLabel(endIfLabel);
         break;
       case 'Try':
-        const catchLabel = value.catchBlock
+        const catchLabel = value.catchExpr
           ? this.makeLabel('try_catch')
           : undefined;
         const endTryLabel = this.makeLabel('try_end');
@@ -228,9 +228,9 @@ export class Compiler {
         this.compile(value.expr);
         this.appendOpcode('TryPop', value.location, {});
         this.appendOpcode('Jump', value.location, { label: endTryLabel });
-        if (value.catchBlock && catchLabel) {
+        if (value.catchExpr && catchLabel) {
           this.setCurrentLabel(catchLabel);
-          this.compile(value.catchBlock);
+          this.compile(value.catchExpr);
           this.appendOpcode('Jump', value.location, { label: endTryLabel });
         }
         this.setCurrentLabel(endTryLabel);

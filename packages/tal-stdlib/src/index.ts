@@ -19,6 +19,9 @@ import {
   array_sort,
   array_take,
   array_to_record,
+  array_find,
+  array_find_index,
+  array_set,
 } from './functions/array';
 import { bytes_to_string } from './functions/bytes';
 import { cheerio_find, cheerio_load } from './functions/cheerio';
@@ -58,6 +61,7 @@ import {
 import {
   record_entries,
   record_get,
+  record_has,
   record_keys,
   record_merge,
   record_set,
@@ -125,6 +129,9 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(array_append);
   ctx.registerFunction(array_concat);
   ctx.registerFunction(array_filter);
+  ctx.registerFunction(array_set);
+  ctx.registerFunction(array_find);
+  ctx.registerFunction(array_find_index);
   ctx.registerFunction(array_flat_map);
   ctx.registerFunction(array_get);
   ctx.registerFunction(array_group);
@@ -182,6 +189,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(number_randint);
   ctx.registerFunction(record_entries);
   ctx.registerFunction(record_get);
+  ctx.registerFunction(record_has);
   ctx.registerFunction(record_keys);
   ctx.registerFunction(record_merge);
   ctx.registerFunction(record_set);

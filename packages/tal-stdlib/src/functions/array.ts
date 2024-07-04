@@ -133,6 +133,16 @@ export const array_range = defineFunction(
       result.push(i);
     }
     return result;
+  },
+  undefined,
+  {
+    description: 'Create an array of numbers with predefined values',
+    parameters: {
+      from: 'First value',
+      to: 'Last value, excluded',
+      step: 'Step between each values',
+    },
+    returns: 'The array with initialized values',
   }
 );
 
@@ -141,6 +151,15 @@ export const array_get = defineFunction(
   [{ name: 'array' }, { name: 'index' }],
   (_ctx, { array, index }) => {
     return array[index];
+  }
+);
+
+export const array_set = defineFunction(
+  'array_set',
+  [{ name: 'array' }, { name: 'index' }, { name: 'value' }],
+  (_ctx, { array, index, value }) => {
+    array[index] = value;
+    return value;
   }
 );
 
@@ -170,11 +189,41 @@ export const array_take = defineFunction(
 
 export const array_filter = defineFunction(
   'array_filter',
-  [{ name: 'array' }, { name: 'filter' }],
-  (ctx, { array, filter }) => {
+  [{ name: 'array' }, { name: 'predicate' }],
+  (ctx, { array, predicate }) => {
     return (array as any[]).filter((it, index) =>
-      ctx.callFunction(filter, [it, index])
+      ctx.callFunction(predicate, [it, index])
     );
+  }
+);
+
+export const array_find = defineFunction(
+  'array_find',
+  [{ name: 'array' }, { name: 'predicate' }],
+  (ctx, { array, predicate }) => {
+    return (array as any[]).find((it, index) =>
+      ctx.callFunction(predicate, [it, index])
+    );
+  }
+);
+
+export const array_find_index = defineFunction(
+  'array_find_index',
+  [{ name: 'array' }, { name: 'predicate' }],
+  (ctx, { array, predicate }) => {
+    const foundIndex = (array as any[]).findIndex((it, index) =>
+      ctx.callFunction(predicate, [it, index])
+    );
+    return foundIndex == -1 ? null : foundIndex;
+  },
+  undefined,
+  {
+    description: 'Find the index of an element in an array using a predicate',
+    parameters: {
+      array: 'Array where to find the value from',
+      predicate: 'Function returning true when the item matches',
+    },
+    returns: 'A number if the item is found, or else null',
   }
 );
 

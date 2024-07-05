@@ -41,6 +41,7 @@ type TryState = {
   catchLabel?: string;
   endTryLabel: string;
   ctxStackLength: number;
+  stackLength: number;
 };
 
 export type VmExit = VmExitFinished | VmExitPending | VmExitError;
@@ -254,6 +255,7 @@ export class VM {
           previousTryState.catchLabel ?? previousTryState.endTryLabel
         );
         this.ctxStack.length = previousTryState.ctxStackLength;
+        this.stack.length = previousTryState.stackLength;
         return null;
       }
 
@@ -513,6 +515,7 @@ export class VM {
           catchLabel: node.catchLabel,
           endTryLabel: node.endTryLabel,
           ctxStackLength: this.ctxStack.length,
+          stackLength: this.stack.length,
         });
         this.pc++;
         break;

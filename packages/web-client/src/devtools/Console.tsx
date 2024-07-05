@@ -1,7 +1,12 @@
 import { PropsWithChildren, useCallback, useState } from "react";
 import { RuntimeContext, EvaluationError } from "tal-eval";
 import { LogItem } from "tal-eval/dist/RuntimeContext";
-import { HttpLogItemData, MongoLogItemData, PgLogItemData } from "tal-stdlib";
+import {
+  HttpLogItemData,
+  MongoLogItemData,
+  PgLogItemData,
+  ProcessLogItemData,
+} from "tal-stdlib";
 import {
   View,
   Button,
@@ -21,6 +26,17 @@ type ConsoleTabProps = {
   ctx: RuntimeContext;
 };
 
+function isUnknownLogType(type: string): boolean {
+  return (
+    type !== "log" &&
+    type !== "error" &&
+    type !== "mongo" &&
+    type !== "pg" &&
+    type !== "http-request" &&
+    type !== "process"
+  );
+}
+
 export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const logs = ctx.logs;
   // TODO: Remove this when logs are immutable
@@ -30,6 +46,8 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const [includeMongo, setIncludeMongo] = useState(true);
   const [includePg, setIncludePg] = useState(true);
   const [includeHttp, setIncludeHttp] = useState(true);
+  const [includeProcess, setIncludeProcess] = useState(true);
+  const [includeUnknown, setIncludeUnknown] = useState(true);
 
   const clearConsoleHandler = useCallback(() => {
     ctx.clearLogs();
@@ -46,7 +64,17 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
         <CheckBox label="🐞" value={includeBugs} onChange={setIncludeBugs} />
         <CheckBox label="🌱" value={includeMongo} onChange={setIncludeMongo} />
         <CheckBox label="🐘" value={includePg} onChange={setIncludePg} />
+        <CheckBox
+          label="🐚"
+          value={includeProcess}
+          onChange={setIncludeProcess}
+        />
         <CheckBox label="🌐" value={includeHttp} onChange={setIncludeHttp} />
+        <CheckBox
+          label="❓"
+          value={includeUnknown}
+          onChange={setIncludeUnknown}
+        />
         <ViewChild flexGrow={1}> </ViewChild>
         <Button outline text="Clear" onClick={clearConsoleHandler} />
       </View>
@@ -57,7 +85,9 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
             (logItem.type === "error" && includeBugs) ||
             (logItem.type === "pg" && includePg) ||
             (logItem.type === "mongo" && includeMongo) ||
-            (logItem.type === "http-request" && includeHttp)
+            (logItem.type === "http-request" && includeHttp) ||
+            (logItem.type === "process" && includeProcess) ||
+            (isUnknownLogType(logItem.type) && includeUnknown)
         )
         .map((logItem) => (
           <View key={logItem.id} layout="flex-row">
@@ -83,6 +113,10 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
       return <RenderMongoLogItem item={item as LogItem<MongoLogItemData>} />;
     case "pg":
       return <RenderPgLogItem item={item as LogItem<PgLogItemData>} />;
+    case "process":
+      return (
+        <RenderProcessLogItem item={item as LogItem<ProcessLogItemData>} />
+      );
     case "error":
       return <RenderErrorLogItem item={item} />;
   }
@@ -257,6 +291,90 @@ function RenderPgLogItem({ item }: { item: LogItem<PgLogItemData> }) {
             </View>
             <Text text="Result" size={1.1} />
             <Debug force value={result} extend={3} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+    </>
+  );
+}
+
+function RenderProcessLogItem({ item }: { item: LogItem<ProcessLogItemData> }) {
+  const { command, args, stage, exitStatus, stdout } = item.data;
+
+  const [isDetailsTabVisible, setDetailsTabVisible] = useState<boolean>(false);
+  const showDetailsHandler = useCallback(() => setDetailsTabVisible(true), []);
+  const hideDetailsHandler = useCallback(() => setDetailsTabVisible(false), []);
+
+  return (
+    <>
+      <Text text="🐚" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      {stage === "fulfilled" ? (
+        <Text
+          text={exitStatus + ""}
+          color={exitStatus === "0" ? "green" : "#AF9510"}
+          weight="bold"
+        />
+      ) : stage === "rejected" ? (
+        <Text text="KO" color="red" weight="bold" />
+      ) : stage === "timeout" ? (
+        <Text text="TIMEOUT" color="red" weight="bold" />
+      ) : (
+        <Loader size="md" />
+      )}
+      <Text text={command} />
+      {args.map((arg, index) => (
+        <Text key={index} text={arg} />
+      ))}
+      {isDetailsTabVisible ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Query details"
+            onClose={hideDetailsHandler}
+          >
+            <Button
+              text="Copy command"
+              outline
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  [
+                    command,
+                    ...args.map((arg) => `'${escapeShellQuote(arg)}'`),
+                  ].join(" ")
+                )
+              }
+            />
+            <View layout="flex-row">
+              <Text text="Command:" />
+              <Text text={command} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Args:" />
+              {args.map((arg, index) => (
+                <Text key={index} text={arg} />
+              ))}
+            </View>
+            <View layout="flex-row">
+              <Text text="Stage:" />
+              <Text text={stage} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Exit status:" />
+              <Text text={exitStatus ? exitStatus : "N/A"} />
+            </View>
+            {stdout ? (
+              <>
+                <Text text="Stdout" size={1.1} />
+                <Text preformatted text={bytesToString(stdout)} />
+              </>
+            ) : null}
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}

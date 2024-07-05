@@ -237,3 +237,4 @@ export function importStdlibInContext(ctx: RuntimeContext) {
 export { HttpLogItemData } from './functions/http';
 export { MongoLogItemData } from './functions/mongodb';
 export { PgLogItemData } from './functions/pg';
+export { ProcessLogItemData } from './functions/process';

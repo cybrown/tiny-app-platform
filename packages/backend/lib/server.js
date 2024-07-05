@@ -283,6 +283,7 @@ const routes = [
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
       let { fileName, args, cwd, timeout } = request;
+      let exitStatus = null;
       const result = await new Promise((resolve, reject) => {
         const childProcess = child_process.execFile(fileName, args, {
           cwd: cwd,
@@ -290,13 +291,19 @@ const routes = [
         });
         const stdoutBuffers = [];
         childProcess.stdout.on("data", (data) => stdoutBuffers.push(data));
-        childProcess.on("exit", () => resolve(Buffer.concat(stdoutBuffers)));
+        childProcess.on("exit", () => {
+          exitStatus = childProcess.exitCode;
+          resolve(Buffer.concat(stdoutBuffers));
+        });
         childProcess.on("error", reject);
         if (timeout != null) {
-          setTimeout(() => resolve(Buffer.concat(stdoutBuffers)), timeout);
+          setTimeout(() => {
+            resolve(Buffer.concat(stdoutBuffers));
+          }, timeout);
+          childProcess.kill();
         }
       });
-      return createResponse(200, [], result);
+      return createResponse(200, { "x-exit-status": exitStatus }, result);
     },
   },
   {

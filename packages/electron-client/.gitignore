@@ -8,3 +8,5 @@ out/
 /index.html
 /fonts
 /mozaic-lm.css
+/sw.js
+/unregister.html

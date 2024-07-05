@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { PropsWithChildren, useCallback, useState } from "react";
 import { RuntimeContext, EvaluationError } from "tal-eval";
 import { LogItem } from "tal-eval/dist/RuntimeContext";
 import { HttpLogItemData, MongoLogItemData, PgLogItemData } from "tal-stdlib";
@@ -376,7 +376,8 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
               tabs={[
                 { label: "Request", value: "request" },
                 { label: "Response", value: "response" },
-                { label: "Response body", value: "response-body" },
+                { label: "Response Text", value: "response-body" },
+                { label: "Response JSON", value: "response-body-json" },
               ]}
             />
             {detailsTabToShow === "request" ? (
@@ -397,7 +398,15 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
                   <Text text="No headers" />
                 )}
                 <Text text="Body" size={1.1} />
-                <Text preformatted text={item.data.request.body} />
+                {typeof item.data.request.body === "string" ? (
+                  <TryDebugJson str={item.data.request.body}>
+                    <Text preformatted text={item.data.request.body} />
+                  </TryDebugJson>
+                ) : typeof item.data.request.body === "object" ? (
+                  <Debug value={item.data.request.body} extend={2} />
+                ) : (
+                  <Text text="Failed to show request body, only strings and json objects are supported" />
+                )}
               </>
             ) : detailsTabToShow === "response" ? (
               <>
@@ -444,12 +453,50 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
                   <Loader />
                 )}
               </>
+            ) : detailsTabToShow === "response-body-json" ? (
+              item.data.response ? (
+                <>
+                  <Button
+                    text="Copy"
+                    outline
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        bytesToString(item?.data.response?.body)
+                      )
+                    }
+                  />
+                  <TryDebugJson bytes={item?.data.response?.body}>
+                    <Text text="Invalid JSON" color="red" />
+                  </TryDebugJson>
+                </>
+              ) : (
+                <Loader />
+              )
             ) : null}
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}
     </>
   );
+}
+
+function TryDebugJson({
+  bytes,
+  str,
+  children,
+}: ({ bytes: any; str?: undefined } | { bytes?: undefined; str: string }) &
+  PropsWithChildren) {
+  try {
+    if (bytes) {
+      return <Debug value={JSON.parse(bytesToString(bytes))} extend={1} />;
+    }
+    if (str) {
+      return <Debug value={JSON.parse(str)} extend={1} />;
+    }
+    return <>{children ?? null}</>;
+  } catch (e) {
+    return <>{children ?? null}</>;
+  }
 }
 
 function HttpRequestSummary({ data }: { data: HttpLogItemData }) {

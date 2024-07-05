@@ -414,7 +414,7 @@ class Lowerer {
           expr: this.lowerSingle(expr.expr, returnArrayFromBlock),
           catchExpr: expr.catchExpr
             ? this.lowerSingle(expr.catchExpr, returnArrayFromBlock)
-            : { kind: 'Literal', value: null },
+            : undefined,
         };
       }
       case 'Intrinsic': {

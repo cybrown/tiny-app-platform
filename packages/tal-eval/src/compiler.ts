@@ -220,18 +220,17 @@ export class Compiler {
         this.setCurrentLabel(endIfLabel);
         break;
       case 'Try':
-        const catchLabel = value.catchExpr
-          ? this.makeLabel('try_catch')
-          : undefined;
+        const catchLabel = this.makeLabel('try_catch');
         const endTryLabel = this.makeLabel('try_end');
         this.appendOpcode('Try', value.location, { catchLabel, endTryLabel });
         this.compile(value.expr);
         this.appendOpcode('TryPop', value.location, {});
         this.appendOpcode('Jump', value.location, { label: endTryLabel });
-        if (value.catchExpr && catchLabel) {
-          this.setCurrentLabel(catchLabel);
+
+        this.setCurrentLabel(catchLabel);
+        if (value.catchExpr) {
           this.appendOpcode('ScopeEnter', value.location, {});
-          this.appendOpcode('PushLatestError', value.location, {})
+          this.appendOpcode('PushLatestError', value.location, {});
           this.appendOpcode('DeclareLocal', value.location, {
             mutable: false,
             name: 'err',
@@ -242,8 +241,11 @@ export class Compiler {
           this.appendOpcode('ScopeLeave', value.location, {
             inBlock: false,
           });
-          this.appendOpcode('Jump', value.location, { label: endTryLabel });
+        } else {
+          this.appendOpcode('Literal', value.location, { value: null });
         }
+        this.appendOpcode('Jump', value.location, { label: endTryLabel });
+
         this.setCurrentLabel(endTryLabel);
         break;
       case 'UnaryOperator':

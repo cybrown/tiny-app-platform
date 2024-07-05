@@ -506,7 +506,7 @@ class Stringifier {
       } else if (isExpr(ifFalse, 'If')) {
         result += ' else ' + this.stringifyIfOneLine(ifFalse);
       } else {
-        throw new Error('Unreachable');
+        result += ' else ' + this.stringify(ifFalse);
       }
     }
     return result;
@@ -518,17 +518,22 @@ class Stringifier {
     if (isExpr(ifTrue, 'BlockOfExpressions')) {
       result += this.stringifyBlockOfExpressionsMultiLine(ifTrue);
     } else {
-      throw new Error('Unreachable');
+      result += this.stringify(ifTrue);
     }
 
     if (obj.ifFalse) {
+      if (isExpr(ifTrue, 'BlockOfExpressions')) {
+        result += ' ';
+      } else {
+        result += '\n' + this.depthSpace();
+      }
       const ifFalse = obj.ifFalse;
       if (isExpr(ifFalse, 'BlockOfExpressions')) {
-        result += ' else ' + this.stringifyBlockOfExpressionsMultiLine(ifFalse);
+        result += 'else ' + this.stringifyBlockOfExpressionsMultiLine(ifFalse);
       } else if (isExpr(ifFalse, 'If')) {
-        result += ' else ' + this.stringifyIfMultiLine(ifFalse);
+        result += 'else ' + this.stringifyIfMultiLine(ifFalse);
       } else {
-        throw new Error('Unreachable');
+        result += 'else ' + this.stringify(ifFalse);
       }
     }
     return result;

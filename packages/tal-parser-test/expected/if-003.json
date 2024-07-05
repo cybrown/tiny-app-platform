@@ -1,0 +1,42 @@
+[
+  {
+    "kind": "If",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "==",
+      "right": 1,
+      "left": {
+        "kind": "Local",
+        "name": "a"
+      }
+    },
+    "ifTrue": "ok1",
+    "ifFalse": {
+      "kind": "If",
+      "condition": {
+        "kind": "BinaryOperator",
+        "operator": "==",
+        "right": 2,
+        "left": {
+          "kind": "Local",
+          "name": "a"
+        }
+      },
+      "ifTrue": "ok2-1",
+      "ifFalse": {
+        "kind": "If",
+        "condition": {
+          "kind": "BinaryOperator",
+          "operator": "==",
+          "right": 3,
+          "left": {
+            "kind": "Local",
+            "name": "a"
+          }
+        },
+        "ifTrue": "ok3",
+        "ifFalse": "ko2"
+      }
+    }
+  }
+]

@@ -140,7 +140,7 @@ Import
         { return { location: buildLocation(), kind: "Import", path }; }
 
 If
-    = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:BlockOfExpressions ifFalseArray:(_ 'else' _ (BlockOfExpressions / If))?
+    = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:Expression ifFalseArray:(_ 'else' _ (If / Expression))?
         {
             const ifFalse = ifFalseArray ? ifFalseArray[3] : undefined
             return { location: buildLocation(), kind: "If", condition, ifTrue, ifFalse };

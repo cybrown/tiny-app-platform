@@ -323,7 +323,7 @@ function RenderProcessLogItem({ item }: { item: LogItem<ProcessLogItemData> }) {
         <Loader size="md" />
       )}
       <Text text={command} />
-      {args.map((arg, index) => (
+      {(args ?? []).map((arg, index) => (
         <Text key={index} text={arg} />
       ))}
       {isDetailsTabVisible ? (
@@ -346,7 +346,7 @@ function RenderProcessLogItem({ item }: { item: LogItem<ProcessLogItemData> }) {
                 navigator.clipboard.writeText(
                   [
                     command,
-                    ...args.map((arg) => `'${escapeShellQuote(arg)}'`),
+                    ...(args ?? []).map((arg) => `'${escapeShellQuote(arg)}'`),
                   ].join(" ")
                 )
               }
@@ -357,7 +357,7 @@ function RenderProcessLogItem({ item }: { item: LogItem<ProcessLogItemData> }) {
             </View>
             <View layout="flex-row">
               <Text text="Args:" />
-              {args.map((arg, index) => (
+              {(args ?? []).map((arg, index) => (
                 <Text key={index} text={arg} />
               ))}
             </View>

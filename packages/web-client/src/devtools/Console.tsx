@@ -63,6 +63,15 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
         <CheckBox label="📜" value={includeLogs} onChange={setIncludeLogs} />
         <CheckBox label="🐞" value={includeBugs} onChange={setIncludeBugs} />
         <CheckBox label="🌱" value={includeMongo} onChange={setIncludeMongo} />
+        <ViewChild flexGrow={1}> </ViewChild>
+        <CheckBox
+          label="❓"
+          value={includeUnknown}
+          onChange={setIncludeUnknown}
+        />
+        <Button outline text="Clear" onClick={clearConsoleHandler} />
+      </View>
+      <View layout="flex-row">
         <CheckBox label="🐘" value={includePg} onChange={setIncludePg} />
         <CheckBox
           label="🐚"
@@ -70,13 +79,6 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
           onChange={setIncludeProcess}
         />
         <CheckBox label="🌐" value={includeHttp} onChange={setIncludeHttp} />
-        <CheckBox
-          label="❓"
-          value={includeUnknown}
-          onChange={setIncludeUnknown}
-        />
-        <ViewChild flexGrow={1}> </ViewChild>
-        <Button outline text="Clear" onClick={clearConsoleHandler} />
       </View>
       {logs
         .filter(

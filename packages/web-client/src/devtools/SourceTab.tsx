@@ -5,6 +5,8 @@ import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
 import { WindowFrame } from "../theme";
 import { useCallback, useRef, useState } from "react";
+import { walk, parse } from "tal-parser";
+import { secretCreate } from "tal-stdlib";
 
 type SourceTabProps = {
   ctx: RuntimeContext;
@@ -63,6 +65,69 @@ export default function SourceTab({
     editorApiRef.current?.redo();
   }, []);
 
+  const onConvertToSecret = useCallback(() => {
+    if (!editorApiRef.current) {
+      return;
+    }
+    const source = editorApiRef.current.getSource();
+    const positions = editorApiRef.current.getCusorPositions();
+    const ast = parse(source, "any");
+
+    if (!positions) {
+      return;
+    }
+
+    if (positions.length !== 1) {
+      ctx.notify(
+        "Only one selection is supported when converting to a secret."
+      );
+      return;
+    }
+
+    if (positions[0].isRange) {
+      ctx.notify(
+        "Convert selection range not supported, place the cursor on a string to encrypt."
+      );
+      return;
+    }
+
+    const offsetToSearch = positions[0].offset;
+
+    let found = false;
+
+    for (const node of walk(ast)) {
+      if (!node.location) continue;
+      if (node.kind !== "Literal") continue;
+      if (
+        typeof node.value == "string" &&
+        node.location.start.offset <= offsetToSearch &&
+        node.location.end.offset >= offsetToSearch
+      ) {
+        secretCreate(ctx, node.value)
+          .then((secretValue) => {
+            if (!editorApiRef.current) return;
+            if (!node.location) return;
+            editorApiRef.current.replaceAtRange(
+              'secret("' + secretValue + '")',
+              node.location.start.offset,
+              node.location.end.offset
+            );
+          })
+          .catch(() => {
+            ctx.notify("Failed to convert string to secret");
+          });
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      ctx.notify(
+        "No string found at cursor position, make sure to place the cursor on a string."
+      );
+    }
+  }, [ctx]);
+
   return (
     <>
       {!hidden ? (
@@ -72,6 +137,7 @@ export default function SourceTab({
           onShowDocumentation={toggleShowDocumentationHandler}
           onUndo={onUndoHandler}
           onRedo={onRedoHandler}
+          onConvertToSecret={onConvertToSecret}
         />
       ) : null}
       <Editor

@@ -8,8 +8,13 @@ import styles from "./Editor.module.css";
 export interface EditorApi {
   replaceSelection(text: string): void;
   replaceAll(text: string): void;
+  replaceAtRange(newText: string, start: number, end: number): void;
   undo(): void;
   redo(): void;
+  getSource(): string;
+  getCusorPositions():
+    | { offset: number; line: number; column: number; isRange: boolean }[]
+    | null;
 }
 
 export function Editor({
@@ -60,6 +65,38 @@ export function Editor({
             selection: previousSelection,
           });
         }
+      },
+      replaceAtRange(newText: string, start: number, end: number) {
+        if (!editor) return;
+        editor.dispatch(
+          editor.state.update({
+            changes: { from: start, to: end, insert: newText },
+          })
+        );
+      },
+      getSource() {
+        if (editor) {
+          const newSource = [...editor.state.doc].join("");
+          return newSource;
+        }
+        return "";
+      },
+      getCusorPositions() {
+        if (!editor) {
+          return null;
+        }
+        const state = editor.state;
+        const positions = state.selection.ranges.map((range) => {
+          const line = state.doc.lineAt(range.head);
+          const column = range.from - line.from;
+          return {
+            offset: range.from,
+            line: line.number,
+            column,
+            isRange: range.from !== range.to,
+          };
+        });
+        return positions;
       },
     }),
     [editor]

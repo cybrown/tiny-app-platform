@@ -243,3 +243,4 @@ export { MongoLogItemData } from './functions/mongodb';
 export { PgLogItemData } from './functions/pg';
 export { ProcessLogItemData } from './functions/process';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';
+export { secretCreate } from './util/secret';

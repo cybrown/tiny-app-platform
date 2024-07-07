@@ -24,7 +24,7 @@
     "tal-eval": "*",
     "tal-parser": "*",
     "tal-stdlib": "*",
-    "typescript": "^4.8.4",
+    "typescript": "^5.5.3",
     "web-vitals": "^2.1.4",
     "yaml": "^2.1.3"
   },

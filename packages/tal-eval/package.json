@@ -46,8 +46,8 @@
     "husky": "^8.0.3",
     "size-limit": "^8.2.4",
     "tsdx": "^0.14.1",
-    "tslib": "^2.5.0",
-    "typescript": "^3.9.10"
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@types/react": "^18.0.29",

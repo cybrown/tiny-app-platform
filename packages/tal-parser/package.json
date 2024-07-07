@@ -50,8 +50,8 @@
     "pegjs": "^0.10.0",
     "size-limit": "^8.2.4",
     "tsdx": "^0.14.1",
-    "tslib": "^2.5.0",
-    "typescript": "^3.9.10"
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3"
   },
   "description": "Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.",
   "directories": {

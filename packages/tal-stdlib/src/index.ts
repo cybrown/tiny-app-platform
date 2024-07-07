@@ -117,6 +117,7 @@ import {
 } from './functions/date';
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
+import { secret, secret_create } from './functions/secret';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -228,6 +229,9 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(time_day_of_week);
   ctx.registerFunction(uuid_v4);
 
+  ctx.registerFunction(secret);
+  ctx.registerFunction(secret_create);
+
   ctx.registerFunction(metadata_set);
   ctx.registerFunction(metadata_get);
   ctx.registerFunction(flex);
@@ -238,3 +242,4 @@ export { HttpLogItemData } from './functions/http';
 export { MongoLogItemData } from './functions/mongodb';
 export { PgLogItemData } from './functions/pg';
 export { ProcessLogItemData } from './functions/process';
+export { base64_to_bytes, bytes_to_base64 } from './util/base64';

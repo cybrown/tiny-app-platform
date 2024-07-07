@@ -31,6 +31,8 @@ export interface SourceFetcher {
 
 let globalContextCount = 0;
 
+type PasswordPrompter = () => Promise<string | null>;
+
 export class RuntimeContext {
   public id: string;
   private childIdCounter = 0;
@@ -51,6 +53,23 @@ export class RuntimeContext {
   private sourceFetcher?: SourceFetcher;
 
   private readonly _moduleCache?: Map<string, unknown>;
+
+  private _promptPassword: PasswordPrompter | null = null;
+
+  public get promptPassword(): PasswordPrompter | null {
+    if (this.parent) {
+      return this.parent.promptPassword;
+    }
+    return this._promptPassword;
+  }
+
+  public set promptPassword(value: PasswordPrompter | null) {
+    if (this.parent) {
+      this.parent.promptPassword = value;
+    } else {
+      this._promptPassword = value;
+    }
+  }
 
   public get moduleCache(): Map<string, unknown> {
     if (this.parent) {

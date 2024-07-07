@@ -174,11 +174,21 @@ try {
   console.log("failed to initialize config event for sourceFromFile");
 }
 
-function buildContext(onStateChange: () => void): RuntimeContext {
+function buildContext(
+  onStateChange: () => void,
+  setPromptPasswordVisible: (visible: boolean) => void,
+  resolveRef: React.MutableRefObject<((password: string) => void) | null>
+): RuntimeContext {
   const ctx = new RuntimeContext(onStateChange);
   ctx.setSourceFetcher(
     (window as any).electronAPI ? electronSourceFetcher : webSourceFetcher
   );
+  ctx.promptPassword = async () => {
+    return new Promise((resolve, reject) => {
+      setPromptPasswordVisible(true);
+      resolveRef.current = resolve;
+    });
+  };
   importStdlibInContext(ctx);
 
   ctx.registerWidget("Button", Button, ButtonDocumentation);
@@ -339,10 +349,23 @@ function App() {
     editorApi?.replaceAll(sourceToExecute ?? "");
   }, [sourceToExecute, editorApi]);
 
+  const [passwordPromptVisible, setPasswordPromptVisible] = useState(false);
+  const closePasswordPromptHandler = useCallback(() => {
+    setPasswordPromptVisible(false);
+  }, []);
+  const resolvePasswordRef = useRef<((password: string) => void) | null>(null);
+  const onSetPasswordHandler = useCallback((password: string) => {
+    setPasswordPromptVisible(false);
+    resolvePasswordRef.current && resolvePasswordRef.current(password);
+    resolvePasswordRef.current = null;
+  }, []);
+
   const forceRender = useForceRender();
-  const ctx: RuntimeContext = useMemo(() => buildContext(forceRender), [
-    forceRender,
-  ]);
+  const ctx: RuntimeContext = useMemo(
+    () =>
+      buildContext(forceRender, setPasswordPromptVisible, resolvePasswordRef),
+    [forceRender]
+  );
 
   const updateSourceFunc = useRef<(() => string) | null>(null);
 
@@ -559,8 +582,55 @@ function App() {
           <UpdateAppNotification close={closeUpdateAppNotificationHandler} />
         ) : null}
         <NotificationDisplay />
+        {passwordPromptVisible ? (
+          <PasswordPromptOverlay
+            close={closePasswordPromptHandler}
+            setPassword={onSetPasswordHandler}
+          />
+        ) : null}
       </ThemeProvider>
     </NotificationProvider>
+  );
+}
+
+type PasswordPromptOverlayProps = {
+  close: () => void;
+  setPassword: (password: string) => void;
+};
+
+function PasswordPromptOverlay({
+  close,
+  setPassword,
+}: PasswordPromptOverlayProps) {
+  const theme = useTheme();
+
+  const [passwordField, setPasswordField] = useState("");
+
+  const onUnlockHandler = useCallback(async () => {
+    setPassword(passwordField);
+  }, [passwordField, setPassword]);
+
+  return (
+    <LowLevelOverlay onClose={close} modal position="center">
+      <theme.WindowFrame
+        onClose={close}
+        modal
+        position="center"
+        title="Unlock secrets"
+      >
+        <theme.View padding={0.5}>
+          <theme.Text text="Enter your password:" />
+          <theme.InputText
+            type="password"
+            value={passwordField}
+            onChange={setPasswordField}
+            onSubmit={onUnlockHandler}
+            placeholder="Password"
+          />
+          <theme.Button text="Unlock" onClick={onUnlockHandler} />
+        </theme.View>
+      </theme.WindowFrame>
+    </LowLevelOverlay>
   );
 }
 

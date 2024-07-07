@@ -7,3 +7,4 @@ export const parse = (source: string, path: string) => {
   return parser.parse(source, { path }) as Expression[];
 };
 export * from './expression';
+export * from './walker';

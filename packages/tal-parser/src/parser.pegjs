@@ -31,7 +31,7 @@ Document
 
 TopLevelExpression
     = 'export' __ expr:Expression
-        { return { kind: 'Export', expr }; }
+        { return { location: buildLocation(), kind: 'Export', expr }; }
     / Expression
 
 Expression
@@ -283,23 +283,23 @@ HexCharacter
 
 String
 	= value:RawString
-    	{ return { kind: "Literal", value }; }
+    	{ return { location: buildLocation(), kind: "Literal", value }; }
 
 Number
 	= num:[0-9]+ '.' num2:[0-9]*
-    	{ return { kind: "Literal", value: Number([...num, '.', ...num2].join('')) }; }
+    	{ return { location: buildLocation(), kind: "Literal", value: Number([...num, '.', ...num2].join('')) }; }
 	/ num:[0-9]+
-    	{ return { kind: "Literal", value: Number([...num].join('')) }; }
+    	{ return { location: buildLocation(), kind: "Literal", value: Number([...num].join('')) }; }
 	/ '.' num:[0-9]+
-    	{ return { kind: "Literal", value: Number(['.', ...num].join('')) }; }
+    	{ return { location: buildLocation(), kind: "Literal", value: Number(['.', ...num].join('')) }; }
 
 Boolean
 	= bool:("true" / "false") ! IdentifierTailCharacters
-    	{ return { kind: "Literal", value: bool === "true" }; }
+    	{ return { location: buildLocation(), kind: "Literal", value: bool === "true" }; }
 
 Null
 	= "null" ! IdentifierTailCharacters
-    	{ return { kind: "Literal", value: null }; }
+    	{ return { location: buildLocation(), kind: "Literal", value: null }; }
 
 Identifier
     // Only _ is not a valid identifier, but an identifier can start with _ and have other characters after

@@ -20,11 +20,11 @@ function b64ToUint6(nChr: number) {
 }
 
 export function base64_to_bytes(sBase64: string, nBlocksSize?: number) {
-  const sB64Enc = sBase64.replace(/[^A-Za-z0-9+/-_]/g, "");
+  const sB64Enc = sBase64.replace(/[^A-Za-z0-9+/-_]/g, '');
   const nInLen = sB64Enc.length;
   const nOutLen = nBlocksSize
     ? Math.ceil(((nInLen * 3 + 1) >> 2) / nBlocksSize) * nBlocksSize
-    : (nInLen * 3 + 1) >> 2;
+    : calculateBase64ByteSize(sB64Enc);
   const taBytes = new Uint8Array(nOutLen);
 
   let nMod3;
@@ -45,7 +45,7 @@ export function base64_to_bytes(sBase64: string, nBlocksSize?: number) {
     }
   }
 
-  return taBytes;
+  return taBytes.buffer;
 }
 
 /* Base64 string to array encoding */
@@ -67,17 +67,15 @@ function uint6ToB64(nUint6: number, url: boolean) {
     : 65;
 }
 
-export function bytes_to_base64(aBytes: Uint8Array, url = false) {
+export function bytes_to_base64(input: ArrayBuffer, url = false) {
+  const aBytes = new Uint8Array(input);
   let nMod3 = 2;
-  let sB64Enc = "";
+  let sB64Enc = '';
 
   const nLen = aBytes.length;
   let nUint24 = 0;
   for (let nIdx = 0; nIdx < nLen; nIdx++) {
     nMod3 = nIdx % 3;
-    if (nIdx > 0 && ((nIdx * 4) / 3) % 76 === 0) {
-      sB64Enc += "\r\n";
-    }
 
     nUint24 |= aBytes[nIdx] << ((16 >>> nMod3) & 24);
     if (nMod3 === 2 || aBytes.length - nIdx === 1) {
@@ -92,6 +90,14 @@ export function bytes_to_base64(aBytes: Uint8Array, url = false) {
   }
   return (
     sB64Enc.substr(0, sB64Enc.length - 2 + nMod3) +
-    (nMod3 === 2 ? "" : nMod3 === 1 ? "=" : "==")
+    (nMod3 === 2 ? '' : nMod3 === 1 ? '=' : '==')
   );
+}
+
+function calculateBase64ByteSize(base64String: string): number {
+  let paddingCount = 0;
+  while (base64String.charAt(base64String.length - 1 - paddingCount) === '=') {
+    paddingCount++;
+  }
+  return (base64String.length * 3) / 4 - paddingCount;
 }

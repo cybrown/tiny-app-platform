@@ -115,6 +115,9 @@ function* walkSingle(expression: Expression): Iterable<Expression> {
     case 'Local':
       break;
     case 'Comment':
+      if (expression.expr) {
+        yield* walk(expression.expr);
+      }
       break;
     case 'Import':
       break;

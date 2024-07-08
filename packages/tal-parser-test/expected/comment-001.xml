@@ -1,0 +1,48 @@
+<program>
+  <comment>
+    <call>
+      <local />
+      <literal />
+    </call>
+  </comment>
+  <if>
+    <comment>
+      <literal />
+    </comment>
+    <block>
+      <comment>
+        <literal />
+      </comment>
+      <comment>
+        <literal />
+      </comment>
+    </block>
+    <block>
+      <comment>
+        <literal />
+      </comment>
+    </block>
+  </if>
+  <comment>
+    <comment>
+      <comment>
+        <comment>
+          <declarelocal>
+            <function>
+              <block>
+                <comment>
+                  <binaryoperator>
+                    <local />
+                    <local />
+                  </binaryoperator>
+                </comment>
+                <comment>
+                </comment>
+              </block>
+            </function>
+          </declarelocal>
+        </comment>
+      </comment>
+    </comment>
+  </comment>
+</program>

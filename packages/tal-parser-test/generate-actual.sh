@@ -8,4 +8,5 @@ do
   name="${name_with_extension%.*}"
   node ./tas2json.mjs < "test-sources/$name.tas" > "actual/$name.json"
   node ./format.mjs < "test-sources/$name.tas" > "actual/$name.tas"
+  node ./tas2xml.mjs < "test-sources/$name.tas" > "actual/$name.xml"
 done

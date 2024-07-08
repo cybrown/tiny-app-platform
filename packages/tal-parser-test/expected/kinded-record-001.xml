@@ -1,0 +1,23 @@
+<program>
+  <kindedrecord>
+    <local />
+    <kindedrecordentry>
+      <literal />
+    </kindedrecordentry>
+  </kindedrecord>
+  <kindedrecord>
+    <local />
+    <kindedrecordentry>
+      <literal />
+    </kindedrecordentry>
+  </kindedrecord>
+  <kindedrecord>
+    <local />
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+    </kindedrecord>
+  </kindedrecord>
+</program>

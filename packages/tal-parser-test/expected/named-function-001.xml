@@ -1,0 +1,10 @@
+<program>
+  <declarelocal>
+    <function>
+      <binaryoperator>
+        <local />
+        <local />
+      </binaryoperator>
+    </function>
+  </declarelocal>
+</program>

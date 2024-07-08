@@ -1,0 +1,22 @@
+<program>
+  <function>
+    <binaryoperator>
+      <local />
+      <local />
+    </binaryoperator>
+  </function>
+  <function>
+    <binaryoperator>
+      <local />
+      <local />
+    </binaryoperator>
+  </function>
+  <function>
+    <function>
+      <binaryoperator>
+        <local />
+        <local />
+      </binaryoperator>
+    </function>
+  </function>
+</program>

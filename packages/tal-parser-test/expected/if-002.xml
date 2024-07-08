@@ -1,0 +1,34 @@
+<program>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <literal />
+    </block>
+    <if>
+      <binaryoperator>
+        <local />
+        <literal />
+      </binaryoperator>
+      <block>
+        <literal />
+        <literal />
+      </block>
+      <if>
+        <binaryoperator>
+          <local />
+          <literal />
+        </binaryoperator>
+        <block>
+          <literal />
+        </block>
+        <block>
+          <literal />
+          <literal />
+        </block>
+      </if>
+    </if>
+  </if>
+</program>

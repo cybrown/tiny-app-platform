@@ -1,0 +1,722 @@
+<program>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <declarelocal>
+    <array>
+    </array>
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+  </declarelocal>
+  <declarelocal>
+  </declarelocal>
+  <declarelocal>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <assign>
+          <local />
+          <call>
+            <local />
+            <local />
+            <local />
+            <pipe>
+              <local />
+              <call>
+                <local />
+                <function>
+                  <binaryoperator>
+                    <index>
+                      <literal />
+                      <local />
+                    </index>
+                    <index>
+                      <literal />
+                      <local />
+                    </index>
+                  </binaryoperator>
+                </function>
+              </call>
+            </pipe>
+            <local />
+            <literal />
+          </call>
+        </assign>
+        <try>
+          <block>
+            <declarelocal>
+              <pipe>
+                <index>
+                  <literal />
+                  <call>
+                    <local />
+                    <index>
+                      <literal />
+                      <attribute>
+                        <local />
+                      </attribute>
+                    </index>
+                    <literal />
+                  </call>
+                </index>
+                <local />
+              </pipe>
+            </declarelocal>
+            <if>
+              <binaryoperator>
+                <local />
+                <literal />
+              </binaryoperator>
+              <block>
+                <assign>
+                  <local />
+                  <literal />
+                </assign>
+              </block>
+              <if>
+                <binaryoperator>
+                  <local />
+                  <literal />
+                </binaryoperator>
+                <block>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                </block>
+                <if>
+                  <binaryoperator>
+                    <local />
+                    <literal />
+                  </binaryoperator>
+                  <block>
+                    <assign>
+                      <local />
+                      <literal />
+                    </assign>
+                  </block>
+                </if>
+              </if>
+            </if>
+          </block>
+        </try>
+        <assign>
+          <local />
+          <call>
+            <local />
+            <attribute>
+              <local />
+            </attribute>
+          </call>
+        </assign>
+      </block>
+    </function>
+  </declarelocal>
+  <kindedrecord>
+    <local />
+    <kindedrecord>
+      <local />
+      <kindedrecord>
+        <local />
+        <kindedrecord>
+          <local />
+          <kindedrecordentry>
+            <local />
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <array>
+              <literal />
+              <literal />
+              <literal />
+              <literal />
+              <literal />
+              <literal />
+              <literal />
+              <literal />
+            </array>
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecordentry>
+          <literal />
+        </kindedrecordentry>
+      </kindedrecord>
+      <kindedrecord>
+        <local />
+        <kindedrecord>
+          <local />
+          <kindedrecordentry>
+            <local />
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <local />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecordentry>
+          <literal />
+        </kindedrecordentry>
+      </kindedrecord>
+    </kindedrecord>
+    <call>
+      <local />
+      <local />
+      <function>
+        <array>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecord>
+                <local />
+                <kindedrecordentry>
+                  <literal />
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <index>
+                    <literal />
+                    <local />
+                  </index>
+                </kindedrecordentry>
+              </kindedrecord>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecord>
+                <local />
+                <kindedrecordentry>
+                  <literal />
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <index>
+                    <literal />
+                    <local />
+                  </index>
+                </kindedrecordentry>
+              </kindedrecord>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecord>
+                <local />
+                <kindedrecordentry>
+                  <literal />
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <function>
+                    <assign>
+                      <local />
+                      <call>
+                        <local />
+                        <local />
+                        <local />
+                      </call>
+                    </assign>
+                  </function>
+                </kindedrecordentry>
+              </kindedrecord>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+        </array>
+      </function>
+    </call>
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <function>
+          <assign>
+            <local />
+            <call>
+              <local />
+              <local />
+              <array>
+                <literal />
+                <literal />
+              </array>
+            </call>
+          </assign>
+        </function>
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+    </kindedrecord>
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <block>
+          <function>
+            <assign>
+              <local />
+              <call>
+                <local />
+                <local />
+                <array>
+                  <literal />
+                  <literal />
+                </array>
+              </call>
+            </assign>
+          </function>
+        </block>
+      </kindedrecordentry>
+    </kindedrecord>
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <local />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+    </kindedrecord>
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <local />
+      </kindedrecordentry>
+    </kindedrecord>
+    <block>
+      <declarelocal>
+        <pipe>
+          <local />
+          <call>
+            <local />
+            <function>
+              <binaryoperator>
+                <index>
+                  <literal />
+                  <local />
+                </index>
+                <index>
+                  <literal />
+                  <local />
+                </index>
+              </binaryoperator>
+            </function>
+          </call>
+        </pipe>
+      </declarelocal>
+      <array>
+        <if>
+          <binaryoperator>
+            <binaryoperator>
+              <local />
+              <literal />
+            </binaryoperator>
+            <binaryoperator>
+              <local />
+              <literal />
+            </binaryoperator>
+          </binaryoperator>
+          <block>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <pipe>
+                  <literal />
+                  <call>
+                    <local />
+                    <record>
+                      <recordentry>
+                        <local />
+                      </recordentry>
+                      <recordentry>
+                        <local />
+                      </recordentry>
+                      <recordentry>
+                        <pipe>
+                          <local />
+                          <call>
+                            <local />
+                            <function>
+                              <call>
+                                <local />
+                                <literal />
+                                <record>
+                                  <recordentry>
+                                    <index>
+                                      <literal />
+                                      <local />
+                                    </index>
+                                  </recordentry>
+                                  <recordentry>
+                                    <index>
+                                      <literal />
+                                      <local />
+                                    </index>
+                                  </recordentry>
+                                </record>
+                              </call>
+                            </function>
+                          </call>
+                          <call>
+                            <local />
+                            <literal />
+                          </call>
+                        </pipe>
+                      </recordentry>
+                    </record>
+                  </call>
+                </pipe>
+              </kindedrecordentry>
+            </kindedrecord>
+          </block>
+        </if>
+        <if>
+          <binaryoperator>
+            <binaryoperator>
+              <local />
+              <literal />
+            </binaryoperator>
+            <binaryoperator>
+              <local />
+              <literal />
+            </binaryoperator>
+          </binaryoperator>
+          <block>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <pipe>
+                  <literal />
+                  <call>
+                    <local />
+                    <record>
+                      <recordentry>
+                        <local />
+                      </recordentry>
+                      <recordentry>
+                        <local />
+                      </recordentry>
+                      <recordentry>
+                        <if>
+                          <binaryoperator>
+                            <binaryoperator>
+                              <local />
+                              <literal />
+                            </binaryoperator>
+                            <binaryoperator>
+                              <local />
+                              <literal />
+                            </binaryoperator>
+                          </binaryoperator>
+                          <block>
+                            <binaryoperator>
+                              <binaryoperator>
+                                <literal />
+                                <local />
+                              </binaryoperator>
+                              <literal />
+                            </binaryoperator>
+                          </block>
+                          <block>
+                            <literal />
+                          </block>
+                        </if>
+                      </recordentry>
+                      <recordentry>
+                        <if>
+                          <binaryoperator>
+                            <call>
+                              <local />
+                              <local />
+                            </call>
+                            <literal />
+                          </binaryoperator>
+                          <block>
+                            <binaryoperator>
+                              <literal />
+                              <nested>
+                                <pipe>
+                                  <local />
+                                  <local />
+                                </pipe>
+                              </nested>
+                            </binaryoperator>
+                          </block>
+                          <block>
+                            <literal />
+                          </block>
+                        </if>
+                      </recordentry>
+                    </record>
+                  </call>
+                </pipe>
+              </kindedrecordentry>
+            </kindedrecord>
+          </block>
+        </if>
+      </array>
+    </block>
+    <if>
+      <binaryoperator>
+        <local />
+        <literal />
+      </binaryoperator>
+      <block>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <call>
+                  <local />
+                  <literal />
+                  <record>
+                    <recordentry>
+                      <attribute>
+                        <local />
+                      </attribute>
+                    </recordentry>
+                  </record>
+                </call>
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <if>
+            <local />
+            <block>
+              <kindedrecord>
+                <local />
+                <kindedrecord>
+                  <local />
+                  <kindedrecordentry>
+                    <literal />
+                  </kindedrecordentry>
+                </kindedrecord>
+                <kindedrecord>
+                  <local />
+                  <kindedrecordentry>
+                    <array>
+                      <record>
+                        <recordentry>
+                          <literal />
+                        </recordentry>
+                        <recordentry>
+                          <function>
+                            <kindedrecord>
+                              <local />
+                              <kindedrecordentry>
+                                <attribute>
+                                  <local />
+                                </attribute>
+                              </kindedrecordentry>
+                              <kindedrecordentry>
+                                <literal />
+                              </kindedrecordentry>
+                            </kindedrecord>
+                          </function>
+                        </recordentry>
+                      </record>
+                      <record>
+                        <recordentry>
+                          <literal />
+                        </recordentry>
+                        <recordentry>
+                          <function>
+                            <kindedrecord>
+                              <local />
+                              <kindedrecordentry>
+                                <attribute>
+                                  <local />
+                                </attribute>
+                              </kindedrecordentry>
+                              <kindedrecordentry>
+                                <literal />
+                              </kindedrecordentry>
+                            </kindedrecord>
+                          </function>
+                        </recordentry>
+                      </record>
+                    </array>
+                  </kindedrecordentry>
+                  <kindedrecordentry>
+                    <pipe>
+                      <attribute>
+                        <local />
+                      </attribute>
+                      <local />
+                      <call>
+                        <local />
+                        <function>
+                          <record>
+                            <recordentry>
+                              <index>
+                                <literal />
+                                <local />
+                              </index>
+                            </recordentry>
+                            <recordentry>
+                              <index>
+                                <literal />
+                                <local />
+                              </index>
+                            </recordentry>
+                          </record>
+                        </function>
+                      </call>
+                    </pipe>
+                  </kindedrecordentry>
+                </kindedrecord>
+                <kindedrecordentry>
+                  <literal />
+                </kindedrecordentry>
+              </kindedrecord>
+            </block>
+          </if>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <array>
+                  <literal />
+                  <literal />
+                  <literal />
+                  <literal />
+                  <literal />
+                  <literal />
+                </array>
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <if>
+              <binaryoperator>
+                <binaryoperator>
+                  <local />
+                  <literal />
+                </binaryoperator>
+                <local />
+              </binaryoperator>
+              <block>
+                <kindedrecord>
+                  <local />
+                  <kindedrecordentry>
+                    <pipe>
+                      <local />
+                      <local />
+                    </pipe>
+                  </kindedrecordentry>
+                  <kindedrecordentry>
+                    <literal />
+                  </kindedrecordentry>
+                </kindedrecord>
+              </block>
+              <block>
+                <kindedrecord>
+                  <local />
+                  <kindedrecordentry>
+                    <local />
+                  </kindedrecordentry>
+                  <kindedrecordentry>
+                    <local />
+                  </kindedrecordentry>
+                  <kindedrecordentry>
+                    <local />
+                  </kindedrecordentry>
+                </kindedrecord>
+              </block>
+            </if>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </if>
+  </kindedrecord>
+</program>

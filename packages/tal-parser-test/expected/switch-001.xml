@@ -1,0 +1,34 @@
+<program>
+  <switch>
+    <attribute>
+      <local />
+    </attribute>
+    <literal />
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+    </kindedrecord>
+    <literal />
+    <kindedrecord>
+      <local />
+    </kindedrecord>
+    <literal />
+    <kindedrecord>
+      <local />
+    </kindedrecord>
+    <kindedrecord>
+      <local />
+    </kindedrecord>
+  </switch>
+</program>

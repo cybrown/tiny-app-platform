@@ -1,6 +1,11 @@
 import { Node } from './ast';
 
-export function* walk(node: Node | Node[]): Iterable<Node> {
+export type NodeWithParents = {
+  node: Node;
+  mode: 'enter' | 'leave' | 'visit';
+};
+
+export function* walk(node: Node | Node[]): Iterable<NodeWithParents> {
   if (Array.isArray(node)) {
     yield* walkArray(node);
   } else {
@@ -8,14 +13,18 @@ export function* walk(node: Node | Node[]): Iterable<Node> {
   }
 }
 
-function* walkArray(node: Node[]): Iterable<Node> {
+function* walkArray(node: Node[]): Iterable<NodeWithParents> {
   for (const e of node) {
     yield* walkSingle(e);
   }
 }
 
-function* walkSingle(node: Node): Iterable<Node> {
-  yield node;
+const LEAVE_KINDS = ['Literal', 'Local', 'Import', 'Intrinsic'];
+
+function* walkSingle(node: Node): Iterable<NodeWithParents> {
+  if (!LEAVE_KINDS.includes(node.kind)) {
+    yield { node, mode: 'enter' };
+  }
   switch (node.kind) {
     case 'Array':
       yield* walkArray(node.value);
@@ -131,16 +140,17 @@ function* walkSingle(node: Node): Iterable<Node> {
 
     // Leaves
     case 'Literal':
-      break;
     case 'Local':
-      break;
     case 'Import':
-      break;
     case 'Intrinsic':
+      yield { node, mode: 'visit' };
       break;
     default:
       const _: never = node;
       _;
       throw new Error('Unreachable case: ' + (node as any).kind);
+  }
+  if (!LEAVE_KINDS.includes(node.kind)) {
+    yield { node, mode: 'leave' };
   }
 }

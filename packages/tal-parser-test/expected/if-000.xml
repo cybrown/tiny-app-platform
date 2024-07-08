@@ -1,0 +1,57 @@
+<program>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <literal />
+    </block>
+  </if>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <literal />
+      <literal />
+    </block>
+  </if>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <literal />
+    </block>
+    <block>
+      <literal />
+    </block>
+  </if>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <literal />
+      <literal />
+    </block>
+    <block>
+      <literal />
+      <literal />
+    </block>
+  </if>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <literal />
+    </block>
+  </if>
+  <local />
+</program>

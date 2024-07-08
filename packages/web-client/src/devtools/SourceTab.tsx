@@ -95,7 +95,8 @@ export default function SourceTab({
 
     let found = false;
 
-    for (const node of walk(ast)) {
+    for (const { node, mode } of walk(ast)) {
+      if (mode === "leave") continue;
       if (!node.location) continue;
       if (node.kind !== "Literal") continue;
       if (

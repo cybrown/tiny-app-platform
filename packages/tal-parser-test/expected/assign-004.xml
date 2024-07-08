@@ -1,0 +1,11 @@
+<program>
+  <assign>
+    <index>
+      <local />
+      <attribute>
+        <local />
+      </attribute>
+    </index>
+    <literal />
+  </assign>
+</program>

@@ -1,0 +1,24 @@
+<program>
+  <if>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <literal />
+    <if>
+      <binaryoperator>
+        <local />
+        <literal />
+      </binaryoperator>
+      <literal />
+      <if>
+        <binaryoperator>
+          <local />
+          <literal />
+        </binaryoperator>
+        <literal />
+        <literal />
+      </if>
+    </if>
+  </if>
+</program>

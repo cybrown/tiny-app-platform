@@ -1,0 +1,8 @@
+<program>
+  <function>
+    <binaryoperator>
+      <local />
+      <local />
+    </binaryoperator>
+  </function>
+</program>

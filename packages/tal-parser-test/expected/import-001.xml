@@ -1,0 +1,10 @@
+<program>
+  <declarelocal>
+    <import />
+  </declarelocal>
+  <call>
+    <attribute>
+      <local />
+    </attribute>
+  </call>
+</program>

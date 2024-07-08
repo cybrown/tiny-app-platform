@@ -1,32 +1,32 @@
 import {
-  BinaryOperatorExpression,
-  BlockOfExpressionsExpression,
-  CallExpression,
-  DeclareLocalExpression,
-  Expression,
-  FunctionExpression,
-  IfExpression,
-  isExpr,
-  KindedRecordExpression,
-  LiteralExpression,
-  RecordExpression,
-  PipeExpression,
-  AssignExpression,
-  SubExpressionExpression,
-  TryExpression,
-  UnaryOperatorExpression,
-  SwitchExpression,
-  ImportExpression,
-  ExportExpression,
-  CommentExpression,
-} from './expression';
+  BinaryOperatorNode,
+  BlockNode,
+  CallNode,
+  DeclareLocalNode,
+  Node,
+  FunctionNode,
+  IfNode,
+  isNode,
+  KindedRecordNode,
+  LiteralNode,
+  RecordNode,
+  PipeNode,
+  AssignNode,
+  NestedNode,
+  TryNode,
+  UnaryOperatorNode,
+  SwitchNode,
+  ImportNode,
+  ExportNode,
+  CommentNode,
+} from './ast';
 
-export function stringify(value: Expression[]): string {
+export function stringify(value: Node[]): string {
   return new Stringifier().stringify(value, true);
 }
 
 class Stringifier {
-  stringify(value: Expression | Expression[], isRoot = false): string {
+  stringify(value: Node | Node[], isRoot = false): string {
     if (Array.isArray(value)) {
       return this.stringifyArray(value, isRoot);
     } else {
@@ -34,7 +34,7 @@ class Stringifier {
     }
   }
 
-  stringifyCustomKind(value: Expression): string {
+  stringifyCustomKind(value: Node): string {
     const result = this.stringifyCustomKindSingleLine(value);
     if (result.length > 80 || result.includes('\n')) {
       return this.stringifyCustomKindMultiLine(value);
@@ -42,20 +42,20 @@ class Stringifier {
     return result;
   }
 
-  stringifyCustomKindSingleLine(value: Expression): string {
+  stringifyCustomKindSingleLine(value: Node): string {
     return (
       '%' +
       value.kind +
       ' { ' +
       Object.entries(value)
         .filter(([key]) => key !== 'kind' && key !== 'location')
-        .map(([key, value]) => key + ': ' + this.stringify(value as Expression))
+        .map(([key, value]) => key + ': ' + this.stringify(value as Node))
         .join(', ') +
       ' }'
     );
   }
 
-  stringifyCustomKindMultiLine(value: Expression): string {
+  stringifyCustomKindMultiLine(value: Node): string {
     let result = '%' + value.kind + ' {\n';
     this.incrementDepth();
     const argsToStringify = Object.entries(value).filter(
@@ -71,7 +71,7 @@ class Stringifier {
           key +
           ': ' +
           padSpaces(maxKeyLength - key.length) +
-          this.stringify(value as Expression) +
+          this.stringify(value as Node) +
           '\n')
     );
     this.decrementDepth();
@@ -91,7 +91,7 @@ class Stringifier {
       .replaceAll('\r', '\\r');
   }
 
-  stringifyKind(obj: Expression): string {
+  stringifyKind(obj: Node): string {
     switch (obj.kind) {
       case 'Literal':
         return this.stringifyLiteral(obj);
@@ -109,14 +109,14 @@ class Stringifier {
         return this.stringifySwitch(obj);
       case 'Try':
         return this.stringifyTry(obj);
-      case 'SubExpression':
-        return this.stringifySubExpression(obj);
+      case 'Nested':
+        return this.stringifyNested(obj);
       case 'Pipe':
         return this.stringifyPipe(obj);
       case 'Function':
         return this.stringifyFunction(obj);
-      case 'BlockOfExpressions':
-        return this.stringifyBlockOfExpressions(obj);
+      case 'Block':
+        return this.stringifyBlock(obj);
       case 'DeclareLocal':
         return this.stringifyDeclareLocal(obj);
       case 'Assign':
@@ -140,11 +140,11 @@ class Stringifier {
       case 'Comment':
         return this.stringifyComment(obj);
       default:
-        return this.stringifyCustomKind(obj);
+        throw new Error('Failed to stringify kind: ' + obj.kind);
     }
   }
 
-  stringifyLiteral(obj: LiteralExpression): string {
+  stringifyLiteral(obj: LiteralNode): string {
     if (obj.value == null) {
       return 'null';
     } else if (typeof obj.value === 'boolean') {
@@ -166,16 +166,16 @@ class Stringifier {
     return '"' + this.escapeString(str) + '"';
   }
 
-  stringifyUnaryOperator(obj: UnaryOperatorExpression): string {
+  stringifyUnaryOperator(obj: UnaryOperatorNode): string {
     let result = obj.operator;
-    if (isExpr(obj.operand, 'UnaryOperator')) {
+    if (isNode(obj.operand, 'UnaryOperator')) {
       result += ' ';
     }
     result += this.stringify(obj.operand);
     return result;
   }
 
-  stringifyBinaryOperator(obj: BinaryOperatorExpression): string {
+  stringifyBinaryOperator(obj: BinaryOperatorNode): string {
     return (
       this.stringify(obj.left) +
       ' ' +
@@ -185,8 +185,8 @@ class Stringifier {
     );
   }
 
-  stringifyDeclareLocal(obj: DeclareLocalExpression): string {
-    if (isExpr(obj.value, 'Function')) {
+  stringifyDeclareLocal(obj: DeclareLocalNode): string {
+    if (isNode(obj.value, 'Function')) {
       return this.stringifyNamedFunction(obj, obj.value);
     }
     let result = (obj.mutable ? 'var' : 'let') + ' ' + obj.name;
@@ -197,8 +197,8 @@ class Stringifier {
   }
 
   stringifyNamedFunction(
-    obj: DeclareLocalExpression,
-    func: FunctionExpression
+    obj: DeclareLocalNode,
+    func: FunctionNode
   ): string {
     let argList = '(' + func.parameters.join(', ') + ') ';
     if (argList.length > 60) {
@@ -213,11 +213,11 @@ class Stringifier {
     return 'fun ' + obj.name + argList + this.stringify(func.body);
   }
 
-  stringifySubExpression(obj: SubExpressionExpression): string {
-    return '(' + this.stringify(obj.expr) + ')';
+  stringifyNested(obj: NestedNode): string {
+    return '(' + this.stringify(obj.node) + ')';
   }
 
-  stringifyPipe(obj: PipeExpression): string {
+  stringifyPipe(obj: PipeNode): string {
     const result = this.stringifyPipeSingleline(obj);
     if (result.length > 80 || result.includes('\n')) {
       return this.stringifyPipeMultiline(obj);
@@ -225,7 +225,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyPipeSingleline(obj: PipeExpression): string {
+  stringifyPipeSingleline(obj: PipeNode): string {
     let result = this.stringify(obj.first);
     for (let i = 0; i < obj.values.length; i++) {
       result += ' | ' + this.stringify(obj.values[i]);
@@ -233,7 +233,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyPipeMultiline(obj: PipeExpression): string {
+  stringifyPipeMultiline(obj: PipeNode): string {
     let result = '';
     const isLeftKindedRecord = obj.first.kind == 'KindedRecord';
     if (!isLeftKindedRecord) {
@@ -266,7 +266,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyFunction(obj: FunctionExpression): string {
+  stringifyFunction(obj: FunctionNode): string {
     let result = '';
     if (obj.parameters.length === 0) {
       result += '()';
@@ -278,27 +278,27 @@ class Stringifier {
     return result + ' => ' + this.stringify(obj.body);
   }
 
-  stringifyBlockOfExpressions(obj: BlockOfExpressionsExpression): string {
+  stringifyBlock(obj: BlockNode): string {
     if (obj.children.length > 1) {
-      return this.stringifyBlockOfExpressionsMultiLine(obj);
+      return this.stringifyBlockMultiLine(obj);
     }
-    const result = this.stringifyBlockOfExpressionsOneLine(obj);
+    const result = this.stringifyBlockOneLine(obj);
     if (result.length > 80 || result.includes('\n')) {
-      return this.stringifyBlockOfExpressionsMultiLine(obj);
+      return this.stringifyBlockMultiLine(obj);
     }
     return result;
   }
 
-  stringifyBlockOfExpressionsOneLine(
-    obj: BlockOfExpressionsExpression
+  stringifyBlockOneLine(
+    obj: BlockNode
   ): string {
     return (
       '{ ' + obj.children.map(child => this.stringify(child)).join(' ') + ' }'
     );
   }
 
-  stringifyBlockOfExpressionsMultiLine(
-    obj: BlockOfExpressionsExpression
+  stringifyBlockMultiLine(
+    obj: BlockNode
   ): string {
     let result = '{\n';
     this.incrementDepth();
@@ -315,31 +315,31 @@ class Stringifier {
     return result;
   }
 
-  stringifyAssign(obj: AssignExpression): string {
+  stringifyAssign(obj: AssignNode): string {
     return (
       'set ' + this.stringify(obj.address) + ' = ' + this.stringify(obj.value)
     );
   }
 
-  stringifyImport(obj: ImportExpression): string {
+  stringifyImport(obj: ImportNode): string {
     return 'import ' + this.stringifyRawString(obj.path);
   }
 
-  stringifyExport(obj: ExportExpression): string {
-    return 'export ' + this.stringify(obj.expr);
+  stringifyExport(obj: ExportNode): string {
+    return 'export ' + this.stringify(obj.node);
   }
 
-  stringifyComment(obj: CommentExpression): string {
+  stringifyComment(obj: CommentNode): string {
     let result = '//' + obj.text + '\n' + this.depthSpace();
-    if (obj.expr) {
-      result += this.stringify(obj.expr);
+    if (obj.node) {
+      result += this.stringify(obj.node);
     }
     return result;
   }
 
   // TODO: Deprecated
-  stringifyKindedRecord(obj: KindedRecordExpression): string {
-    const result = this.stringify(obj.value.kind) + ' ';
+  stringifyKindedRecord(obj: KindedRecordNode): string {
+    const result = this.stringify(obj.kindOfRecord) + ' ';
     let bodyResult = this.stringifyKindedRecordBodySingleline(obj);
     if (bodyResult.includes('\n') || bodyResult.length > 40) {
       bodyResult = this.stringifyKindedRecordBodyMultiline(obj);
@@ -347,37 +347,28 @@ class Stringifier {
     return result + bodyResult;
   }
 
-  stringifyKindedRecordBodySingleline(obj2: KindedRecordExpression): string {
-    const obj = obj2.value;
-    const entries = Object.entries(obj);
-    if (
-      entries.length === 1 ||
-      (entries.length === 2 &&
-        Array.isArray(obj.children) &&
-        obj.children.length === 0)
-    ) {
+  stringifyKindedRecordBodySingleline(obj: KindedRecordNode): string {
+    if (obj.entries.length === 0 && obj.children.length === 0) {
       return '{}';
     }
     let result = '{ ';
     const entriesArray = [];
-    const namedAttributesStringified = entries
-      .filter(entry => entry[0] !== 'kind')
-      .filter(
-        entry =>
-          entry[0] !== 'children' ||
-          (entry[0] === 'children' && !Array.isArray(obj.children))
-      )
-      .map(([key, value]) => {
+    const namedAttributesStringified = obj.entries
+      .map(({ key, value }) => {
         const stringifiedKey = this.stringifyRecordKey(key);
-        return stringifiedKey + ': ' + this.stringify(value as any);
+        return stringifiedKey + ': ' + this.stringify(value);
       })
       .join(', ');
     if (namedAttributesStringified !== '') {
       entriesArray.push(namedAttributesStringified);
     }
-    if (obj.children && Array.isArray(obj.children)) {
+    if (
+      obj.children &&
+      Array.isArray(obj.children) &&
+      obj.children.length > 0
+    ) {
       entriesArray.push(
-        obj.children.map((child: any) => this.stringify(child)).join(', ')
+        obj.children.map(child => this.stringify(child)).join(', ')
       );
     }
     result += entriesArray.join(', ');
@@ -385,52 +376,35 @@ class Stringifier {
     return result;
   }
 
-  stringifyKindedRecordBodyMultiline(obj2: KindedRecordExpression): string {
-    const obj = obj2.value;
-    const entries = Object.entries(obj);
+  stringifyKindedRecordBodyMultiline(obj: KindedRecordNode): string {
     let result = '';
-    if (
-      entries.length === 1 ||
-      (entries.length === 2 &&
-        Array.isArray(obj.children) &&
-        obj.children.length === 0)
-    ) {
+    if (obj.entries.length === 0 && obj.children.length === 0) {
       result += '{}';
       return result;
     }
     let longestEntry = 0;
-    for (let entry of entries) {
-      if (entry[0] === 'children' || entry[0] === 'kind') {
-        continue;
-      }
+    for (let entry of obj.entries) {
       longestEntry = Math.max(
         longestEntry,
-        this.stringifyRecordKey(entry[0]).length
+        this.stringifyRecordKey(entry.key).length
       );
     }
     result = '{\n';
     this.incrementDepth();
     let hasNamedAttributes = false;
-    entries
-      .filter(entry => entry[0] !== 'kind')
-      .filter(
-        entry =>
-          entry[0] !== 'children' ||
-          (entry[0] === 'children' && !Array.isArray(obj.children))
-      )
-      .forEach(([key, value]) => {
-        const stringifiedKey = this.stringifyRecordKey(key);
-        hasNamedAttributes = true;
-        result +=
-          this.depthSpace() +
-          stringifiedKey +
-          ': ' +
-          padSpaces(longestEntry - stringifiedKey.length) +
-          this.stringify(value as any) +
-          '\n';
-      });
+    obj.entries.forEach(({ key, value }) => {
+      const stringifiedKey = this.stringifyRecordKey(key);
+      hasNamedAttributes = true;
+      result +=
+        this.depthSpace() +
+        stringifiedKey +
+        ': ' +
+        padSpaces(longestEntry - stringifiedKey.length) +
+        this.stringify(value as any) +
+        '\n';
+    });
     if (obj.children && Array.isArray(obj.children)) {
-      (obj.children as Expression[]).forEach((child, index) => {
+      obj.children.forEach((child, index) => {
         const content = this.stringify(child);
         if (hasNamedAttributes && index === 0) {
           result += '\n';
@@ -448,7 +422,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyCall(obj: CallExpression) {
+  stringifyCall(obj: CallNode) {
     // Maybe optimize this to not stringify twice ?
     if (obj.args.length > 3) {
       return this.stringifyCallMultiLine(obj);
@@ -460,30 +434,30 @@ class Stringifier {
     return result;
   }
 
-  stringifyCallOneLine(obj: CallExpression) {
+  stringifyCallOneLine(obj: CallNode) {
     return (
       this.stringify(obj.value) +
       '(' +
       obj.args
-        .map((arg: any) => {
-          if (arg.argKind === 'Named') {
+        .map(arg => {
+          if (arg.kind === 'NamedArgument') {
             return (
               this.stringifyRecordKey(arg.name) +
               ': ' +
               this.stringify(arg.value)
             );
-          } else if (arg.argKind === 'Positional') {
-            return this.stringify(arg.value);
-          } else {
-            return this.stringify(arg);
           }
+          if (arg.kind === 'PositionalArgument') {
+            return this.stringify(arg.value);
+          }
+          throw new Error('Unexpected argument kind: ' + (arg as any).kind);
         })
         .join(', ') +
       ')'
     );
   }
 
-  stringifyIf(obj: IfExpression) {
+  stringifyIf(obj: IfNode) {
     const result = this.stringifyIfOneLine(obj);
     if (result.includes('\n') || result.length > 60) {
       return this.stringifyIfMultiLine(obj);
@@ -491,19 +465,19 @@ class Stringifier {
     return result;
   }
 
-  stringifyIfOneLine(obj: IfExpression) {
+  stringifyIfOneLine(obj: IfNode) {
     let result = 'if (' + this.stringify(obj.condition) + ') ';
     const ifTrue = obj.ifTrue;
-    if (isExpr(ifTrue, 'BlockOfExpressions')) {
-      result += this.stringifyBlockOfExpressionsOneLine(ifTrue);
+    if (isNode(ifTrue, 'Block')) {
+      result += this.stringifyBlockOneLine(ifTrue);
     } else {
       result += this.stringify(ifTrue);
     }
     if (obj.ifFalse) {
       const ifFalse = obj.ifFalse;
-      if (isExpr(ifFalse, 'BlockOfExpressions')) {
-        result += ' else ' + this.stringifyBlockOfExpressionsOneLine(ifFalse);
-      } else if (isExpr(ifFalse, 'If')) {
+      if (isNode(ifFalse, 'Block')) {
+        result += ' else ' + this.stringifyBlockOneLine(ifFalse);
+      } else if (isNode(ifFalse, 'If')) {
         result += ' else ' + this.stringifyIfOneLine(ifFalse);
       } else {
         result += ' else ' + this.stringify(ifFalse);
@@ -512,25 +486,25 @@ class Stringifier {
     return result;
   }
 
-  stringifyIfMultiLine(obj: IfExpression) {
+  stringifyIfMultiLine(obj: IfNode) {
     let result = 'if (' + this.stringify(obj.condition) + ') ';
     const ifTrue = obj.ifTrue;
-    if (isExpr(ifTrue, 'BlockOfExpressions')) {
-      result += this.stringifyBlockOfExpressionsMultiLine(ifTrue);
+    if (isNode(ifTrue, 'Block')) {
+      result += this.stringifyBlockMultiLine(ifTrue);
     } else {
       result += this.stringify(ifTrue);
     }
 
     if (obj.ifFalse) {
-      if (isExpr(ifTrue, 'BlockOfExpressions')) {
+      if (isNode(ifTrue, 'Block')) {
         result += ' ';
       } else {
         result += '\n' + this.depthSpace();
       }
       const ifFalse = obj.ifFalse;
-      if (isExpr(ifFalse, 'BlockOfExpressions')) {
-        result += 'else ' + this.stringifyBlockOfExpressionsMultiLine(ifFalse);
-      } else if (isExpr(ifFalse, 'If')) {
+      if (isNode(ifFalse, 'Block')) {
+        result += 'else ' + this.stringifyBlockMultiLine(ifFalse);
+      } else if (isNode(ifFalse, 'If')) {
         result += 'else ' + this.stringifyIfMultiLine(ifFalse);
       } else {
         result += 'else ' + this.stringify(ifFalse);
@@ -539,14 +513,14 @@ class Stringifier {
     return result;
   }
 
-  stringifyWithIndent(obj: Expression) {
+  stringifyWithIndent(obj: Node) {
     this.incrementDepth();
     const result = this.stringify(obj);
     this.decrementDepth();
     return result;
   }
 
-  stringifySwitch(obj: SwitchExpression) {
+  stringifySwitch(obj: SwitchNode) {
     let result = 'switch';
     if (obj.value) {
       result += ' (' + this.stringify(obj.value) + ')';
@@ -582,7 +556,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyTry(obj: TryExpression) {
+  stringifyTry(obj: TryNode) {
     const result = this.stringifyTryOneLine(obj);
     if (result.includes('\n') || result.length > 60) {
       return this.stringifyTryMultiLine(obj);
@@ -590,57 +564,57 @@ class Stringifier {
     return result;
   }
 
-  stringifyTryOneLine(obj: TryExpression) {
+  stringifyTryOneLine(obj: TryNode) {
     let result = 'try ';
-    if (isExpr(obj.expr, 'BlockOfExpressions')) {
-      result += this.stringifyBlockOfExpressionsOneLine(obj.expr);
+    if (isNode(obj.node, 'Block')) {
+      result += this.stringifyBlockOneLine(obj.node);
     } else {
-      result += this.stringify(obj.expr);
+      result += this.stringify(obj.node);
     }
-    if (obj.catchExpr) {
-      if (isExpr(obj.catchExpr, 'BlockOfExpressions')) {
+    if (obj.catchNode) {
+      if (isNode(obj.catchNode, 'Block')) {
         result +=
-          ' catch ' + this.stringifyBlockOfExpressionsOneLine(obj.catchExpr);
+          ' catch ' + this.stringifyBlockOneLine(obj.catchNode);
       } else {
-        result += ' catch ' + this.stringify(obj.catchExpr);
+        result += ' catch ' + this.stringify(obj.catchNode);
       }
     }
     return result;
   }
 
-  stringifyTryMultiLine(obj: TryExpression) {
+  stringifyTryMultiLine(obj: TryNode) {
     let result = 'try ';
-    if (isExpr(obj.expr, 'BlockOfExpressions')) {
-      result += this.stringifyBlockOfExpressionsMultiLine(obj.expr);
+    if (isNode(obj.node, 'Block')) {
+      result += this.stringifyBlockMultiLine(obj.node);
     } else {
-      result += this.stringify(obj.expr);
+      result += this.stringify(obj.node);
     }
 
-    if (obj.catchExpr) {
-      if (isExpr(obj.catchExpr, 'BlockOfExpressions')) {
+    if (obj.catchNode) {
+      if (isNode(obj.catchNode, 'Block')) {
         result +=
-          ' catch ' + this.stringifyBlockOfExpressionsMultiLine(obj.catchExpr);
+          ' catch ' + this.stringifyBlockMultiLine(obj.catchNode);
       } else {
-        result += ' catch ' + this.stringify(obj.catchExpr);
+        result += ' catch ' + this.stringify(obj.catchNode);
       }
     }
     return result;
   }
 
-  stringifyCallMultiLine(obj: CallExpression) {
+  stringifyCallMultiLine(obj: CallNode) {
     let result = this.stringify(obj.value) + '(\n';
     this.incrementDepth();
     let longestEntry = 0;
     for (let entry of obj.args) {
-      if (entry.argKind === 'Named') {
+      if (entry.kind === 'NamedArgument') {
         longestEntry = Math.max(
           longestEntry,
           this.stringifyRecordKey(entry.name).length
         );
       }
     }
-    obj.args.forEach((arg: any) => {
-      if (arg.argKind === 'Named') {
+    obj.args.forEach(arg => {
+      if (arg.kind === 'NamedArgument') {
         const identifier = this.stringifyRecordKey(arg.name);
         result +=
           this.depthSpace() +
@@ -658,7 +632,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyArray(value: Expression[], isRoot: boolean): string {
+  stringifyArray(value: Node[], isRoot: boolean): string {
     // Maybe optimize this to not stringify twice ?
     if (value.length > 3 || this.depthCounter === 0) {
       return this.stringifyArrayMultiline(value, isRoot);
@@ -670,14 +644,14 @@ class Stringifier {
     return result;
   }
 
-  stringifyArraySingleline(value: Expression[]): string {
+  stringifyArraySingleline(value: Node[]): string {
     if (value.length === 0) {
       return '[]';
     }
     return '[' + value.map(child => this.stringify(child)).join(', ') + ']';
   }
 
-  stringifyArrayMultiline(value: Expression[], isRoot: boolean): string {
+  stringifyArrayMultiline(value: Node[], isRoot: boolean): string {
     if (value.length === 0) {
       return '[]';
     }
@@ -702,8 +676,8 @@ class Stringifier {
     return result;
   }
 
-  stringifyRecord(obj: RecordExpression): string {
-    if (Object.entries(obj.value).length > 3) {
+  stringifyRecord(obj: RecordNode): string {
+    if (Object.entries(obj.entries).length > 3) {
       return this.stringifyRecordMultiline(obj);
     }
     const result = this.stringifyRecordSingleline(obj);
@@ -713,14 +687,13 @@ class Stringifier {
     return result;
   }
 
-  stringifyRecordSingleline(obj: RecordExpression): string {
-    const entries = Object.entries(obj.value);
-    if (entries.length === 0) {
+  stringifyRecordSingleline(obj: RecordNode): string {
+    if (obj.entries.length === 0) {
       return '{}';
     }
     let result = '{';
-    result += entries
-      .map(([key, value]) => {
+    result += obj.entries
+      .map(({ key, value }) => {
         const identifier = this.stringifyRecordKey(key);
         return identifier + ': ' + this.stringify(value);
       })
@@ -729,18 +702,17 @@ class Stringifier {
     return result;
   }
 
-  stringifyRecordMultiline(obj: RecordExpression): string {
-    const entries = Object.entries(obj.value);
+  stringifyRecordMultiline(obj: RecordNode): string {
     let longestEntry = 0;
-    for (let entry of entries) {
+    for (let entry of obj.entries) {
       longestEntry = Math.max(
         longestEntry,
-        this.stringifyRecordKey(entry[0]).length
+        this.stringifyRecordKey(entry.key).length
       );
     }
     let result = '{\n';
     this.incrementDepth();
-    entries.forEach(([key, value]) => {
+    obj.entries.forEach(({ key, value }) => {
       const identifier = this.stringifyRecordKey(key);
       result +=
         this.depthSpace() +

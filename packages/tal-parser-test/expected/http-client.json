@@ -3,12 +3,12 @@
     "kind": "Call",
     "args": [
       {
-        "argKind": "Named",
+        "kind": "NamedArgument",
         "name": "key",
         "value": "title"
       },
       {
-        "argKind": "Named",
+        "kind": "NamedArgument",
         "name": "value",
         "value": "HTTP Client demo"
       }
@@ -79,7 +79,7 @@
     "value": {
       "kind": "Function",
       "body": {
-        "kind": "BlockOfExpressions",
+        "kind": "Block",
         "children": [
           {
             "kind": "Assign",
@@ -91,21 +91,21 @@
               "kind": "Call",
               "args": [
                 {
-                  "argKind": "Positional",
+                  "kind": "PositionalArgument",
                   "value": {
                     "kind": "Local",
                     "name": "method"
                   }
                 },
                 {
-                  "argKind": "Positional",
+                  "kind": "PositionalArgument",
                   "value": {
                     "kind": "Local",
                     "name": "url"
                   }
                 },
                 {
-                  "argKind": "Positional",
+                  "kind": "PositionalArgument",
                   "value": {
                     "kind": "Pipe",
                     "first": {
@@ -117,7 +117,7 @@
                         "kind": "Call",
                         "args": [
                           {
-                            "argKind": "Positional",
+                            "kind": "PositionalArgument",
                             "value": {
                               "kind": "Function",
                               "body": {
@@ -155,14 +155,14 @@
                   }
                 },
                 {
-                  "argKind": "Positional",
+                  "kind": "PositionalArgument",
                   "value": {
                     "kind": "Local",
                     "name": "body"
                   }
                 },
                 {
-                  "argKind": "Named",
+                  "kind": "NamedArgument",
                   "name": "allowErrorStatusCode",
                   "value": true
                 }
@@ -175,8 +175,8 @@
           },
           {
             "kind": "Try",
-            "expr": {
-              "kind": "BlockOfExpressions",
+            "node": {
+              "kind": "Block",
               "children": [
                 {
                   "kind": "DeclareLocal",
@@ -191,7 +191,7 @@
                         "kind": "Call",
                         "args": [
                           {
-                            "argKind": "Positional",
+                            "kind": "PositionalArgument",
                             "value": {
                               "kind": "Index",
                               "index": "content-type",
@@ -206,7 +206,7 @@
                             }
                           },
                           {
-                            "argKind": "Positional",
+                            "kind": "PositionalArgument",
                             "value": ";"
                           }
                         ],
@@ -236,7 +236,7 @@
                     }
                   },
                   "ifTrue": {
-                    "kind": "BlockOfExpressions",
+                    "kind": "Block",
                     "children": [
                       {
                         "kind": "Assign",
@@ -260,7 +260,7 @@
                       }
                     },
                     "ifTrue": {
-                      "kind": "BlockOfExpressions",
+                      "kind": "Block",
                       "children": [
                         {
                           "kind": "Assign",
@@ -292,7 +292,7 @@
                         }
                       },
                       "ifTrue": {
-                        "kind": "BlockOfExpressions",
+                        "kind": "Block",
                         "children": [
                           {
                             "kind": "Assign",
@@ -320,7 +320,7 @@
               "kind": "Call",
               "args": [
                 {
-                  "argKind": "Positional",
+                  "kind": "PositionalArgument",
                   "value": {
                     "kind": "Attribute",
                     "key": "body",
@@ -344,259 +344,337 @@
   },
   {
     "kind": "KindedRecord",
-    "value": {
-      "kind": {
-        "kind": "Local",
-        "name": "Column"
-      },
-      "children": [
-        {
-          "kind": "KindedRecord",
-          "value": {
-            "kind": {
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "Column"
+    },
+    "children": [
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Row"
+        },
+        "children": [
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
               "kind": "Local",
-              "name": "Row"
+              "name": "Box"
             },
             "children": [
               {
                 "kind": "KindedRecord",
-                "value": {
-                  "kind": {
-                    "kind": "Local",
-                    "name": "Box"
-                  },
-                  "children": [
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
-                          "kind": "Local",
-                          "name": "Select"
-                        },
-                        "bindTo": {
-                          "kind": "Local",
-                          "name": "method"
-                        },
-                        "placeholder": "Method",
-                        "options": {
-                          "kind": "Array",
-                          "value": [
-                            "GET",
-                            "POST",
-                            "PUT",
-                            "PATCH",
-                            "DELETE",
-                            "LIST",
-                            "HEAD",
-                            "OPTIONS"
-                          ]
-                        }
-                      }
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Select"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "method"
                     }
-                  ],
-                  "flex": 0
-                }
-              },
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "Method"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Array",
+                      "value": [
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "LIST",
+                        "HEAD",
+                        "OPTIONS"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": [
+              {
+                "kind": "KindedRecordEntry",
+                "key": "flex",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Box"
+            },
+            "children": [
               {
                 "kind": "KindedRecord",
-                "value": {
-                  "kind": {
-                    "kind": "Local",
-                    "name": "Box"
-                  },
-                  "children": [
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
-                          "kind": "Local",
-                          "name": "InputText"
-                        },
-                        "bindTo": {
-                          "kind": "Local",
-                          "name": "url"
-                        },
-                        "placeholder": "URL",
-                        "type": "url",
-                        "onSubmit": {
-                          "kind": "Local",
-                          "name": "executeHttpRequest"
-                        }
-                      }
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "url"
                     }
-                  ],
-                  "flex": 1
-                }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "URL"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "type",
+                    "value": "url"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onSubmit",
+                    "value": {
+                      "kind": "Local",
+                      "name": "executeHttpRequest"
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": [
+              {
+                "kind": "KindedRecordEntry",
+                "key": "flex",
+                "value": 1
               }
             ]
           }
-        },
-        {
-          "kind": "Call",
-          "args": [
-            {
-              "argKind": "Positional",
-              "value": {
-                "kind": "Local",
-                "name": "headers"
-              }
-            },
-            {
-              "argKind": "Positional",
-              "value": {
-                "kind": "Function",
-                "body": {
-                  "kind": "Array",
-                  "value": [
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
+        ],
+        "entries": []
+      },
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "PositionalArgument",
+            "value": {
+              "kind": "Local",
+              "name": "headers"
+            }
+          },
+          {
+            "kind": "PositionalArgument",
+            "value": {
+              "kind": "Function",
+              "body": {
+                "kind": "Array",
+                "value": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Row"
+                    },
+                    "children": [
+                      {
+                        "kind": "KindedRecord",
+                        "kindOfRecord": {
                           "kind": "Local",
-                          "name": "Row"
+                          "name": "Box"
                         },
                         "children": [
                           {
                             "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Box"
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "InputText"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "placeholder",
+                                "value": "Header name"
                               },
-                              "children": [
-                                {
-                                  "kind": "KindedRecord",
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "bindTo",
+                                "value": {
+                                  "kind": "Index",
+                                  "index": 0,
                                   "value": {
-                                    "kind": {
-                                      "kind": "Local",
-                                      "name": "InputText"
-                                    },
-                                    "placeholder": "Header name",
-                                    "bindTo": {
-                                      "kind": "Index",
-                                      "index": 0,
-                                      "value": {
-                                        "kind": "Local",
-                                        "name": "it"
-                                      }
-                                    }
+                                    "kind": "Local",
+                                    "name": "it"
                                   }
                                 }
-                              ],
-                              "flex": 1
-                            }
-                          },
+                              }
+                            ]
+                          }
+                        ],
+                        "entries": [
+                          {
+                            "kind": "KindedRecordEntry",
+                            "key": "flex",
+                            "value": 1
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "KindedRecord",
+                        "kindOfRecord": {
+                          "kind": "Local",
+                          "name": "Box"
+                        },
+                        "children": [
                           {
                             "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Box"
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "InputText"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "placeholder",
+                                "value": "Header value"
                               },
-                              "children": [
-                                {
-                                  "kind": "KindedRecord",
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "bindTo",
+                                "value": {
+                                  "kind": "Index",
+                                  "index": 1,
                                   "value": {
-                                    "kind": {
-                                      "kind": "Local",
-                                      "name": "InputText"
-                                    },
-                                    "placeholder": "Header value",
-                                    "bindTo": {
-                                      "kind": "Index",
-                                      "index": 1,
-                                      "value": {
-                                        "kind": "Local",
-                                        "name": "it"
-                                      }
-                                    }
+                                    "kind": "Local",
+                                    "name": "it"
                                   }
                                 }
-                              ],
-                              "flex": 3
-                            }
-                          },
+                              }
+                            ]
+                          }
+                        ],
+                        "entries": [
+                          {
+                            "kind": "KindedRecordEntry",
+                            "key": "flex",
+                            "value": 3
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "KindedRecord",
+                        "kindOfRecord": {
+                          "kind": "Local",
+                          "name": "Box"
+                        },
+                        "children": [
                           {
                             "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Box"
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "Button"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "text",
+                                "value": "Remove"
                               },
-                              "children": [
-                                {
-                                  "kind": "KindedRecord",
-                                  "value": {
-                                    "kind": {
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "onClick",
+                                "value": {
+                                  "kind": "Function",
+                                  "body": {
+                                    "kind": "Assign",
+                                    "address": {
                                       "kind": "Local",
-                                      "name": "Button"
+                                      "name": "headers"
                                     },
-                                    "text": "Remove",
-                                    "onClick": {
-                                      "kind": "Function",
-                                      "body": {
-                                        "kind": "Assign",
-                                        "address": {
-                                          "kind": "Local",
-                                          "name": "headers"
-                                        },
-                                        "value": {
-                                          "kind": "Call",
-                                          "args": [
-                                            {
-                                              "argKind": "Positional",
-                                              "value": {
-                                                "kind": "Local",
-                                                "name": "headers"
-                                              }
-                                            },
-                                            {
-                                              "argKind": "Positional",
-                                              "value": {
-                                                "kind": "Local",
-                                                "name": "index"
-                                              }
-                                            }
-                                          ],
+                                    "value": {
+                                      "kind": "Call",
+                                      "args": [
+                                        {
+                                          "kind": "PositionalArgument",
                                           "value": {
                                             "kind": "Local",
-                                            "name": "array_remove"
+                                            "name": "headers"
+                                          }
+                                        },
+                                        {
+                                          "kind": "PositionalArgument",
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "index"
                                           }
                                         }
-                                      },
-                                      "parameters": []
+                                      ],
+                                      "value": {
+                                        "kind": "Local",
+                                        "name": "array_remove"
+                                      }
                                     }
-                                  }
+                                  },
+                                  "parameters": []
                                 }
-                              ],
-                              "flex": 0
-                            }
+                              }
+                            ]
+                          }
+                        ],
+                        "entries": [
+                          {
+                            "kind": "KindedRecordEntry",
+                            "key": "flex",
+                            "value": 0
                           }
                         ]
                       }
-                    }
-                  ]
-                },
-                "parameters": [
-                  "it",
-                  "index"
+                    ],
+                    "entries": []
+                  }
                 ]
-              }
+              },
+              "parameters": [
+                "it",
+                "index"
+              ]
             }
-          ],
-          "value": {
-            "kind": "Local",
-            "name": "array_map"
           }
+        ],
+        "value": {
+          "kind": "Local",
+          "name": "array_map"
+        }
+      },
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Button"
         },
-        {
-          "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "Button"
-            },
-            "onClick": {
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "onClick",
+            "value": {
               "kind": "Function",
               "body": {
                 "kind": "Assign",
@@ -608,14 +686,14 @@
                   "kind": "Call",
                   "args": [
                     {
-                      "argKind": "Positional",
+                      "kind": "PositionalArgument",
                       "value": {
                         "kind": "Local",
                         "name": "headers"
                       }
                     },
                     {
-                      "argKind": "Positional",
+                      "kind": "PositionalArgument",
                       "value": {
                         "kind": "Array",
                         "value": [
@@ -632,20 +710,33 @@
                 }
               },
               "parameters": []
-            },
-            "text": "Add user agent header"
+            }
+          },
+          {
+            "kind": "KindedRecordEntry",
+            "key": "text",
+            "value": "Add user agent header"
           }
+        ]
+      },
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Button"
         },
-        {
-          "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "Button"
-            },
-            "text": "New header",
-            "onClick": {
-              "kind": "BlockOfExpressions",
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "text",
+            "value": "New header"
+          },
+          {
+            "kind": "KindedRecordEntry",
+            "key": "onClick",
+            "value": {
+              "kind": "Block",
               "children": [
                 {
                   "kind": "Function",
@@ -659,14 +750,14 @@
                       "kind": "Call",
                       "args": [
                         {
-                          "argKind": "Positional",
+                          "kind": "PositionalArgument",
                           "value": {
                             "kind": "Local",
                             "name": "headers"
                           }
                         },
                         {
-                          "argKind": "Positional",
+                          "kind": "PositionalArgument",
                           "value": {
                             "kind": "Array",
                             "value": [
@@ -687,130 +778,161 @@
               ]
             }
           }
+        ]
+      },
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "InputText"
         },
-        {
-          "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "InputText"
-            },
-            "bindTo": {
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "bindTo",
+            "value": {
               "kind": "Local",
               "name": "body"
-            },
-            "placeholder": "body",
-            "multiline": true
+            }
+          },
+          {
+            "kind": "KindedRecordEntry",
+            "key": "placeholder",
+            "value": "body"
+          },
+          {
+            "kind": "KindedRecordEntry",
+            "key": "multiline",
+            "value": true
           }
+        ]
+      },
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Button"
         },
-        {
-          "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "Button"
-            },
-            "text": "Execute HTTP Request",
-            "onClick": {
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "text",
+            "value": "Execute HTTP Request"
+          },
+          {
+            "kind": "KindedRecordEntry",
+            "key": "onClick",
+            "value": {
               "kind": "Local",
               "name": "executeHttpRequest"
             }
           }
-        },
-        {
-          "kind": "BlockOfExpressions",
-          "children": [
-            {
-              "kind": "DeclareLocal",
-              "mutable": false,
-              "name": "validHeaders",
-              "value": {
-                "kind": "Pipe",
-                "first": {
-                  "kind": "Local",
-                  "name": "headers"
-                },
-                "values": [
-                  {
-                    "kind": "Call",
-                    "args": [
-                      {
-                        "argKind": "Positional",
-                        "value": {
-                          "kind": "Function",
-                          "body": {
-                            "kind": "BinaryOperator",
-                            "operator": "&&",
-                            "right": {
-                              "kind": "Index",
-                              "index": 1,
-                              "value": {
-                                "kind": "Local",
-                                "name": "it"
-                              }
-                            },
-                            "left": {
-                              "kind": "Index",
-                              "index": 0,
-                              "value": {
-                                "kind": "Local",
-                                "name": "it"
-                              }
+        ]
+      },
+      {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "validHeaders",
+            "value": {
+              "kind": "Pipe",
+              "first": {
+                "kind": "Local",
+                "name": "headers"
+              },
+              "values": [
+                {
+                  "kind": "Call",
+                  "args": [
+                    {
+                      "kind": "PositionalArgument",
+                      "value": {
+                        "kind": "Function",
+                        "body": {
+                          "kind": "BinaryOperator",
+                          "operator": "&&",
+                          "right": {
+                            "kind": "Index",
+                            "index": 1,
+                            "value": {
+                              "kind": "Local",
+                              "name": "it"
                             }
                           },
-                          "parameters": [
-                            "it"
-                          ]
-                        }
+                          "left": {
+                            "kind": "Index",
+                            "index": 0,
+                            "value": {
+                              "kind": "Local",
+                              "name": "it"
+                            }
+                          }
+                        },
+                        "parameters": [
+                          "it"
+                        ]
                       }
-                    ],
-                    "value": {
-                      "kind": "Local",
-                      "name": "array_filter"
                     }
+                  ],
+                  "value": {
+                    "kind": "Local",
+                    "name": "array_filter"
                   }
-                ]
-              }
-            },
-            {
-              "kind": "Array",
-              "value": [
-                {
-                  "kind": "If",
-                  "condition": {
+                }
+              ]
+            }
+          },
+          {
+            "kind": "Array",
+            "value": [
+              {
+                "kind": "If",
+                "condition": {
+                  "kind": "BinaryOperator",
+                  "operator": "&&",
+                  "right": {
                     "kind": "BinaryOperator",
-                    "operator": "&&",
-                    "right": {
-                      "kind": "BinaryOperator",
-                      "operator": "!=",
-                      "right": null,
-                      "left": {
-                        "kind": "Local",
-                        "name": "url"
-                      }
-                    },
+                    "operator": "!=",
+                    "right": null,
                     "left": {
-                      "kind": "BinaryOperator",
-                      "operator": "!=",
-                      "right": null,
-                      "left": {
-                        "kind": "Local",
-                        "name": "method"
-                      }
+                      "kind": "Local",
+                      "name": "url"
                     }
                   },
-                  "ifTrue": {
-                    "kind": "BlockOfExpressions",
-                    "children": [
-                      {
-                        "kind": "KindedRecord",
-                        "value": {
-                          "kind": {
-                            "kind": "Local",
-                            "name": "Text"
-                          },
-                          "copy": true,
-                          "text": {
+                  "left": {
+                    "kind": "BinaryOperator",
+                    "operator": "!=",
+                    "right": null,
+                    "left": {
+                      "kind": "Local",
+                      "name": "method"
+                    }
+                  }
+                },
+                "ifTrue": {
+                  "kind": "Block",
+                  "children": [
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "copy",
+                          "value": true
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": {
                             "kind": "Pipe",
                             "first": "curl -X $method $headers '$url'",
                             "values": [
@@ -818,96 +940,116 @@
                                 "kind": "Call",
                                 "args": [
                                   {
-                                    "argKind": "Positional",
+                                    "kind": "PositionalArgument",
                                     "value": {
                                       "kind": "Record",
-                                      "value": {
-                                        "method": {
-                                          "kind": "Local",
-                                          "name": "method"
-                                        },
-                                        "url": {
-                                          "kind": "Local",
-                                          "name": "url"
-                                        },
-                                        "headers": {
-                                          "kind": "Pipe",
-                                          "first": {
+                                      "entries": [
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "method",
+                                          "value": {
                                             "kind": "Local",
-                                            "name": "validHeaders"
-                                          },
-                                          "values": [
-                                            {
-                                              "kind": "Call",
-                                              "args": [
-                                                {
-                                                  "argKind": "Positional",
-                                                  "value": {
-                                                    "kind": "Function",
-                                                    "body": {
-                                                      "kind": "Call",
-                                                      "args": [
-                                                        {
-                                                          "argKind": "Positional",
-                                                          "value": "-H '$name: $value'"
-                                                        },
-                                                        {
-                                                          "argKind": "Positional",
-                                                          "value": {
-                                                            "kind": "Record",
+                                            "name": "method"
+                                          }
+                                        },
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "url",
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "url"
+                                          }
+                                        },
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "headers",
+                                          "value": {
+                                            "kind": "Pipe",
+                                            "first": {
+                                              "kind": "Local",
+                                              "name": "validHeaders"
+                                            },
+                                            "values": [
+                                              {
+                                                "kind": "Call",
+                                                "args": [
+                                                  {
+                                                    "kind": "PositionalArgument",
+                                                    "value": {
+                                                      "kind": "Function",
+                                                      "body": {
+                                                        "kind": "Call",
+                                                        "args": [
+                                                          {
+                                                            "kind": "PositionalArgument",
+                                                            "value": "-H '$name: $value'"
+                                                          },
+                                                          {
+                                                            "kind": "PositionalArgument",
                                                             "value": {
-                                                              "name": {
-                                                                "kind": "Index",
-                                                                "index": 0,
-                                                                "value": {
-                                                                  "kind": "Local",
-                                                                  "name": "it"
+                                                              "kind": "Record",
+                                                              "entries": [
+                                                                {
+                                                                  "kind": "RecordEntry",
+                                                                  "key": "name",
+                                                                  "value": {
+                                                                    "kind": "Index",
+                                                                    "index": 0,
+                                                                    "value": {
+                                                                      "kind": "Local",
+                                                                      "name": "it"
+                                                                    }
+                                                                  }
+                                                                },
+                                                                {
+                                                                  "kind": "RecordEntry",
+                                                                  "key": "value",
+                                                                  "value": {
+                                                                    "kind": "Index",
+                                                                    "index": 1,
+                                                                    "value": {
+                                                                      "kind": "Local",
+                                                                      "name": "it"
+                                                                    }
+                                                                  }
                                                                 }
-                                                              },
-                                                              "value": {
-                                                                "kind": "Index",
-                                                                "index": 1,
-                                                                "value": {
-                                                                  "kind": "Local",
-                                                                  "name": "it"
-                                                                }
-                                                              }
+                                                              ]
                                                             }
                                                           }
+                                                        ],
+                                                        "value": {
+                                                          "kind": "Local",
+                                                          "name": "string_format"
                                                         }
-                                                      ],
-                                                      "value": {
-                                                        "kind": "Local",
-                                                        "name": "string_format"
-                                                      }
-                                                    },
-                                                    "parameters": [
-                                                      "it"
-                                                    ]
+                                                      },
+                                                      "parameters": [
+                                                        "it"
+                                                      ]
+                                                    }
                                                   }
+                                                ],
+                                                "value": {
+                                                  "kind": "Local",
+                                                  "name": "array_map"
                                                 }
-                                              ],
-                                              "value": {
-                                                "kind": "Local",
-                                                "name": "array_map"
-                                              }
-                                            },
-                                            {
-                                              "kind": "Call",
-                                              "args": [
-                                                {
-                                                  "argKind": "Positional",
-                                                  "value": " "
+                                              },
+                                              {
+                                                "kind": "Call",
+                                                "args": [
+                                                  {
+                                                    "kind": "PositionalArgument",
+                                                    "value": " "
+                                                  }
+                                                ],
+                                                "value": {
+                                                  "kind": "Local",
+                                                  "name": "array_join"
                                                 }
-                                              ],
-                                              "value": {
-                                                "kind": "Local",
-                                                "name": "array_join"
                                               }
-                                            }
-                                          ]
+                                            ]
+                                          }
                                         }
-                                      }
+                                      ]
                                     }
                                   }
                                 ],
@@ -919,46 +1061,55 @@
                             ]
                           }
                         }
-                      }
-                    ]
-                  }
-                },
-                {
-                  "kind": "If",
-                  "condition": {
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "If",
+                "condition": {
+                  "kind": "BinaryOperator",
+                  "operator": "&&",
+                  "right": {
                     "kind": "BinaryOperator",
-                    "operator": "&&",
-                    "right": {
-                      "kind": "BinaryOperator",
-                      "operator": "!=",
-                      "right": null,
-                      "left": {
-                        "kind": "Local",
-                        "name": "url"
-                      }
-                    },
+                    "operator": "!=",
+                    "right": null,
                     "left": {
-                      "kind": "BinaryOperator",
-                      "operator": "!=",
-                      "right": null,
-                      "left": {
-                        "kind": "Local",
-                        "name": "method"
-                      }
+                      "kind": "Local",
+                      "name": "url"
                     }
                   },
-                  "ifTrue": {
-                    "kind": "BlockOfExpressions",
-                    "children": [
-                      {
-                        "kind": "KindedRecord",
-                        "value": {
-                          "kind": {
-                            "kind": "Local",
-                            "name": "Text"
-                          },
-                          "copy": true,
-                          "text": {
+                  "left": {
+                    "kind": "BinaryOperator",
+                    "operator": "!=",
+                    "right": null,
+                    "left": {
+                      "kind": "Local",
+                      "name": "method"
+                    }
+                  }
+                },
+                "ifTrue": {
+                  "kind": "Block",
+                  "children": [
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "copy",
+                          "value": true
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": {
                             "kind": "Pipe",
                             "first": "http_request(method: \"$method\", url: \"$url\" $headers $body)",
                             "values": [
@@ -966,125 +1117,141 @@
                                 "kind": "Call",
                                 "args": [
                                   {
-                                    "argKind": "Positional",
+                                    "kind": "PositionalArgument",
                                     "value": {
                                       "kind": "Record",
-                                      "value": {
-                                        "method": {
-                                          "kind": "Local",
-                                          "name": "method"
+                                      "entries": [
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "method",
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "method"
+                                          }
                                         },
-                                        "url": {
-                                          "kind": "Local",
-                                          "name": "url"
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "url",
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "url"
+                                          }
                                         },
-                                        "body": {
-                                          "kind": "If",
-                                          "condition": {
-                                            "kind": "BinaryOperator",
-                                            "operator": "&&",
-                                            "right": {
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "body",
+                                          "value": {
+                                            "kind": "If",
+                                            "condition": {
                                               "kind": "BinaryOperator",
-                                              "operator": "!=",
-                                              "right": "",
+                                              "operator": "&&",
+                                              "right": {
+                                                "kind": "BinaryOperator",
+                                                "operator": "!=",
+                                                "right": "",
+                                                "left": {
+                                                  "kind": "Local",
+                                                  "name": "body"
+                                                }
+                                              },
                                               "left": {
-                                                "kind": "Local",
-                                                "name": "body"
+                                                "kind": "BinaryOperator",
+                                                "operator": "!=",
+                                                "right": null,
+                                                "left": {
+                                                  "kind": "Local",
+                                                  "name": "body"
+                                                }
                                               }
                                             },
-                                            "left": {
-                                              "kind": "BinaryOperator",
-                                              "operator": "!=",
-                                              "right": null,
-                                              "left": {
-                                                "kind": "Local",
-                                                "name": "body"
-                                              }
+                                            "ifTrue": {
+                                              "kind": "Block",
+                                              "children": [
+                                                {
+                                                  "kind": "BinaryOperator",
+                                                  "operator": "+",
+                                                  "right": "\"",
+                                                  "left": {
+                                                    "kind": "BinaryOperator",
+                                                    "operator": "+",
+                                                    "right": {
+                                                      "kind": "Local",
+                                                      "name": "body"
+                                                    },
+                                                    "left": ", body: \""
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "ifFalse": {
+                                              "kind": "Block",
+                                              "children": [
+                                                " "
+                                              ]
                                             }
-                                          },
-                                          "ifTrue": {
-                                            "kind": "BlockOfExpressions",
-                                            "children": [
-                                              {
-                                                "kind": "BinaryOperator",
-                                                "operator": "+",
-                                                "right": "\"",
-                                                "left": {
+                                          }
+                                        },
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "headers",
+                                          "value": {
+                                            "kind": "If",
+                                            "condition": {
+                                              "kind": "BinaryOperator",
+                                              "operator": ">",
+                                              "right": 0,
+                                              "left": {
+                                                "kind": "Call",
+                                                "args": [
+                                                  {
+                                                    "kind": "PositionalArgument",
+                                                    "value": {
+                                                      "kind": "Local",
+                                                      "name": "validHeaders"
+                                                    }
+                                                  }
+                                                ],
+                                                "value": {
+                                                  "kind": "Local",
+                                                  "name": "array_length"
+                                                }
+                                              }
+                                            },
+                                            "ifTrue": {
+                                              "kind": "Block",
+                                              "children": [
+                                                {
                                                   "kind": "BinaryOperator",
                                                   "operator": "+",
                                                   "right": {
-                                                    "kind": "Local",
-                                                    "name": "body"
-                                                  },
-                                                  "left": ", body: \""
-                                                }
-                                              }
-                                            ]
-                                          },
-                                          "ifFalse": {
-                                            "kind": "BlockOfExpressions",
-                                            "children": [
-                                              " "
-                                            ]
-                                          }
-                                        },
-                                        "headers": {
-                                          "kind": "If",
-                                          "condition": {
-                                            "kind": "BinaryOperator",
-                                            "operator": ">",
-                                            "right": 0,
-                                            "left": {
-                                              "kind": "Call",
-                                              "args": [
-                                                {
-                                                  "argKind": "Positional",
-                                                  "value": {
-                                                    "kind": "Local",
-                                                    "name": "validHeaders"
-                                                  }
-                                                }
-                                              ],
-                                              "value": {
-                                                "kind": "Local",
-                                                "name": "array_length"
-                                              }
-                                            }
-                                          },
-                                          "ifTrue": {
-                                            "kind": "BlockOfExpressions",
-                                            "children": [
-                                              {
-                                                "kind": "BinaryOperator",
-                                                "operator": "+",
-                                                "right": {
-                                                  "kind": "SubExpression",
-                                                  "expr": {
-                                                    "kind": "Pipe",
-                                                    "first": {
-                                                      "kind": "Local",
-                                                      "name": "validHeaders"
-                                                    },
-                                                    "values": [
-                                                      {
+                                                    "kind": "Nested",
+                                                    "node": {
+                                                      "kind": "Pipe",
+                                                      "first": {
                                                         "kind": "Local",
-                                                        "name": "json_stringify"
-                                                      }
-                                                    ]
-                                                  }
-                                                },
-                                                "left": ", headers:"
-                                              }
-                                            ]
-                                          },
-                                          "ifFalse": {
-                                            "kind": "BlockOfExpressions",
-                                            "children": [
-                                              " "
-                                            ]
+                                                        "name": "validHeaders"
+                                                      },
+                                                      "values": [
+                                                        {
+                                                          "kind": "Local",
+                                                          "name": "json_stringify"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  "left": ", headers:"
+                                                }
+                                              ]
+                                            },
+                                            "ifFalse": {
+                                              "kind": "Block",
+                                              "children": [
+                                                " "
+                                              ]
+                                            }
                                           }
                                         }
-                                      }
+                                      ]
                                     }
                                   }
                                 ],
@@ -1096,444 +1263,570 @@
                             ]
                           }
                         }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "kind": "If",
-          "condition": {
-            "kind": "BinaryOperator",
-            "operator": "!=",
-            "right": null,
-            "left": {
-              "kind": "Local",
-              "name": "response"
-            }
-          },
-          "ifTrue": {
-            "kind": "BlockOfExpressions",
-            "children": [
-              {
-                "kind": "KindedRecord",
-                "value": {
-                  "kind": {
-                    "kind": "Local",
-                    "name": "Column"
-                  },
-                  "children": [
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
-                          "kind": "Local",
-                          "name": "Row"
-                        },
-                        "children": [
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Text"
-                              },
-                              "text": {
-                                "kind": "Call",
-                                "args": [
-                                  {
-                                    "argKind": "Positional",
-                                    "value": "Status code: $status"
-                                  },
-                                  {
-                                    "argKind": "Positional",
-                                    "value": {
-                                      "kind": "Record",
-                                      "value": {
-                                        "status": {
-                                          "kind": "Attribute",
-                                          "key": "status",
-                                          "value": {
-                                            "kind": "Local",
-                                            "name": "response"
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                ],
-                                "value": {
-                                  "kind": "Local",
-                                  "name": "string_format"
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
-                          "kind": "Local",
-                          "name": "Row"
-                        },
-                        "children": [
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Text"
-                              },
-                              "text": "Show headers"
-                            }
-                          },
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Switch"
-                              },
-                              "bindTo": {
-                                "kind": "Local",
-                                "name": "doShowHeaders"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "kind": "If",
-                      "condition": {
-                        "kind": "Local",
-                        "name": "doShowHeaders"
-                      },
-                      "ifTrue": {
-                        "kind": "BlockOfExpressions",
-                        "children": [
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Column"
-                              },
-                              "children": [
-                                {
-                                  "kind": "KindedRecord",
-                                  "value": {
-                                    "kind": {
-                                      "kind": "Local",
-                                      "name": "Text"
-                                    },
-                                    "text": "Headers:"
-                                  }
-                                },
-                                {
-                                  "kind": "KindedRecord",
-                                  "value": {
-                                    "kind": {
-                                      "kind": "Local",
-                                      "name": "Table"
-                                    },
-                                    "columns": {
-                                      "kind": "Array",
-                                      "value": [
-                                        {
-                                          "kind": "Record",
-                                          "value": {
-                                            "description": "Name",
-                                            "display": {
-                                              "kind": "Function",
-                                              "body": {
-                                                "kind": "KindedRecord",
-                                                "value": {
-                                                  "kind": {
-                                                    "kind": "Local",
-                                                    "name": "Text"
-                                                  },
-                                                  "text": {
-                                                    "kind": "Attribute",
-                                                    "key": "key",
-                                                    "value": {
-                                                      "kind": "Local",
-                                                      "name": "row"
-                                                    }
-                                                  },
-                                                  "copy": true
-                                                }
-                                              },
-                                              "parameters": [
-                                                "row"
-                                              ]
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "kind": "Record",
-                                          "value": {
-                                            "description": "Value",
-                                            "display": {
-                                              "kind": "Function",
-                                              "body": {
-                                                "kind": "KindedRecord",
-                                                "value": {
-                                                  "kind": {
-                                                    "kind": "Local",
-                                                    "name": "Text"
-                                                  },
-                                                  "text": {
-                                                    "kind": "Attribute",
-                                                    "key": "value",
-                                                    "value": {
-                                                      "kind": "Local",
-                                                      "name": "row"
-                                                    }
-                                                  },
-                                                  "copy": true
-                                                }
-                                              },
-                                              "parameters": [
-                                                "row"
-                                              ]
-                                            }
-                                          }
-                                        }
-                                      ]
-                                    },
-                                    "values": {
-                                      "kind": "Pipe",
-                                      "first": {
-                                        "kind": "Attribute",
-                                        "key": "headers",
-                                        "value": {
-                                          "kind": "Local",
-                                          "name": "response"
-                                        }
-                                      },
-                                      "values": [
-                                        {
-                                          "kind": "Local",
-                                          "name": "object_entries"
-                                        },
-                                        {
-                                          "kind": "Call",
-                                          "args": [
-                                            {
-                                              "argKind": "Positional",
-                                              "value": {
-                                                "kind": "Function",
-                                                "body": {
-                                                  "kind": "Record",
-                                                  "value": {
-                                                    "key": {
-                                                      "kind": "Index",
-                                                      "index": 0,
-                                                      "value": {
-                                                        "kind": "Local",
-                                                        "name": "it"
-                                                      }
-                                                    },
-                                                    "value": {
-                                                      "kind": "Index",
-                                                      "index": 1,
-                                                      "value": {
-                                                        "kind": "Local",
-                                                        "name": "it"
-                                                      }
-                                                    }
-                                                  }
-                                                },
-                                                "parameters": [
-                                                  "it"
-                                                ]
-                                              }
-                                            }
-                                          ],
-                                          "value": {
-                                            "kind": "Local",
-                                            "name": "array_map"
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  }
-                                }
-                              ],
-                              "flexShrink": 0
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
-                          "kind": "Local",
-                          "name": "Row"
-                        },
-                        "children": [
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Text"
-                              },
-                              "text": "Language syntax to highlight"
-                            }
-                          },
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Select"
-                              },
-                              "options": {
-                                "kind": "Array",
-                                "value": [
-                                  "text",
-                                  "json",
-                                  "html",
-                                  "xml",
-                                  "javascript",
-                                  "css"
-                                ]
-                              },
-                              "bindTo": {
-                                "kind": "Local",
-                                "name": "language"
-                              }
-                            }
-                          },
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Text"
-                              },
-                              "text": "Format code (when possible)"
-                            }
-                          },
-                          {
-                            "kind": "KindedRecord",
-                            "value": {
-                              "kind": {
-                                "kind": "Local",
-                                "name": "Switch"
-                              },
-                              "bindTo": {
-                                "kind": "Local",
-                                "name": "doFormat"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "kind": "KindedRecord",
-                      "value": {
-                        "kind": {
-                          "kind": "Local",
-                          "name": "Box"
-                        },
-                        "children": [
-                          {
-                            "kind": "If",
-                            "condition": {
-                              "kind": "BinaryOperator",
-                              "operator": "&&",
-                              "right": {
-                                "kind": "Local",
-                                "name": "doFormat"
-                              },
-                              "left": {
-                                "kind": "BinaryOperator",
-                                "operator": "==",
-                                "right": "json",
-                                "left": {
-                                  "kind": "Local",
-                                  "name": "language"
-                                }
-                              }
-                            },
-                            "ifTrue": {
-                              "kind": "BlockOfExpressions",
-                              "children": [
-                                {
-                                  "kind": "KindedRecord",
-                                  "value": {
-                                    "kind": {
-                                      "kind": "Local",
-                                      "name": "Debug"
-                                    },
-                                    "value": {
-                                      "kind": "Pipe",
-                                      "first": {
-                                        "kind": "Local",
-                                        "name": "responseBodyString"
-                                      },
-                                      "values": [
-                                        {
-                                          "kind": "Local",
-                                          "name": "json_parse"
-                                        }
-                                      ]
-                                    },
-                                    "force": true
-                                  }
-                                }
-                              ]
-                            },
-                            "ifFalse": {
-                              "kind": "BlockOfExpressions",
-                              "children": [
-                                {
-                                  "kind": "KindedRecord",
-                                  "value": {
-                                    "kind": {
-                                      "kind": "Local",
-                                      "name": "Snippet"
-                                    },
-                                    "text": {
-                                      "kind": "Local",
-                                      "name": "responseBodyString"
-                                    },
-                                    "language": {
-                                      "kind": "Local",
-                                      "name": "language"
-                                    },
-                                    "format": {
-                                      "kind": "Local",
-                                      "name": "doFormat"
-                                    }
-                                  }
-                                }
-                              ]
-                            }
-                          }
-                        ],
-                        "scroll": true
-                      }
+                      ]
                     }
                   ]
                 }
               }
             ]
           }
+        ]
+      },
+      {
+        "kind": "If",
+        "condition": {
+          "kind": "BinaryOperator",
+          "operator": "!=",
+          "right": null,
+          "left": {
+            "kind": "Local",
+            "name": "response"
+          }
+        },
+        "ifTrue": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "KindedRecord",
+              "kindOfRecord": {
+                "kind": "Local",
+                "name": "Column"
+              },
+              "children": [
+                {
+                  "kind": "KindedRecord",
+                  "kindOfRecord": {
+                    "kind": "Local",
+                    "name": "Row"
+                  },
+                  "children": [
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": {
+                            "kind": "Call",
+                            "args": [
+                              {
+                                "kind": "PositionalArgument",
+                                "value": "Status code: $status"
+                              },
+                              {
+                                "kind": "PositionalArgument",
+                                "value": {
+                                  "kind": "Record",
+                                  "entries": [
+                                    {
+                                      "kind": "RecordEntry",
+                                      "key": "status",
+                                      "value": {
+                                        "kind": "Attribute",
+                                        "key": "status",
+                                        "value": {
+                                          "kind": "Local",
+                                          "name": "response"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "value": {
+                              "kind": "Local",
+                              "name": "string_format"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "entries": []
+                },
+                {
+                  "kind": "KindedRecord",
+                  "kindOfRecord": {
+                    "kind": "Local",
+                    "name": "Row"
+                  },
+                  "children": [
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": "Show headers"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Switch"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "bindTo",
+                          "value": {
+                            "kind": "Local",
+                            "name": "doShowHeaders"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "entries": []
+                },
+                {
+                  "kind": "If",
+                  "condition": {
+                    "kind": "Local",
+                    "name": "doShowHeaders"
+                  },
+                  "ifTrue": {
+                    "kind": "Block",
+                    "children": [
+                      {
+                        "kind": "KindedRecord",
+                        "kindOfRecord": {
+                          "kind": "Local",
+                          "name": "Column"
+                        },
+                        "children": [
+                          {
+                            "kind": "KindedRecord",
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "Text"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "text",
+                                "value": "Headers:"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "KindedRecord",
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "Table"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "columns",
+                                "value": {
+                                  "kind": "Array",
+                                  "value": [
+                                    {
+                                      "kind": "Record",
+                                      "entries": [
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "description",
+                                          "value": "Name"
+                                        },
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "display",
+                                          "value": {
+                                            "kind": "Function",
+                                            "body": {
+                                              "kind": "KindedRecord",
+                                              "kindOfRecord": {
+                                                "kind": "Local",
+                                                "name": "Text"
+                                              },
+                                              "children": [],
+                                              "entries": [
+                                                {
+                                                  "kind": "KindedRecordEntry",
+                                                  "key": "text",
+                                                  "value": {
+                                                    "kind": "Attribute",
+                                                    "key": "key",
+                                                    "value": {
+                                                      "kind": "Local",
+                                                      "name": "row"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "kind": "KindedRecordEntry",
+                                                  "key": "copy",
+                                                  "value": true
+                                                }
+                                              ]
+                                            },
+                                            "parameters": [
+                                              "row"
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "Record",
+                                      "entries": [
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "description",
+                                          "value": "Value"
+                                        },
+                                        {
+                                          "kind": "RecordEntry",
+                                          "key": "display",
+                                          "value": {
+                                            "kind": "Function",
+                                            "body": {
+                                              "kind": "KindedRecord",
+                                              "kindOfRecord": {
+                                                "kind": "Local",
+                                                "name": "Text"
+                                              },
+                                              "children": [],
+                                              "entries": [
+                                                {
+                                                  "kind": "KindedRecordEntry",
+                                                  "key": "text",
+                                                  "value": {
+                                                    "kind": "Attribute",
+                                                    "key": "value",
+                                                    "value": {
+                                                      "kind": "Local",
+                                                      "name": "row"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "kind": "KindedRecordEntry",
+                                                  "key": "copy",
+                                                  "value": true
+                                                }
+                                              ]
+                                            },
+                                            "parameters": [
+                                              "row"
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "values",
+                                "value": {
+                                  "kind": "Pipe",
+                                  "first": {
+                                    "kind": "Attribute",
+                                    "key": "headers",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "response"
+                                    }
+                                  },
+                                  "values": [
+                                    {
+                                      "kind": "Local",
+                                      "name": "object_entries"
+                                    },
+                                    {
+                                      "kind": "Call",
+                                      "args": [
+                                        {
+                                          "kind": "PositionalArgument",
+                                          "value": {
+                                            "kind": "Function",
+                                            "body": {
+                                              "kind": "Record",
+                                              "entries": [
+                                                {
+                                                  "kind": "RecordEntry",
+                                                  "key": "key",
+                                                  "value": {
+                                                    "kind": "Index",
+                                                    "index": 0,
+                                                    "value": {
+                                                      "kind": "Local",
+                                                      "name": "it"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "kind": "RecordEntry",
+                                                  "key": "value",
+                                                  "value": {
+                                                    "kind": "Index",
+                                                    "index": 1,
+                                                    "value": {
+                                                      "kind": "Local",
+                                                      "name": "it"
+                                                    }
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "parameters": [
+                                              "it"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "value": {
+                                        "kind": "Local",
+                                        "name": "array_map"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "entries": [
+                          {
+                            "kind": "KindedRecordEntry",
+                            "key": "flexShrink",
+                            "value": 0
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "KindedRecord",
+                  "kindOfRecord": {
+                    "kind": "Local",
+                    "name": "Row"
+                  },
+                  "children": [
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": "Language syntax to highlight"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Select"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "options",
+                          "value": {
+                            "kind": "Array",
+                            "value": [
+                              "text",
+                              "json",
+                              "html",
+                              "xml",
+                              "javascript",
+                              "css"
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "bindTo",
+                          "value": {
+                            "kind": "Local",
+                            "name": "language"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": "Format code (when possible)"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Switch"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "bindTo",
+                          "value": {
+                            "kind": "Local",
+                            "name": "doFormat"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "entries": []
+                },
+                {
+                  "kind": "KindedRecord",
+                  "kindOfRecord": {
+                    "kind": "Local",
+                    "name": "Box"
+                  },
+                  "children": [
+                    {
+                      "kind": "If",
+                      "condition": {
+                        "kind": "BinaryOperator",
+                        "operator": "&&",
+                        "right": {
+                          "kind": "Local",
+                          "name": "doFormat"
+                        },
+                        "left": {
+                          "kind": "BinaryOperator",
+                          "operator": "==",
+                          "right": "json",
+                          "left": {
+                            "kind": "Local",
+                            "name": "language"
+                          }
+                        }
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "KindedRecord",
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "Debug"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "value",
+                                "value": {
+                                  "kind": "Pipe",
+                                  "first": {
+                                    "kind": "Local",
+                                    "name": "responseBodyString"
+                                  },
+                                  "values": [
+                                    {
+                                      "kind": "Local",
+                                      "name": "json_parse"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "force",
+                                "value": true
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "ifFalse": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "KindedRecord",
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "Snippet"
+                            },
+                            "children": [],
+                            "entries": [
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "text",
+                                "value": {
+                                  "kind": "Local",
+                                  "name": "responseBodyString"
+                                }
+                              },
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "language",
+                                "value": {
+                                  "kind": "Local",
+                                  "name": "language"
+                                }
+                              },
+                              {
+                                "kind": "KindedRecordEntry",
+                                "key": "format",
+                                "value": {
+                                  "kind": "Local",
+                                  "name": "doFormat"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "entries": [
+                    {
+                      "kind": "KindedRecordEntry",
+                      "key": "scroll",
+                      "value": true
+                    }
+                  ]
+                }
+              ],
+              "entries": []
+            }
+          ]
         }
-      ]
-    }
+      }
+    ],
+    "entries": []
   }
 ]

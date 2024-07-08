@@ -1,32 +1,52 @@
 [
   {
     "kind": "Record",
-    "value": {
-      "hello": "world"
-    }
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "hello",
+        "value": "world"
+      }
+    ]
   },
   {
     "kind": "Record",
-    "value": {
-      "hello": "world"
-    }
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "hello",
+        "value": "world"
+      }
+    ]
   },
   {
     "kind": "Record",
-    "value": {
-      "hel-lo": "world"
-    }
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "hel-lo",
+        "value": "world"
+      }
+    ]
   },
   {
     "kind": "Record",
-    "value": {
-      "hello": "world"
-    }
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "hello",
+        "value": "world"
+      }
+    ]
   },
   {
     "kind": "Record",
-    "value": {
-      "hel-lo": "world"
-    }
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "hel-lo",
+        "value": "world"
+      }
+    ]
   }
 ]

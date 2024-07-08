@@ -11,7 +11,7 @@
       }
     },
     "ifTrue": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ok"
       ]
@@ -29,7 +29,7 @@
       }
     },
     "ifTrue": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ok1",
         "ok2"
@@ -48,13 +48,13 @@
       }
     },
     "ifTrue": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ok"
       ]
     },
     "ifFalse": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ko"
       ]
@@ -72,14 +72,14 @@
       }
     },
     "ifTrue": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ok1",
         "ok2"
       ]
     },
     "ifFalse": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ko1",
         "ko2"
@@ -98,7 +98,7 @@
       }
     },
     "ifTrue": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "ok"
       ]

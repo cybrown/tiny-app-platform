@@ -1,8 +1,8 @@
 import { TODO_ANY } from './core';
-import { ExpressionLocation } from 'tal-parser';
+import { NodeLocation } from 'tal-parser';
 
 type OpcodeMetadata = {
-  location?: ExpressionLocation;
+  location?: NodeLocation;
 };
 
 type OpcodeLiteral = {

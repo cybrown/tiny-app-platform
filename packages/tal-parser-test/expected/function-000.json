@@ -23,7 +23,7 @@
   {
     "kind": "Function",
     "body": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "A",
         42

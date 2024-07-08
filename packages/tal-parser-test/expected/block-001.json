@@ -1,6 +1,6 @@
 [
   {
-    "kind": "BlockOfExpressions",
+    "kind": "Block",
     "children": [
       "value1",
       "value2",

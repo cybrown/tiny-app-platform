@@ -1,8 +1,8 @@
 [
   {
     "kind": "Try",
-    "expr": {
-      "kind": "BlockOfExpressions",
+    "node": {
+      "kind": "Block",
       "children": [
         {
           "kind": "Local",
@@ -10,8 +10,8 @@
         }
       ]
     },
-    "catchExpr": {
-      "kind": "BlockOfExpressions",
+    "catchNode": {
+      "kind": "Block",
       "children": [
         {
           "kind": "Local",

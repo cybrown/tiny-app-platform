@@ -1,9 +1,4 @@
-import {
-  BlockOfExpressionsExpression,
-  Expression,
-  ExpressionLocation,
-  FunctionExpression,
-} from 'tal-parser';
+import { BlockNode, Node, NodeLocation, FunctionNode } from 'tal-parser';
 import { Program, AnyForNever } from './core';
 import { buildOpcode, OpcodeByKind } from './opcodes';
 
@@ -27,7 +22,7 @@ export class Compiler {
 
   appendOpcode<Kind extends keyof OpcodeByKind>(
     kind: Kind,
-    location: ExpressionLocation | undefined,
+    location: NodeLocation | undefined,
     attrs: Omit<OpcodeByKind[Kind], 'kind'>
   ): void {
     this.functions[this.currentFunction].body[this.currentLabel].push(
@@ -35,14 +30,14 @@ export class Compiler {
     );
   }
 
-  compileMain(value: Expression | Expression[]): Program {
-    const expressionToCompile = Array.isArray(value) ? value : [value];
+  compileMain(value: Node | Node[]): Program {
+    const nodeToCompile = Array.isArray(value) ? value : [value];
 
-    for (let i = 0; i < expressionToCompile.length; i++) {
-      const expr = expressionToCompile[i];
-      this.compile(expr);
-      if (i < expressionToCompile.length - 1) {
-        this.appendOpcode('Pop', expr.location, { inBlock: false });
+    for (let i = 0; i < nodeToCompile.length; i++) {
+      const node = nodeToCompile[i];
+      this.compile(node);
+      if (i < nodeToCompile.length - 1) {
+        this.appendOpcode('Pop', node.location, { inBlock: false });
       }
     }
 
@@ -62,7 +57,7 @@ export class Compiler {
     }
   }
 
-  compile(value: Expression): void {
+  compile(value: Node): void {
     switch (value.kind) {
       // Core interactions
       case 'Literal':
@@ -78,13 +73,12 @@ export class Compiler {
         this.appendOpcode('MakeArray', value.location, {});
         break;
       case 'Record': {
-        const entries = Object.entries(value.value);
-        entries.flatMap(([key, value]) => {
+        value.entries.flatMap(({ key, value }) => {
           this.appendOpcode('Literal', value.location, { value: key });
           this.compile(value);
         });
         this.appendOpcode('Literal', value.location, {
-          value: entries.length,
+          value: value.entries.length,
         });
         this.appendOpcode('MakeRecord', value.location, {});
         break;
@@ -128,7 +122,7 @@ export class Compiler {
             break;
           default:
             throw new Error(
-              'Failed to compile Assign expression with address: ' +
+              'Failed to compile Assign node with address: ' +
                 (value.address as AnyForNever).kind
             );
         }
@@ -141,14 +135,14 @@ export class Compiler {
         });
         break;
       case 'Call': {
-        const positionalArgs: Expression[] = [];
-        const namedArgs: [string, Expression][] = [];
+        const positionalArgs: Node[] = [];
+        const namedArgs: [string, Node][] = [];
 
         // Seperate positional and named arguments
         value.args.forEach(arg => {
-          if (arg.argKind === 'Named') {
+          if (arg.kind === 'NamedArgument') {
             namedArgs.push([arg.name, arg.value]);
-          } else if (arg.argKind == 'Positional') {
+          } else if (arg.kind == 'PositionalArgument') {
             positionalArgs.push(arg.value);
           }
         });
@@ -179,7 +173,7 @@ export class Compiler {
         break;
       }
 
-      // Expression
+      // Node
       case 'Attribute':
         this.compile(value.value);
         this.appendOpcode('Attribute', value.location, {
@@ -223,12 +217,12 @@ export class Compiler {
         const catchLabel = this.makeLabel('try_catch');
         const endTryLabel = this.makeLabel('try_end');
         this.appendOpcode('Try', value.location, { catchLabel, endTryLabel });
-        this.compile(value.expr);
+        this.compile(value.node);
         this.appendOpcode('TryPop', value.location, {});
         this.appendOpcode('Jump', value.location, { label: endTryLabel });
 
         this.setCurrentLabel(catchLabel);
-        if (value.catchExpr) {
+        if (value.catchNode) {
           this.appendOpcode('ScopeEnter', value.location, {});
           this.appendOpcode('PushLatestError', value.location, {});
           this.appendOpcode('DeclareLocal', value.location, {
@@ -237,7 +231,7 @@ export class Compiler {
             hasInitialValue: true,
           });
           this.appendOpcode('Pop', value.location, { inBlock: false });
-          this.compile(value.catchExpr);
+          this.compile(value.catchNode);
           this.appendOpcode('ScopeLeave', value.location, {
             inBlock: false,
           });
@@ -307,31 +301,32 @@ export class Compiler {
           })(),
         });
         break;
-      case 'BlockOfExpressions':
-        this.compileBlockOfExpressions(value);
+      case 'Block':
+        this.compileBlock(value);
         break;
 
       // UI Widgets
       case 'KindedRecord': {
-        const valueAsUiWidget = value.value;
-
         // Emit kind
-        this.compile(valueAsUiWidget.kind);
+        this.compile(value.kindOfRecord);
 
         // Emit children
-        for (let child of valueAsUiWidget.children ?? []) {
+        for (let child of value.children ?? []) {
           this.compile(child);
         }
         this.appendOpcode('Literal', value.location, {
-          value: (valueAsUiWidget.children ?? []).length,
+          value: (value.children ?? []).length,
         });
         this.appendOpcode('MakeArray', value.location, {});
 
         // Emit props
-        const propsToCompile = Object.entries(valueAsUiWidget).filter(
-          ([key]) => !['kind', 'ctx', 'children'].includes(key)
+        if (!value.entries) {
+          console.log(value)
+        }
+        const propsToCompile = value.entries.filter(
+          ({ key }) => !['ctx'].includes(key)
         );
-        for (let [key, value] of propsToCompile) {
+        for (let { key, value } of propsToCompile) {
           if (!value || Array.isArray(value)) {
             throw new Error('Unreachable');
           }
@@ -353,15 +348,15 @@ export class Compiler {
         break;
       }
       case 'Export':
-        throw new Error('Export expression not supported');
+        throw new Error('Export node not supported');
       case 'Switch':
-        throw new Error('Switch expression not supported');
+        throw new Error('Switch node not supported');
       case 'Comment':
-        throw new Error('Comment expression not supported');
+        throw new Error('Comment node not supported');
       case 'Pipe':
-        throw new Error('Pipe expression not supported');
-      case 'SubExpression':
-        throw new Error('SubExpression expression not supported');
+        throw new Error('Pipe node not supported');
+      case 'Nested':
+        throw new Error('Nested node not supported');
       case 'Intrinsic': {
         switch (value.op) {
           case 'ForceRender': {
@@ -375,6 +370,12 @@ export class Compiler {
         }
         return;
       }
+      case 'KindedRecordEntry':
+      case 'NamedArgument':
+      case 'PositionalArgument':
+      case 'RecordEntry':
+      case 'SwitchBranch':
+        throw new Error('Unreachable node kind: ' + value.kind);
       default: {
         const valueNever: never = value; // Error if missing node in switch
         throw new Error(
@@ -387,16 +388,13 @@ export class Compiler {
 
   private functionIndexCounter = 0;
 
-  private compileBlockOfExpressions(
-    value: BlockOfExpressionsExpression,
-    enterScope = true
-  ) {
+  private compileBlock(value: BlockNode, enterScope = true) {
     if (enterScope) {
       this.appendOpcode('ScopeEnter', value.location, {});
     }
     for (let i = 0; i < value.children.length; i++) {
-      const expr = value.children[i];
-      this.compile(expr);
+      const node = value.children[i];
+      this.compile(node);
       if (i < value.children.length - 1) {
         this.appendOpcode('Pop', value.location, {
           inBlock: !value.forceNotWidget,
@@ -415,8 +413,8 @@ export class Compiler {
     }
   }
 
-  private compileFunction(functionExpression: FunctionExpression): string {
-    const funcName = this.createFunction(functionExpression);
+  private compileFunction(functionNode: FunctionNode): string {
+    const funcName = this.createFunction(functionNode);
 
     const oldLabel = this.currentLabel;
     const oldFunction = this.currentFunction;
@@ -424,10 +422,10 @@ export class Compiler {
     this.currentLabel = 'entry';
     this.currentFunction = funcName;
 
-    if (functionExpression.body.kind === 'BlockOfExpressions') {
-      this.compileBlockOfExpressions(functionExpression.body, false);
+    if (functionNode.body.kind === 'Block') {
+      this.compileBlock(functionNode.body, false);
     } else {
-      this.compile(functionExpression.body);
+      this.compile(functionNode.body);
     }
 
     this.currentFunction = oldFunction;
@@ -436,20 +434,20 @@ export class Compiler {
     return funcName;
   }
 
-  private createFunction(functionExpression: FunctionExpression): string {
+  private createFunction(functionNode: FunctionNode): string {
     const name =
       this.prefix +
-      (functionExpression.name ? functionExpression.name + '_' : 'func_') +
+      (functionNode.name ? functionNode.name + '_' : 'func_') +
       (this.functionIndexCounter++).toString(16);
     this.functions[name] = {
-      parameters: functionExpression.parameters.map(name => ({ name })),
+      parameters: functionNode.parameters.map(name => ({ name })),
       body: { entry: [] },
     };
     return name;
   }
 }
 
-export function compile(expr: Expression | Expression[], prefix = ''): Program {
+export function compile(node: Node | Node[], prefix = ''): Program {
   const c = new Compiler(prefix);
-  return c.compileMain(expr);
+  return c.compileMain(node);
 }

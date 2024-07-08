@@ -2,11 +2,11 @@
   {
     "kind": "Comment",
     "text": " First comment !",
-    "expr": {
+    "node": {
       "kind": "Call",
       "args": [
         {
-          "argKind": "Positional",
+          "kind": "PositionalArgument",
           "value": "Hello, World !"
         }
       ],
@@ -21,30 +21,30 @@
     "condition": {
       "kind": "Comment",
       "text": " Condition if true",
-      "expr": true
+      "node": true
     },
     "ifTrue": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         {
           "kind": "Comment",
           "text": " First expression if true",
-          "expr": true
+          "node": true
         },
         {
           "kind": "Comment",
           "text": " Second expression if true",
-          "expr": 2
+          "node": 2
         }
       ]
     },
     "ifFalse": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         {
           "kind": "Comment",
           "text": " Expression if not true",
-          "expr": "false as a string"
+          "node": "false as a string"
         }
       ]
     }
@@ -52,28 +52,28 @@
   {
     "kind": "Comment",
     "text": " A comment",
-    "expr": {
+    "node": {
       "kind": "Comment",
       "text": " On multiple lines",
-      "expr": {
+      "node": {
         "kind": "Comment",
         "text": " Because we can",
-        "expr": {
+        "node": {
           "kind": "Comment",
           "text": " Add two numbers",
-          "expr": {
+          "node": {
             "kind": "DeclareLocal",
             "mutable": false,
             "name": "add",
             "value": {
               "kind": "Function",
               "body": {
-                "kind": "BlockOfExpressions",
+                "kind": "Block",
                 "children": [
                   {
                     "kind": "Comment",
                     "text": " Compute the addition",
-                    "expr": {
+                    "node": {
                       "kind": "BinaryOperator",
                       "operator": "+",
                       "right": {
@@ -89,7 +89,7 @@
                   {
                     "kind": "Comment",
                     "text": " Comment after",
-                    "expr": null
+                    "node": null
                   }
                 ]
               },

@@ -4,6 +4,7 @@
     "value": true,
     "branches": [
       {
+        "kind": "SwitchBranch",
         "comparator": {
           "kind": "Local",
           "name": "expr1"
@@ -14,6 +15,7 @@
         }
       },
       {
+        "kind": "SwitchBranch",
         "comparator": {
           "kind": "Local",
           "name": "expr2"

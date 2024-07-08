@@ -11,55 +11,75 @@
     },
     "branches": [
       {
+        "kind": "SwitchBranch",
         "comparator": "list",
         "value": {
           "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "List"
+          "kindOfRecord": {
+            "kind": "Local",
+            "name": "List"
+          },
+          "children": [],
+          "entries": [
+            {
+              "kind": "KindedRecordEntry",
+              "key": "propA",
+              "value": "value A"
             },
-            "propA": "value A",
-            "propB": "value B",
-            "propC": "value C",
-            "propD": "value D"
-          }
+            {
+              "kind": "KindedRecordEntry",
+              "key": "propB",
+              "value": "value B"
+            },
+            {
+              "kind": "KindedRecordEntry",
+              "key": "propC",
+              "value": "value C"
+            },
+            {
+              "kind": "KindedRecordEntry",
+              "key": "propD",
+              "value": "value D"
+            }
+          ]
         }
       },
       {
+        "kind": "SwitchBranch",
         "comparator": "editor",
         "value": {
           "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "Editor"
-            }
-          }
+          "kindOfRecord": {
+            "kind": "Local",
+            "name": "Editor"
+          },
+          "children": [],
+          "entries": []
         }
       },
       {
+        "kind": "SwitchBranch",
         "comparator": "contact",
         "value": {
           "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "Contact"
-            }
-          }
+          "kindOfRecord": {
+            "kind": "Local",
+            "name": "Contact"
+          },
+          "children": [],
+          "entries": []
         }
       }
     ],
     "defaultBranch": {
       "value": {
         "kind": "KindedRecord",
-        "value": {
-          "kind": {
-            "kind": "Local",
-            "name": "NotFound"
-          }
-        }
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "NotFound"
+        },
+        "children": [],
+        "entries": []
       }
     }
   }

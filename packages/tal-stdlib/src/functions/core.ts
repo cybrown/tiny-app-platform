@@ -1,5 +1,5 @@
 import { RuntimeContext, defineFunction } from 'tal-eval';
-import { Expression } from 'tal-parser';
+import { Node } from 'tal-parser';
 
 export const on_create = defineFunction(
   'on_create',
@@ -58,7 +58,7 @@ export const on_destroy = defineFunction(
   }
 );
 
-const watches = new WeakMap<RuntimeContext, Map<Expression, unknown>>();
+const watches = new WeakMap<RuntimeContext, Map<Node, unknown>>();
 
 export const watch = defineFunction(
   'watch',
@@ -87,7 +87,7 @@ export const watch = defineFunction(
     }
 
     function run(
-      currentCtxMap: Map<Expression, unknown>,
+      currentCtxMap: Map<Node, unknown>,
       oldValue: unknown,
       newValue: unknown
     ) {

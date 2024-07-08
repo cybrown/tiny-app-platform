@@ -1,40 +1,43 @@
 import {
-  Expression,
-  ExpressionByKind,
-  isAddressableExpression,
+  KindedRecordEntryNode,
+  Node,
+  NodeByKind,
+  isAddressableNode,
 } from 'tal-parser';
 import { AnyForNever } from './core';
 
 class Lowerer {
-  public lowerTopLevel(expr: Expression[]): Expression[] {
+  public lowerTopLevel(node: Node[]): Node[] {
     const exportedNames: string[] = [];
-    const result: Expression[] = [];
-    for (let e of expr) {
-      if (e.kind === 'Export') {
-        if (e.expr.kind !== 'DeclareLocal' || e.expr.mutable) {
+    const result: Node[] = [];
+    for (let n of node) {
+      if (n.kind === 'Export') {
+        if (n.node.kind !== 'DeclareLocal' || n.node.mutable) {
           throw new Error(
             'Only immutable values and function definitions can be exported'
           );
         }
-        result.push(this.lowerSingle(e.expr));
-        exportedNames.push(e.expr.name);
+        result.push(this.lowerSingle(n.node));
+        exportedNames.push(n.node.name);
       } else {
-        result.push(this.lowerSingle(e));
+        result.push(this.lowerSingle(n));
       }
     }
     if (exportedNames.length) {
       result.push({
         kind: 'Record',
-        value: Object.fromEntries(
-          exportedNames.map(name => [name, { kind: 'Local', name }])
-        ),
+        entries: exportedNames.map(name => ({
+          kind: 'RecordEntry',
+          key: name,
+          value: { kind: 'Local', name },
+        })),
       });
     }
     return result;
   }
 
-  public lowerForApp(expr: Expression[]): Expression[] {
-    const result = this.lowerTopLevel(expr);
+  public lowerForApp(node: Node[]): Node[] {
+    const result = this.lowerTopLevel(node);
 
     const head = result.slice(0, -1);
     const last = result[result.length - 1];
@@ -42,7 +45,7 @@ class Lowerer {
       return [];
     }
 
-    const rootWidget: Expression = {
+    const rootWidget: Node = {
       kind: 'DeclareLocal',
       location: last.location,
       mutable: false,
@@ -52,13 +55,13 @@ class Lowerer {
         location: last.location,
         parameters: [],
         body: {
-          kind: 'BlockOfExpressions',
+          kind: 'Block',
           children: [last],
         },
       },
     };
 
-    const lastFunction: Expression = {
+    const lastFunction: Node = {
       kind: 'Function',
       parameters: [],
       location: last.location,
@@ -68,9 +71,13 @@ class Lowerer {
         body: {
           kind: 'KindedRecord',
           location: last.location,
-          value: {
-            kind: { kind: 'Local', location: last.location, name: '$$ROOT$$' },
+          kindOfRecord: {
+            kind: 'Local',
+            location: last.location,
+            name: '$$ROOT$$',
           },
+          children: [],
+          entries: [],
         },
       },
     };
@@ -78,99 +85,92 @@ class Lowerer {
     return [...head, rootWidget, lastFunction];
   }
 
-  public lowerArray(
-    expr: Expression[],
-    returnArrayFromBlock = false
-  ): Expression[] {
-    return expr
+  public lowerArray(node: Node[], returnArrayFromBlock = false): Node[] {
+    return node
       .map(e => this.lowerSingle(e, returnArrayFromBlock))
       .filter(removeNodes);
   }
 
-  public lowerSingle(
-    expr: Expression,
-    returnArrayFromBlock = false
-  ): Expression {
-    switch (expr.kind) {
+  public lowerSingle(node: Node, returnArrayFromBlock = false): Node {
+    switch (node.kind) {
       case 'Literal': {
-        return expr;
+        return node;
       }
       case 'Local': {
-        return expr;
+        return node;
       }
       case 'Attribute': {
         return {
-          ...expr,
-          value: this.lowerSingle(expr.value),
+          ...node,
+          value: this.lowerSingle(node.value),
         };
       }
       case 'Index': {
         return {
-          ...expr,
-          index: this.lowerSingle(expr.index),
-          value: this.lowerSingle(expr.value),
+          ...node,
+          index: this.lowerSingle(node.index),
+          value: this.lowerSingle(node.value),
         };
       }
       case 'Array': {
         return {
-          ...expr,
-          value: this.lowerArray(expr.value),
+          ...node,
+          value: this.lowerArray(node.value),
         };
       }
       case 'If': {
         return {
-          ...expr,
-          condition: this.lowerSingle(expr.condition),
-          ifTrue: this.lowerSingle(expr.ifTrue, returnArrayFromBlock),
-          ifFalse: expr.ifFalse
-            ? this.lowerSingle(expr.ifFalse, returnArrayFromBlock)
+          ...node,
+          condition: this.lowerSingle(node.condition),
+          ifTrue: this.lowerSingle(node.ifTrue, returnArrayFromBlock),
+          ifFalse: node.ifFalse
+            ? this.lowerSingle(node.ifFalse, returnArrayFromBlock)
             : { kind: 'Literal', value: null },
         };
       }
       case 'Record': {
         return {
-          ...expr,
-          value: Object.fromEntries(
-            Object.entries(expr.value).map(([key, value]) => [
-              key,
-              this.lowerSingle(value),
-            ])
-          ),
+          ...node,
+          entries: node.entries.map(({ key, value }) => ({
+            kind: 'RecordEntry',
+            key,
+            value: this.lowerSingle(value),
+          })),
         };
       }
       case 'Assign': {
         return {
-          ...expr,
-          value: this.lowerSingle(expr.value),
+          ...node,
+          value: this.lowerSingle(node.value),
         };
       }
       case 'Function': {
         return {
-          ...expr,
-          body: this.lowerSingle(expr.body),
+          ...node,
+          body: this.lowerSingle(node.body),
         };
       }
       case 'Call': {
         return {
-          ...expr,
-          value: this.lowerSingle(expr.value),
-          args: expr.args.map(arg => ({
+          ...node,
+          value: this.lowerSingle(node.value),
+          args: node.args.map(arg => ({
             ...arg,
             value: this.lowerSingle(arg.value),
           })),
         };
       }
-      case 'SubExpression': {
-        return this.lowerSingle(expr.expr);
+      case 'Nested': {
+        return this.lowerSingle(node.node);
       }
       case 'Pipe': {
-        let [previous, current, ...rest] = [expr.first, ...expr.values];
+        let [previous, current, ...rest] = [node.first, ...node.values];
         while (true) {
           if (current.kind === 'Call') {
             previous = {
               ...current,
               args: [
-                { argKind: 'Positional', value: previous },
+                { kind: 'PositionalArgument', value: previous },
                 ...current.args,
               ],
             };
@@ -179,7 +179,7 @@ class Lowerer {
               kind: 'Call',
               location: previous.location,
               value: current,
-              args: [{ argKind: 'Positional', value: previous }],
+              args: [{ kind: 'PositionalArgument', value: previous }],
             };
           }
           const nextCurrent = rest.shift();
@@ -192,168 +192,172 @@ class Lowerer {
       }
       case 'UnaryOperator': {
         return {
-          ...expr,
-          operand: this.lowerSingle(expr.operand),
+          ...node,
+          operand: this.lowerSingle(node.operand),
         };
       }
       case 'BinaryOperator': {
-        if (expr.operator == '&&') {
+        if (node.operator == '&&') {
           return {
-            kind: 'BlockOfExpressions',
+            kind: 'Block',
             forceNotWidget: true,
             children: [
               {
                 kind: 'DeclareLocal',
                 mutable: false,
-                location: expr.location,
-                value: this.lowerSingle(expr.left),
+                location: node.location,
+                value: this.lowerSingle(node.left),
                 name: 'tmp_left',
               },
               {
                 kind: 'If',
-                location: expr.location,
+                location: node.location,
                 condition: {
                   kind: 'Local',
                   name: 'tmp_left',
-                  location: expr.location,
+                  location: node.location,
                 },
-                ifTrue: this.lowerSingle(expr.right),
+                ifTrue: this.lowerSingle(node.right),
                 ifFalse: {
                   kind: 'Local',
                   name: 'tmp_left',
-                  location: expr.location,
+                  location: node.location,
                 },
               },
             ],
           };
         }
-        if (expr.operator == '||') {
+        if (node.operator == '||') {
           return {
-            kind: 'BlockOfExpressions',
+            kind: 'Block',
             forceNotWidget: true,
             children: [
               {
                 kind: 'DeclareLocal',
                 mutable: false,
-                location: expr.location,
-                value: this.lowerSingle(expr.left),
+                location: node.location,
+                value: this.lowerSingle(node.left),
                 name: 'tmp_left',
               },
               {
                 kind: 'If',
-                location: expr.location,
+                location: node.location,
                 condition: {
                   kind: 'Local',
                   name: 'tmp_left',
-                  location: expr.location,
+                  location: node.location,
                 },
                 ifTrue: {
                   kind: 'Local',
                   name: 'tmp_left',
-                  location: expr.location,
+                  location: node.location,
                 },
-                ifFalse: this.lowerSingle(expr.right),
+                ifFalse: this.lowerSingle(node.right),
               },
             ],
           };
         }
         return {
-          ...expr,
-          left: this.lowerSingle(expr.left),
-          right: this.lowerSingle(expr.right),
+          ...node,
+          left: this.lowerSingle(node.left),
+          right: this.lowerSingle(node.right),
         };
       }
-      case 'BlockOfExpressions': {
-        return this.lowerBlockOfExpressions(expr, returnArrayFromBlock);
+      case 'Block': {
+        return this.lowerBlock(node, returnArrayFromBlock);
       }
       case 'DeclareLocal': {
         let value = null;
-        if (expr.value) {
-          value = this.lowerSingle(expr.value);
+        if (node.value) {
+          value = this.lowerSingle(node.value);
           if (value.kind == 'Function') {
-            (value as any).name = expr.name;
+            (value as any).name = node.name;
           }
         }
         return {
-          ...expr,
+          ...node,
           ...(value ? { value } : {}),
         };
       }
       case 'KindedRecord': {
-        const bindToProps: Record<string, Expression> = {};
+        const bindToEntries: KindedRecordEntryNode[] = [];
+        const bindToEntry = node.entries.find(entry => entry.key === 'bindTo');
         if (
-          expr.value['bindTo'] &&
-          !Array.isArray(expr.value['bindTo']) &&
-          isAddressableExpression(expr.value['bindTo'])
+          bindToEntry &&
+          !Array.isArray(bindToEntry.value) &&
+          isAddressableNode(bindToEntry.value)
         ) {
-          bindToProps.value = expr.value['bindTo'];
-          bindToProps.onChange = {
-            kind: 'Function',
-            parameters: ['newValue'],
-            body: {
-              kind: 'BlockOfExpressions',
-              children: [
-                {
-                  kind: 'Assign',
-                  address: expr.value['bindTo'],
-                  value: {
-                    kind: 'Local',
-                    name: 'newValue',
+          bindToEntries.push({
+            kind: 'KindedRecordEntry',
+            key: 'value',
+            value: bindToEntry.value,
+          });
+          bindToEntries.push({
+            kind: 'KindedRecordEntry',
+            key: 'onChange',
+            value: {
+              kind: 'Function',
+              parameters: ['newValue'],
+              body: {
+                kind: 'Block',
+                children: [
+                  {
+                    kind: 'Assign',
+                    address: bindToEntry.value,
+                    value: {
+                      kind: 'Local',
+                      name: 'newValue',
+                    },
                   },
-                },
-                {
-                  kind: 'Intrinsic',
-                  op: 'ForceRender',
-                },
-              ],
+                  {
+                    kind: 'Intrinsic',
+                    op: 'ForceRender',
+                  },
+                ],
+              },
             },
-          };
+          });
         }
         // Maybe wrap in function elsewhere
         return {
           kind: 'Function',
           parameters: [],
           body: {
-            ...expr,
-            value: {
-              ...Object.fromEntries(
-                Object.entries(expr.value)
-                  .filter(([key]) => key != 'bindTo')
-                  .map(([key, value]) => {
-                    if (key == 'children') {
-                      if (!Array.isArray(value)) {
-                        throw new Error(
-                          'Unreachable: children must have an array'
-                        );
-                      }
-                      return [key, this.lowerArray(value, true)];
-                    }
-                    if (!value || Array.isArray(value)) {
-                      throw new Error(
-                        'Unreachable: props other than children must not be an array'
-                      );
-                    }
-                    return [key, this.lowerSingle(value)];
-                  })
-              ),
-              ...bindToProps,
-              kind: expr.value.kind,
-            },
+            ...node,
+            kindOfRecord: this.lowerSingle(node.kindOfRecord),
+            children: this.lowerArray(node.children, true),
+            entries: [
+              ...node.entries
+                .filter(({ key }) => key != 'bindTo')
+                .map(({ key, value }) => {
+                  if (!value || Array.isArray(value)) {
+                    throw new Error(
+                      'Unreachable: props other than children must not be an array'
+                    );
+                  }
+                  return {
+                    kind: 'KindedRecordEntry' as const,
+                    key,
+                    value: this.lowerSingle(value),
+                  };
+                }),
+              ...bindToEntries,
+            ],
           },
         };
       }
       case 'Import': {
-        return expr;
+        return node;
       }
       case 'Export': {
         return {
-          ...expr,
-          expr: this.lowerSingle(expr.expr),
+          ...node,
+          node: this.lowerSingle(node.node),
         };
       }
       case 'Comment': {
-        if (expr.expr) {
-          return this.lowerSingle(expr.expr);
+        if (node.node) {
+          return this.lowerSingle(node.node);
         }
         return {
           kind: 'Literal',
@@ -362,79 +366,87 @@ class Lowerer {
         };
       }
       case 'Switch': {
-        const valueExpr: Expression = expr.value
-          ? this.lowerSingle(expr.value)
-          : { kind: 'Literal', location: expr.location, value: true };
+        const valueNode: Node = node.value
+          ? this.lowerSingle(node.value)
+          : { kind: 'Literal', location: node.location, value: true };
 
-        let node: Expression;
-        if (expr.defaultBranch) {
-          node = this.lowerSingle(expr.defaultBranch.value);
+        let newNode: Node;
+        if (node.defaultBranch) {
+          newNode = this.lowerSingle(node.defaultBranch.value);
         } else {
-          node = {
+          newNode = {
             kind: 'If',
-            location: expr.location,
+            location: node.location,
             condition: {
               kind: 'BinaryOperator',
-              location: expr.location,
+              location: node.location,
               operator: '===',
-              left: valueExpr,
+              left: valueNode,
               right: this.lowerSingle(
-                expr.branches[expr.branches.length - 1].comparator
+                node.branches[node.branches.length - 1].comparator
               ),
             },
             ifTrue: this.lowerSingle(
-              expr.branches[expr.branches.length - 1].value
+              node.branches[node.branches.length - 1].value
             ),
             ifFalse: { kind: 'Literal', value: null },
           };
         }
-        return expr.branches
+        return node.branches
           .slice()
           .reverse()
-          .slice(expr.defaultBranch ? 0 : 1)
+          .slice(node.defaultBranch ? 0 : 1)
           .reduce((elseClause, branch) => {
             return {
               kind: 'If',
-              location: expr.location,
+              location: node.location,
               condition: {
                 kind: 'BinaryOperator',
-                location: expr.location,
+                location: node.location,
                 operator: '===',
-                left: valueExpr,
+                left: valueNode,
                 right: this.lowerSingle(branch.comparator),
               },
               ifTrue: this.lowerSingle(branch.value),
               ifFalse: elseClause,
             };
-          }, node);
+          }, newNode);
       }
       case 'Try': {
         return {
-          ...expr,
-          expr: this.lowerSingle(expr.expr, returnArrayFromBlock),
-          catchExpr: expr.catchExpr
-            ? this.lowerSingle(expr.catchExpr, returnArrayFromBlock)
+          ...node,
+          node: this.lowerSingle(node.node, returnArrayFromBlock),
+          catchNode: node.catchNode
+            ? this.lowerSingle(node.catchNode, returnArrayFromBlock)
             : undefined,
         };
       }
       case 'Intrinsic': {
-        return expr;
+        return node;
       }
-      default: {
-        const exprNever: never = expr; // Error if missing node in switch
+      case 'KindedRecordEntry':
+      case 'RecordEntry':
+      case 'NamedArgument':
+      case 'PositionalArgument':
+      case 'SwitchBranch':
         throw new Error(
-          'Failed to compile node with kind: ' + (exprNever as AnyForNever).kind
+          'Unreachable, node kind not expected here: ' + node.kind
+        );
+      default: {
+        const nodeNever: never = node; // Error if missing node in switch
+        throw new Error(
+          'Failed to compile node with kind: ' + (nodeNever as AnyForNever).kind
         );
       }
     }
   }
 
-  private lowerBlockOfExpressions(
-    block: ExpressionByKind['BlockOfExpressions'],
+  private lowerBlock(
+    block: NodeByKind['Block'],
     returnArrayFromBlock: boolean
-  ): ExpressionByKind['BlockOfExpressions'] {
+  ): NodeByKind['Block'] {
     let loweredElements = block.children
-      .map(expr => this.lowerSingle(expr, returnArrayFromBlock))
+      .map(node => this.lowerSingle(node, returnArrayFromBlock))
       .filter(removeNodes);
 
     if (returnArrayFromBlock) {
@@ -449,14 +461,14 @@ class Lowerer {
   }
 }
 
-export function lower(expr: Expression[]): Expression[] {
-  return new Lowerer().lowerTopLevel(expr);
+export function lower(node: Node[]): Node[] {
+  return new Lowerer().lowerTopLevel(node);
 }
 
-export function lowerForApp(expr: Expression[]): Expression[] {
-  return new Lowerer().lowerForApp(expr);
+export function lowerForApp(node: Node[]): Node[] {
+  return new Lowerer().lowerForApp(node);
 }
 
-function removeNodes(expr: Expression): boolean {
-  return !(expr.kind == 'Literal' && !!expr.doRemoveFromBlock);
+function removeNodes(node: Node): boolean {
+  return !(node.kind == 'Literal' && !!node.doRemoveFromBlock);
 }

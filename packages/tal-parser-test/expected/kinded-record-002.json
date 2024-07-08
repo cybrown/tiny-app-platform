@@ -1,23 +1,26 @@
 [
   {
     "kind": "KindedRecord",
-    "value": {
-      "kind": {
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "View"
+    },
+    "children": [
+      {
         "kind": "Local",
-        "name": "View"
+        "name": "Text"
       },
-      "children": [
-        {
-          "kind": "Local",
-          "name": "Text"
-        },
-        {
-          "kind": "Record",
-          "value": {
-            "text": "Hello, World ! 2"
+      {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "text",
+            "value": "Hello, World ! 2"
           }
-        }
-      ]
-    }
+        ]
+      }
+    ],
+    "entries": []
   }
 ]

@@ -23,7 +23,7 @@
   {
     "kind": "Function",
     "body": {
-      "kind": "BlockOfExpressions",
+      "kind": "Block",
       "children": [
         "A",
         42
@@ -32,8 +32,8 @@
     "parameters": []
   },
   {
-    "kind": "SubExpression",
-    "expr": {
+    "kind": "Nested",
+    "node": {
       "kind": "Local",
       "name": "a"
     }

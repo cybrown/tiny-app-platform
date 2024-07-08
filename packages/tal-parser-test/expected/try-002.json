@@ -1,11 +1,11 @@
 [
   {
     "kind": "Try",
-    "expr": {
+    "node": {
       "kind": "Local",
       "name": "missing_variable"
     },
-    "catchExpr": {
+    "catchNode": {
       "kind": "Local",
       "name": "error"
     }

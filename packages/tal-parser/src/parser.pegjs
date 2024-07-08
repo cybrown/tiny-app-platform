@@ -26,18 +26,18 @@
 }
 
 Document
-	= _ expr:(TopLevelExpression _)*
-        { return expr.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
+	= _ node:(TopLevelNode _)*
+        { return node.map(e => ({ ...e[0], newLines: e[1] ?? 0 })); }
 
-TopLevelExpression
-    = 'export' __ expr:Expression
-        { return { location: buildLocation(), kind: 'Export', expr }; }
-    / Expression
+TopLevelNode
+    = 'export' __ node:Node
+        { return { location: buildLocation(), kind: 'Export', node }; }
+    / Node
 
-Expression
-    = PipeExpression
+Node
+    = PipeNode
 
-PipeExpression
+PipeNode
 	= first:LogicalOrOperator tail:(_ '|' _ LogicalOrOperator)*
     	{
             if (tail.length == 0) return first;
@@ -70,25 +70,25 @@ PlusAndMinusOperators
     	{ return buildBinaryOperator(left, right); }
 
 MultiplicationOperators
-	= left:UnaryPrefixOperatorExpression right:(_ ('*' / '/' / '%') _ UnaryPrefixOperatorExpression)*
+	= left:UnaryPrefixOperatorNode right:(_ ('*' / '/' / '%') _ UnaryPrefixOperatorNode)*
     	{ return buildBinaryOperator(left, right); }
 
-UnaryPrefixOperatorExpression
-	= operator:("-" / "+" / "!")? _ operand:ExpressionLevel2
+UnaryPrefixOperatorNode
+	= operator:("-" / "+" / "!")? _ operand:NodeLevel2
      	{
             if (!operator) return operand;
             return { location: buildLocation(), kind: "UnaryOperator", operator, operand };
         }
 
-ExpressionLevel2 // Dotted and indexed expression
-	= expr:ExpressionLevel1 field:ExpressionLevel2Right*
+NodeLevel2 // Dotted and indexed nodes
+	= node:NodeLevel1 field:NodeLevel2Right*
         {
-            return field.reduce((prev, cur) => ({ ...cur, value: prev }), expr);
+            return field.reduce((prev, cur) => ({ ...cur, value: prev }), node);
         }
 
-ExpressionLevel2Right
-	= DottedExpressionTail
-    / _NoNewLine_ '[' _ index:Expression _ ']'
+NodeLevel2Right
+	= DottedNodeTail
+    / _NoNewLine_ '[' _ index:Node _ ']'
     	{ return { location: buildLocation(), kind: 'Index', index }; }
     / _NoNewLine_ "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
         & { return !isLambda; }
@@ -99,14 +99,14 @@ FunctionArgument
     / PositionalArgument
 
 PositionalArgument
-	= expr:Expression
-    	{ return { argKind: "Positional", value: expr }; }
+	= node:Node
+    	{ return { location: buildLocation(), kind: "PositionalArgument", value: node }; }
 
 NamedArgument
-    = name:Identifier _ ':' _ value:Expression
-        { return { argKind: "Named", name, value }; }
+    = name:Identifier _ ':' _ value:Node
+        { return { location: buildLocation(), kind: "NamedArgument", name, value }; }
 
-ExpressionLevel1
+NodeLevel1
     = Null
     / Boolean
     / If
@@ -120,16 +120,16 @@ ExpressionLevel1
 	/ KindedRecord
     / Local
     / Record
-    / BlockOfExpressions
+    / Block
     / String
     / Number
     / Array
-    / SubExpression
+    / Nested
     / Comment
 
 Comment
-    = '//' text:Comment_text '\n' _ expr:Expression?
-        { return { location: buildLocation(), kind: "Comment", text, expr }; }
+    = '//' text:Comment_text '\n' _ node:Node?
+        { return { location: buildLocation(), kind: "Comment", text, node }; }
 
 Comment_text
     = [^\n]*
@@ -140,84 +140,78 @@ Import
         { return { location: buildLocation(), kind: "Import", path }; }
 
 If
-    = 'if' _ '(' _ condition:Expression _ ')' _ ifTrue:Expression ifFalseArray:(_ 'else' _ (If / Expression))?
+    = 'if' _ '(' _ condition:Node _ ')' _ ifTrue:Node ifFalseArray:(_ 'else' _ (If / Node))?
         {
             const ifFalse = ifFalseArray ? ifFalseArray[3] : undefined
             return { location: buildLocation(), kind: "If", condition, ifTrue, ifFalse };
         }
 
 Switch
-    = 'switch' _ value:('(' _ Expression _ ')' _)? '{' _ branches:(SwitchBranch _)* defaultBranch:SwitchDefaultBranch? _ '}'
+    = 'switch' _ value:('(' _ Node _ ')' _)? '{' _ branches:(SwitchBranch _)* defaultBranch:SwitchDefaultBranch? _ '}'
         {
             return { location: buildLocation(), kind: "Switch", value: value ? value[2] : null, branches: branches.map(e => e[0]), defaultBranch };
         }
 
 SwitchBranch
     // Parse true, false and null first to avoid parsing them as identifiers
-    = comparator:(Boolean / Null) _ '=>' _ value:Expression
-        { return { comparator, value }; }
-    // Parse identifiers first to avoid parsing expression as a single parameter lambda
-    / comparator:Local _ '=>' _ value:Expression
-        { return { comparator, value }; }
-    / comparator:Expression _ '=>' _ value:Expression
-        { return { comparator, value }; }
+    = comparator:(Boolean / Null) _ '=>' _ value:Node
+        { return { location: buildLocation(), kind: "SwitchBranch", comparator, value }; }
+    // Parse identifiers first to avoid parsing node as a single parameter lambda
+    / comparator:Local _ '=>' _ value:Node
+        { return { location: buildLocation(), kind: "SwitchBranch", comparator, value }; }
+    / comparator:Node _ '=>' _ value:Node
+        { return { location: buildLocation(), kind: "SwitchBranch", comparator, value }; }
 
 SwitchDefaultBranch
-    = '_' _ '=>' _ value: Expression
+    = '_' _ '=>' _ value: Node
         { return { value }; }
 
 Try
-    = 'try' _ expr:Expression catchExprArray:(_ 'catch' _ Expression)?
+    = 'try' _ node:Node catchNodeArray:(_ 'catch' _ Node)?
         {
-            const catchExpr = catchExprArray ? catchExprArray[3] : undefined
-            return { location: buildLocation(), kind: "Try", expr, catchExpr };
+            const catchNode = catchNodeArray ? catchNodeArray[3] : undefined
+            return { location: buildLocation(), kind: "Try", node, catchNode };
         }
 
-SubExpression
-	= '(' _ expr:Expression _ ')'
-    	{ return { location: buildLocation(), kind: 'SubExpression', expr }; }
+Nested
+	= '(' _ node:Node _ ')'
+    	{ return { location: buildLocation(), kind: 'Nested', node }; }
 
 NamedFunction
-    = 'fun' __ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Expression
+    = 'fun' __ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Node
         { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
 
 Function
-    = '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Expression
+    = '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Node
         { return { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
-    / parameter:(Identifier) _ '=>' _ body:Expression
+    / parameter:(Identifier) _ '=>' _ body:Node
         { return { location: buildLocation(), kind: "Function", body: body, parameters: [parameter] }; }
 
 KindedRecord
-    = kind:DottedExpression _NoNewLine_ "{" _ values:((KindedRecordKeyValuePair / Expression) _ ','? _)* "}"
+    = kind:DottedNode _NoNewLine_ "{" _ values:((KindedRecordEntry / Node) _ ','? _)* "}"
         {
-            const children = values.filter(a => !Array.isArray(a[0]))
+            const children = values.filter(a => a[0].kind !== "KindedRecordEntry")
                 .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
             return {
                 location: buildLocation(),
                 kind: "KindedRecord",
-                value: {
-                    kind: kind,
-                    ...(children.length ? {children} : {}),
-                    ...values.map(a => a[0]).reduce((prev, cur) => {
-                        if (Array.isArray(cur)) {
-                            prev[cur[0]] = cur[1];
-                        }
-                        return prev;
-                    }, {})
-                }
+                kindOfRecord: kind,
+                children: children,
+                entries: values.map(a => a[0])
+                               .filter(a => a.kind === "KindedRecordEntry")
             };
         }
 
-DottedExpression
-    = first:Local tail:DottedExpressionTail*
+DottedNode
+    = first:Local tail:DottedNodeTail*
         { return tail.reduce((prev, cur) => ({ ...cur, value: prev }), first); }
 
-DottedExpressionTail
+DottedNodeTail
 	= _ '.' _ key:Identifier
     	{ return { location: buildLocation(), kind: 'Attribute', key }; }
 
-KindedRecordKeyValuePair
-    = key:RecordKey _ ":" _ value:Expression
+KindedRecordEntry
+    = key:RecordKey _ ":" _ value:Node
     	{
             if (key === 'kind') {
                 error("Record with kind must not have a key called 'kind'")
@@ -225,24 +219,24 @@ KindedRecordKeyValuePair
             if (key === 'children') {
                 error("Record with kind must not have a key called 'children'")
             }
-            return [key, value];
+            return { location: buildLocation(), kind: 'KindedRecordEntry', key, value };
         }
 
 Record
-	= "{" _ entries:(RecordKeyValuePair _)* "}"
-    	{ return { location: buildLocation(), kind: "Record", value: Object.fromEntries(entries.map(a => a[0])) }; }
+	= "{" _ entries:(RecordEntry _)* "}"
+    	{ return { location: buildLocation(), kind: "Record", entries: entries.map(a => a[0]) }; }
 
-RecordKeyValuePair
-	= key:RecordKey _ ':' _ value:Expression (_ ',')?
-    	{ return [key, value]; }
+RecordEntry
+	= key:RecordKey _ ':' _ value:Node (_ ',')?
+    	{ return { location: buildLocation(), kind: "RecordEntry", key, value } }
 
 RecordKey
     = Identifier
     / RawString
 
 Array
-	= '[' _ expressions:(Expression _ ','? _ )* ']'
-    	{ return { location: buildLocation(), kind: "Array", value: expressions.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })) }; }
+	= '[' _ nodes:(Node _ ','? _ )* ']'
+    	{ return { location: buildLocation(), kind: "Array", value: nodes.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })) }; }
 
 Local
     = id:Identifier
@@ -317,20 +311,20 @@ IdentifierTailCharacters
     = [A-Za-z_$0-9]
 
 Assignement
-    = "set" __ address:Expression _ '=' _ value:Expression
+    = "set" __ address:Node _ '=' _ value:Node
         { return { location: buildLocation(), kind: "Assign", address, value }; }
 
 LocalDeclaration
-    = keyword:("let" / "var") ! IdentifierTailCharacters __ name:Identifier value:(_ '=' _ Expression)?
+    = keyword:("let" / "var") ! IdentifierTailCharacters __ name:Identifier value:(_ '=' _ Node)?
         { return { location: buildLocation(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
 
-BlockOfExpressions
-    = "{" _ children:ManyExpressions "}"
-        { return { location: buildLocation(), kind: "BlockOfExpressions", children }; }
+Block
+    = "{" _ children:ManyNodes "}"
+        { return { location: buildLocation(), kind: "Block", children }; }
 
-ManyExpressions
-    = expressions:(Expression _ ','? _)*
-        { return expressions.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })); }
+ManyNodes
+    = nodes:(Node _ ','? _)*
+        { return nodes.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })); }
 
 _ "whitespace"
 	= chars:([ \t\n\r]*)

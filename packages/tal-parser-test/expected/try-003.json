@@ -6,15 +6,15 @@
     "value": {
       "kind": "Function",
       "body": {
-        "kind": "BlockOfExpressions",
+        "kind": "Block",
         "children": [
           {
             "kind": "Try",
-            "expr": {
+            "node": {
               "kind": "Call",
               "args": [
                 {
-                  "argKind": "Named",
+                  "kind": "NamedArgument",
                   "name": "arg",
                   "value": {
                     "kind": "Local",
@@ -27,11 +27,11 @@
                 "name": "some_function_that_throws"
               }
             },
-            "catchExpr": {
+            "catchNode": {
               "kind": "Call",
               "args": [
                 {
-                  "argKind": "Positional",
+                  "kind": "PositionalArgument",
                   "value": {
                     "kind": "Local",
                     "name": "error"

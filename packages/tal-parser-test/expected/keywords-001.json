@@ -1,6 +1,6 @@
 [
   {
-    "kind": "BlockOfExpressions",
+    "kind": "Block",
     "children": [
       {
         "kind": "Local",
@@ -9,7 +9,7 @@
     ]
   },
   {
-    "kind": "BlockOfExpressions",
+    "kind": "Block",
     "children": [
       {
         "kind": "Local",
@@ -18,7 +18,7 @@
     ]
   },
   {
-    "kind": "BlockOfExpressions",
+    "kind": "Block",
     "children": [
       {
         "kind": "Local",
@@ -27,7 +27,7 @@
     ]
   },
   {
-    "kind": "BlockOfExpressions",
+    "kind": "Block",
     "children": [
       {
         "kind": "Local",

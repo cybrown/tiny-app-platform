@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { ExpressionLocation, FunctionExpression } from "tal-parser";
+import { NodeLocation, FunctionNode } from "tal-parser";
 import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 import styles from "./Debug.module.css";
 
@@ -128,8 +128,8 @@ function RenderKindedRecord({
 }) {
   switch (kind) {
     case "Function":
-      const func = value as FunctionExpression & {
-        location: ExpressionLocation;
+      const func = value as FunctionNode & {
+        location: NodeLocation;
       }; // TODO: Find a better way to pass expression nodes
       return (
         <span>

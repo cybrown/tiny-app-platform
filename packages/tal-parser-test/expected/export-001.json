@@ -1,7 +1,7 @@
 [
   {
     "kind": "Export",
-    "expr": {
+    "node": {
       "kind": "DeclareLocal",
       "mutable": false,
       "name": "TOKEN",
@@ -10,27 +10,32 @@
   },
   {
     "kind": "Export",
-    "expr": {
+    "node": {
       "kind": "DeclareLocal",
       "mutable": false,
       "name": "t",
       "value": {
         "kind": "Function",
         "body": {
-          "kind": "BlockOfExpressions",
+          "kind": "Block",
           "children": [
             {
               "kind": "KindedRecord",
-              "value": {
-                "kind": {
-                  "kind": "Local",
-                  "name": "Text"
-                },
-                "text": {
-                  "kind": "Local",
-                  "name": "text"
+              "kindOfRecord": {
+                "kind": "Local",
+                "name": "Text"
+              },
+              "children": [],
+              "entries": [
+                {
+                  "kind": "KindedRecordEntry",
+                  "key": "text",
+                  "value": {
+                    "kind": "Local",
+                    "name": "text"
+                  }
                 }
-              }
+              ]
             }
           ]
         },

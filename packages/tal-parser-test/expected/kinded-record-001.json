@@ -1,43 +1,57 @@
 [
   {
     "kind": "KindedRecord",
-    "value": {
-      "kind": {
-        "kind": "Local",
-        "name": "App"
-      },
-      "hello": "world"
-    }
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "App"
+    },
+    "children": [],
+    "entries": [
+      {
+        "kind": "KindedRecordEntry",
+        "key": "hello",
+        "value": "world"
+      }
+    ]
   },
   {
     "kind": "KindedRecord",
-    "value": {
-      "kind": {
-        "kind": "Local",
-        "name": "Text"
-      },
-      "text": "Hello, World !"
-    }
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "Text"
+    },
+    "children": [],
+    "entries": [
+      {
+        "kind": "KindedRecordEntry",
+        "key": "text",
+        "value": "Hello, World !"
+      }
+    ]
   },
   {
     "kind": "KindedRecord",
-    "value": {
-      "kind": {
-        "kind": "Local",
-        "name": "View"
-      },
-      "children": [
-        {
-          "kind": "KindedRecord",
-          "value": {
-            "kind": {
-              "kind": "Local",
-              "name": "Text"
-            },
-            "text": "Hello, World ! 2"
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "View"
+    },
+    "children": [
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Text"
+        },
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "text",
+            "value": "Hello, World ! 2"
           }
-        }
-      ]
-    }
+        ]
+      }
+    ],
+    "entries": []
   }
 ]

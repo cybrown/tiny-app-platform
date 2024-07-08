@@ -433,10 +433,9 @@ class Lowerer {
           'Unreachable, node kind not expected here: ' + node.kind
         );
       default: {
-        const nodeNever: never = node; // Error if missing node in switch
-        throw new Error(
-          'Failed to compile node with kind: ' + (nodeNever as AnyForNever).kind
-        );
+        const _: never = node;
+        _;
+        throw new Error('Unreachable case: ' + (node as AnyForNever).kind);
       }
     }
   }

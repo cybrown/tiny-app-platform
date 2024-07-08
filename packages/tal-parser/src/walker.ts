@@ -1,8 +1,6 @@
 import { Node } from './ast';
 
-export function* walk(
-  node: Node | Node[]
-): Iterable<Node> {
+export function* walk(node: Node | Node[]): Iterable<Node> {
   if (Array.isArray(node)) {
     yield* walkArray(node);
   } else {
@@ -141,7 +139,8 @@ function* walkSingle(node: Node): Iterable<Node> {
     case 'Intrinsic':
       break;
     default:
-      const mustBeNever: never = node;
-      console.log('Unknown node to walk', mustBeNever);
+      const _: never = node;
+      _;
+      throw new Error('Unreachable case: ' + (node as any).kind);
   }
 }

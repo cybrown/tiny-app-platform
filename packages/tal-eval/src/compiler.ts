@@ -57,80 +57,80 @@ export class Compiler {
     }
   }
 
-  compile(value: Node): void {
-    switch (value.kind) {
+  compile(node: Node): void {
+    switch (node.kind) {
       // Core interactions
       case 'Literal':
-        this.appendOpcode('Literal', value.location, { value: value.value });
+        this.appendOpcode('Literal', node.location, { value: node.value });
         break;
       case 'Array':
-        for (let element of value.value) {
+        for (let element of node.value) {
           this.compile(element);
         }
-        this.appendOpcode('Literal', value.location, {
-          value: value.value.length,
+        this.appendOpcode('Literal', node.location, {
+          value: node.value.length,
         });
-        this.appendOpcode('MakeArray', value.location, {});
+        this.appendOpcode('MakeArray', node.location, {});
         break;
       case 'Record': {
-        value.entries.flatMap(({ key, value }) => {
+        node.entries.flatMap(({ key, value }) => {
           this.appendOpcode('Literal', value.location, { value: key });
           this.compile(value);
         });
-        this.appendOpcode('Literal', value.location, {
-          value: value.entries.length,
+        this.appendOpcode('Literal', node.location, {
+          value: node.entries.length,
         });
-        this.appendOpcode('MakeRecord', value.location, {});
+        this.appendOpcode('MakeRecord', node.location, {});
         break;
       }
       case 'Local':
-        this.appendOpcode('Local', value.location, { name: value.name });
+        this.appendOpcode('Local', node.location, { name: node.name });
         break;
       case 'DeclareLocal':
-        if (value.value) {
-          this.compile(value.value);
+        if (node.value) {
+          this.compile(node.value);
         }
-        this.appendOpcode('DeclareLocal', value.location, {
-          name: value.name,
-          mutable: value.mutable,
-          hasInitialValue: !!value.value,
+        this.appendOpcode('DeclareLocal', node.location, {
+          name: node.name,
+          mutable: node.mutable,
+          hasInitialValue: !!node.value,
         });
         break;
       case 'Assign': {
-        switch (value.address.kind) {
+        switch (node.address.kind) {
           case 'Attribute':
-            this.compile(value.address.value);
-            this.compile(value.value);
-            this.appendOpcode('SetAttribute', value.location, {
-              name: value.address.key,
+            this.compile(node.address.value);
+            this.compile(node.value);
+            this.appendOpcode('SetAttribute', node.location, {
+              name: node.address.key,
               forceRender: true,
             });
             break;
           case 'Index':
-            this.compile(value.address.index);
-            this.compile(value.address.value);
-            this.compile(value.value);
-            this.appendOpcode('SetIndex', value.location, {
+            this.compile(node.address.index);
+            this.compile(node.address.value);
+            this.compile(node.value);
+            this.appendOpcode('SetIndex', node.location, {
               forceRender: true,
             });
             break;
           case 'Local':
-            this.compile(value.value);
-            this.appendOpcode('SetLocal', value.location, {
-              name: value.address.name,
+            this.compile(node.value);
+            this.appendOpcode('SetLocal', node.location, {
+              name: node.address.name,
             });
             break;
           default:
             throw new Error(
               'Failed to compile Assign node with address: ' +
-                (value.address as AnyForNever).kind
+                (node.address as AnyForNever).kind
             );
         }
         break;
       }
       case 'Function':
-        const name = this.compileFunction(value);
-        this.appendOpcode('FunctionRef', value.location, {
+        const name = this.compileFunction(node);
+        this.appendOpcode('FunctionRef', node.location, {
           name,
         });
         break;
@@ -139,7 +139,7 @@ export class Compiler {
         const namedArgs: [string, Node][] = [];
 
         // Seperate positional and named arguments
-        value.args.forEach(arg => {
+        node.args.forEach(arg => {
           if (arg.kind === 'NamedArgument') {
             namedArgs.push([arg.name, arg.value]);
           } else if (arg.kind == 'PositionalArgument') {
@@ -151,63 +151,63 @@ export class Compiler {
         for (let arg of positionalArgs) {
           this.compile(arg);
         }
-        this.appendOpcode('Literal', value.location, {
+        this.appendOpcode('Literal', node.location, {
           value: positionalArgs.length,
         });
-        this.appendOpcode('MakeArray', value.location, {});
+        this.appendOpcode('MakeArray', node.location, {});
 
         // Emit named arguments
         for (let [key, value] of namedArgs) {
           this.appendOpcode('Literal', value.location, { value: key });
           this.compile(value);
         }
-        this.appendOpcode('Literal', value.location, {
+        this.appendOpcode('Literal', node.location, {
           value: namedArgs.length,
         });
-        this.appendOpcode('MakeRecord', value.location, {});
+        this.appendOpcode('MakeRecord', node.location, {});
 
         // Emit function
-        this.compile(value.value);
+        this.compile(node.value);
 
-        this.appendOpcode('Call', value.location, {});
+        this.appendOpcode('Call', node.location, {});
         break;
       }
 
       // Node
       case 'Attribute':
-        this.compile(value.value);
-        this.appendOpcode('Attribute', value.location, {
-          name: value.key,
+        this.compile(node.value);
+        this.appendOpcode('Attribute', node.location, {
+          name: node.key,
         });
         break;
       case 'Index':
-        this.compile(value.index);
-        this.compile(value.value);
-        this.appendOpcode('Index', value.location, {});
+        this.compile(node.index);
+        this.compile(node.value);
+        this.appendOpcode('Index', node.location, {});
         break;
       case 'If':
-        this.compile(value.condition);
+        this.compile(node.condition);
         const ifTrueLabel = this.makeLabel('if_true');
         const ifFalseLabel = this.makeLabel('if_false');
         const endIfLabel = this.makeLabel('if_end');
-        this.appendOpcode('JumpTrue', value.location, {
+        this.appendOpcode('JumpTrue', node.location, {
           label: ifTrueLabel,
         });
-        this.appendOpcode('Jump', value.location, {
+        this.appendOpcode('Jump', node.location, {
           label: ifFalseLabel,
         });
 
         this.setCurrentLabel(ifTrueLabel);
-        this.compile(value.ifTrue);
-        this.appendOpcode('Jump', value.location, {
+        this.compile(node.ifTrue);
+        this.appendOpcode('Jump', node.location, {
           label: endIfLabel,
         });
 
         this.setCurrentLabel(ifFalseLabel);
-        if (value.ifFalse) {
-          this.compile(value.ifFalse);
+        if (node.ifFalse) {
+          this.compile(node.ifFalse);
         }
-        this.appendOpcode('Jump', value.location, {
+        this.appendOpcode('Jump', node.location, {
           label: endIfLabel,
         });
 
@@ -216,37 +216,37 @@ export class Compiler {
       case 'Try':
         const catchLabel = this.makeLabel('try_catch');
         const endTryLabel = this.makeLabel('try_end');
-        this.appendOpcode('Try', value.location, { catchLabel, endTryLabel });
-        this.compile(value.node);
-        this.appendOpcode('TryPop', value.location, {});
-        this.appendOpcode('Jump', value.location, { label: endTryLabel });
+        this.appendOpcode('Try', node.location, { catchLabel, endTryLabel });
+        this.compile(node.node);
+        this.appendOpcode('TryPop', node.location, {});
+        this.appendOpcode('Jump', node.location, { label: endTryLabel });
 
         this.setCurrentLabel(catchLabel);
-        if (value.catchNode) {
-          this.appendOpcode('ScopeEnter', value.location, {});
-          this.appendOpcode('PushLatestError', value.location, {});
-          this.appendOpcode('DeclareLocal', value.location, {
+        if (node.catchNode) {
+          this.appendOpcode('ScopeEnter', node.location, {});
+          this.appendOpcode('PushLatestError', node.location, {});
+          this.appendOpcode('DeclareLocal', node.location, {
             mutable: false,
             name: 'err',
             hasInitialValue: true,
           });
-          this.appendOpcode('Pop', value.location, { inBlock: false });
-          this.compile(value.catchNode);
-          this.appendOpcode('ScopeLeave', value.location, {
+          this.appendOpcode('Pop', node.location, { inBlock: false });
+          this.compile(node.catchNode);
+          this.appendOpcode('ScopeLeave', node.location, {
             inBlock: false,
           });
         } else {
-          this.appendOpcode('Literal', value.location, { value: null });
+          this.appendOpcode('Literal', node.location, { value: null });
         }
-        this.appendOpcode('Jump', value.location, { label: endTryLabel });
+        this.appendOpcode('Jump', node.location, { label: endTryLabel });
 
         this.setCurrentLabel(endTryLabel);
         break;
       case 'UnaryOperator':
-        this.compile(value.operand);
-        this.appendOpcode('Intrinsic', value.location, {
+        this.compile(node.operand);
+        this.appendOpcode('Intrinsic', node.location, {
           operation: (() => {
-            switch (value.operator) {
+            switch (node.operator) {
               case '-':
                 return 'INTRINSIC_NEGATE';
               case '+':
@@ -255,18 +255,18 @@ export class Compiler {
                 return 'INTRINSIC_NOT';
               default:
                 throw new Error(
-                  'Unknown unary operator: ' + (value as AnyForNever).operator
+                  'Unknown unary operator: ' + (node as AnyForNever).operator
                 );
             }
           })(),
         });
         break;
       case 'BinaryOperator':
-        this.compile(value.left);
-        this.compile(value.right);
-        this.appendOpcode('Intrinsic', value.location, {
+        this.compile(node.left);
+        this.compile(node.right);
+        this.appendOpcode('Intrinsic', node.location, {
           operation: (() => {
-            switch (value.operator) {
+            switch (node.operator) {
               case '*':
                 return 'INTRINSIC_MULTIPLY';
               case '/':
@@ -295,35 +295,35 @@ export class Compiler {
                 return 'INTRINSIC_NOT_EQUAL_STRICT';
               default:
                 throw new Error(
-                  'Unknown binary operator: ' + (value as AnyForNever).operator
+                  'Unknown binary operator: ' + (node as AnyForNever).operator
                 );
             }
           })(),
         });
         break;
       case 'Block':
-        this.compileBlock(value);
+        this.compileBlock(node);
         break;
 
       // UI Widgets
       case 'KindedRecord': {
         // Emit kind
-        this.compile(value.kindOfRecord);
+        this.compile(node.kindOfRecord);
 
         // Emit children
-        for (let child of value.children ?? []) {
+        for (let child of node.children ?? []) {
           this.compile(child);
         }
-        this.appendOpcode('Literal', value.location, {
-          value: (value.children ?? []).length,
+        this.appendOpcode('Literal', node.location, {
+          value: (node.children ?? []).length,
         });
-        this.appendOpcode('MakeArray', value.location, {});
+        this.appendOpcode('MakeArray', node.location, {});
 
         // Emit props
-        if (!value.entries) {
-          console.log(value)
+        if (!node.entries) {
+          console.log(node);
         }
-        const propsToCompile = value.entries.filter(
+        const propsToCompile = node.entries.filter(
           ({ key }) => !['ctx'].includes(key)
         );
         for (let { key, value } of propsToCompile) {
@@ -333,17 +333,17 @@ export class Compiler {
           this.appendOpcode('Literal', value.location, { value: key });
           this.compile(value);
         }
-        this.appendOpcode('Literal', value.location, {
+        this.appendOpcode('Literal', node.location, {
           value: propsToCompile.length,
         });
-        this.appendOpcode('MakeRecord', value.location, {});
+        this.appendOpcode('MakeRecord', node.location, {});
 
-        this.appendOpcode('Kinded', value.location, {});
+        this.appendOpcode('Kinded', node.location, {});
         break;
       }
       case 'Import': {
-        this.appendOpcode('Import', value.location, {
-          path: value.path,
+        this.appendOpcode('Import', node.location, {
+          path: node.path,
         });
         break;
       }
@@ -358,14 +358,15 @@ export class Compiler {
       case 'Nested':
         throw new Error('Nested node not supported');
       case 'Intrinsic': {
-        switch (value.op) {
+        switch (node.op) {
           case 'ForceRender': {
-            this.appendOpcode('CtxRender', value.location, {});
+            this.appendOpcode('CtxRender', node.location, {});
             break;
           }
           default: {
-            const opNever: never = value.op; // Error if missing intrinsic in switch
-            throw new Error('Failed to compile intrinsic: ' + opNever);
+            const _: never = node.op;
+            _;
+            throw new Error('Unreachable case: ' + (node.op as any).kind);
           }
         }
         return;
@@ -375,13 +376,11 @@ export class Compiler {
       case 'PositionalArgument':
       case 'RecordEntry':
       case 'SwitchBranch':
-        throw new Error('Unreachable node kind: ' + value.kind);
+        throw new Error('Unreachable node kind: ' + node.kind);
       default: {
-        const valueNever: never = value; // Error if missing node in switch
-        throw new Error(
-          'Failed to compile node with kind: ' +
-            (valueNever as AnyForNever).kind
-        );
+        const _: never = node;
+        _;
+        throw new Error('Unreachable case: ' + (node as AnyForNever).kind);
       }
     }
   }

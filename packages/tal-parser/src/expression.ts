@@ -136,7 +136,7 @@ export type BlockOfExpressionsExpression = ExpressionMetadata & {
 export type DeclareLocalExpression = ExpressionMetadata & {
   kind: 'DeclareLocal';
   name: string;
-  value: Expression;
+  value?: Expression;
   mutable: boolean;
 };
 
@@ -223,7 +223,7 @@ export type ExpressionByKind = {
 export type Expression = ExpressionByKind[keyof ExpressionByKind];
 
 export function isExpr<Kind extends keyof ExpressionByKind>(
-  expr: Expression,
+  expr: Expression | null | undefined,
   kind: Kind
 ): expr is ExpressionByKind[Kind] {
   return expr !== null && typeof expr == 'object' && expr.kind == kind;

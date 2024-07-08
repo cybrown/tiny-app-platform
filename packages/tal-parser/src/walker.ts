@@ -23,7 +23,9 @@ function* walkSingle(expression: Expression): Iterable<Expression> {
       yield* walkArray(expression.value);
       break;
     case 'DeclareLocal':
-      yield* walk(expression.value);
+      if (expression.value) {
+        yield* walk(expression.value);
+      }
       break;
     case 'BlockOfExpressions':
       yield* walk(expression.children);
@@ -83,6 +85,9 @@ function* walkSingle(expression: Expression): Iterable<Expression> {
       }
       break;
     case 'Record':
+      for (const key in expression.value) {
+        yield* walk(expression.value[key]);
+      }
       break;
     case 'SubExpression':
       yield* walk(expression.expr);

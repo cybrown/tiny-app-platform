@@ -23,6 +23,16 @@
     function buildLocation() {
         return {...location(), path: options.path};
     }
+
+    function mergeLocation(a, b) {
+        if (!a) return b;
+        if (!b) return a;
+
+        return {
+            start: a.start,
+            end: b.end,
+        };
+    }
 }
 
 Document
@@ -80,10 +90,10 @@ UnaryPrefixOperatorNode
             return { location: buildLocation(), kind: "UnaryOperator", operator, operand };
         }
 
-NodeLevel2 // Dotted and indexed nodes
+NodeLevel2 // Dotted, indexed and call nodes
 	= node:NodeLevel1 field:NodeLevel2Right*
         {
-            return field.reduce((prev, cur) => ({ ...cur, value: prev }), node);
+            return field.reduce((prev, cur) => ({ ...cur, location: mergeLocation(prev.location, cur.location), value: prev }), node);
         }
 
 NodeLevel2Right

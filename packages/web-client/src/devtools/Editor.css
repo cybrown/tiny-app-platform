@@ -1,0 +1,4 @@
+.cm-selectionBackground,
+.cm-editor ::selection {
+  background-color: #bbb !important;
+}

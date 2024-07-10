@@ -4,6 +4,7 @@ import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
 import { indentWithTab, undo, redo } from "@codemirror/commands";
 import styles from "./Editor.module.css";
+import "./Editor.css";
 
 export interface EditorApi {
   replaceSelection(text: string): void;

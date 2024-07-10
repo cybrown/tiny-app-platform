@@ -3,7 +3,7 @@ import { Editor, EditorApi } from "./Editor";
 import ToolBar from "./Toolbar";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
-import { WindowFrame } from "../theme";
+import { Button, View, WindowFrame } from "../theme";
 import { useCallback, useRef, useState } from "react";
 import { walk, parse } from "tal-parser";
 import { secretCreate } from "tal-stdlib";
@@ -129,6 +129,116 @@ export default function SourceTab({
     }
   }, [ctx]);
 
+  const onExtendSelection = useCallback(() => {
+    const source = editorApiRef.current?.getSource();
+    if (!source) return;
+
+    const currentSelection = editorApiRef.current?.getSelectionRanges()[0];
+    if (!currentSelection) return;
+
+    const ast = parse(source, "any");
+
+    const selectionStack: [number, number][] = [[0, source.length]];
+
+    for (const { node, mode } of walk(ast)) {
+      if (mode === "leave") continue;
+
+      const from = node.location?.start.offset;
+      const to = node.location?.end.offset;
+
+      if (from == null || to == null) continue;
+
+      if (
+        (from < currentSelection.from && to >= currentSelection.to) ||
+        (from <= currentSelection.from && to > currentSelection.to)
+      ) {
+        selectionStack.push([from, to]);
+      }
+    }
+
+    if (!selectionStack.length) return;
+
+    const newSelection = selectionStack.pop();
+    if (!newSelection) return;
+
+    editorApiRef.current?.setSelectionRange(newSelection[0], newSelection[1]);
+  }, []);
+
+  const onWrapSelection = useCallback((open: string, close: string) => {
+    const source = editorApiRef.current?.getSource();
+    if (!source) return;
+
+    const currentSelection = editorApiRef.current?.getSelectionRanges()[0];
+    if (!currentSelection) return;
+
+    if (currentSelection.from === currentSelection.to) return;
+
+    editorApiRef.current?.transaction([
+      {
+        kind: "ReplaceSelection",
+        from: currentSelection.to,
+        to: currentSelection.to,
+        text: close,
+      },
+      {
+        kind: "ReplaceSelection",
+        from: currentSelection.from,
+        to: currentSelection.from,
+        text: open,
+      },
+    ]);
+
+    editorApiRef.current?.setSelectionRange(
+      currentSelection.from,
+      currentSelection.from
+    );
+  }, []);
+
+  const [
+    wrapSelectionOverlayVisible,
+    setWrapSelectionOverlayVisible,
+  ] = useState(false);
+
+  const onShowWrapSelectionOverlay = useCallback(
+    () => setWrapSelectionOverlayVisible(true),
+    []
+  );
+
+  const onHideWrapSelectionOverlay = useCallback(
+    () => setWrapSelectionOverlayVisible(false),
+    []
+  );
+
+  const onWrapSelectionCurly = useCallback(() => {
+    onWrapSelection("{", "}");
+    onHideWrapSelectionOverlay();
+  }, [onWrapSelection, onHideWrapSelectionOverlay]);
+
+  const onWrapSelectionBrackets = useCallback(() => {
+    onWrapSelection("[", "]");
+    onHideWrapSelectionOverlay();
+  }, [onWrapSelection, onHideWrapSelectionOverlay]);
+
+  const onWrapSelectionParenthesis = useCallback(() => {
+    onWrapSelection("(", ")");
+    onHideWrapSelectionOverlay();
+  }, [onWrapSelection, onHideWrapSelectionOverlay]);
+
+  const onWrapSelectionDoubleQuotes = useCallback(() => {
+    onWrapSelection('"', '"');
+    onHideWrapSelectionOverlay();
+  }, [onWrapSelection, onHideWrapSelectionOverlay]);
+
+  const onWrapSelectionSimpleQuotes = useCallback(() => {
+    onWrapSelection("'", "'");
+    onHideWrapSelectionOverlay();
+  }, [onWrapSelection, onHideWrapSelectionOverlay]);
+
+  const onWrapSelectionSecret = useCallback(() => {
+    onConvertToSecret();
+    onHideWrapSelectionOverlay();
+  }, [onConvertToSecret, onHideWrapSelectionOverlay]);
+
   return (
     <>
       {!hidden ? (
@@ -138,7 +248,8 @@ export default function SourceTab({
           onShowDocumentation={toggleShowDocumentationHandler}
           onUndo={onUndoHandler}
           onRedo={onRedoHandler}
-          onConvertToSecret={onConvertToSecret}
+          onExtendSelection={onExtendSelection}
+          onWrapSelection={onShowWrapSelectionOverlay}
         />
       ) : null}
       <Editor
@@ -162,6 +273,29 @@ export default function SourceTab({
             modal
           >
             <Documentation ctx={ctx} onWriteInEditor={onWriteInEditorHandler} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+      {wrapSelectionOverlayVisible ? (
+        <LowLevelOverlay
+          onClose={onHideWrapSelectionOverlay}
+          modal
+          position="center"
+        >
+          <WindowFrame
+            onClose={onHideWrapSelectionOverlay}
+            modal
+            position="center"
+            title="Wrap selection"
+          >
+            <View padding={0.5}>
+              <Button text="{ ... }" onClick={onWrapSelectionCurly} />
+              <Button text="[ ... ]" onClick={onWrapSelectionBrackets} />
+              <Button text="( ... )" onClick={onWrapSelectionParenthesis} />
+              <Button text={'" ... "'} onClick={onWrapSelectionDoubleQuotes} />
+              <Button text="' ... '" onClick={onWrapSelectionSimpleQuotes} />
+              <Button text="secret( ... )" onClick={onWrapSelectionSecret} />
+            </View>
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}

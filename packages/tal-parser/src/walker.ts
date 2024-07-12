@@ -145,6 +145,10 @@ function* walkSingle(node: Node): Iterable<NodeWithParents> {
     case 'Intrinsic':
       yield { node, mode: 'visit' };
       break;
+    case 'Use':
+      yield* walk(node.call);
+      yield* walk(node.body);
+      break;
     default:
       const _: never = node;
       _;

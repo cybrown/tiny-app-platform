@@ -19,6 +19,7 @@ import {
   ImportNode,
   ExportNode,
   CommentNode,
+  UseNode,
 } from './ast';
 
 export function stringify(value: Node[]): string {
@@ -139,9 +140,22 @@ class Stringifier {
         return this.stringifyExport(obj);
       case 'Comment':
         return this.stringifyComment(obj);
+      case 'Use':
+        return this.stringifyUse(obj);
       default:
         throw new Error('Failed to stringify kind: ' + obj.kind);
     }
+  }
+
+  stringifyUse(obj: UseNode): string {
+    return (
+      'use ' +
+      obj.binding +
+      ' = ' +
+      this.stringify(obj.call) +
+      ' in ' +
+      this.stringify(obj.body)
+    );
   }
 
   stringifyLiteral(obj: LiteralNode): string {
@@ -196,10 +210,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyNamedFunction(
-    obj: DeclareLocalNode,
-    func: FunctionNode
-  ): string {
+  stringifyNamedFunction(obj: DeclareLocalNode, func: FunctionNode): string {
     let argList = '(' + func.parameters.join(', ') + ') ';
     if (argList.length > 60) {
       argList = '(';
@@ -289,17 +300,13 @@ class Stringifier {
     return result;
   }
 
-  stringifyBlockOneLine(
-    obj: BlockNode
-  ): string {
+  stringifyBlockOneLine(obj: BlockNode): string {
     return (
       '{ ' + obj.children.map(child => this.stringify(child)).join(' ') + ' }'
     );
   }
 
-  stringifyBlockMultiLine(
-    obj: BlockNode
-  ): string {
+  stringifyBlockMultiLine(obj: BlockNode): string {
     let result = '{\n';
     this.incrementDepth();
     (obj.children ?? []).forEach(e => {
@@ -573,8 +580,7 @@ class Stringifier {
     }
     if (obj.catchNode) {
       if (isNode(obj.catchNode, 'Block')) {
-        result +=
-          ' catch ' + this.stringifyBlockOneLine(obj.catchNode);
+        result += ' catch ' + this.stringifyBlockOneLine(obj.catchNode);
       } else {
         result += ' catch ' + this.stringify(obj.catchNode);
       }
@@ -592,8 +598,7 @@ class Stringifier {
 
     if (obj.catchNode) {
       if (isNode(obj.catchNode, 'Block')) {
-        result +=
-          ' catch ' + this.stringifyBlockMultiLine(obj.catchNode);
+        result += ' catch ' + this.stringifyBlockMultiLine(obj.catchNode);
       } else {
         result += ' catch ' + this.stringify(obj.catchNode);
       }

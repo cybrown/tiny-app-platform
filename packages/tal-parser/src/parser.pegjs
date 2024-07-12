@@ -123,6 +123,7 @@ NodeLevel1
     / Switch
     / Try
     / Import
+    / Use
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -161,6 +162,10 @@ Switch
         {
             return { location: buildLocation(), kind: "Switch", value: value ? value[2] : null, branches: branches.map(e => e[0]), defaultBranch };
         }
+
+Use
+    = 'use' __ binding:Identifier _ '=' _ call:Node _ 'in' _ body:Node
+        { return { location: buildLocation(), kind: "Use", binding, call, body }; }
 
 SwitchBranch
     // Parse true, false and null first to avoid parsing them as identifiers

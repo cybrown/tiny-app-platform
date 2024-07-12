@@ -29,8 +29,9 @@ export default function RenderExpression({
     }
     let valueToReturn: ReactNode = null;
     if (isClosure(ui)) {
-      const a = runForAllStack(ui.ctx, (ui as any).name);
-      valueToReturn = <RenderExpression ctx={ui.ctx} ui={a} />;
+      valueToReturn = (
+        <RenderExpression ctx={ui.ctx} ui={runForAllStack(ui.ctx, ui.name)} />
+      );
     } else if (isCustomWidget(ui)) {
       valueToReturn = (
         <CustomWidgetHost

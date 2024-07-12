@@ -432,6 +432,10 @@ class Lowerer {
         throw new Error(
           'Unreachable, node kind not expected here: ' + node.kind
         );
+      case 'Use':
+        // TODO: 
+        return node;
+        break;
       default: {
         const _: never = node;
         _;

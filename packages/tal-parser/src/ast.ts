@@ -15,10 +15,7 @@ export type IndexNode = NodeMetadata & {
   value: Node;
 };
 
-export type AddressableNode =
-  | LocalNode
-  | AttributeNode
-  | IndexNode;
+export type AddressableNode = LocalNode | AttributeNode | IndexNode;
 
 export type UnaryOperator = '-' | '+' | '!';
 
@@ -213,6 +210,13 @@ export type IntrinsicNode = NodeMetadata & {
   op: 'ForceRender';
 };
 
+export type UseNode = NodeMetadata & {
+  kind: 'Use';
+  binding: string;
+  call: Node;
+  body: Node;
+};
+
 export type NodeByKind = {
   Literal: LiteralNode;
   Addressable: AddressableNode;
@@ -240,6 +244,7 @@ export type NodeByKind = {
   RecordEntry: RecordEntryNode;
   PositionalArgument: PositionalArgumentNode;
   NamedArgument: NamedArgumentNode;
+  Use: UseNode;
 };
 
 export type Node = NodeByKind[keyof NodeByKind];
@@ -251,9 +256,7 @@ export function isNode<Kind extends keyof NodeByKind>(
   return node !== null && typeof node == 'object' && node.kind == kind;
 }
 
-export function isAddressableNode(
-  node: Node
-): node is AddressableNode {
+export function isAddressableNode(node: Node): node is AddressableNode {
   return (
     node.kind === 'Local' || node.kind === 'Index' || node.kind === 'Attribute'
   );

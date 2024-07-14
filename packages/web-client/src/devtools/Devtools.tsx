@@ -10,7 +10,6 @@ type DevtoolsProps = {
   ctx: RuntimeContext;
   theme: Theme;
   themes: Theme[];
-  updateSourceFunc: React.MutableRefObject<(() => string) | null>;
   setEditorApi(api: EditorApi): void;
   onFormatHandler(): void;
   onApplyAndFormatHandler(): void;
@@ -24,7 +23,6 @@ export default function Devtools({
   ctx,
   themes,
   theme,
-  updateSourceFunc,
   onFormatHandler,
   onApplyAndFormatHandler,
   onDebugModeChange,
@@ -68,7 +66,6 @@ export default function Devtools({
         ctx={ctx}
         onFormatHandler={onFormatHandler}
         onApplyAndFormatHandler={onApplyAndFormatHandler}
-        updateSourceFunc={updateSourceFunc}
         setEditorApi={setEditorApi}
         onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
         onCloseHandler={onCloseHandler}

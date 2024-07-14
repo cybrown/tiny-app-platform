@@ -276,7 +276,6 @@ function App() {
   const [theme, setTheme] = useState(
     selectedThemeFromQueryString ?? toyBoxTheme
   );
-  const [editorApi, setEditorApi] = useState<EditorApi>();
   const [sourceToExecute, setSourceToExecute] = useState<string | null>(null);
 
   const executeSource = useCallback((newSource: string, path: string) => {
@@ -345,10 +344,6 @@ function App() {
     })();
   }, [executeSource, getSourcePath, remoteConfiguration]);
 
-  useEffect(() => {
-    editorApi?.replaceAll(sourceToExecute ?? "");
-  }, [sourceToExecute, editorApi]);
-
   const [passwordPromptVisible, setPasswordPromptVisible] = useState(false);
   const closePasswordPromptHandler = useCallback(() => {
     setPasswordPromptVisible(false);
@@ -366,8 +361,6 @@ function App() {
       buildContext(forceRender, setPasswordPromptVisible, resolvePasswordRef),
     [forceRender]
   );
-
-  const updateSourceFunc = useRef<(() => string) | null>(null);
 
   const [parseError, setParseError] = useState<Error | null>(null);
 
@@ -401,26 +394,10 @@ function App() {
     setDevtoolsVisible(true);
   }, []);
 
-  const closeEditorHandle = useCallback(() => {
-    setDevtoolsVisible(false);
-  }, []);
-
   const setAppDebugModeHandler = useCallback(
     (appDebugMode: boolean) => ctx.setLocal(APP_DEBUG_MODE_ENV, appDebugMode),
     [ctx]
   );
-
-  const onFormatHandler = useCallback(() => {
-    if (!updateSourceFunc.current) return;
-    let sourceToFormat = updateSourceFunc.current();
-    try {
-      editorApi?.replaceAll(
-        tal.stringify(tal.parse(sourceToFormat, getSourcePath()))
-      );
-    } catch (err) {
-      console.error("Failed to format because of syntax error", err);
-    }
-  }, [editorApi, getSourcePath, updateSourceFunc]);
 
   const [lastCompileErrorToLog, setLastCompileErrorToLog] = useState<unknown>(
     null
@@ -432,7 +409,7 @@ function App() {
     setLastCompileErrorToLog(null);
   }, [ctx, lastCompileErrorToLog]);
 
-  const onApplyAndFormatWithSourceHandler = useCallback(
+  const executeSourceHandler = useCallback(
     (source: string) => {
       try {
         const app = tal.parse(source, getSourcePath());
@@ -442,34 +419,13 @@ function App() {
         console.error("Failed to format because of syntax error", err);
       } finally {
         persistSource(source);
-        editorApi?.replaceAll(source);
         executeSource(source, getSourcePath());
       }
     },
-    [editorApi, executeSource, getSourcePath, persistSource]
+    [executeSource, getSourcePath, persistSource]
   );
 
-  const onApplyAndFormatHandler = useCallback(() => {
-    if (!updateSourceFunc.current) return;
-    onApplyAndFormatWithSourceHandler(updateSourceFunc.current());
-  }, [onApplyAndFormatWithSourceHandler, updateSourceFunc]);
-
   const latestExecutedSource = useRef<string | null>(null);
-
-  const onCloseHandler = useCallback(() => {
-    if (updateSourceFunc.current) {
-      const sourceFromEditor = updateSourceFunc.current();
-      if (latestExecutedSource.current !== sourceFromEditor) {
-        // TODO: Find user friendly confirm dialogs
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm("Close without saving ?")) {
-          closeEditorHandle();
-        }
-      } else {
-        closeEditorHandle();
-      }
-    }
-  }, [closeEditorHandle]);
 
   const applyTheme = useCallback(
     (newTheme: Theme) => {
@@ -502,6 +458,8 @@ function App() {
     []
   );
 
+  const onCloseHandler = useCallback(() => setDevtoolsVisible(false), []);
+
   return (
     <NotificationProvider>
       <ThemeProvider value={theme}>
@@ -519,7 +477,7 @@ function App() {
                 <theme.Text
                   text={`At line ${
                     (parseError as any)?.location?.start?.line
-                  } column 
+                  } column
                 ${(parseError as any)?.location?.start?.column}`}
                   wrap
                   color="rgb(245, 242, 242)"
@@ -565,16 +523,11 @@ function App() {
           <DevtoolsDrawer
             ctx={ctx}
             latestExecutedSource={latestExecutedSource}
-            updateSourceFunc={updateSourceFunc}
-            onCloseHandler={onCloseHandler}
-            onFormatHandler={onFormatHandler}
-            onApplyAndFormatHandler={onApplyAndFormatHandler}
+            sourceToExecute={sourceToExecute}
+            onClose={onCloseHandler}
             setAppDebugModeHandler={setAppDebugModeHandler}
             applyTheme={applyTheme}
-            setEditorApi={setEditorApi}
-            onApplyAndFormatWithSourceHandler={
-              onApplyAndFormatWithSourceHandler
-            }
+            executeSource={executeSourceHandler}
           />
         ) : null}
         <div id="tap-overlays"></div>
@@ -638,43 +591,76 @@ export default App;
 
 type DevtoolsDrawerProps = {
   ctx: RuntimeContext;
-  updateSourceFunc: React.MutableRefObject<(() => string) | null>;
   latestExecutedSource: React.MutableRefObject<string | null>;
-  onCloseHandler(): void;
-  onFormatHandler(): void;
-  onApplyAndFormatHandler(): void;
+  sourceToExecute: string | null;
+  onClose(): void;
   setAppDebugModeHandler(appDebugModeValue: boolean): void;
   applyTheme(newTheme: Theme): void;
-  setEditorApi(editorApi: EditorApi): void;
-  onApplyAndFormatWithSourceHandler(source: string): void;
+  executeSource(source: string): void;
 };
 
 function DevtoolsDrawer({
   ctx,
   latestExecutedSource,
-  onCloseHandler,
-  onFormatHandler,
-  onApplyAndFormatHandler,
+  sourceToExecute,
+  onClose,
   setAppDebugModeHandler,
   applyTheme,
-  updateSourceFunc,
-  setEditorApi,
-  onApplyAndFormatWithSourceHandler,
+  executeSource,
 }: DevtoolsDrawerProps) {
   const theme = useTheme();
 
+  const [editorApi, setEditorApi] = useState<EditorApi>();
+
   useEffect(() => {
+    editorApi?.replaceAll(sourceToExecute ?? "");
+  }, [sourceToExecute, editorApi]);
+
+  useEffect(() => {
+    if (!editorApi) return;
     const handler = (event: BeforeUnloadEvent) => {
-      if (
-        updateSourceFunc.current &&
-        latestExecutedSource.current !== updateSourceFunc.current()
-      ) {
+      if (latestExecutedSource.current !== editorApi.getSource()) {
         event.preventDefault();
       }
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
-  }, [latestExecutedSource, updateSourceFunc]);
+  }, [latestExecutedSource, editorApi]);
+
+  const onFormatHandler = useCallback(() => {
+    let sourceToFormat = editorApi?.getSource() ?? "";
+    try {
+      editorApi?.replaceAll(tal.stringify(tal.parse(sourceToFormat, "")));
+    } catch (err) {
+      console.error("Failed to format because of syntax error", err);
+    }
+  }, [editorApi]);
+
+  const onCloseHandler = useCallback(() => {
+    if (!editorApi) return;
+    const sourceFromEditor = editorApi.getSource();
+    if (latestExecutedSource.current !== sourceFromEditor) {
+      // TODO: Find user friendly confirm dialogs
+      // eslint-disable-next-line no-restricted-globals
+      if (confirm("Close without saving ?")) {
+        onClose();
+      }
+    } else {
+      onClose();
+    }
+  }, [editorApi, latestExecutedSource, onClose]);
+
+  const onApplyAndFormatWithSourceHandler = useCallback(
+    (source: string) => {
+      onFormatHandler();
+      executeSource(source);
+    },
+    [executeSource, onFormatHandler]
+  );
+
+  const onApplyAndFormatHandler = useCallback(() => {
+    onApplyAndFormatWithSourceHandler(editorApi?.getSource() ?? "");
+  }, [onApplyAndFormatWithSourceHandler, editorApi]);
 
   return (
     <LowLevelOverlay size="xl" position="left" onClose={onCloseHandler} modal>
@@ -692,7 +678,6 @@ function DevtoolsDrawer({
           onDebugModeChange={setAppDebugModeHandler}
           theme={theme}
           onApplyTheme={applyTheme}
-          updateSourceFunc={updateSourceFunc}
           setEditorApi={setEditorApi}
           onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
           onCloseHandler={onCloseHandler}

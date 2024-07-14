@@ -10,7 +10,6 @@ import { secretCreate } from "tal-stdlib";
 
 type SourceTabProps = {
   ctx: RuntimeContext;
-  updateSourceFunc: React.MutableRefObject<(() => string) | null>;
   hidden: boolean;
   setEditorApi(api: EditorApi): void;
   onFormatHandler(): void;
@@ -24,7 +23,6 @@ export default function SourceTab({
   hidden,
   onFormatHandler,
   onApplyAndFormatHandler,
-  updateSourceFunc,
   setEditorApi,
   onApplyAndFormatWithSourceHandler,
   onCloseHandler,
@@ -253,10 +251,8 @@ export default function SourceTab({
         />
       ) : null}
       <Editor
-        grabSetSource={(a) => (updateSourceFunc.current = a())}
-        onApiReady={setEditorApiHandler}
-        onSaveAndFormat={onApplyAndFormatWithSourceHandler}
-        onCloseEditor={onCloseHandler}
+        setEditorApi={setEditorApiHandler}
+        onSave={onApplyAndFormatWithSourceHandler}
         hidden={hidden}
       />
       {!hidden && showDocumentation ? (

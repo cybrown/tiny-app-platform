@@ -40,29 +40,16 @@ export interface EditorApi {
 
 export function Editor({
   hidden,
-  grabSetSource,
-  onApiReady,
-  onSaveAndFormat,
-  onCloseEditor,
+  setEditorApi,
+  onSave,
 }: {
   hidden?: boolean;
-  grabSetSource(arg: () => () => string): void;
-  onApiReady(api: EditorApi): void;
-  onSaveAndFormat(source: string): void;
-  onCloseEditor(): void;
+  setEditorApi(api: EditorApi): void;
+  onSave(source: string): void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [editor, setEditor] = useState<EditorView | null>(null);
-  const setUpdateSourceFunc = useMemo(
-    () => () => () => {
-      if (editor) {
-        const newSource = [...editor.state.doc].join("");
-        return newSource;
-      }
-      return "";
-    },
-    [editor]
-  );
+
   const editorApi = useMemo<EditorApi>(
     () => ({
       undo() {
@@ -162,10 +149,10 @@ export function Editor({
     [editor]
   );
 
-  const onSaveAndFormatRef = useRef(onSaveAndFormat);
+  const onSaveRef = useRef<typeof onSave>(onSave);
   useEffect(() => {
-    onSaveAndFormatRef.current = onSaveAndFormat;
-  }, [onSaveAndFormat]);
+    onSaveRef.current = onSave;
+  }, [onSave]);
 
   useEffect(() => {
     if (ref.current == null) {
@@ -177,7 +164,8 @@ export function Editor({
         {
           key: "Mod-s",
           run: ({ state }) => {
-            onSaveAndFormatRef.current([...state.doc].join(""));
+            // Using a ref here because this handler is registered only once per editor instance
+            onSaveRef.current([...state.doc].join(""));
             return true;
           },
         },
@@ -195,19 +183,11 @@ export function Editor({
         })
       );
     }
-    grabSetSource(setUpdateSourceFunc);
-  }, [
-    editor,
-    editorApi,
-    grabSetSource,
-    onCloseEditor,
-    onSaveAndFormat,
-    setUpdateSourceFunc,
-  ]);
+  }, [editor]);
 
   useEffect(() => {
-    onApiReady(editorApi);
-  }, [editorApi, onApiReady]);
+    setEditorApi(editorApi);
+  }, [editorApi, setEditorApi]);
 
   return (
     <div

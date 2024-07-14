@@ -7,6 +7,9 @@ import ErrorBoundary from "./ErrorBoundary";
 import CustomWidgetHost from "./CustomWidgetHost";
 import RenderError from "./RenderError";
 
+let counter = 0;
+setInterval(() => (counter = 0), 100);
+
 export default function RenderExpression({
   ctx,
   ui,
@@ -16,6 +19,11 @@ export default function RenderExpression({
 }) {
   const ctxRef = useRef(ctx.createChild({}));
   const retry = useCallback(() => ctx.forceRefresh(), [ctx]);
+
+  if (counter++ >= 10000) {
+    window.location.reload();
+    return null;
+  }
 
   try {
     if (Array.isArray(ui)) {

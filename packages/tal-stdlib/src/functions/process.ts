@@ -18,9 +18,9 @@ export type ProcessLogItemData = {
 
 export const process_exec = defineFunction(
   'process_exec',
-  [{ name: 'name' }, { name: 'args' }, { name: 'timeout' }],
+  [{ name: 'name' }, { name: 'args' }, { name: 'env' }, { name: 'timeout' }],
   undefined,
-  async (ctx, { name, args, timeout }) => {
+  async (ctx, { name, args, env, timeout }) => {
     const logItem: ProcessLogItemData = {
       command: name,
       args,
@@ -33,6 +33,7 @@ export const process_exec = defineFunction(
         JSON.stringify({
           fileName: name,
           args,
+          env,
           cwd: sourcePathDirname,
           timeout,
         }),
@@ -54,5 +55,32 @@ export const process_exec = defineFunction(
       log.data.stage = 'rejected';
       throw err;
     }
+  }
+);
+
+export const process_exec_stream = defineFunction(
+  'process_exec_stream',
+  [{ name: 'name' }, { name: 'args' }, { name: 'env' }, { name: 'timeout' }],
+  undefined,
+  async (_ctx, { name, args, env, timeout }) => {
+    const result = await customRpc(
+      'exec-process-stream',
+      JSON.stringify({
+        fileName: name,
+        args,
+        cwd: sourcePathDirname,
+        env,
+        timeout,
+      }),
+      []
+    );
+    if (result.status !== 200) {
+      throw new Error('Failed to execute process, check server logs');
+    }
+    const output = result.body?.getReader();
+    return {
+      exitStatus: result.headers.get('X-Exit-Status') ?? null,
+      output,
+    };
   }
 );

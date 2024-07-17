@@ -282,11 +282,12 @@ const routes = [
     handler: async (req, params) => {
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
-      let { fileName, args, cwd, timeout } = request;
+      let { fileName, args, env, cwd, timeout } = request;
       let exitStatus = null;
       const result = await new Promise((resolve, reject) => {
         const childProcess = child_process.execFile(fileName, args, {
-          cwd: cwd,
+          cwd,
+          env: { ...process.env, ...env },
           encoding: "buffer",
         });
         const stdoutBuffers = [];
@@ -298,12 +299,64 @@ const routes = [
         childProcess.on("error", reject);
         if (timeout != null) {
           setTimeout(() => {
+            childProcess.kill();
             resolve(Buffer.concat(stdoutBuffers));
           }, timeout);
-          childProcess.kill();
         }
       });
       return createResponse(200, { "x-exit-status": exitStatus }, result);
+    },
+  },
+  {
+    route: "/op/exec-process-stream",
+    handler: async (req, params) => {
+      const body = await readBody(req);
+      const request = JSON.parse(body.toString());
+      let { fileName, args, env, cwd, timeout } = request;
+      const childProcess = child_process.execFile(fileName, args, {
+        cwd,
+        env: { ...process.env, ...env },
+        encoding: "buffer",
+      });
+      if (timeout != null) {
+        setTimeout(() => childProcess.kill(), timeout);
+      }
+
+      req.on("close", () => childProcess.kill());
+      req.on("error", (err) => {
+        console.error("request error:", err);
+        childProcess.kill();
+      });
+
+      // Use raw response to finely control it
+      return (res) => {
+        childProcess.on("close", () => res.end());
+        childProcess.on("error", (err) => {
+          console.error("childProcess error:", err);
+          childProcess.kill();
+        });
+        res.on("close", () => childProcess.kill());
+        res.on("error", (err) => {
+          console.error("response error:", err);
+          childProcess.kill();
+        });
+
+        res.statusCode = 200;
+        childProcess.stdout.on("data", (data) => {
+          const frameHeader = Buffer.alloc(4 + 1);
+          frameHeader.writeUInt32BE(data.length + 1, 0);
+          frameHeader.writeUInt8(1, 4);
+          res.write(frameHeader);
+          res.write(data);
+        });
+        childProcess.stderr.on("data", (data) => {
+          const frameHeader = Buffer.alloc(4 + 1);
+          frameHeader.writeUInt32BE(data.length + 1, 0);
+          frameHeader.writeUInt8(2, 4);
+          res.write(frameHeader);
+          res.write(data);
+        });
+      };
     },
   },
   {

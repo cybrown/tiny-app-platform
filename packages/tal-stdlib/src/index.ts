@@ -70,7 +70,7 @@ import {
   record_values,
 } from './functions/record';
 import { pg_query } from './functions/pg';
-import { process_exec } from './functions/process';
+import { process_exec, process_exec_stream } from './functions/process';
 import { regex_match } from './functions/regex';
 import {
   storage_list,
@@ -201,6 +201,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(record_exclude);
   ctx.registerFunction(pg_query);
   ctx.registerFunction(process_exec);
+  ctx.registerFunction(process_exec_stream);
   ctx.registerFunction(regex_match);
   ctx.registerFunction(set_system_property);
   ctx.registerFunction(storage_list);

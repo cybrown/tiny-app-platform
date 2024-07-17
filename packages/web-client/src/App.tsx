@@ -54,6 +54,7 @@ import {
 } from "./runtime/notifications";
 import UpdateAppNotification from "./runtime/UpdateAppNotification";
 import { useForceRender } from "./utils";
+import Terminal, { TerminalDocumentation } from "./widgets/Terminal";
 
 const queryParams = window.location.search
   .slice(1)
@@ -213,6 +214,7 @@ function buildContext(
   ctx.registerWidget("Text", Text, TextDocumentation);
   ctx.registerWidget("View", View, ViewDocumentation);
   ctx.registerWidget("WindowFrame", WindowFrame, WindowFrameDocumentation);
+  ctx.registerWidget("Terminal", Terminal, TerminalDocumentation);
 
   return ctx;
 }

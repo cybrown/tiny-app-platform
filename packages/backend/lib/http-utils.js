@@ -59,7 +59,12 @@ const superHandler = (routes, defaultHandler) => {
       if (matching) {
         routeFound = true;
         try {
-          sendResponse(res, await routeDefinition.handler(req, matching));
+          const answer = await routeDefinition.handler(req, matching);
+          if (typeof answer == "function") {
+            await answer(res);
+          } else {
+            sendResponse(res, answer);
+          }
         } catch (err) {
           console.error(err);
           sendResponse(

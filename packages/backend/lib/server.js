@@ -342,9 +342,12 @@ const routes = [
         });
 
         res.statusCode = 200;
+
+        // Frame: 4 bytes for length, 1 byte for (1: stdout, 2: stderr), then the data
+
         childProcess.stdout.on("data", (data) => {
           const frameHeader = Buffer.alloc(4 + 1);
-          frameHeader.writeUInt32BE(data.length + 1, 0);
+          frameHeader.writeUInt32BE(1 + data.length, 0);
           frameHeader.writeUInt8(1, 4);
           res.write(frameHeader);
           res.write(data);

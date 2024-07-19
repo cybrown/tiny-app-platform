@@ -115,6 +115,7 @@ import {
   date_to_timezone,
   date_year,
 } from './functions/date';
+import { stream_merge } from './functions/stream';
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
@@ -237,6 +238,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(metadata_get);
   ctx.registerFunction(flex);
   ctx.registerFunction(scroller);
+
+  ctx.registerFunction(stream_merge);
 }
 
 export { HttpLogItemData } from './functions/http';
@@ -245,3 +248,9 @@ export { PgLogItemData } from './functions/pg';
 export { ProcessLogItemData } from './functions/process';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';
 export { secretCreate } from './util/secret';
+export {
+  BufferedMessageStream,
+  MessageStream,
+  MessageStreamSink,
+  streamToMessages,
+} from './util/streams';

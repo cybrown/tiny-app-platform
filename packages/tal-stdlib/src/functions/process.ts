@@ -1,5 +1,10 @@
 import { customRpc } from '../util/custom-rpc';
 import { defineFunction } from 'tal-eval';
+import {
+  BufferedMessageStream,
+  MessageStreamSink,
+  streamToMessages,
+} from '../util/streams';
 
 let sourcePathDirname: string | null = null;
 try {
@@ -78,9 +83,33 @@ export const process_exec_stream = defineFunction(
       throw new Error('Failed to execute process, check server logs');
     }
     const output = result.body?.getReader();
+
+    const stdoutSink = new MessageStreamSink();
+    const stderrSink = new MessageStreamSink();
+
+    const stdoutBuffer = new BufferedMessageStream(stdoutSink);
+    const stderrBuffer = new BufferedMessageStream(stderrSink);
+
+    (async function() {
+      if (!output) return;
+      for await (const message of streamToMessages(output)) {
+        const outid = new DataView(message.buffer).getUint8(0);
+        if (outid === 1) {
+          stdoutSink.push(message.slice(1));
+        }
+        if (outid === 2) {
+          stderrSink.push(message.slice(1));
+        }
+      }
+      stdoutSink.end();
+      stderrSink.end();
+    })();
+
     return {
+      // TODO: Exit status has no meaning here, return a Promise ?
       exitStatus: result.headers.get('X-Exit-Status') ?? null,
-      output,
+      stdout: stdoutBuffer,
+      stderr: stderrBuffer,
     };
   }
 );

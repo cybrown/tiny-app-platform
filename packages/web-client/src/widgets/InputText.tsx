@@ -1,9 +1,7 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopover from "./internal/ErrorPopover";
 import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { InputText as ThemedInputText } from "../theme";
-import commonStyles from "./common.module.css";
+import { default as HeadlessInputText } from "./headless/InputText";
 
 type InputTextProps = {
   ctx: RuntimeContext;
@@ -29,49 +27,30 @@ export default function InputText({
     );
   }
 
-  const [lastError, setLastError] = useState(null as any);
-
   const onSubmitHandler = useCallback(async () => {
     if (!onSubmit) return;
-    try {
-      await ctx.callFunctionAsync(onSubmit, []);
-    } catch (err) {
-      setLastError(err);
-    }
+    await ctx.callFunctionAsync(onSubmit, []);
   }, [ctx, onSubmit]);
 
   const onChangeHandler = useCallback(
-    (newValue: string) => {
-      try {
-        if (onChange) {
-          ctx.callFunction(onChange as Closure, [newValue]);
-        }
-      } catch (err) {
-        setLastError(err);
+    async (newValue: string) => {
+      if (onChange) {
+        ctx.callFunction(onChange as Closure, [newValue]);
       }
     },
     [ctx, onChange]
   );
 
-  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
-
   return (
-    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
-      <ThemedInputText
-        multiline={multiline}
-        placeholder={placeholder}
-        disabled={disabled}
-        onChange={onChangeHandler}
-        onSubmit={onSubmitHandler}
-        type={type}
-        value={value ?? ""}
-      />
-      <ErrorPopover
-        target={popoverTargetRef.current}
-        lastError={lastError}
-        setLastError={setLastError}
-      />
-    </div>
+    <HeadlessInputText
+      multiline={multiline}
+      placeholder={placeholder}
+      disabled={disabled}
+      onChange={onChangeHandler}
+      onSubmit={onSubmitHandler}
+      type={type}
+      value={value ?? ""}
+    />
   );
 }
 

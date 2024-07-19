@@ -1,23 +1,16 @@
 import { useCallback, useRef, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { Closure } from "tal-eval";
-import { default as HeadlessCheckBox } from "./headless/CheckBox";
-import {
-  InputLabelProps,
-  InputLabelPropsDocs,
-} from "./internal/inputLabelProps";
-import commonStyles from "./common.module.css";
+import ErrorPopover from "../internal/ErrorPopover";
+import { InputProps } from "./inputProps";
+import { CheckBox as ThemedCheckBox } from "../../theme";
+import { InputLabelProps } from "../internal/inputLabelProps";
+import commonStyles from "../common.module.css";
 
 type CheckBoxProps = {
-  ctx: RuntimeContext;
   secondary?: boolean;
 } & InputProps<boolean> &
   InputLabelProps;
 
 export default function CheckBox({
-  ctx,
   disabled,
   onChange,
   value,
@@ -30,19 +23,19 @@ export default function CheckBox({
     async (value: boolean) => {
       try {
         if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [value]);
+          await onChange(value);
         }
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
-      <HeadlessCheckBox
+      <ThemedCheckBox
         onChange={handleChange}
         value={value}
         disabled={disabled}
@@ -57,12 +50,3 @@ export default function CheckBox({
     </div>
   );
 }
-
-export const CheckBoxDocumentation: WidgetDocumentation<CheckBoxProps> = {
-  description: "A checkbox to input a boolean value",
-  props: {
-    ...InputPropsDocs,
-    ...InputLabelPropsDocs,
-    secondary: "Give the secondary style",
-  },
-};

@@ -1,26 +1,26 @@
 {
+  "name": "tal-stdlib",
   "version": "0.1.0",
   "license": "MIT",
+  "author": "Cy Brown",
   "main": "dist/index.js",
+  "module": "dist/tal-stdlib.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
+    "analyze": "size-limit --why",
+    "build": "dts build",
+    "lint": "dts lint",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "start": "dts watch",
+    "test": "dts test"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "dts lint"
     }
   },
   "prettier": {
@@ -29,9 +29,12 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "tal-stdlib",
-  "author": "Cy Brown",
-  "module": "dist/tal-stdlib.esm.js",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "engines": {
+    "node": ">=12"
+  },
   "size-limit": [
     {
       "path": "dist/tal-stdlib.cjs.production.min.js",
@@ -43,10 +46,11 @@
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^8.2.4",
-    "husky": "^8.0.3",
-    "size-limit": "^8.2.4",
-    "tsdx": "^0.14.1",
+    "@size-limit/preset-small-lib": "^11.1.4",
+    "@tsconfig/recommended": "^1.0.7",
+    "dts-cli": "^2.0.5",
+    "husky": "^9.1.1",
+    "size-limit": "^11.1.4",
     "tslib": "^2.6.3",
     "typescript": "^5.5.3"
   },

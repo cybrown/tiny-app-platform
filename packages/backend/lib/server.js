@@ -299,12 +299,26 @@ const routes = [
         childProcess.on("error", reject);
         if (timeout != null) {
           setTimeout(() => {
-            childProcess.kill();
+            childProcess.kill("SIGKILL");
             resolve(Buffer.concat(stdoutBuffers));
           }, timeout);
         }
       });
-      return createResponse(200, { "x-exit-status": exitStatus }, result);
+      return createResponse(
+        200,
+        { "x-exit-status": exitStatus, "x-pid": childProcess.pid },
+        result
+      );
+    },
+  },
+  {
+    route: "/op/kill-process",
+    handler: async (req) => {
+      const body = await readBody(req);
+      const request = JSON.parse(body.toString());
+      let { pid, signal } = request;
+      process.kill(pid, signal ?? undefined);
+      return noContent();
     },
   },
   {
@@ -319,26 +333,37 @@ const routes = [
         encoding: "buffer",
       });
       if (timeout != null) {
-        setTimeout(() => childProcess.kill(), timeout);
+        setTimeout(() => childProcess.kill("SIGKILL"), timeout);
       }
 
-      req.on("close", () => childProcess.kill());
+      req.on("close", () => childProcess.kill("SIGKILL"));
       req.on("error", (err) => {
         console.error("request error:", err);
-        childProcess.kill();
+        childProcess.kill("SIGKILL");
       });
 
       // Use raw response to finely control it
       return (res) => {
-        childProcess.on("close", () => res.end());
+        res.writeHead(200, {
+          "x-pid": childProcess.pid,
+        });
+        childProcess.on("close", (statusCode) => {
+          const frame = Buffer.alloc(7);
+          frame.writeUInt32BE(3, 0);
+          frame.writeUint8(3, 4);
+          frame.writeUint8(statusCode != null ? 1 : 0, 5);
+          frame.writeUint8(statusCode ?? 0, 6);
+          res.write(frame);
+          res.end();
+        });
         childProcess.on("error", (err) => {
           console.error("childProcess error:", err);
-          childProcess.kill();
+          childProcess.kill("SIGKILL");
         });
-        res.on("close", () => childProcess.kill());
+        res.on("close", () => childProcess.kill("SIGKILL"));
         res.on("error", (err) => {
           console.error("response error:", err);
-          childProcess.kill();
+          childProcess.kill("SIGKILL");
         });
 
         res.statusCode = 200;

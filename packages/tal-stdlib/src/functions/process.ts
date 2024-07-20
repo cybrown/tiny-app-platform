@@ -54,6 +54,7 @@ export const process_exec = defineFunction(
       log.data.stdout = resultStdout;
       return {
         exitStatus: result.headers.get('X-Exit-Status') ?? null,
+        pid: Number(result.headers.get('X-Pid')),
         stdout: resultStdout,
       };
     } catch (err) {
@@ -63,11 +64,30 @@ export const process_exec = defineFunction(
   }
 );
 
+export const process_kill = defineFunction(
+  'process_kill',
+  [{ name: 'pid' }, { name: 'signal' }],
+  undefined,
+  async (_ctx, { pid, signal }) => {
+    const result = await customRpc(
+      'kill-process',
+      JSON.stringify({
+        pid,
+        signal,
+      }),
+      []
+    );
+    if (result.status !== 204) {
+      throw new Error('Failed to kill process, check server logs');
+    }
+  }
+);
+
 export const process_exec_stream = defineFunction(
   'process_exec_stream',
   [{ name: 'name' }, { name: 'args' }, { name: 'env' }, { name: 'timeout' }],
   undefined,
-  async (_ctx, { name, args, env, timeout }) => {
+  async (ctx, { name, args, env, timeout }) => {
     const result = await customRpc(
       'exec-process-stream',
       JSON.stringify({
@@ -90,26 +110,39 @@ export const process_exec_stream = defineFunction(
     const stdoutBuffer = new BufferedMessageStream(stdoutSink);
     const stderrBuffer = new BufferedMessageStream(stderrSink);
 
+    let processObject = {
+      pid: Number(result.headers.get('X-Pid')),
+      done: false,
+      statusCode: null as number | null,
+      stdout: stdoutBuffer,
+      stderr: stderrBuffer,
+    };
+
     (async function() {
       if (!output) return;
       for await (const message of streamToMessages(output)) {
-        const outid = new DataView(message.buffer).getUint8(0);
-        if (outid === 1) {
-          stdoutSink.push(message.slice(1));
-        }
-        if (outid === 2) {
-          stderrSink.push(message.slice(1));
+        const dv = new DataView(message.buffer);
+        const outid = dv.getUint8(0);
+        switch (outid) {
+          case 1:
+            stdoutSink.push(message.slice(1));
+            break;
+          case 2:
+            stderrSink.push(message.slice(1));
+            break;
+          case 3:
+            if (dv.getUint8(1) === 1) {
+              processObject.statusCode = dv.getUint8(2);
+            }
+            break;
         }
       }
       stdoutSink.end();
       stderrSink.end();
+      processObject.done = true;
+      ctx.forceRefresh();
     })();
 
-    return {
-      // TODO: Exit status has no meaning here, return a Promise ?
-      exitStatus: result.headers.get('X-Exit-Status') ?? null,
-      stdout: stdoutBuffer,
-      stderr: stderrBuffer,
-    };
+    return processObject;
   }
 );

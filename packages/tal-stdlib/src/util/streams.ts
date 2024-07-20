@@ -111,7 +111,7 @@ export class MessageStreamSink implements MessageStream {
         }
         yield nextMessage;
       }
-      const nextMessage = await this.promise.promise;
+      await this.promise.promise;
       if (this.done) {
         break;
       }
@@ -157,6 +157,10 @@ export class BufferedMessageStream implements MessageStream {
 
       while (this.promiseQueue.length) {
         await this.promiseQueue.shift();
+
+        while (index < this.buffer.length) {
+          yield this.buffer[index++];
+        }
       }
 
       await this.currentPromise.promise;

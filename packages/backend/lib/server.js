@@ -21,6 +21,7 @@ const { createMongoClient } = require("./mongodb");
 const bson = require("bson");
 const child_process = require("child_process");
 const { Client } = require("pg");
+const ssh2 = require("ssh2");
 
 const server = createServer();
 
@@ -366,8 +367,6 @@ const routes = [
           childProcess.kill("SIGKILL");
         });
 
-        res.statusCode = 200;
-
         // Frame: 4 bytes for length, 1 byte for (1: stdout, 2: stderr), then the data
 
         childProcess.stdout.on("data", (data) => {
@@ -494,6 +493,71 @@ const routes = [
         client.close();
       }
       return noContent();
+    },
+  },
+  {
+    route: "/op/ssh-exec",
+    handler: async (req) => {
+      const body = await readBody(req);
+      const request = JSON.parse(body.toString());
+      const { host, port, username, password, timeout, command, pty } = request;
+
+      const conn = new ssh2.Client();
+
+      conn.connect({
+        host,
+        port: port ?? 22,
+        username,
+        password,
+      });
+
+      if (timeout != null) {
+        setTimeout(() => conn.destroy(), timeout);
+      }
+
+      return (res) => {
+        res.on("close", () => {
+          conn.destroy();
+        });
+
+        res.on("error", () => {
+          conn.destroy();
+        });
+
+        conn.on("ready", () => {
+          conn.exec(command, { pty: pty ?? false }, (err, stream) => {
+            if (err) throw err;
+            stream.on("close", (code) => {
+              const frame = Buffer.alloc(7);
+              frame.writeUInt32BE(3, 0);
+              frame.writeUint8(3, 4);
+              frame.writeUint8(code != null ? 1 : 0, 5);
+              frame.writeUint8(code ?? 0, 6);
+              res.write(frame);
+              conn.end();
+              res.end();
+            });
+
+            stream.on("data", (data) => {
+              const frameHeader = Buffer.alloc(4 + 1);
+              frameHeader.writeUInt32BE(1 + data.length, 0);
+              frameHeader.writeUInt8(1, 4);
+              res.write(frameHeader);
+              res.write(data);
+            });
+
+            stream.stderr.on("data", (data) => {
+              const frameHeader = Buffer.alloc(4 + 1);
+              frameHeader.writeUInt32BE(data.length + 1, 0);
+              frameHeader.writeUInt8(2, 4);
+              res.write(frameHeader);
+              res.write(data);
+            });
+
+            res.writeHead(200, {});
+          });
+        });
+      };
     },
   },
 ];

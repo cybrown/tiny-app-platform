@@ -74,6 +74,10 @@ function* walkSingle(node: Node): Iterable<NodeWithParents> {
         yield* walk(node.ifFalse);
       }
       break;
+    case 'While':
+      yield* walk(node.condition);
+      yield* walk(node.body);
+      break;
     case 'Index':
       yield* walk(node.index);
       yield* walk(node.value);

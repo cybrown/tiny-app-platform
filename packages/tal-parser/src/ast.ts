@@ -15,10 +15,7 @@ export type IndexNode = NodeMetadata & {
   value: Node;
 };
 
-export type AddressableNode =
-  | LocalNode
-  | AttributeNode
-  | IndexNode;
+export type AddressableNode = LocalNode | AttributeNode | IndexNode;
 
 export type UnaryOperator = '-' | '+' | '!';
 
@@ -56,6 +53,12 @@ export type IfNode = NodeMetadata & {
   condition: Node;
   ifTrue: Node;
   ifFalse: Node | undefined;
+};
+
+export type WhileNode = NodeMetadata & {
+  kind: 'While';
+  condition: Node;
+  body: Node;
 };
 
 export type SwitchNode = NodeMetadata & {
@@ -219,6 +222,7 @@ export type NodeByKind = {
   Array: ArrayNode;
   Record: RecordNode;
   If: IfNode;
+  While: WhileNode;
   Switch: SwitchNode;
   Try: TryNode;
   Assign: AssignNode;
@@ -251,9 +255,7 @@ export function isNode<Kind extends keyof NodeByKind>(
   return node !== null && typeof node == 'object' && node.kind == kind;
 }
 
-export function isAddressableNode(
-  node: Node
-): node is AddressableNode {
+export function isAddressableNode(node: Node): node is AddressableNode {
   return (
     node.kind === 'Local' || node.kind === 'Index' || node.kind === 'Attribute'
   );

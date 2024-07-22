@@ -213,6 +213,32 @@ export class Compiler {
 
         this.setCurrentLabel(endIfLabel);
         break;
+      case 'While':
+        const whileConditionLabel = this.makeLabel('while_condition');
+        const whileBodyLabel = this.makeLabel('while_body');
+        const whileEndLabel = this.makeLabel('while_end');
+
+        this.appendOpcode('Jump', node.location, {
+          label: whileConditionLabel,
+        });
+
+        this.setCurrentLabel(whileConditionLabel);
+        this.compile(node.condition);
+        this.appendOpcode('JumpTrue', node.location, {
+          label: whileBodyLabel,
+        });
+        this.appendOpcode('Jump', node.location, {
+          label: whileEndLabel,
+        });
+
+        this.setCurrentLabel(whileBodyLabel);
+        this.compile(node.body);
+        this.appendOpcode('Jump', node.location, {
+          label: whileConditionLabel,
+        });
+
+        this.setCurrentLabel(whileEndLabel);
+        break;
       case 'Try':
         const catchLabel = this.makeLabel('try_catch');
         const endTryLabel = this.makeLabel('try_end');

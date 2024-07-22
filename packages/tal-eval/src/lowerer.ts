@@ -128,6 +128,13 @@ class Lowerer {
             : { kind: 'Literal', value: null },
         };
       }
+      case 'While': {
+        return {
+          ...node,
+          condition: this.lowerSingle(node.condition),
+          body: this.lowerSingle(node.body, returnArrayFromBlock),
+        };
+      }
       case 'Record': {
         return {
           ...node,

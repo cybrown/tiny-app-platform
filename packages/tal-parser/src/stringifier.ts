@@ -19,6 +19,7 @@ import {
   ImportNode,
   ExportNode,
   CommentNode,
+  WhileNode,
 } from './ast';
 
 export function stringify(value: Node[]): string {
@@ -105,6 +106,8 @@ class Stringifier {
         return this.stringifyCall(obj);
       case 'If':
         return this.stringifyIf(obj);
+      case 'While':
+        return this.stringifyWhile(obj);
       case 'Switch':
         return this.stringifySwitch(obj);
       case 'Try':
@@ -196,10 +199,7 @@ class Stringifier {
     return result;
   }
 
-  stringifyNamedFunction(
-    obj: DeclareLocalNode,
-    func: FunctionNode
-  ): string {
+  stringifyNamedFunction(obj: DeclareLocalNode, func: FunctionNode): string {
     let argList = '(' + func.parameters.join(', ') + ') ';
     if (argList.length > 60) {
       argList = '(';
@@ -289,17 +289,13 @@ class Stringifier {
     return result;
   }
 
-  stringifyBlockOneLine(
-    obj: BlockNode
-  ): string {
+  stringifyBlockOneLine(obj: BlockNode): string {
     return (
       '{ ' + obj.children.map(child => this.stringify(child)).join(' ') + ' }'
     );
   }
 
-  stringifyBlockMultiLine(
-    obj: BlockNode
-  ): string {
+  stringifyBlockMultiLine(obj: BlockNode): string {
     let result = '{\n';
     this.incrementDepth();
     (obj.children ?? []).forEach(e => {
@@ -513,6 +509,36 @@ class Stringifier {
     return result;
   }
 
+  stringifyWhile(obj: WhileNode) {
+    const result = this.stringifyWhileOneLine(obj);
+    if (result.includes('\n') || result.length > 60) {
+      return this.stringifyWhileMultiLine(obj);
+    }
+    return result;
+  }
+
+  stringifyWhileOneLine(obj: WhileNode) {
+    let result = 'while (' + this.stringify(obj.condition) + ') ';
+    const body = obj.body;
+    if (isNode(body, 'Block')) {
+      result += this.stringifyBlockOneLine(body);
+    } else {
+      result += this.stringify(body);
+    }
+    return result;
+  }
+
+  stringifyWhileMultiLine(obj: WhileNode) {
+    let result = 'while (' + this.stringify(obj.condition) + ') ';
+    const body = obj.body;
+    if (isNode(body, 'Block')) {
+      result += this.stringifyBlockMultiLine(body);
+    } else {
+      result += this.stringify(body);
+    }
+    return result;
+  }
+
   stringifyWithIndent(obj: Node) {
     this.incrementDepth();
     const result = this.stringify(obj);
@@ -573,8 +599,7 @@ class Stringifier {
     }
     if (obj.catchNode) {
       if (isNode(obj.catchNode, 'Block')) {
-        result +=
-          ' catch ' + this.stringifyBlockOneLine(obj.catchNode);
+        result += ' catch ' + this.stringifyBlockOneLine(obj.catchNode);
       } else {
         result += ' catch ' + this.stringify(obj.catchNode);
       }
@@ -592,8 +617,7 @@ class Stringifier {
 
     if (obj.catchNode) {
       if (isNode(obj.catchNode, 'Block')) {
-        result +=
-          ' catch ' + this.stringifyBlockMultiLine(obj.catchNode);
+        result += ' catch ' + this.stringifyBlockMultiLine(obj.catchNode);
       } else {
         result += ' catch ' + this.stringify(obj.catchNode);
       }

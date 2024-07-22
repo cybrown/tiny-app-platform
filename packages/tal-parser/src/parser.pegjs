@@ -120,6 +120,7 @@ NodeLevel1
     = Null
     / Boolean
     / If
+    / While
     / Switch
     / Try
     / Import
@@ -154,6 +155,12 @@ If
         {
             const ifFalse = ifFalseArray ? ifFalseArray[3] : undefined
             return { location: buildLocation(), kind: "If", condition, ifTrue, ifFalse };
+        }
+
+While
+    = 'while' _ '(' _ condition:Node _ ')' _ body:Node
+        {
+            return { location: buildLocation(), kind: "While", condition, body };
         }
 
 Switch

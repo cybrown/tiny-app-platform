@@ -4,11 +4,9 @@ export const spawn = defineFunction(
   'spawn',
   [{ name: 'func' }],
   (ctx, { func }) => {
-    (async function() {
-      ctx.callFunctionAsync(func, []).catch(() => {
-        ctx.notify('Error in background, check devtools for details');
-      });
-    })();
+    ctx.callFunctionAsync(func, []).catch(() => {
+      ctx.notify('Error in background, check devtools for details');
+    });
     return null;
   },
   undefined,

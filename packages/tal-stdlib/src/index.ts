@@ -129,6 +129,7 @@ import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
 import { ssh_exec } from './functions/ssh';
+import { sleep, spawn } from './functions/spawn';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -256,6 +257,9 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(stream_merge);
 
   ctx.registerFunction(ssh_exec);
+
+  ctx.registerFunction(spawn);
+  ctx.registerFunction(sleep);
 }
 
 export { HttpLogItemData } from './functions/http';

@@ -119,7 +119,12 @@ import {
   date_to_timezone,
   date_year,
 } from './functions/date';
-import { stream_merge } from './functions/stream';
+import {
+  stream_create,
+  stream_merge,
+  stream_read,
+  stream_write,
+} from './functions/stream';
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
@@ -245,6 +250,9 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(flex);
   ctx.registerFunction(scroller);
 
+  ctx.registerFunction(stream_create);
+  ctx.registerFunction(stream_read);
+  ctx.registerFunction(stream_write);
   ctx.registerFunction(stream_merge);
 
   ctx.registerFunction(ssh_exec);

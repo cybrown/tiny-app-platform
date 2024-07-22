@@ -95,6 +95,28 @@ export class MessageStreamSink implements MessageStream {
     this.done = true;
   }
 
+  async next() {
+    if (this.isRead) {
+      throw new Error('Cannot read from a MessageStreamSink more than once');
+    }
+    this.isRead = true;
+
+    while (true) {
+      if (this.promiseQueue.length) {
+        this.isRead = false;
+        const value = await this.promiseQueue.shift();
+        return { value, done: false };
+      }
+
+      if (this.done) {
+        this.isRead = false;
+        return { value: null, done: true };
+      }
+
+      await this.promise.promise;
+    }
+  }
+
   private isRead = false;
 
   async *messages() {

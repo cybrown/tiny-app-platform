@@ -2,14 +2,14 @@ name: Build Electron client
 on:
   push:
     branches:
-      - master
+      - release
 
 jobs:
   build_on_linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
+      - uses: actions/setup-node@release
         with:
           node-version: 20
       - name: build
@@ -23,7 +23,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
+      - uses: actions/setup-node@release
         with:
           node-version: 20
       - name: build
@@ -37,7 +37,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
+      - uses: actions/setup-node@release
         with:
           node-version: 20
       - name: build

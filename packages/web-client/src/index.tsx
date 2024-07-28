@@ -5,7 +5,11 @@ import "normalize.css";
 import "font-proxima-nova/style.css";
 import "./reset.css";
 
-if (!(window as any).electronAPI && "serviceWorker" in navigator) {
+const isElectron = !!(window as any).electronAPI;
+const hasServiceWorker = "serviceWorker" in navigator;
+const isDevelopment = process.env.NODE_ENV === "development";
+
+if (!isElectron && hasServiceWorker && !isDevelopment) {
   const registerServiceWorker = async () => {
     try {
       await navigator.serviceWorker.register("/sw.js", {

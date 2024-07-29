@@ -1,5 +1,5 @@
 main()
   entry:
-    Local             name: toto
-    Literal "value"
+    Local             toto
+    Literal           "value"
     SetAttribute      name: property, forceRender: true

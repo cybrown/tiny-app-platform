@@ -7,15 +7,15 @@ main()
     FunctionRef       name: func_2
 func_0()
   entry:
-    Literal 42
+    Literal           42
 func_1()
   entry:
-    Local             name: a
-    Local             name: b
-    Intrinsic         operation: INTRINSIC_ADD
+    Local             a
+    Local             b
+    Intrinsic         INTRINSIC_ADD
 func_2()
   entry:
-    Literal "A"
+    Literal           "A"
     Pop               inBlock: false
-    Literal 42
+    Literal           42
     MakeArrayForBlock count: 2

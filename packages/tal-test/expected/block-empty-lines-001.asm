@@ -1,7 +1,7 @@
 main()
   entry:
     ScopeEnter
-    Literal "a"
+    Literal           "a"
     Pop               inBlock: false
-    Literal "b"
+    Literal           "b"
     ScopeLeave        inBlock: false, count: 2

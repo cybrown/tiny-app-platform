@@ -3,24 +3,24 @@ main()
     FunctionRef       name: f_0
     DeclareLocal      name: f, mutable: false, hasInitialValue: true
     Pop               inBlock: false
-    Literal 0
+    Literal           0
     MakeArray
-    Literal "x"
-    Literal 2
-    Literal 1
+    Literal           "x"
+    Literal           2
+    Literal           1
     MakeRecord
-    Local             name: f
+    Local             f
     Call
     Pop               inBlock: false
-    Literal 2
-    Literal 1
+    Literal           2
+    Literal           1
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
-    Local             name: f
+    Local             f
     Call
-f_0([object Object])
+f_0(x)
   entry:
-    Local             name: x
-    Literal 1
-    Intrinsic         operation: INTRINSIC_ADD
+    Local             x
+    Literal           1
+    Intrinsic         INTRINSIC_ADD

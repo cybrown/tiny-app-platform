@@ -1,17 +1,17 @@
 main()
   entry:
     ScopeEnter
-    Local             name: letwww
+    Local             letwww
     ScopeLeave        inBlock: false, count: 1
     Pop               inBlock: false
     ScopeEnter
-    Local             name: setwww
+    Local             setwww
     ScopeLeave        inBlock: false, count: 1
     Pop               inBlock: false
     ScopeEnter
-    Local             name: ifwww
+    Local             ifwww
     ScopeLeave        inBlock: false, count: 1
     Pop               inBlock: false
     ScopeEnter
-    Local             name: varwww
+    Local             varwww
     ScopeLeave        inBlock: false, count: 1

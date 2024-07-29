@@ -1,8 +1,8 @@
 main()
   entry:
-    Literal 0
+    Literal           0
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
-    Local             name: give_hello
+    Local             give_hello
     Call

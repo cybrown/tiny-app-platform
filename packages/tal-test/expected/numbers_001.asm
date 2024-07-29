@@ -1,3 +1,3 @@
 main()
   entry:
-    Literal 42
+    Literal           42

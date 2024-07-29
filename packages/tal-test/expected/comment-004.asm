@@ -1,35 +1,35 @@
 main()
   entry:
-    Literal "Hello, World !"
-    Literal 1
+    Literal           "Hello, World !"
+    Literal           1
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
-    Local             name: print
+    Local             print
     Call
     Pop               inBlock: false
-    Literal true
-    JumpTrue          label: if_true_1
-    Jump              label: if_false_2
+    Literal           true
+    JumpTrue          if_true_1
+    Jump              if_false_2
   if_true_1:
     ScopeEnter
-    Literal true
+    Literal           true
     Pop               inBlock: false
-    Literal 2
+    Literal           2
     ScopeLeave        inBlock: false, count: 2
-    Jump              label: if_end_3
+    Jump              if_end_3
   if_false_2:
     ScopeEnter
-    Literal "false as a string"
+    Literal           "false as a string"
     ScopeLeave        inBlock: false, count: 1
-    Jump              label: if_end_3
+    Jump              if_end_3
   if_end_3:
     Pop               inBlock: false
     FunctionRef       name: add_0
     DeclareLocal      name: add, mutable: false, hasInitialValue: true
-add_0([object Object], [object Object])
+add_0(a, b)
   entry:
-    Local             name: a
-    Local             name: b
-    Intrinsic         operation: INTRINSIC_ADD
+    Local             a
+    Local             b
+    Intrinsic         INTRINSIC_ADD
     MakeArrayForBlock count: 1

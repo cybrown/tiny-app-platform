@@ -1,28 +1,28 @@
 main()
   entry:
-    Literal 1
+    Literal           1
     DeclareLocal      name: a, mutable: true, hasInitialValue: true
     Pop               inBlock: false
-    Literal 1
+    Literal           1
     DeclareLocal      name: b, mutable: true, hasInitialValue: true
     Pop               inBlock: false
-    Literal true
-    JumpTrue          label: if_true_1
-    Jump              label: if_false_2
+    Literal           true
+    JumpTrue          if_true_1
+    Jump              if_false_2
   if_true_1:
     ScopeEnter
-    Literal 2
+    Literal           2
     SetLocal          name: a
     ScopeLeave        inBlock: false, count: 1
-    Jump              label: if_end_3
+    Jump              if_end_3
   if_false_2:
     ScopeEnter
-    Literal 2
+    Literal           2
     SetLocal          name: b
     ScopeLeave        inBlock: false, count: 1
-    Jump              label: if_end_3
+    Jump              if_end_3
   if_end_3:
     Pop               inBlock: false
-    Local             name: a
+    Local             a
     Pop               inBlock: false
-    Local             name: b
+    Local             b

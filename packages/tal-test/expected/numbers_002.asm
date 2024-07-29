@@ -1,9 +1,9 @@
 main()
   entry:
-    Literal 1
+    Literal           1
     Pop               inBlock: false
-    Literal 42
+    Literal           42
     Pop               inBlock: false
-    Literal 13
+    Literal           13
     Pop               inBlock: false
-    Literal 3.14
+    Literal           3.14

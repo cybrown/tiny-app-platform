@@ -1,7 +1,7 @@
 main()
   entry:
-    Local             name: index
-    Local             name: toto
+    Local             index
+    Local             toto
     Index
-    Literal "value"
+    Literal           "value"
     SetAttribute      name: property, forceRender: true

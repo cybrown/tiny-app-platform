@@ -7,40 +7,40 @@ main()
     FunctionRef       name: func_2
 func_0()
   entry:
-    Local             name: App
-    Literal 0
+    Local             App
+    Literal           0
     MakeArray
-    Literal "hello"
-    Literal "world"
-    Literal 1
+    Literal           "hello"
+    Literal           "world"
+    Literal           1
     MakeRecord
     Kinded
 func_1()
   entry:
-    Local             name: Text
-    Literal 0
+    Local             Text
+    Literal           0
     MakeArray
-    Literal "text"
-    Literal "Hello, World !"
-    Literal 1
+    Literal           "text"
+    Literal           "Hello, World !"
+    Literal           1
     MakeRecord
     Kinded
 func_2()
   entry:
-    Local             name: View
+    Local             View
     FunctionRef       name: func_3
-    Literal 1
+    Literal           1
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
     Kinded
 func_3()
   entry:
-    Local             name: Text
-    Literal 0
+    Local             Text
+    Literal           0
     MakeArray
-    Literal "text"
-    Literal "Hello, World ! 2"
-    Literal 1
+    Literal           "text"
+    Literal           "Hello, World ! 2"
+    Literal           1
     MakeRecord
     Kinded

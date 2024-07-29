@@ -1,4 +1,4 @@
 main()
   entry:
-    Literal "value"
+    Literal           "value"
     SetLocal          name: toto

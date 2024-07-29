@@ -3,14 +3,14 @@ main()
     FunctionRef       name: func_0
 func_0()
   entry:
-    Local             name: View
-    Local             name: Text
-    Literal "text"
-    Literal "Hello, World ! 2"
-    Literal 1
+    Local             View
+    Local             Text
+    Literal           "text"
+    Literal           "Hello, World ! 2"
+    Literal           1
     MakeRecord
-    Literal 2
+    Literal           2
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
     Kinded

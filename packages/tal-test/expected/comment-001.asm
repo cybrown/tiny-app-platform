@@ -1,12 +1,12 @@
 main()
   entry:
-    Literal "a"
-    Literal "b"
-    Literal 2
+    Literal           "a"
+    Literal           "b"
+    Literal           2
     MakeArray
     Pop               inBlock: false
     ScopeEnter
-    Literal 42
+    Literal           42
     ScopeLeave        inBlock: false, count: 1
     Pop               inBlock: false
     FunctionRef       name: comment_1_0
@@ -19,7 +19,7 @@ comment_1_0()
     MakeArrayForBlock count: 0
 comment_2_1()
   entry:
-    Literal 40
-    Literal 2
-    Intrinsic         operation: INTRINSIC_ADD
+    Literal           40
+    Literal           2
+    Intrinsic         INTRINSIC_ADD
     MakeArrayForBlock count: 1

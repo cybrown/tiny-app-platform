@@ -1,22 +1,22 @@
 main()
   entry:
-    Literal "property"
-    Literal 0
+    Literal           "property"
+    Literal           0
     MakeArray
-    Literal 1
+    Literal           1
     MakeRecord
     DeclareLocal      name: toto, mutable: false, hasInitialValue: true
     Pop               inBlock: false
-    Literal 3
+    Literal           3
     DeclareLocal      name: index, mutable: false, hasInitialValue: true
     Pop               inBlock: false
-    Local             name: index
-    Local             name: toto
+    Local             index
+    Local             toto
     Attribute         name: property
-    Literal "value"
+    Literal           "value"
     SetIndex          forceRender: true
     Pop               inBlock: false
-    Literal 3
-    Local             name: toto
+    Literal           3
+    Local             toto
     Attribute         name: property
     Index

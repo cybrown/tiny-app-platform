@@ -20,7 +20,11 @@ try {
   const program = compile(expressions);
   Object.entries(program).forEach(([functionName, functionDef]) => {
     process.stdout.write(functionName);
-    process.stdout.write("(" + functionDef.parameters.join(", ") + ")");
+    process.stdout.write(
+      "(" +
+        functionDef.parameters.map((parameter) => parameter.name).join(", ") +
+        ")"
+    );
     process.stdout.write("\n");
     Object.entries(functionDef.body).forEach(([blockName, blockBody]) => {
       process.stdout.write("  ");
@@ -33,8 +37,28 @@ try {
 
         switch (kind) {
           case "Literal": {
-            process.stdout.write(" ");
+            process.stdout.write(" ".padStart(18 - kind.length));
             process.stdout.write(JSON.stringify(node.value));
+            break;
+          }
+          case "Jump": {
+            process.stdout.write(" ".padStart(18 - kind.length));
+            process.stdout.write(node.label);
+            break;
+          }
+          case "JumpTrue": {
+            process.stdout.write(" ".padStart(18 - kind.length));
+            process.stdout.write(node.label);
+            break;
+          }
+          case "Local": {
+            process.stdout.write(" ".padStart(18 - kind.length));
+            process.stdout.write(node.name);
+            break;
+          }
+          case "Intrinsic": {
+            process.stdout.write(" ".padStart(18 - kind.length));
+            process.stdout.write(node.operation);
             break;
           }
           default: {

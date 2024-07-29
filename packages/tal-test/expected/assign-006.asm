@@ -2,7 +2,7 @@ main()
   entry:
     DeclareLocal      name: toto, mutable: true, hasInitialValue: false
     Pop               inBlock: false
-    Literal "value"
+    Literal           "value"
     SetLocal          name: toto
     Pop               inBlock: false
-    Local             name: toto
+    Local             toto

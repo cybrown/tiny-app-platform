@@ -6,26 +6,26 @@ main()
     FunctionRef       name: root_function_1
     DeclareLocal      name: root_function, mutable: false, hasInitialValue: true
     Pop               inBlock: false
-    Literal 0
+    Literal           0
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
-    Local             name: root_function
+    Local             root_function
     Call
-sub_function_0([object Object])
+sub_function_0(value)
   entry:
-    Local             name: value
+    Local             value
     MakeArrayForBlock count: 1
 root_function_1()
   entry:
-    Literal "b"
+    Literal           "b"
     DeclareLocal      name: value, mutable: false, hasInitialValue: true
     Pop               inBlock: false
-    Local             name: value
-    Literal 1
+    Local             value
+    Literal           1
     MakeArray
-    Literal 0
+    Literal           0
     MakeRecord
-    Local             name: sub_function
+    Local             sub_function
     Call
     MakeArrayForBlock count: 2

@@ -44,7 +44,7 @@ import theme98 from "./themes/98";
 import darkOrangeTheme from "./themes/dark-orange";
 import mozaicLmTheme from "./themes/mozaic-lm";
 import Tabs, { TabsDocumentation } from "./widgets/Tabs";
-import { lowerForApp } from "tal-eval";
+import { lower } from "tal-eval";
 import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
 import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
 import Devtools from "./devtools/Devtools";
@@ -221,33 +221,36 @@ function buildContext(
 
 const DEFAULT_APP_SOURCE = `var a = "40"
 var b = "2"
-Column {
-  Text {
-    text: "Hello ! You see this message because you do not have any program loaded."
-  }
 
-  Text {
-    text: "Press Ctrl+Shift+D to open the text editor and edit this program."
-  }
-
-  Text {
-    text: "Click on 'Apply & format' to run your program, and check the documentation with the 'Toggle reference documentation' button."
-  }
-
-  Text {
-    text: "Tutorials and examples coming soon !"
-  }
-
-  Text {
-    text: "Here's a small adder to start hacking your first app:"
-  }
-
-  Row {
-    InputText { bindTo: a }
-    InputText { bindTo: b }
+export fun App() {
+  Column {
+    Text {
+      text: "Hello ! You see this message because you do not have any program loaded."
+    }
 
     Text {
-      text: "$a + $b = $result" | string_format({a: a, b: b, result: string_to_number(a) + string_to_number(b)})
+      text: "Press Ctrl+Shift+D to open the text editor and edit this program."
+    }
+
+    Text {
+      text: "Click on 'Apply & format' to run your program, and check the documentation with the 'Toggle reference documentation' button."
+    }
+
+    Text {
+      text: "Tutorials and examples coming soon !"
+    }
+
+    Text {
+      text: "Here's a small adder to start hacking your first app:"
+    }
+
+    Row {
+      InputText { bindTo: a }
+      InputText { bindTo: b }
+
+      Text {
+        text: "$a + $b = $result" | string_format({a: a, b: b, result: string_to_number(a) + string_to_number(b)})
+      }
     }
   }
 }
@@ -290,7 +293,7 @@ function App() {
     latestExecutedSource.current = newSource;
     try {
       const hlast = tal.parse(newSource, path);
-      const llast = lowerForApp(hlast);
+      const llast = lower(hlast);
       const bin = compile(llast);
       setApp(bin);
     } catch (err) {

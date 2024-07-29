@@ -1,4 +1,4 @@
-import { RuntimeContext, Program, runAsync, Closure } from "tal-eval";
+import { RuntimeContext, Program, runAsync } from "tal-eval";
 import RenderExpression from "./RenderExpression";
 import { useCallback, useEffect, useState } from "react";
 import { APP_DEBUG_MODE_ENV } from "./constants";
@@ -33,11 +33,27 @@ function AppRenderer({
         // TODO: Move that elsewhere later
         ctx.declareLocal(APP_DEBUG_MODE_ENV, { mutable: true });
 
-        const uiClosure: Closure = (await runAsync(ctx)) as any;
+        const exports = (await runAsync(ctx)) as any;
 
         ctx.endReinit();
-        const ui: any = await runAsync(uiClosure.ctx, uiClosure.name);
-        setAppUi(ui);
+
+        if (typeof exports != "object" || exports == null) {
+          throw new Error("toto");
+        }
+
+        if (!exports.App) {
+          setLastError(
+            new Error("No function called App found in exported values")
+          );
+          return;
+        }
+
+        setAppUi({
+          ctx: exports.App.ctx,
+          kind: exports.App,
+          children: [],
+          props: {},
+        });
         setLastError(null);
       } catch (err) {
         ctx.log("error", err);

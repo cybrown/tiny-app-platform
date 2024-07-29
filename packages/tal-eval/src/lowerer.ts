@@ -36,55 +36,6 @@ class Lowerer {
     return result;
   }
 
-  public lowerForApp(node: Node[]): Node[] {
-    const result = this.lowerTopLevel(node);
-
-    const head = result.slice(0, -1);
-    const last = result[result.length - 1];
-    if (!last) {
-      return [];
-    }
-
-    const rootWidget: Node = {
-      kind: 'DeclareLocal',
-      location: last.location,
-      mutable: false,
-      name: '$$ROOT$$',
-      value: {
-        kind: 'Function',
-        location: last.location,
-        parameters: [],
-        body: {
-          kind: 'Block',
-          children: [last],
-        },
-      },
-    };
-
-    const lastFunction: Node = {
-      kind: 'Function',
-      parameters: [],
-      location: last.location,
-      body: {
-        kind: 'Function',
-        parameters: [],
-        body: {
-          kind: 'KindedRecord',
-          location: last.location,
-          kindOfRecord: {
-            kind: 'Local',
-            location: last.location,
-            name: '$$ROOT$$',
-          },
-          children: [],
-          entries: [],
-        },
-      },
-    };
-
-    return [...head, rootWidget, lastFunction];
-  }
-
   public lowerArray(node: Node[], returnArrayFromBlock = false): Node[] {
     return node
       .map(e => this.lowerSingle(e, returnArrayFromBlock))
@@ -469,10 +420,6 @@ class Lowerer {
 
 export function lower(node: Node[]): Node[] {
   return new Lowerer().lowerTopLevel(node);
-}
-
-export function lowerForApp(node: Node[]): Node[] {
-  return new Lowerer().lowerForApp(node);
 }
 
 function removeNodes(node: Node): boolean {

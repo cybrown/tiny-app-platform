@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "Try",
+    "node": {
+      "kind": "Block",
+      "children": [
+        {
+          "kind": "Local",
+          "name": "missing_variable"
+        }
+      ]
+    },
+    "catchNode": {
+      "kind": "Block",
+      "children": [
+        "value on error"
+      ]
+    }
+  }
+]

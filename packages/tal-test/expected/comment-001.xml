@@ -1,0 +1,35 @@
+<program>
+  <array>
+    <literal />
+    <literal />
+    <comment>
+    </comment>
+  </array>
+  <block>
+    <literal />
+    <comment>
+    </comment>
+  </block>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <comment>
+          </comment>
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <declarelocal>
+    <function>
+      <block>
+        <binaryoperator>
+          <literal />
+          <literal />
+        </binaryoperator>
+        <comment>
+        </comment>
+      </block>
+    </function>
+  </declarelocal>
+</program>

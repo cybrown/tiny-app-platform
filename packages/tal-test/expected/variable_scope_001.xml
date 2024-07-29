@@ -1,0 +1,12 @@
+<program>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <block>
+    <declarelocal>
+      <literal />
+    </declarelocal>
+    <local />
+  </block>
+  <local />
+</program>

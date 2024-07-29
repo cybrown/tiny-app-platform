@@ -1,0 +1,168 @@
+[
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "a"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "b"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "c"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "d"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "e"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "a"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "b"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "c"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "d"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "e"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "a"
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "arg2",
+        "value": "b"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "c"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "d"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "e"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "a"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "b"
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "arg2",
+        "value": "c"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "d"
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "e"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "a"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "a"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "b"
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "c"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "d"
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "e"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  }
+]

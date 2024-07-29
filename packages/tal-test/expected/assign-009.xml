@@ -1,0 +1,28 @@
+<program>
+  <declarelocal>
+    <record>
+      <recordentry>
+        <array>
+        </array>
+      </recordentry>
+    </record>
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <assign>
+    <index>
+      <local />
+      <attribute>
+        <local />
+      </attribute>
+    </index>
+    <literal />
+  </assign>
+  <index>
+    <literal />
+    <attribute>
+      <local />
+    </attribute>
+  </index>
+</program>

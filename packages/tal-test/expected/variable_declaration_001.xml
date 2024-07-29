@@ -1,0 +1,43 @@
+<program>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <assign>
+    <local />
+    <literal />
+  </assign>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <local />
+  <local />
+  <local />
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <assign>
+    <local />
+    <literal />
+  </assign>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <local />
+  <local />
+  <local />
+  <assign>
+    <local />
+    <literal />
+  </assign>
+  <assign>
+    <local />
+    <literal />
+  </assign>
+  <assign>
+    <local />
+    <literal />
+  </assign>
+  <local />
+  <local />
+  <local />
+</program>

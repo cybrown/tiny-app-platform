@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "mylib",
+    "value": {
+      "kind": "Import",
+      "path": "./test-sources/module-definition-001.tas"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 40
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": 2
+      }
+    ],
+    "value": {
+      "kind": "Attribute",
+      "key": "add",
+      "value": {
+        "kind": "Local",
+        "name": "mylib"
+      }
+    }
+  }
+]

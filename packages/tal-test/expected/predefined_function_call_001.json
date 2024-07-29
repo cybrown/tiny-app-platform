@@ -1,0 +1,10 @@
+[
+  {
+    "kind": "Call",
+    "args": [],
+    "value": {
+      "kind": "Local",
+      "name": "give_hello"
+    }
+  }
+]

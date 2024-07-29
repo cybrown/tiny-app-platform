@@ -1,0 +1,20 @@
+<program>
+  <declarelocal>
+    <array>
+    </array>
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <assign>
+    <index>
+      <local />
+      <local />
+    </index>
+    <literal />
+  </assign>
+  <index>
+    <literal />
+    <local />
+  </index>
+</program>

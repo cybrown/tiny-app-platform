@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto",
+    "value": {
+      "kind": "Array",
+      "value": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "index",
+    "value": 3
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Index",
+      "index": {
+        "kind": "Local",
+        "name": "index"
+      },
+      "value": {
+        "kind": "Local",
+        "name": "toto"
+      }
+    },
+    "value": "value"
+  },
+  {
+    "kind": "Index",
+    "index": 3,
+    "value": {
+      "kind": "Local",
+      "name": "toto"
+    }
+  }
+]

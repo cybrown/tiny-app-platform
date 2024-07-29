@@ -1,0 +1,27 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": "1"
+  },
+  {
+    "kind": "Block",
+    "children": [
+      {
+        "kind": "DeclareLocal",
+        "mutable": false,
+        "name": "a",
+        "value": "2"
+      },
+      {
+        "kind": "Local",
+        "name": "a"
+      }
+    ]
+  },
+  {
+    "kind": "Local",
+    "name": "a"
+  }
+]

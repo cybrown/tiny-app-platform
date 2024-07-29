@@ -1,0 +1,24 @@
+[
+  "a"
+  "b"
+  // Comment 1
+  
+]
+
+{
+  42
+  // Comment 2
+  
+}
+
+// Comment 3
+fun comment_1() {
+  // Block would be empty
+  
+}
+
+fun comment_2() {
+  40 + 2
+  // This comment is removed
+  
+}

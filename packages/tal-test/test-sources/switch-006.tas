@@ -1,0 +1,10 @@
+fun letterToNumber(letter) {
+  switch (letter) {
+    _ => 4
+  }
+}
+
+letterToNumber("a")
+letterToNumber("b")
+letterToNumber("c")
+letterToNumber("d")

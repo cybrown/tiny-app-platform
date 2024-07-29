@@ -1,0 +1,73 @@
+[
+  {
+    "kind": "Array",
+    "value": [
+      "a",
+      "b",
+      {
+        "kind": "Comment",
+        "text": " Comment 1",
+        "node": null
+      }
+    ]
+  },
+  {
+    "kind": "Block",
+    "children": [
+      42,
+      {
+        "kind": "Comment",
+        "text": " Comment 2",
+        "node": null
+      }
+    ]
+  },
+  {
+    "kind": "Comment",
+    "text": " Comment 3",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "comment_1",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "Comment",
+              "text": " Block would be empty",
+              "node": null
+            }
+          ]
+        },
+        "parameters": []
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "comment_2",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "BinaryOperator",
+            "operator": "+",
+            "right": 2,
+            "left": 40
+          },
+          {
+            "kind": "Comment",
+            "text": " This comment is removed",
+            "node": null
+          }
+        ]
+      },
+      "parameters": []
+    }
+  }
+]

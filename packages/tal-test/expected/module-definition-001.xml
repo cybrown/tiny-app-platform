@@ -1,0 +1,17 @@
+<program>
+  <declarelocal>
+    <function>
+      <block>
+        <binaryoperator>
+          <local />
+          <local />
+        </binaryoperator>
+      </block>
+    </function>
+  </declarelocal>
+  <record>
+    <recordentry>
+      <local />
+    </recordentry>
+  </record>
+</program>

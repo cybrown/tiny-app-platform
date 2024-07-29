@@ -1,0 +1,75 @@
+<program>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <block>
+    <unaryoperator>
+      <literal />
+    </unaryoperator>
+  </block>
+  <unaryoperator>
+    <literal />
+  </unaryoperator>
+  <block>
+    <unaryoperator>
+      <literal />
+    </unaryoperator>
+  </block>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+  <binaryoperator>
+    <literal />
+    <literal />
+  </binaryoperator>
+</program>

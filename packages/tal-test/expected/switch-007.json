@@ -1,0 +1,95 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "letterToNumber",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Switch",
+            "value": {
+              "kind": "Local",
+              "name": "letter"
+            },
+            "branches": [
+              {
+                "kind": "SwitchBranch",
+                "comparator": "a",
+                "value": 1
+              },
+              {
+                "kind": "SwitchBranch",
+                "comparator": "b",
+                "value": 2
+              },
+              {
+                "kind": "SwitchBranch",
+                "comparator": "c",
+                "value": 3
+              }
+            ],
+            "defaultBranch": null
+          }
+        ]
+      },
+      "parameters": [
+        "letter"
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "a"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "letterToNumber"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "b"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "letterToNumber"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "c"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "letterToNumber"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "d"
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "letterToNumber"
+    }
+  }
+]

@@ -1,0 +1,429 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": 1
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "b",
+    "value": 2
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "f",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "a",
+            "value": {
+              "kind": "Local",
+              "name": "a"
+            }
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "b",
+            "value": {
+              "kind": "Local",
+              "name": "b"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 1
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": 2
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "a",
+        "value": 5
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "b",
+        "value": 6
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "b",
+        "value": 7
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "a",
+        "value": 8
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "a",
+        "value": 3
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": 4
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "b",
+        "value": 5
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": 6
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 7
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "a",
+        "value": 8
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 9
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "b",
+        "value": 0
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 1
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "a",
+        "value": 2
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "b",
+        "value": 3
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "c",
+        "value": 4
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": 1
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "c",
+        "value": 5
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "a",
+        "value": 2
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "c",
+        "value": 6
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "b",
+        "value": 3
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Pipe",
+    "first": 1,
+    "values": [
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "NamedArgument",
+            "name": "b",
+            "value": 2
+          }
+        ],
+        "value": {
+          "kind": "Local",
+          "name": "f"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "Pipe",
+    "first": 3,
+    "values": [
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "NamedArgument",
+            "name": "a",
+            "value": 4
+          }
+        ],
+        "value": {
+          "kind": "Local",
+          "name": "f"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "Pipe",
+    "first": 5,
+    "values": [
+      {
+        "kind": "Call",
+        "args": [],
+        "value": {
+          "kind": "Local",
+          "name": "f"
+        }
+      }
+    ]
+  },
+  {
+    "kind": "Pipe",
+    "first": 6,
+    "values": [
+      {
+        "kind": "Local",
+        "name": "f"
+      }
+    ]
+  },
+  {
+    "kind": "Pipe",
+    "first": 7,
+    "values": [
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "NamedArgument",
+            "name": "a",
+            "value": 3
+          }
+        ],
+        "value": {
+          "kind": "Nested",
+          "node": {
+            "kind": "Function",
+            "body": {
+              "kind": "Record",
+              "entries": [
+                {
+                  "kind": "RecordEntry",
+                  "key": "a",
+                  "value": {
+                    "kind": "Local",
+                    "name": "a"
+                  }
+                },
+                {
+                  "kind": "RecordEntry",
+                  "key": "b",
+                  "value": {
+                    "kind": "Local",
+                    "name": "b"
+                  }
+                }
+              ]
+            },
+            "parameters": [
+              "a",
+              "b"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "kind": "Pipe",
+    "first": 8,
+    "values": [
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "NamedArgument",
+            "name": "b",
+            "value": 4
+          }
+        ],
+        "value": {
+          "kind": "Nested",
+          "node": {
+            "kind": "Function",
+            "body": {
+              "kind": "Record",
+              "entries": [
+                {
+                  "kind": "RecordEntry",
+                  "key": "a",
+                  "value": {
+                    "kind": "Local",
+                    "name": "a"
+                  }
+                },
+                {
+                  "kind": "RecordEntry",
+                  "key": "b",
+                  "value": {
+                    "kind": "Local",
+                    "name": "b"
+                  }
+                }
+              ]
+            },
+            "parameters": [
+              "a",
+              "b"
+            ]
+          }
+        }
+      }
+    ]
+  }
+]

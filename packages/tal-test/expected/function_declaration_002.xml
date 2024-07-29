@@ -1,0 +1,142 @@
+<program>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <record>
+        <recordentry>
+          <local />
+        </recordentry>
+        <recordentry>
+          <local />
+        </recordentry>
+      </record>
+    </function>
+  </declarelocal>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+  </call>
+  <pipe>
+    <literal />
+    <call>
+      <local />
+      <literal />
+    </call>
+  </pipe>
+  <pipe>
+    <literal />
+    <call>
+      <local />
+      <literal />
+    </call>
+  </pipe>
+  <pipe>
+    <literal />
+    <call>
+      <local />
+    </call>
+  </pipe>
+  <pipe>
+    <literal />
+    <local />
+  </pipe>
+  <pipe>
+    <literal />
+    <call>
+      <nested>
+        <function>
+          <record>
+            <recordentry>
+              <local />
+            </recordentry>
+            <recordentry>
+              <local />
+            </recordentry>
+          </record>
+        </function>
+      </nested>
+      <literal />
+    </call>
+  </pipe>
+  <pipe>
+    <literal />
+    <call>
+      <nested>
+        <function>
+          <record>
+            <recordentry>
+              <local />
+            </recordentry>
+            <recordentry>
+              <local />
+            </recordentry>
+          </record>
+        </function>
+      </nested>
+      <literal />
+    </call>
+  </pipe>
+</program>

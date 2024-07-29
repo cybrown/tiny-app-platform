@@ -1,0 +1,44 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "add",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "BinaryOperator",
+            "operator": "+",
+            "right": {
+              "kind": "Local",
+              "name": "b"
+            },
+            "left": {
+              "kind": "Local",
+              "name": "a"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        "a",
+        "b"
+      ]
+    }
+  },
+  {
+    "kind": "Record",
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "add",
+        "value": {
+          "kind": "Local",
+          "name": "add"
+        }
+      }
+    ]
+  }
+]

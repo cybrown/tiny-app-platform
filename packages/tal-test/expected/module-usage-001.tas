@@ -1,0 +1,3 @@
+let mylib = import "./test-sources/module-definition-001.tas"
+
+mylib.add(40, 2)

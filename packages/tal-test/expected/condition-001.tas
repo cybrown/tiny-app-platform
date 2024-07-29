@@ -1,0 +1,5 @@
+var a = 1
+var b = 1
+if (true) { set a = 2 } else { set b = 2 }
+a
+b

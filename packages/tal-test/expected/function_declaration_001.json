@@ -1,0 +1,49 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "f",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "BinaryOperator",
+        "operator": "+",
+        "right": 1,
+        "left": {
+          "kind": "Local",
+          "name": "x"
+        }
+      },
+      "parameters": [
+        "x"
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "x",
+        "value": 2
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 2
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "f"
+    }
+  }
+]

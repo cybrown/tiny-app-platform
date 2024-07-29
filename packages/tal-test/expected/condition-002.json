@@ -1,0 +1,39 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "a",
+    "value": 1
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "b",
+    "value": 1
+  },
+  {
+    "kind": "If",
+    "condition": false,
+    "ifTrue": {
+      "kind": "Block",
+      "children": [
+        {
+          "kind": "Assign",
+          "address": {
+            "kind": "Local",
+            "name": "a"
+          },
+          "value": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Local",
+    "name": "a"
+  },
+  {
+    "kind": "Local",
+    "name": "b"
+  }
+]

@@ -18,9 +18,8 @@
   "homepage": "https://github.com/cybrown/my-nocode#readme",
   "workspaces": [
     "packages/tal-parser",
-    "packages/tal-parser-test",
+    "packages/tal-test",
     "packages/tal-eval",
-    "packages/tal-eval-test",
     "packages/backend",
     "packages/web-client",
     "packages/tal-stdlib"

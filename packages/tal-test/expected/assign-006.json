@@ -1,0 +1,19 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "toto"
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "toto"
+    },
+    "value": "value"
+  },
+  {
+    "kind": "Local",
+    "name": "toto"
+  }
+]

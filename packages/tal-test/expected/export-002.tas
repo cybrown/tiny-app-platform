@@ -1,0 +1,5 @@
+export let TOKEN = "token"
+
+export fun t(text) { Text { text: text } }
+
+export fun funcAsValue() null

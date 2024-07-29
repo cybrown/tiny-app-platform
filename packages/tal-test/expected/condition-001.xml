@@ -1,0 +1,25 @@
+<program>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <if>
+    <literal />
+    <block>
+      <assign>
+        <local />
+        <literal />
+      </assign>
+    </block>
+    <block>
+      <assign>
+        <local />
+        <literal />
+      </assign>
+    </block>
+  </if>
+  <local />
+  <local />
+</program>

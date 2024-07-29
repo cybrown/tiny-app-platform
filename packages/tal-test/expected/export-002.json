@@ -1,0 +1,61 @@
+[
+  {
+    "kind": "Export",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "TOKEN",
+      "value": "token"
+    }
+  },
+  {
+    "kind": "Export",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "t",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "KindedRecord",
+              "kindOfRecord": {
+                "kind": "Local",
+                "name": "Text"
+              },
+              "children": [],
+              "entries": [
+                {
+                  "kind": "KindedRecordEntry",
+                  "key": "text",
+                  "value": {
+                    "kind": "Local",
+                    "name": "text"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "parameters": [
+          "text"
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Export",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "funcAsValue",
+      "value": {
+        "kind": "Function",
+        "body": null,
+        "parameters": []
+      }
+    }
+  }
+]

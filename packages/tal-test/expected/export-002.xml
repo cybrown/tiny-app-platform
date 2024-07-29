@@ -1,0 +1,28 @@
+<program>
+  <export>
+    <declarelocal>
+      <literal />
+    </declarelocal>
+  </export>
+  <export>
+    <declarelocal>
+      <function>
+        <block>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+        </block>
+      </function>
+    </declarelocal>
+  </export>
+  <export>
+    <declarelocal>
+      <function>
+        <literal />
+      </function>
+    </declarelocal>
+  </export>
+</program>

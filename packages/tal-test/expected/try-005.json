@@ -1,0 +1,64 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto1",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Local",
+            "name": "missing_variable"
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto2",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Try",
+            "node": {
+              "kind": "Block",
+              "children": [
+                {
+                  "kind": "Call",
+                  "args": [],
+                  "value": {
+                    "kind": "Local",
+                    "name": "toto1"
+                  }
+                }
+              ]
+            },
+            "catchNode": {
+              "kind": "Block",
+              "children": [
+                "value from toto2"
+              ]
+            }
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [],
+    "value": {
+      "kind": "Local",
+      "name": "toto2"
+    }
+  }
+]

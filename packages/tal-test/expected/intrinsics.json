@@ -1,0 +1,117 @@
+[
+  {
+    "kind": "BinaryOperator",
+    "operator": "+",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "-",
+    "right": 1,
+    "left": 2
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "*",
+    "right": 6,
+    "left": 2
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "/",
+    "right": 3,
+    "left": 60
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "%",
+    "right": 10,
+    "left": 51
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "<",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "<=",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": ">",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": ">=",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "==",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "!=",
+    "right": 2,
+    "left": 1
+  },
+  {
+    "kind": "Block",
+    "children": [
+      {
+        "kind": "UnaryOperator",
+        "operator": "+",
+        "operand": 3
+      }
+    ]
+  },
+  {
+    "kind": "UnaryOperator",
+    "operator": "!",
+    "operand": true
+  },
+  {
+    "kind": "Block",
+    "children": [
+      {
+        "kind": "UnaryOperator",
+        "operator": "-",
+        "operand": 2
+      }
+    ]
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "==",
+    "right": 1,
+    "left": "1"
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "!=",
+    "right": 1,
+    "left": "1"
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "===",
+    "right": 1,
+    "left": "1"
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "!==",
+    "right": 1,
+    "left": "1"
+  }
+]

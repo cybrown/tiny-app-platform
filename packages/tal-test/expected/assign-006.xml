@@ -1,0 +1,9 @@
+<program>
+  <declarelocal>
+  </declarelocal>
+  <assign>
+    <local />
+    <literal />
+  </assign>
+  <local />
+</program>

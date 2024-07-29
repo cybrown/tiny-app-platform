@@ -1,0 +1,102 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": "a1"
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "b"
+    },
+    "value": "b1"
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "c",
+    "value": "c1"
+  },
+  {
+    "kind": "Local",
+    "name": "a"
+  },
+  {
+    "kind": "Local",
+    "name": "b"
+  },
+  {
+    "kind": "Local",
+    "name": "c"
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": "a2"
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "b"
+    },
+    "value": "b2"
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "c",
+    "value": "c2"
+  },
+  {
+    "kind": "Local",
+    "name": "a"
+  },
+  {
+    "kind": "Local",
+    "name": "b"
+  },
+  {
+    "kind": "Local",
+    "name": "c"
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "a"
+    },
+    "value": "a3"
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "b"
+    },
+    "value": "b3"
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "c"
+    },
+    "value": "c3"
+  },
+  {
+    "kind": "Local",
+    "name": "a"
+  },
+  {
+    "kind": "Local",
+    "name": "b"
+  },
+  {
+    "kind": "Local",
+    "name": "c"
+  }
+]

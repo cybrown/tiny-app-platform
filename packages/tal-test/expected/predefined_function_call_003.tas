@@ -1,0 +1,36 @@
+predefined_function(
+  "a"
+  "b"
+  "c"
+  "d"
+  "e"
+)
+predefined_function(
+  arg1: "a"
+  "b"
+  "c"
+  "d"
+  "e"
+)
+predefined_function(
+  arg1: "a"
+  arg2: "b"
+  "c"
+  "d"
+  "e"
+)
+predefined_function(
+  "a"
+  "b"
+  arg2: "c"
+  "d"
+  arg1: "e"
+)
+predefined_function("a")
+predefined_function(
+  arg1: "a"
+  "b"
+  arg1: "c"
+  "d"
+  arg1: "e"
+)

@@ -1,0 +1,8 @@
+fun sub_function(value) { value }
+
+fun root_function() {
+  let value = "b"
+  sub_function(value)
+}
+
+root_function()

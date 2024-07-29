@@ -1,0 +1,78 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "root_function",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Function",
+            "body": {
+              "kind": "Local",
+              "name": "value"
+            },
+            "parameters": []
+          }
+        ]
+      },
+      "parameters": [
+        "value"
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": "a"
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "root_function"
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "b",
+    "value": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": "b"
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "root_function"
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [],
+    "value": {
+      "kind": "Local",
+      "name": "a"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [],
+    "value": {
+      "kind": "Local",
+      "name": "b"
+    }
+  }
+]

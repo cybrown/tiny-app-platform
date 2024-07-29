@@ -1,0 +1,46 @@
+<program>
+  <call>
+    <local />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+    <literal />
+  </call>
+</program>

@@ -1,0 +1,33 @@
+<program>
+  <declarelocal>
+    <function>
+      <block>
+        <switch>
+          <local />
+          <literal />
+          <literal />
+          <literal />
+          <literal />
+          <literal />
+          <literal />
+        </switch>
+      </block>
+    </function>
+  </declarelocal>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+  <call>
+    <local />
+    <literal />
+  </call>
+</program>

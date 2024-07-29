@@ -1,0 +1,6 @@
+fun root_function(value) { () => value }
+
+let a = root_function("a")
+let b = root_function("b")
+a()
+b()

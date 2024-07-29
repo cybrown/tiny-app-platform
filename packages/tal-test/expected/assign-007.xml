@@ -1,0 +1,15 @@
+<program>
+  <declarelocal>
+    <record>
+    </record>
+  </declarelocal>
+  <assign>
+    <attribute>
+      <local />
+    </attribute>
+    <literal />
+  </assign>
+  <attribute>
+    <local />
+  </attribute>
+</program>

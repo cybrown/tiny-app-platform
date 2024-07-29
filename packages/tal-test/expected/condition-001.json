@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "a",
+    "value": 1
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "b",
+    "value": 1
+  },
+  {
+    "kind": "If",
+    "condition": true,
+    "ifTrue": {
+      "kind": "Block",
+      "children": [
+        {
+          "kind": "Assign",
+          "address": {
+            "kind": "Local",
+            "name": "a"
+          },
+          "value": 2
+        }
+      ]
+    },
+    "ifFalse": {
+      "kind": "Block",
+      "children": [
+        {
+          "kind": "Assign",
+          "address": {
+            "kind": "Local",
+            "name": "b"
+          },
+          "value": 2
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Local",
+    "name": "a"
+  },
+  {
+    "kind": "Local",
+    "name": "b"
+  }
+]

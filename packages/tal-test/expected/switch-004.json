@@ -1,0 +1,21 @@
+[
+  {
+    "kind": "Switch",
+    "value": null,
+    "branches": [
+      {
+        "kind": "SwitchBranch",
+        "comparator": true,
+        "value": "ok"
+      },
+      {
+        "kind": "SwitchBranch",
+        "comparator": false,
+        "value": "ko"
+      }
+    ],
+    "defaultBranch": {
+      "value": "default"
+    }
+  }
+]

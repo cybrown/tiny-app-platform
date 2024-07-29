@@ -1,0 +1,18 @@
+let a = "a1"
+set b = "b1"
+var c = "c1"
+a
+b
+c
+let a = "a2"
+set b = "b2"
+var c = "c2"
+a
+b
+c
+set a = "a3"
+set b = "b3"
+set c = "c3"
+a
+b
+c

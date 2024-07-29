@@ -1,0 +1,66 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "sub_function",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Local",
+            "name": "value"
+          }
+        ]
+      },
+      "parameters": [
+        "value"
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "root_function",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "value",
+            "value": "b"
+          },
+          {
+            "kind": "Call",
+            "args": [
+              {
+                "kind": "PositionalArgument",
+                "value": {
+                  "kind": "Local",
+                  "name": "value"
+                }
+              }
+            ],
+            "value": {
+              "kind": "Local",
+              "name": "sub_function"
+            }
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [],
+    "value": {
+      "kind": "Local",
+      "name": "root_function"
+    }
+  }
+]

@@ -462,18 +462,14 @@ class Stringifier {
   }
 
   stringifyIfOneLine(obj: IfNode) {
-    let result = 'if (' + this.stringify(obj.condition) + ') ';
-    const ifTrue = obj.ifTrue;
-    if (isNode(ifTrue, 'Block')) {
-      result += this.stringifyBlockOneLine(ifTrue);
-    } else {
-      result += this.stringify(ifTrue);
-    }
+    let result =
+      'if (' +
+      this.stringify(obj.condition) +
+      ') ' +
+      this.stringify(obj.ifTrue);
     if (obj.ifFalse) {
       const ifFalse = obj.ifFalse;
-      if (isNode(ifFalse, 'Block')) {
-        result += ' else ' + this.stringifyBlockOneLine(ifFalse);
-      } else if (isNode(ifFalse, 'If')) {
+      if (isNode(ifFalse, 'If')) {
         result += ' else ' + this.stringifyIfOneLine(ifFalse);
       } else {
         result += ' else ' + this.stringify(ifFalse);
@@ -518,14 +514,12 @@ class Stringifier {
   }
 
   stringifyWhileOneLine(obj: WhileNode) {
-    let result = 'while (' + this.stringify(obj.condition) + ') ';
-    const body = obj.body;
-    if (isNode(body, 'Block')) {
-      result += this.stringifyBlockOneLine(body);
-    } else {
-      result += this.stringify(body);
-    }
-    return result;
+    return (
+      'while (' +
+      this.stringify(obj.condition) +
+      ') ' +
+      this.stringify(obj.body)
+    );
   }
 
   stringifyWhileMultiLine(obj: WhileNode) {
@@ -591,18 +585,9 @@ class Stringifier {
   }
 
   stringifyTryOneLine(obj: TryNode) {
-    let result = 'try ';
-    if (isNode(obj.node, 'Block')) {
-      result += this.stringifyBlockOneLine(obj.node);
-    } else {
-      result += this.stringify(obj.node);
-    }
+    let result = 'try ' + this.stringify(obj.node);
     if (obj.catchNode) {
-      if (isNode(obj.catchNode, 'Block')) {
-        result += ' catch ' + this.stringifyBlockOneLine(obj.catchNode);
-      } else {
-        result += ' catch ' + this.stringify(obj.catchNode);
-      }
+      result += ' catch ' + this.stringify(obj.catchNode);
     }
     return result;
   }

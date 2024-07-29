@@ -218,6 +218,11 @@ export class Compiler {
         const whileBodyLabel = this.makeLabel('while_body');
         const whileEndLabel = this.makeLabel('while_end');
 
+        // Default value if loop is never executed
+        this.appendOpcode('Literal', node.location, {
+          value: null,
+        });
+
         this.appendOpcode('Jump', node.location, {
           label: whileConditionLabel,
         });
@@ -232,6 +237,8 @@ export class Compiler {
         });
 
         this.setCurrentLabel(whileBodyLabel);
+        // Remove value pushed by previous iteration, or default null value
+        this.appendOpcode('Pop', node.location, { inBlock: false });
         this.compile(node.body);
         this.appendOpcode('Jump', node.location, {
           label: whileConditionLabel,

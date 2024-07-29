@@ -51,6 +51,16 @@ export class Compiler {
   }
 
   private setCurrentLabel(label: string): void {
+    const lastOpcode = this.functions[this.currentFunction].body[
+      this.currentLabel
+    ].at(-1);
+
+    if (lastOpcode?.kind !== 'Jump') {
+      throw new Error(
+        'Do not create a new label after a non block terminating opcode'
+      );
+    }
+
     this.currentLabel = label;
     if (!this.functions[this.currentFunction].body[this.currentLabel]) {
       this.functions[this.currentFunction].body[this.currentLabel] = [];

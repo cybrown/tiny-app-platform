@@ -1,5 +1,5 @@
+import { useId } from "react";
 import { SwitchProps } from "../../theme";
-import { useMakeId } from "../utils";
 
 export default function Switch({
   disabled,
@@ -7,7 +7,7 @@ export default function Switch({
   value,
   label,
 }: SwitchProps) {
-  const id = useMakeId();
+  const id = useId();
   return (
     <div className="form-check form-switch">
       <input

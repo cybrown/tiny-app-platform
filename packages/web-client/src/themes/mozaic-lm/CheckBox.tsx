@@ -1,5 +1,5 @@
+import { useId } from "react";
 import { CheckBoxProps } from "../../theme";
-import { useMakeId } from "../utils";
 import styles from "./CheckBox.module.css";
 
 export default function CheckBox({
@@ -8,7 +8,7 @@ export default function CheckBox({
   value,
   label,
 }: CheckBoxProps) {
-  const id = useMakeId();
+  const id = useId();
   return (
     <div className={`mc-checkbox ${styles.CheckBox}`}>
       <input

@@ -1,5 +1,5 @@
+import { useId } from "react";
 import { SwitchProps } from "../../theme";
-import { useMakeId } from "../utils";
 
 export default function Switch({
   disabled,
@@ -8,7 +8,7 @@ export default function Switch({
   secondary,
   label,
 }: SwitchProps) {
-  const id = useMakeId();
+  const id = useId();
   return (
     <div>
       <input

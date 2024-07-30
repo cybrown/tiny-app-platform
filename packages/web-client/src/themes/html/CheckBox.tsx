@@ -1,5 +1,5 @@
+import { useId } from "react";
 import { CheckBoxProps } from "../../theme";
-import { useMakeId } from "../utils";
 
 export default function CheckBox({
   disabled,
@@ -8,7 +8,7 @@ export default function CheckBox({
   secondary,
   label,
 }: CheckBoxProps) {
-  const id = useMakeId();
+  const id = useId();
   return (
     <div>
       <input

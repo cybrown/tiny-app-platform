@@ -1,5 +1,5 @@
+import { useId } from "react";
 import { SwitchProps } from "../../theme";
-import { useMakeId } from "../utils";
 import styles from "./Switch.module.css";
 
 export default function Switch({
@@ -9,7 +9,7 @@ export default function Switch({
   secondary,
   label,
 }: SwitchProps) {
-  const id = useMakeId();
+  const id = useId();
   return (
     <div className={`mc-toggle mc-toggle--s ${styles.Switch}`}>
       <input

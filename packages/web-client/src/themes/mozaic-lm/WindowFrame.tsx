@@ -1,5 +1,6 @@
+import { useId } from "react";
 import { WindowFrameProps } from "../../theme";
-import { ELECTRON_DRAG, ELECTRON_NO_DRAG, useMakeId } from "../utils";
+import { ELECTRON_DRAG, ELECTRON_NO_DRAG } from "../utils";
 import styles from "./WindowFrame.module.css";
 
 export function WindowFrame({
@@ -9,7 +10,7 @@ export function WindowFrame({
   footer,
   drag,
 }: WindowFrameProps) {
-  const id = useMakeId();
+  const id = useId();
 
   return (
     <div

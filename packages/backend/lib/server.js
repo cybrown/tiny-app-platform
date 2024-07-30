@@ -285,12 +285,14 @@ const routes = [
       const request = JSON.parse(body.toString());
       let { fileName, args, env, cwd, timeout } = request;
       let exitStatus = null;
+      let pid = "";
       const result = await new Promise((resolve, reject) => {
         const childProcess = child_process.execFile(fileName, args, {
           cwd,
           env: { ...process.env, ...env },
           encoding: "buffer",
         });
+        pid = childProcess.pid;
         const stdoutBuffers = [];
         childProcess.stdout.on("data", (data) => stdoutBuffers.push(data));
         childProcess.on("exit", () => {
@@ -307,7 +309,7 @@ const routes = [
       });
       return createResponse(
         200,
-        { "x-exit-status": exitStatus, "x-pid": childProcess.pid },
+        { "x-exit-status": exitStatus, "x-pid": pid },
         result
       );
     },

@@ -165,8 +165,8 @@ export type RadioProps = {
 };
 
 export type TabsProps = {
-  value: string;
-  onChange(newValue: string): void;
+  value?: string;
+  onChange?(newValue: string): void;
   tabs: { value: string; label: string }[];
   after?: React.ReactElement;
 };

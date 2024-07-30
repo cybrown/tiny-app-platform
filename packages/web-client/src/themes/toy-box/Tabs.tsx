@@ -11,7 +11,7 @@ export default function Tabs({ value, onChange, tabs, after }: TabsProps) {
             className={`${styles.tab} ${
               tab.value === value ? styles.selected : ""
             }`}
-            onClick={() => onChange(tab.value)}
+            onClick={() => onChange && onChange(tab.value)}
           >
             <Text text={tab.label} />
           </div>

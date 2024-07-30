@@ -1,6 +1,14 @@
+import { Closure } from "tal-eval";
+
 export type InputProps<T> = {
   disabled?: boolean;
-  onChange: unknown;
+  onChange?: Closure;
+  value: T;
+};
+
+export type BaseInputProps<T> = {
+  disabled?: boolean;
+  onChange?: (newValue: T) => unknown;
   value: T;
 };
 

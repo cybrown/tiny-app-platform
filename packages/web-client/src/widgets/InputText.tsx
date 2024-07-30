@@ -1,20 +1,22 @@
 import { useCallback, useRef, useState } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import { InputText as ThemedInputText } from "../theme";
 import commonStyles from "./common.module.css";
 
-type InputTextProps = {
-  ctx: RuntimeContext;
-  multiline: boolean;
-  placeholder: string;
-  onSubmit?: Closure;
+type BaseInputTextProps = {
+  multiline?: boolean;
+  placeholder?: string;
+  onSubmit?: () => unknown;
   type?: "text" | "email" | "url" | "password";
-} & InputProps<string>;
+} & BaseInputProps<string>;
 
-export default function InputText({
-  ctx,
+function BaseInputText({
   multiline,
   placeholder,
   onSubmit,
@@ -22,7 +24,7 @@ export default function InputText({
   onChange,
   value,
   disabled,
-}: InputTextProps) {
+}: BaseInputTextProps) {
   if (type && type !== "text" && multiline) {
     throw new Error(
       "Type and multiline can't be true at the same time for InputText"
@@ -34,23 +36,22 @@ export default function InputText({
   const onSubmitHandler = useCallback(async () => {
     if (!onSubmit) return;
     try {
-      await ctx.callFunctionAsync(onSubmit, []);
+      await onSubmit();
     } catch (err) {
       setLastError(err);
     }
-  }, [ctx, onSubmit]);
+  }, [onSubmit]);
 
   const onChangeHandler = useCallback(
-    (newValue: string) => {
+    async (newValue: string) => {
+      if (!onChange) return;
       try {
-        if (onChange) {
-          ctx.callFunction(onChange as Closure, [newValue]);
-        }
+        await onChange(newValue);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
@@ -72,6 +73,42 @@ export default function InputText({
         setLastError={setLastError}
       />
     </div>
+  );
+}
+
+type InputTextProps = {
+  ctx: RuntimeContext;
+  multiline?: boolean;
+  placeholder?: string;
+  onSubmit?: Closure;
+  type?: "text" | "email" | "url" | "password";
+} & InputProps<string>;
+
+export default function InputText({
+  ctx,
+  onSubmit,
+  onChange,
+  ...commonProps
+}: InputTextProps) {
+  const onSubmitHandler = useCallback(async () => {
+    if (!onSubmit) return;
+    return ctx.callFunctionAsync(onSubmit, []);
+  }, [ctx, onSubmit]);
+
+  const onChangeHandler = useCallback(
+    (newValue: string) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newValue]);
+    },
+    [ctx, onChange]
+  );
+
+  return (
+    <BaseInputText
+      onChange={onChangeHandler}
+      onSubmit={onSubmitHandler}
+      {...commonProps}
+    />
   );
 }
 

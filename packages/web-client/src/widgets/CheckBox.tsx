@@ -1,8 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { Closure } from "tal-eval";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import { CheckBox as ThemedCheckBox } from "../theme";
 import {
   InputLabelProps,
@@ -10,33 +13,30 @@ import {
 } from "./internal/inputLabelProps";
 import commonStyles from "./common.module.css";
 
-type CheckBoxProps = {
-  ctx: RuntimeContext;
+type BaseCheckBoxProps = {
   secondary?: boolean;
-} & InputProps<boolean> &
+} & BaseInputProps<boolean> &
   InputLabelProps;
 
-export default function CheckBox({
-  ctx,
+function BaseCheckBox({
   disabled,
   onChange,
   value,
   secondary,
   label,
-}: CheckBoxProps) {
+}: BaseCheckBoxProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
-    async (value: boolean) => {
+    async (newValue: boolean) => {
+      if (!onChange) return;
       try {
-        if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [value]);
-        }
+        await onChange(newValue);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
@@ -56,6 +56,28 @@ export default function CheckBox({
       />
     </div>
   );
+}
+
+type CheckBoxProps = {
+  ctx: RuntimeContext;
+  secondary?: boolean;
+} & InputProps<boolean> &
+  InputLabelProps;
+
+export default function CheckBox({
+  ctx,
+  onChange,
+  ...commonProps
+}: CheckBoxProps) {
+  const onChangeHandler = useCallback(
+    (newValue: boolean) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newValue]);
+    },
+    [ctx, onChange]
+  );
+
+  return <BaseCheckBox onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const CheckBoxDocumentation: WidgetDocumentation<CheckBoxProps> = {

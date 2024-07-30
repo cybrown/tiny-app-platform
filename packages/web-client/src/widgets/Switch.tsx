@@ -1,7 +1,11 @@
 import { useCallback, useRef, useState } from "react";
-import { RuntimeContext, WidgetDocumentation, Closure } from "tal-eval";
+import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import { Switch as ThemedSwitch } from "../theme";
 import {
   InputLabelProps,
@@ -9,33 +13,30 @@ import {
 } from "./internal/inputLabelProps";
 import commonStyles from "./common.module.css";
 
-type SwitchProps = {
-  ctx: RuntimeContext;
+type BaseSwitchProps = {
   secondary?: boolean;
-} & InputProps<boolean> &
+} & BaseInputProps<boolean> &
   InputLabelProps;
 
-export default function Switch({
-  ctx,
+function BaseSwitch({
   onChange,
   value,
   disabled,
   secondary,
   label,
-}: SwitchProps) {
+}: BaseSwitchProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(
     async (value: boolean) => {
+      if (!onChange) return;
       try {
-        if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [value]);
-        }
+        await onChange(value);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
@@ -56,6 +57,24 @@ export default function Switch({
       />
     </div>
   );
+}
+
+type SwitchProps = {
+  ctx: RuntimeContext;
+  secondary?: boolean;
+} & InputProps<boolean> &
+  InputLabelProps;
+
+export default function Switch({ ctx, onChange, ...commonProps }: SwitchProps) {
+  const onChangeHandler = useCallback(
+    async (value: boolean) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [value]);
+    },
+    [ctx, onChange]
+  );
+
+  return <BaseSwitch onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const SwitchDocumentation: WidgetDocumentation<SwitchProps> = {

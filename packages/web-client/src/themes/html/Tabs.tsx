@@ -8,7 +8,7 @@ export default function Tabs({ value, onChange, tabs, after }: TabsProps) {
           <a
             href="#tabs"
             onClick={(e) => {
-              onChange(tab.value);
+              onChange && onChange(tab.value);
               e.preventDefault();
             }}
           >

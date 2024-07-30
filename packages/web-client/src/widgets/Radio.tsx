@@ -1,8 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { Closure } from "tal-eval";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import { Radio as ThemedRadio } from "../theme";
 import {
   InputLabelProps,
@@ -10,35 +13,30 @@ import {
 } from "./internal/inputLabelProps";
 import commonStyles from "./common.module.css";
 
-type RadioProps = {
-  ctx: RuntimeContext;
+type BaseRadioProps = {
   option: string | { value: string; label: string };
   secondary?: boolean;
-} & InputProps<string> &
+} & BaseInputProps<string> &
   InputLabelProps;
 
-export default function Radio({
-  ctx,
+function BaseRadio({
   disabled,
   onChange,
   value,
   option = "",
   secondary,
   label,
-}: RadioProps) {
+}: BaseRadioProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const handleChange = useCallback(async () => {
+    if (!onChange) return;
     try {
-      if (onChange) {
-        await ctx.callFunctionAsync(onChange as Closure, [
-          typeof option === "string" ? option : option.value,
-        ]);
-      }
+      await onChange(typeof option === "string" ? option : option.value);
     } catch (err) {
       setLastError(err);
     }
-  }, [ctx, onChange, option]);
+  }, [onChange, option]);
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
@@ -59,6 +57,25 @@ export default function Radio({
       />
     </div>
   );
+}
+
+type RadioProps = {
+  ctx: RuntimeContext;
+  option: string | { value: string; label: string };
+  secondary?: boolean;
+} & InputProps<string> &
+  InputLabelProps;
+
+export default function Radio({ ctx, onChange, ...commonProps }: RadioProps) {
+  const onChangeHandler = useCallback(
+    (newValue: string) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newValue]);
+    },
+    [ctx, onChange]
+  );
+
+  return <BaseRadio onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const RadioDocumentation: WidgetDocumentation<RadioProps> = {

@@ -10,7 +10,7 @@ export default function Tabs({ onChange, after, tabs, value }: TabsProps) {
             className={`nav-link ${value === tab.value ? "active" : ""}`}
             href="#tabs"
             onClick={(e) => {
-              onChange(tab.value);
+              onChange && onChange(tab.value);
               e.preventDefault();
             }}
           >

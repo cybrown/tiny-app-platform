@@ -10,32 +10,26 @@ type TabOptions = {
   label: string;
 };
 
-type TabsProps = {
-  ctx: RuntimeContext;
-  value: string;
-  onChange: Closure;
-  options: TabOptions[];
-  after: unknown;
+type BaseTabsProps = {
+  value?: string;
+  onChange?: (newValue: string) => unknown;
+  options?: TabOptions[];
+  after?: React.ReactElement;
 };
 
-export default function Tabs({
-  ctx,
-  value,
-  onChange,
-  options,
-  after,
-}: TabsProps) {
+function BaseTabs({ value, onChange, options, after }: BaseTabsProps) {
   const [lastError, setLastError] = useState<unknown>(null);
 
   const handleOnChange = useCallback(
     async (newTab: string) => {
+      if (!onChange) return;
       try {
-        await ctx.callFunctionAsync(onChange, [newTab]);
+        await onChange(newTab);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
@@ -45,11 +39,11 @@ export default function Tabs({
       <ThemedTabs
         value={value}
         onChange={handleOnChange}
-        tabs={options.map((child) => ({
+        tabs={(options || []).map((child) => ({
           value: child.value,
           label: child.label,
         }))}
-        after={<RenderExpression ctx={ctx} ui={after} />}
+        after={after}
       />
       <ErrorPopover
         target={popoverTargetRef.current}
@@ -57,6 +51,37 @@ export default function Tabs({
         setLastError={setLastError}
       />
     </div>
+  );
+}
+
+type TabsProps = {
+  ctx: RuntimeContext;
+  value?: string;
+  onChange?: Closure;
+  options?: TabOptions[];
+  after?: unknown;
+};
+
+export default function Tabs({
+  ctx,
+  onChange,
+  after,
+  ...commonProps
+}: TabsProps) {
+  const onChangeHandler = useCallback(
+    (newTab: string) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newTab]);
+    },
+    [ctx, onChange]
+  );
+
+  return (
+    <BaseTabs
+      onChange={onChangeHandler}
+      after={<RenderExpression ctx={ctx} ui={after} />}
+      {...commonProps}
+    />
   );
 }
 

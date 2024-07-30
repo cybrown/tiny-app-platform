@@ -1,38 +1,36 @@
 import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { Closure } from "tal-eval";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import { InputFile as ThemedInputFile } from "../theme";
 import commonStyles from "./common.module.css";
 
-type InputFileProps = {
-  ctx: RuntimeContext;
-  placeholder: string;
-} & InputProps<string>;
+type BaseInputFileProps = {
+  placeholder?: string;
+} & BaseInputProps<string>;
 
-// TODO: find a solution out of Electron
-
-export default function InputFile({
-  ctx,
+function BaseInputFile({
   placeholder,
   value,
   onChange,
   disabled,
-}: InputFileProps) {
+}: BaseInputFileProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const onChangeHandler = useCallback(
     async (newFile: string) => {
+      if (!onChange) return;
       try {
-        if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [newFile]);
-        }
+        await onChange(newFile);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
@@ -52,6 +50,29 @@ export default function InputFile({
       />
     </div>
   );
+}
+
+type InputFileProps = {
+  ctx: RuntimeContext;
+  placeholder?: string;
+} & InputProps<string>;
+
+// TODO: find a solution out of Electron
+
+export default function InputFile({
+  ctx,
+  onChange,
+  ...commonProps
+}: InputFileProps) {
+  const onChangeHandler = useCallback(
+    async (newFile: string) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newFile]);
+    },
+    [ctx, onChange]
+  );
+
+  return <BaseInputFile onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const InputFileDocumentation: WidgetDocumentation<InputFileProps> = {

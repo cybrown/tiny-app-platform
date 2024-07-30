@@ -15,7 +15,7 @@ export function Tabs({ tabs, value, onChange, after }: TabsProps) {
               <a
                 href="#/tab"
                 onClick={(e) => {
-                  onChange(tab.value);
+                  onChange && onChange(tab.value);
                   e.preventDefault();
                 }}
                 role="tab"

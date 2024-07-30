@@ -5,10 +5,9 @@ import ErrorPopover from "./internal/ErrorPopover";
 import { Link, Button as ThemedButton } from "../theme";
 import commonStyles from "./common.module.css";
 
-type ButtonProps = {
-  ctx: RuntimeContext;
+type BaseButtonProps = {
+  onClick?: () => unknown;
   text: string;
-  onClick: Closure;
   confirm?: string | boolean;
   secondary?: boolean;
   disabled?: boolean;
@@ -16,8 +15,7 @@ type ButtonProps = {
   link?: boolean;
 };
 
-export default function Button({
-  ctx,
+function BaseButton({
   onClick,
   text,
   confirm,
@@ -25,17 +23,15 @@ export default function Button({
   disabled,
   outline,
   link,
-}: ButtonProps) {
+}: BaseButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const doClickAction = useCallback(() => {
     (async () => {
-      if (!onClick) {
-        return;
-      }
+      if (!onClick) return;
       try {
         setLastError(null);
-        const evaluationPromise = ctx.callFunctionAsync(onClick, []);
+        const evaluationPromise = onClick();
         setIsLoading(true);
         await evaluationPromise;
       } catch (err) {
@@ -44,7 +40,7 @@ export default function Button({
         setIsLoading(false);
       }
     })();
-  }, [ctx, onClick]);
+  }, [onClick]);
 
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
@@ -93,6 +89,25 @@ export default function Button({
       />
     </div>
   );
+}
+
+type ButtonProps = {
+  ctx: RuntimeContext;
+  text: string;
+  onClick: Closure;
+  confirm?: string | boolean;
+  secondary?: boolean;
+  disabled?: boolean;
+  outline?: boolean;
+  link?: boolean;
+};
+
+export default function Button({ ctx, onClick, ...commonProps }: ButtonProps) {
+  const onClickHandler = useCallback(() => {
+    return onClick && ctx.callFunctionAsync(onClick, []);
+  }, [ctx, onClick]);
+
+  return <BaseButton onClick={onClickHandler} {...commonProps} />;
 }
 
 export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {

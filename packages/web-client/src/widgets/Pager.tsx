@@ -1,21 +1,22 @@
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { useCallback, useRef, useState } from "react";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import ErrorPopover from "./internal/ErrorPopover";
-import { Closure } from "tal-eval";
 import { PagerOnChangeAction, Pager as ThemedPager } from "../theme";
 import commonStyles from "./common.module.css";
 
-type PagerProps = {
-  ctx: RuntimeContext;
+type BasePagerProps = {
   max: number;
   perPage: number;
   showPrevNext?: boolean;
   size?: number;
-} & InputProps<number>;
+} & BaseInputProps<number>;
 
-export default function Pager({
-  ctx,
+function BasePager({
   max,
   perPage,
   onChange,
@@ -23,7 +24,7 @@ export default function Pager({
   disabled,
   showPrevNext,
   size,
-}: PagerProps) {
+}: BasePagerProps) {
   const currentPage = value;
   const pages = [];
   const difference = size ?? 3;
@@ -39,15 +40,14 @@ export default function Pager({
 
   const updateValue = useCallback(
     async (value: number) => {
+      if (!onChange) return;
       try {
-        if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [value]);
-        }
+        await onChange(value);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, onChange]
+    [onChange]
   );
 
   const onChangeHandler = useCallback(
@@ -104,6 +104,26 @@ export default function Pager({
       />
     </div>
   );
+}
+
+type PagerProps = {
+  ctx: RuntimeContext;
+  max: number;
+  perPage: number;
+  showPrevNext?: boolean;
+  size?: number;
+} & InputProps<number>;
+
+export default function Pager({ ctx, onChange, ...commonProps }: PagerProps) {
+  const onChangeHandler = useCallback(
+    (newValue: number) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newValue]);
+    },
+    [ctx, onChange]
+  );
+
+  return <BasePager onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const PagerDocumentation: WidgetDocumentation<PagerProps> = {

@@ -1,25 +1,26 @@
 import { useCallback, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import ErrorPopover from "./internal/ErrorPopover";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
-import { Closure } from "tal-eval";
+import {
+  BaseInputProps,
+  InputProps,
+  InputPropsDocs,
+} from "./internal/inputProps";
 import { Select as ThemedSelect } from "../theme";
 import commonStyles from "./common.module.css";
 
-type SelectProps = {
-  ctx: RuntimeContext;
+type BaseSelectProps = {
   options: (string | { value: string; label: string })[];
   placeholder?: string;
-} & InputProps<string>;
+} & BaseInputProps<string>;
 
-export default function Select({
-  ctx,
+function BaseSelect({
   options,
   placeholder,
   onChange,
   value,
   disabled,
-}: SelectProps) {
+}: BaseSelectProps) {
   const [lastError, setLastError] = useState(null as any);
 
   const showEmpty =
@@ -30,18 +31,17 @@ export default function Select({
 
   const onChangeHandler = useCallback(
     async (newSelectedIndex: number) => {
+      if (!onChange) return;
       try {
         const optionToSet = options[newSelectedIndex - (showEmpty ? 1 : 0)];
         const valueToSet =
           typeof optionToSet === "string" ? optionToSet : optionToSet.value;
-        if (onChange) {
-          await ctx.callFunctionAsync(onChange as Closure, [valueToSet]);
-        }
+        await onChange(valueToSet);
       } catch (err) {
         setLastError(err);
       }
     },
-    [ctx, options, showEmpty, onChange]
+    [options, showEmpty, onChange]
   );
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
@@ -65,6 +65,24 @@ export default function Select({
       />
     </div>
   );
+}
+
+type SelectProps = {
+  ctx: RuntimeContext;
+  options: (string | { value: string; label: string })[];
+  placeholder?: string;
+} & InputProps<string>;
+
+export default function Select({ ctx, onChange, ...commonProps }: SelectProps) {
+  const onChangeHandler = useCallback(
+    async (newValue: string) => {
+      if (!onChange) return;
+      return ctx.callFunctionAsync(onChange, [newValue]);
+    },
+    [ctx, onChange]
+  );
+
+  return <BaseSelect onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const SelectDocumentation: WidgetDocumentation<SelectProps> = {

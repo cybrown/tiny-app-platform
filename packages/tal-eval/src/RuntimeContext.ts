@@ -350,7 +350,7 @@ export class RuntimeContext {
 
   createWithSameRootLocals(): RuntimeContext {
     return new RuntimeContext(
-      () => null,
+      () => this.triggerStateChangedListeners(),
       this.rootParent._locals,
       undefined,
       false

@@ -15,7 +15,6 @@ type SourceTabProps = {
   onFormatHandler(): void;
   onApplyAndFormatHandler(): void;
   onApplyAndFormatWithSourceHandler(source: string): void;
-  onCloseHandler(): void;
 };
 
 export default function SourceTab({
@@ -25,7 +24,6 @@ export default function SourceTab({
   onApplyAndFormatHandler,
   setEditorApi,
   onApplyAndFormatWithSourceHandler,
-  onCloseHandler,
 }: SourceTabProps) {
   const editorApiRef = useRef<EditorApi | null>(null);
 

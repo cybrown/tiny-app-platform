@@ -219,40 +219,54 @@ function buildContext(
   return ctx;
 }
 
-const DEFAULT_APP_SOURCE = `var a = "40"
-var b = "2"
+const DEFAULT_APP_SOURCE = `fun Calculator(expected) {
+  var a = "40"
+  var b = "2"
 
-export fun App() {
+  fun result() string_to_number(a) + string_to_number(b)
+
   Column {
-    Text {
-      text: "Hello ! You see this message because you do not have any program loaded."
-    }
-
-    Text {
-      text: "Press Ctrl+Shift+D to open the text editor and edit this program."
-    }
-
-    Text {
-      text: "Click on 'Apply & format' to run your program, and check the documentation with the 'Toggle reference documentation' button."
-    }
-
-    Text {
-      text: "Tutorials and examples coming soon !"
-    }
-
-    Text {
-      text: "Here's a small adder to start hacking your first app:"
-    }
-
     Row {
       InputText { bindTo: a }
       InputText { bindTo: b }
 
       Text {
-        text: "$a + $b = $result" | string_format({a: a, b: b, result: string_to_number(a) + string_to_number(b)})
+        text: "$a + $b = $result" | string_format({a: a, b: b, result: result()})
       }
     }
+
+    if (result() == expected) {
+      Text { text: "This is the expected value ✅" }
+    }
   }
+}
+
+Column {
+  padding: 0.5
+
+  Text {
+    text:   "Welcome !"
+    size:   2.5
+    weight: "light"
+    align:  "center"
+  }
+
+  "Hello ! You see this message because you do not have any program loaded."
+  "Press Ctrl+Shift+D to open the text editor and edit this program."
+  "In the editor, click on 💾 to run your program, and check the documentation with the 📘 button."
+
+  Row {
+    "Tutorials and examples coming soon !"
+
+    Link {
+      text: "Check the Github repository"
+      url:  "https://github.com/cybrown/tiny-app-platform"
+    }
+  }
+
+  "Here's a small calculator to start hacking your first app:"
+
+  Calculator { expected: 42 }
 }
 `;
 
@@ -270,6 +284,69 @@ const themes = [
 const selectedThemeFromQueryString = themes.find(
   (theme) => theme.id === queryParams.theme?.[0]
 );
+
+function nodeIsTopLevel(node: tal.Node) {
+  if (node.kind === "Comment" && node.node) {
+    return nodeIsTopLevel(node.node);
+  }
+  return node.kind === "Export" || node.kind === "DeclareLocal";
+}
+
+function parseAndCreateAppFunction(source: string, path: string) {
+  const hlast = tal.parse(source, path);
+
+  let appFunctionFound = false;
+
+  for (const node of hlast) {
+    if (node.kind === "DeclareLocal" && node.name === "App") {
+      const err = new Error("App variable must be exported");
+      (err as any).location = node.location;
+      throw err;
+    }
+    if (node.kind === "Export") {
+      if (node.node.kind === "DeclareLocal" && node.node.name === "App") {
+        if (node.node.value?.kind === "Function") {
+          appFunctionFound = true;
+        } else {
+          const err = new Error("Exported App value must be a function");
+          (err as any).location = node.node.location;
+          throw err;
+        }
+      }
+    }
+  }
+
+  if (appFunctionFound) {
+    return hlast;
+  }
+  const nodesToWrap: tal.Node[] = [];
+  const topLevelNodes: tal.Node[] = [];
+  for (const node of hlast) {
+    if (nodeIsTopLevel(node)) {
+      topLevelNodes.push(node);
+    } else {
+      nodesToWrap.push(node);
+    }
+  }
+
+  topLevelNodes.push({
+    kind: "Export",
+    node: {
+      kind: "DeclareLocal",
+      name: "App",
+      mutable: false,
+      value: {
+        kind: "Function",
+        parameters: [],
+        body: {
+          kind: "Block",
+          children: nodesToWrap,
+        },
+      },
+    },
+  });
+  return topLevelNodes;
+}
 
 function App() {
   const currentAppName = "latestSource";
@@ -292,12 +369,12 @@ function App() {
     }
     latestExecutedSource.current = newSource;
     try {
-      const hlast = tal.parse(newSource, path);
+      const hlast = parseAndCreateAppFunction(newSource, path);
       const llast = lower(hlast);
       const bin = compile(llast);
       setApp(bin);
     } catch (err) {
-      setParseError(err as Error);
+      setParseError(err);
       setApp(null);
     }
   }, []);
@@ -367,7 +444,7 @@ function App() {
     [forceRender]
   );
 
-  const [parseError, setParseError] = useState<Error | null>(null);
+  const [parseError, setParseError] = useState<unknown | null>(null);
 
   const [devtoolsVisible, setDevtoolsVisible] = useState(
     queryParams.hasOwnProperty("devtools")
@@ -475,7 +552,13 @@ function App() {
             ) : parseError ? (
               <theme.View backgroundColor="rgb(230, 104, 104)" padding={0.5}>
                 <theme.Text
-                  text={`Error parsing source: ${parseError.message}`}
+                  text={`Error parsing source: ${
+                    parseError != null &&
+                    typeof parseError === "object" &&
+                    "message" in parseError
+                      ? parseError.message
+                      : "Unspecified"
+                  }`}
                   wrap
                   color="rgb(245, 242, 242)"
                 />
@@ -685,7 +768,6 @@ function DevtoolsDrawer({
           onApplyTheme={applyTheme}
           setEditorApi={setEditorApi}
           onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
-          onCloseHandler={onCloseHandler}
         />
       </theme.WindowFrame>
     </LowLevelOverlay>

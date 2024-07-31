@@ -16,7 +16,6 @@ type DevtoolsProps = {
   onDebugModeChange(mode: boolean): void;
   onApplyTheme(newTheme: Theme): void;
   onApplyAndFormatWithSourceHandler(source: string): void;
-  onCloseHandler(): void;
 };
 
 export default function Devtools({
@@ -29,7 +28,6 @@ export default function Devtools({
   onApplyTheme: applyTheme,
   setEditorApi,
   onApplyAndFormatWithSourceHandler,
-  onCloseHandler,
 }: DevtoolsProps) {
   const [currentTab, setCurrentTab] = useState("source");
 
@@ -68,7 +66,6 @@ export default function Devtools({
         onApplyAndFormatHandler={onApplyAndFormatHandler}
         setEditorApi={setEditorApi}
         onApplyAndFormatWithSourceHandler={onApplyAndFormatWithSourceHandler}
-        onCloseHandler={onCloseHandler}
         hidden={currentTab !== "source"}
       />
 

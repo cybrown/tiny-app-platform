@@ -319,13 +319,20 @@ function parseAndCreateAppFunction(source: string, path: string) {
   if (appFunctionFound) {
     return hlast;
   }
-  const nodesToWrap: tal.Node[] = [];
+
+  let exportedFunctionBody: tal.Node = { kind: "Literal", value: null };
+
   const topLevelNodes: tal.Node[] = [];
+
   for (const node of hlast) {
-    if (nodeIsTopLevel(node)) {
+    if (!nodeIsTopLevel(node)) {
+      exportedFunctionBody = node;
+    }
+  }
+
+  for (const node of hlast) {
+    if (node !== exportedFunctionBody) {
       topLevelNodes.push(node);
-    } else {
-      nodesToWrap.push(node);
     }
   }
 
@@ -338,10 +345,7 @@ function parseAndCreateAppFunction(source: string, path: string) {
       value: {
         kind: "Function",
         parameters: [],
-        body: {
-          kind: "Block",
-          children: nodesToWrap,
-        },
+        body: exportedFunctionBody,
       },
     },
   });

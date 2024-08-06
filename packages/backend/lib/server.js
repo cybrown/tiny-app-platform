@@ -281,6 +281,13 @@ const routes = [
   {
     route: "/op/exec-process",
     handler: async (req, params) => {
+      if (process.env.hasOwnProperty("DISABLE_PROCESS_OPS")) {
+        return createResponse(
+          400,
+          null,
+          "Process related operations disabled on this server"
+        );
+      }
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
       let { fileName, args, env, cwd, timeout } = request;
@@ -317,6 +324,13 @@ const routes = [
   {
     route: "/op/kill-process",
     handler: async (req) => {
+      if (process.env.hasOwnProperty("DISABLE_PROCESS_OPS")) {
+        return createResponse(
+          400,
+          null,
+          "Process related operations disabled on this server"
+        );
+      }
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
       let { pid, signal } = request;
@@ -327,6 +341,13 @@ const routes = [
   {
     route: "/op/exec-process-stream",
     handler: async (req, params) => {
+      if (process.env.hasOwnProperty("DISABLE_PROCESS_OPS")) {
+        return createResponse(
+          400,
+          null,
+          "Process related operations disabled on this server"
+        );
+      }
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
       let { fileName, args, env, cwd, timeout } = request;

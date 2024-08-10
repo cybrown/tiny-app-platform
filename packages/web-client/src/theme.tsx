@@ -178,9 +178,12 @@ export type ContainerProps = {
 export type LoaderSize = "sm" | "md" | "lg";
 
 export type LoaderProps = {
+  label?: string;
   primary?: boolean;
   secondary?: boolean;
   size?: LoaderSize;
+  max?: number;
+  value?: number;
 };
 
 export type ViewProps = {

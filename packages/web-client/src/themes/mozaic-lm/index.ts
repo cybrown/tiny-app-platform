@@ -16,7 +16,7 @@ import Text from "../html/Text";
 import htmlTheme from "../html";
 
 const cssLink = document.createElement("link");
-cssLink.setAttribute("href", "mozaic-lm.css");
+cssLink.setAttribute("href", "mozaic-lm.min.css");
 cssLink.setAttribute("rel", "stylesheet");
 
 const theme: Theme = {

@@ -7,6 +7,6 @@ out/
 /static/
 /index.html
 /fonts
-/mozaic-lm.css
+/mozaic-lm.min.css
 /sw.js
 /unregister.html

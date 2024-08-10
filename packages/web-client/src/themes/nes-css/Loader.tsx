@@ -2,18 +2,27 @@ import { useEffect, useState } from "react";
 import { LoaderProps } from "../../theme";
 
 export default function Loader(props: LoaderProps) {
-  const [value, setValue] = useState(1);
+  const [valueWhenNull, setValueWhenNull] = useState(props.value);
   useEffect(() => {
+    if (props.value != null) return;
     const interval = setInterval(() => {
-      setValue((value) => (value === 1 ? 2 : 1));
+      setValueWhenNull((value) => (value === 1 ? 2 : 1));
     }, 1000);
     return () => clearInterval(interval);
   });
   return (
     <progress
-      className="nes-progress is-pattern"
-      value={value}
-      max="3"
+      className={`nes-progress ${
+        props.value == null
+          ? "is-pattern"
+          : props.primary
+          ? "is-primary"
+          : props.secondary
+          ? "is-pattern"
+          : ""
+      }`}
+      value={props.value ?? valueWhenNull}
+      max={props.max ?? 3}
     ></progress>
   );
 }

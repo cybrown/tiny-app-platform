@@ -13,6 +13,7 @@ import Radio from "./Radio";
 import { WindowFrame } from "./WindowFrame";
 import View from "./View";
 import Tabs from "./Tabs";
+import Loader from "./Loader";
 
 const htmlTheme: Theme = {
   id: "html",
@@ -34,7 +35,7 @@ const htmlTheme: Theme = {
   Tabs,
   View,
   WindowFrame,
-  Loader: (props) => <>Loading...</>,
+  Loader,
   Container: (props) => <>{props.children}</>,
 };
 

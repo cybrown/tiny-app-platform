@@ -6,10 +6,26 @@ type LoaderProps = {
   primary?: boolean;
   secondary?: boolean;
   size?: LoaderSize;
+  max?: number;
+  value?: number;
 };
 
-export default function Loader({ primary, secondary, size }: LoaderProps) {
-  return <ThemedLoader primary={primary} secondary={secondary} size={size} />;
+export default function Loader({
+  primary,
+  secondary,
+  size,
+  value,
+  max,
+}: LoaderProps) {
+  return (
+    <ThemedLoader
+      primary={primary}
+      secondary={secondary}
+      size={size}
+      value={value}
+      max={max}
+    />
+  );
 }
 
 export const LoaderDocumentation: WidgetDocumentation<LoaderProps> = {
@@ -18,5 +34,7 @@ export const LoaderDocumentation: WidgetDocumentation<LoaderProps> = {
     primary: "Use primary style",
     secondary: "Use secondary style",
     size: "Size of the loader: sm, md (default), lg",
+    max: "Maximum value, optional",
+    value: "Current value, optional",
   },
 };

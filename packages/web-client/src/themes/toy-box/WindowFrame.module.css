@@ -14,22 +14,9 @@
 .Header {
   display: flex;
   justify-content: space-between;
-  padding-top: 2px;
-  padding-left: 2px;
-  padding-right: 2px;
-  padding-bottom: 4px;
   border-bottom: solid 2px var(--toy-box-color-primary-500);
 }
 
 .Body {
-  padding-top: 4px;
-  padding-left: 2px;
-  padding-right: 2px;
   overflow: auto;
-}
-
-.Footer {
-  padding-left: 2px;
-  padding-right: 2px;
-  padding-bottom: 2px;
 }

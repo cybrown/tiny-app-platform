@@ -45,6 +45,7 @@ export default function Devtools({
         tabs={[
           { label: "Source", value: "source" },
           { label: "Console", value: "console" },
+          { label: "About", value: "about" },
         ]}
         value={currentTab}
         onChange={setCurrentTab}

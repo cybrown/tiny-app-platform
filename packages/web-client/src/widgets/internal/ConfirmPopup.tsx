@@ -51,6 +51,7 @@ export default function ConfirmPopup({
               (typeof confirm === "boolean" ? "Are you sure ?" : confirm) ??
               "Are you sure ?"
             }
+            wrap
           />
           <div className={styles.popupFooter}>
             <Button text="Cancel" onClick={clickCancelHandler} outline />

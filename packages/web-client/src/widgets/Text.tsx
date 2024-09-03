@@ -1,7 +1,8 @@
-import { useCallback } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Text.module.css";
 import { Button, Text as ThemedText } from "../theme";
+import Popover from "./internal/Popover";
 
 export type TextProps = {
   ctx?: RuntimeContext;
@@ -49,25 +50,53 @@ export default function Text({
     navigator.clipboard.writeText(text);
   }, [text]);
 
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const [toolbarShouldBeVisible, setToolbarShouldBeVisible] = useState(false);
+  const [keepToolbarVisible, setKeepToolbarVisible] = useState(false);
+
+  const showToolbar = useMemo(
+    () => toolbarShouldBeVisible || keepToolbarVisible,
+    [keepToolbarVisible, toolbarShouldBeVisible]
+  );
+
+  const handleOnPointerEnter = useCallback(() => {
+    setToolbarShouldBeVisible(true);
+  }, []);
+
+  const handleOnPointerLeave = useCallback(() => {
+    setToolbarShouldBeVisible(false);
+  }, []);
+
   return (
-    <div className={styles.Text}>
-      {showCopyButton ? (
-        <div className={styles.buttonCopy}>
+    <>
+      <div
+        className={styles.Text}
+        ref={rootRef}
+        onPointerEnter={handleOnPointerEnter}
+        onPointerLeave={handleOnPointerLeave}
+      >
+        <ThemedText
+          text={text}
+          align={align}
+          color={color}
+          preformatted={preformatted}
+          size={size}
+          weight={weight}
+          wrap={wrap}
+          ellipsis={ellipsis}
+          line={line}
+        />
+      </div>
+      {showCopyButton && showToolbar && (
+        <Popover
+          target={rootRef.current}
+          onKeepVisibleChange={setKeepToolbarVisible}
+        >
           <Button text="Copy" onClick={copyClickHandler} />
-        </div>
-      ) : null}
-      <ThemedText
-        text={text}
-        align={align}
-        color={color}
-        preformatted={preformatted}
-        size={size}
-        weight={weight}
-        wrap={wrap}
-        ellipsis={ellipsis}
-        line={line}
-      />
-    </div>
+        </Popover>
+      )}
+    </>
   );
 }
 

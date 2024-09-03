@@ -1,14 +1,17 @@
 import { useEffect, useMemo } from "react";
 import * as ReactDOM from "react-dom";
 
-export type PopoverProps = {
+export type LowLevelErrorPopoverProps = {
   target?: HTMLDivElement | null;
 } & React.PropsWithChildren;
 
 const ARROW_SIZE = 12;
 const TARGET_WIDTH = 3;
 
-export default function Popover({ target, children }: PopoverProps) {
+export default function LowLevelErrorPopover({
+  target,
+  children,
+}: LowLevelErrorPopoverProps) {
   const popoverMainElement = useMemo<HTMLDivElement>(() => {
     const element = document.createElement("div");
     element.style.position = "fixed";

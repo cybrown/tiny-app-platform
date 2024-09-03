@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { EvaluationError } from "tal-eval";
 import styles from "./ErrorPopover.module.css";
-import Popover from "./Popover";
+import LowLevelErrorPopover from "./LowLevelErrorPopover";
 import { Button, Text, View } from "../../theme";
 
 type ErrorPopoverProps = {
@@ -38,7 +38,7 @@ export default function ErrorPopover({
   }, [lastError]);
 
   return lastError ? (
-    <Popover target={target}>
+    <LowLevelErrorPopover target={target}>
       <View className={styles.ErrorPopover}>
         <Text text={`Error : ${lastError.message} ${locationMessage}`} wrap />
         <View layout="flex-row" wrap>
@@ -46,6 +46,6 @@ export default function ErrorPopover({
           <Button text="Close" onClick={clearLastErrorHandler} />
         </View>
       </View>
-    </Popover>
+    </LowLevelErrorPopover>
   ) : null;
 }

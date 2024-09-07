@@ -22,6 +22,7 @@ const bson = require("bson");
 const child_process = require("child_process");
 const { Client } = require("pg");
 const ssh2 = require("ssh2");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
 const server = createServer();
 
@@ -581,6 +582,24 @@ const routes = [
           });
         });
       };
+    },
+  },
+  {
+    route: "/op/s3-put-object",
+    handler: async (req) => {
+      const client = new S3Client({
+        url:
+          "https://minio-admin.cybwn.online/api/v1/service-account-credentials",
+        accessKey: "adEQyWcZuaN0vSRyilMj",
+        secretKey: "sIaD5LJ15xndUVzD1Ph0AIBem2vV0pHKCFyTpsEh",
+        api: "s3v4",
+        path: "auto",
+      });
+      const command = new PutObjectCommand({
+        bucket: "mybucket",
+        key: "mykey",
+      });
+      return noContent();
     },
   },
 ];

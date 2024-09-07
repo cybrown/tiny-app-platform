@@ -26,5 +26,8 @@
   ],
   "devDependencies": {
     "nx": "^16.3.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.645.0"
   }
 }

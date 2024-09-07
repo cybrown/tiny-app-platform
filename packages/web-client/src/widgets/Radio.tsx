@@ -1,63 +1,11 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopover from "./internal/ErrorPopover";
-import {
-  BaseInputProps,
-  InputProps,
-  InputPropsDocs,
-} from "./internal/inputProps";
-import { Radio as ThemedRadio } from "../theme";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import {
   InputLabelProps,
   InputLabelPropsDocs,
 } from "./internal/inputLabelProps";
-import commonStyles from "./common.module.css";
-
-type BaseRadioProps = {
-  option: string | { value: string; label: string };
-  secondary?: boolean;
-} & BaseInputProps<string> &
-  InputLabelProps;
-
-function BaseRadio({
-  disabled,
-  onChange,
-  value,
-  option = "",
-  secondary,
-  label,
-}: BaseRadioProps) {
-  const [lastError, setLastError] = useState(null as any);
-
-  const handleChange = useCallback(async () => {
-    if (!onChange) return;
-    try {
-      await onChange(typeof option === "string" ? option : option.value);
-    } catch (err) {
-      setLastError(err);
-    }
-  }, [onChange, option]);
-
-  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
-
-  return (
-    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
-      <ThemedRadio
-        option={typeof option === "string" ? option : option.value}
-        onChange={handleChange}
-        value={value}
-        disabled={disabled}
-        secondary={secondary}
-        label={label}
-      />
-      <ErrorPopover
-        target={popoverTargetRef.current}
-        lastError={lastError}
-        setLastError={setLastError}
-      />
-    </div>
-  );
-}
+import SemanticRadio from "./semantic/Radio";
 
 type RadioProps = {
   ctx: RuntimeContext;
@@ -75,7 +23,7 @@ export default function Radio({ ctx, onChange, ...commonProps }: RadioProps) {
     [ctx, onChange]
   );
 
-  return <BaseRadio onChange={onChangeHandler} {...commonProps} />;
+  return <SemanticRadio onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const RadioDocumentation: WidgetDocumentation<RadioProps> = {

@@ -1,80 +1,7 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback } from "react";
 import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopover from "./internal/ErrorPopover";
-import {
-  BaseInputProps,
-  InputProps,
-  InputPropsDocs,
-} from "./internal/inputProps";
-import { InputText as ThemedInputText } from "../theme";
-import commonStyles from "./common.module.css";
-
-type BaseInputTextProps = {
-  multiline?: boolean;
-  placeholder?: string;
-  onSubmit?: () => unknown;
-  type?: "text" | "email" | "url" | "password";
-} & BaseInputProps<string>;
-
-function BaseInputText({
-  multiline,
-  placeholder,
-  onSubmit,
-  type,
-  onChange,
-  value,
-  disabled,
-}: BaseInputTextProps) {
-  if (type && type !== "text" && multiline) {
-    throw new Error(
-      "Type and multiline can't be true at the same time for InputText"
-    );
-  }
-
-  const [lastError, setLastError] = useState(null as any);
-
-  const onSubmitHandler = useCallback(async () => {
-    if (!onSubmit) return;
-    try {
-      await onSubmit();
-    } catch (err) {
-      setLastError(err);
-    }
-  }, [onSubmit]);
-
-  const onChangeHandler = useCallback(
-    async (newValue: string) => {
-      if (!onChange) return;
-      try {
-        await onChange(newValue);
-      } catch (err) {
-        setLastError(err);
-      }
-    },
-    [onChange]
-  );
-
-  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
-
-  return (
-    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
-      <ThemedInputText
-        multiline={multiline}
-        placeholder={placeholder}
-        disabled={disabled}
-        onChange={onChangeHandler}
-        onSubmit={onSubmitHandler}
-        type={type}
-        value={value ?? ""}
-      />
-      <ErrorPopover
-        target={popoverTargetRef.current}
-        lastError={lastError}
-        setLastError={setLastError}
-      />
-    </div>
-  );
-}
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import SemanticInputText from "./semantic/InputText";
 
 type InputTextProps = {
   ctx: RuntimeContext;
@@ -104,7 +31,7 @@ export default function InputText({
   );
 
   return (
-    <BaseInputText
+    <SemanticInputText
       onChange={onChangeHandler}
       onSubmit={onSubmitHandler}
       {...commonProps}

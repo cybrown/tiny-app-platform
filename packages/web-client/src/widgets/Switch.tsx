@@ -1,63 +1,11 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import ErrorPopover from "./internal/ErrorPopover";
-import {
-  BaseInputProps,
-  InputProps,
-  InputPropsDocs,
-} from "./internal/inputProps";
-import { Switch as ThemedSwitch } from "../theme";
+import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import {
   InputLabelProps,
   InputLabelPropsDocs,
 } from "./internal/inputLabelProps";
-import commonStyles from "./common.module.css";
-
-type BaseSwitchProps = {
-  secondary?: boolean;
-} & BaseInputProps<boolean> &
-  InputLabelProps;
-
-function BaseSwitch({
-  onChange,
-  value,
-  disabled,
-  secondary,
-  label,
-}: BaseSwitchProps) {
-  const [lastError, setLastError] = useState(null as any);
-
-  const handleChange = useCallback(
-    async (value: boolean) => {
-      if (!onChange) return;
-      try {
-        await onChange(value);
-      } catch (err) {
-        setLastError(err);
-      }
-    },
-    [onChange]
-  );
-
-  const popoverTargetRef = useRef<HTMLDivElement | null>(null);
-
-  return (
-    <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
-      <ThemedSwitch
-        disabled={disabled}
-        onChange={handleChange}
-        value={value}
-        secondary={secondary}
-        label={label}
-      />
-      <ErrorPopover
-        target={popoverTargetRef.current}
-        lastError={lastError}
-        setLastError={setLastError}
-      />
-    </div>
-  );
-}
+import SemanticSwitch from "./semantic/Switch";
 
 type SwitchProps = {
   ctx: RuntimeContext;
@@ -74,7 +22,7 @@ export default function Switch({ ctx, onChange, ...commonProps }: SwitchProps) {
     [ctx, onChange]
   );
 
-  return <BaseSwitch onChange={onChangeHandler} {...commonProps} />;
+  return <SemanticSwitch onChange={onChangeHandler} {...commonProps} />;
 }
 
 export const SwitchDocumentation: WidgetDocumentation<SwitchProps> = {

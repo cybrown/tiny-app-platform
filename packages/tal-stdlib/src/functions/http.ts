@@ -9,6 +9,7 @@ export const http_request = defineFunction(
     { name: 'headers' },
     { name: 'body' },
     { name: 'allowErrorStatusCode' },
+    { name: 'insecure' },
   ],
   undefined,
   http_request_impl
@@ -22,6 +23,7 @@ export const http_request_form = defineFunction(
     { name: 'headers' },
     { name: 'elements' },
     { name: 'allowErrorStatusCode' },
+    { name: 'insecure' },
   ],
   undefined,
   http_request_form_impl
@@ -38,6 +40,7 @@ async function http_request_form_impl(
     elements: value.elements as {
       [key: string]: any;
     },
+    insecure: value.insecure,
   });
   if (
     !value.allowErrorStatusCode &&
@@ -54,12 +57,14 @@ async function httpRequestFormData({
   url,
   elements,
   allowErrorStatusCode,
+  insecure,
 }: {
   method: string;
   url: string;
   headers?: [string, string][];
   elements: { [key: string]: { sourceKind: 'string' | 'file'; value: string } };
   allowErrorStatusCode?: boolean;
+  insecure?: boolean;
 }) {
   var response = await customRpc(
     'http-request-form-data',
@@ -71,6 +76,7 @@ async function httpRequestFormData({
       .concat([
         ['X-fetch-method', method],
         ['X-fetch-url', url],
+        ...(insecure ? [['X-fetch-insecure', insecure]] : []),
       ] as [string, string][])
   );
   if (
@@ -119,6 +125,7 @@ async function http_request_impl(
     url: value.url,
     headers: value.headers,
     ...(value.body ? { body: value.body } : {}),
+    insecure: value.insecure,
   };
   const logItem = ctx.log('http-request', {
     request: requestConfiguration,
@@ -162,11 +169,13 @@ async function httpRequest({
   headers,
   url,
   body,
+  insecure,
 }: {
   method: string;
   url: string;
   headers?: [string, string][];
   body?: unknown;
+  insecure?: boolean;
 }) {
   var response = await customRpc(
     'fetch',
@@ -178,6 +187,7 @@ async function httpRequest({
       .concat([
         ['X-fetch-method', method],
         ['X-fetch-url', url],
+        ...(insecure ? [['X-fetch-insecure', insecure]] : []),
       ] as [string, string][])
   );
   return {

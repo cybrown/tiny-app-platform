@@ -25,13 +25,14 @@ const ssh2 = require("ssh2");
 
 const server = createServer();
 
-function httpRequest(method, urlStr, headers, body) {
+function httpRequest(method, urlStr, headers, body, insecure = false) {
   return new Promise((resolve, reject) => {
     const request = (urlStr.startsWith("https") ? https : http).request(
       urlStr,
       {
         method,
         headers,
+        rejectUnauthorized: !insecure,
       },
       (response) => {
         readBody(response)
@@ -75,6 +76,7 @@ const routes = [
       const headers = {};
       let url;
       let method;
+      let insecure = false;
       Object.entries(req.headers).forEach(([key, value]) => {
         if (key === "x-fetch-method") {
           method = value;
@@ -82,6 +84,11 @@ const routes = [
           url = value;
         } else if (key.startsWith("x-fetch-header-")) {
           headers[key.slice("x-fetch-header-".length)] = value;
+        } else if (key.startsWith("x-fetch-insecure")) {
+          insecure = JSON.parse(value);
+          if (typeof insecure != "boolean") {
+            throw new Error("Parameter insecure must be a boolean");
+          }
         }
       });
       if (!method) {
@@ -91,7 +98,7 @@ const routes = [
         return createResponse(400, null, "Missing x-fetch-url header");
       }
       try {
-        return await httpRequest(method, url, headers, req);
+        return await httpRequest(method, url, headers, req, insecure);
       } catch (err) {
         console.error(err);
         return createResponse(500);

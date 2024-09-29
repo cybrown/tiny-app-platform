@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: mac
-          path: packages/electron-client/out/make/zip/darwin/x64/*.zip
+          path: packages/electron-client/out/make/zip/darwin/arm64/*.zip
 
   build_on_win:
     runs-on: windows-latest

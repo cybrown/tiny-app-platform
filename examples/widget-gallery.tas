@@ -1,3 +1,4 @@
+//set_system_property("theme", "toy-box")
 fun Title(text) {
   Text {
     text:   text
@@ -12,6 +13,12 @@ fun GalleryText() {
     Title { text: "Text" }
 
     Text { text: "Simple text" }
+    Text { text: "Underline", line: "under" }
+    Text { text: "Overline", line: "over" }
+    Text {
+      text: "Strike through"
+      line: "through"
+    }
 
     Text { text: "A little bigger", size: 1.1 }
 
@@ -46,6 +53,13 @@ fun GalleryText() {
     Text {
       text:         "Preformated !"
       preformatted: true
+    }
+
+    Row {
+      Text {
+        text:         "Preformated inside Row !"
+        preformatted: true
+      }
     }
   }
 }
@@ -348,7 +362,6 @@ fun GalleryTable() {
     }
 
     Table {
-      _key:        row => row.name
       values:      data
       noHeader:    noHeader
       noHighlight: noHighlight
@@ -357,7 +370,6 @@ fun GalleryTable() {
     }
 
     Table {
-      _key:        row => row.name
       noHeader:    noHeader
       noHighlight: noHighlight
       striped:     striped
@@ -375,69 +387,103 @@ fun GalleryTable() {
 }
 
 fun GalleryTabs() {
-  var currentTab = "1"
+  var currentTab = "first"
   var hasAfter = false
-  let options = [
-    {label: "First tab", value: "1"}
-    {label: "Second tab", value: "2"}
-    {label: "Third tab", value: "3"}
-    {label: "Fourth tab", value: "4"}
-    {label: "Fifth tab", value: "5"}
-    {label: "Sixth tab", value: "6"}
-    {label: "Seventh tab", value: "7"}
-    {label: "Eighth tab", value: "8"}
-  ]
 
   Column {
     Title { text: "Tabs" }
 
     Switch { bindTo: hasAfter, label: "Has after" }
 
-    Row {
-      Tabs {
-        bindTo:  currentTab
-        options: options | array_take(2)
-        after:   if (hasAfter) {
-          Row {
-            View {} | flex(1)
-            Button { text: "After", outline: true }
-          }
+    Tabs {
+      bindTo:  currentTab
+      options: [
+        {label: "First tab", value: "first"}
+        {label: "Second tab", value: "second"}
+      ]
+      after:   if (hasAfter) {
+        Row {
+          View {} | flex(1)
+          Button { text: "After", outline: true }
         }
+      } else {
+        null
       }
-    }
-
-    Row {
-      Tabs {
-        bindTo:  currentTab
-        options: options
-        after:   if (hasAfter) {
-          Row {
-            View {} | flex(1)
-            Button { text: "After", outline: true }
-          }
-        }
-      }
-
     }
 
     switch (currentTab) {
-      "1" => Text { text: "First tab" }
-      "2" => Text { text: "Second tab" }
-      _   => Text { text: "Unknown tab" }
+      "first"  => Text { text: "First tab" }
+      "second" => Text { text: "Second tab" }
     }
   }
 }
 
 fun GalleryLoader() {
+  var value = 4
+  var max = 10
+  var primary = false
+  var secondary = false
+  var size = "md"
+
   Column {
     Title { text: "Loader" }
 
-    Loader {}
-    Loader { primary: true }
-    Loader { secondary: true }
-    Loader { size: "sm" }
-    Loader { size: "md" }
-    Loader { size: "lg" }
+    Row {
+      Switch { label: "Primary", bindTo: primary }
+
+      Switch {
+        label:  "Secondary"
+        bindTo: secondary
+      }
+    }
+
+    Row {
+      Radio {
+        label:  "sm"
+        bindTo: size
+        option: "sm"
+      }
+      Radio {
+        label:  "md"
+        bindTo: size
+        option: "md"
+      }
+      Radio {
+        label:  "lg"
+        bindTo: size
+        option: "lg"
+      }
+    }
+
+    Loader {
+      primary:   primary
+      secondary: secondary
+      size:      size
+    }
+
+    Row {
+      "Value:"
+
+      InputText {
+        value:    value
+        onChange: newValue => set value = string_to_number(newValue)
+      }
+
+      "Max:"
+
+      InputText {
+        value:    max
+        onChange: newValue => set max = string_to_number(newValue)
+      }
+    }
+
+    Loader {
+      primary:   primary
+      secondary: secondary
+      size:      size
+      max:       max
+      value:     value
+    }
   }
 }
 
@@ -501,79 +547,78 @@ fun GalleryOverlay() {
   }
 }
 
-fun GallerySnippet() {
-  var noMaxHeight = false
-  var language = "javascript"
-  var format = false
+fun GalleryErrorHandling() {
+  Column {
+    Title { text: "Error handling" }
 
+    Button {
+      text:    "Trigger error"
+      onClick: () => unknown_function()
+    }
+  }
+}
+
+fun GallerySnippet() {
   Column {
     Title { text: "Snippet" }
 
-    Switch {
-      bindTo: noMaxHeight
-      label:  "No max height"
-    }
-
-    Switch { bindTo: format, label: "Format" }
-
     Snippet {
-      format:      format
-      language:    language
-      noMaxHeight: noMaxHeight
-      text:        "function filter(array, predicate) {\n    let index = -1;\n    let resIndex = 0;\n    const length = array == null ? 0 : array.length;\n    const result = [];\n\n    while (++index < length) {\n        const value = array[index];\n        if (predicate(value, index, array)) {\n            result[resIndex++] = value;\n        }\n    }\n    return result;\n}"
+      language: "javascript"
+      text:     "console.log('Hello, World !')"
     }
   }
 }
 
-fun App() {
+Column {
+  padding: 0.5
+
+  Debug { value: "Debug enabled !" }
+
+  var currentTheme = "toy-box"
+  let themes = [
+    "html"
+    "toy-box"
+    "twbs"
+    "twbs-dark"
+    "nes-css"
+    "dark-orange"
+    "98"
+    "mozaic-lm"
+  ]
+
   Column {
-    padding: 0.5
-
-    Debug { value: "Debug enabled !" }
-
-    var currentTheme = "toy-box"
-    let themes = [
-      "html"
-      "toy-box"
-      "twbs"
-      "twbs-dark"
-      "nes-css"
-      "dark-orange"
-      "98"
-      "mozaic-lm"
-    ]
-
-    Column {
-      Row {
-        Text { text: "Change theme: " }
-        Select {
-          value:    currentTheme
-          onChange: newVal => {
-            set currentTheme = newVal
-            set_system_property("theme", newVal)
-          }
-          options:  themes
+    Row {
+      Text { text: "Change theme: " }
+      Select {
+        value:    currentTheme
+        onChange: newVal => {
+          set currentTheme = newVal
+          set_system_property("theme", newVal)
         }
+        options:  themes
       }
+    }
 
-      Row {
-        wrap: true
+    Row {
+      wrap: true
 
-        View { width: "360px", GalleryInputText {} }
-        View { width: "360px", GalleryText {} }
-        View { width: "360px", GalleryCheckbox {} }
-        View { width: "360px", GalleryButton {} }
-        View { width: "360px", GalleryLink {} }
-        View { width: "360px", GalleryPager {} }
-        View { width: "360px", GallerySelect {} }
-        View { width: "360px", GalleryTable {} }
-        View { width: "360px", GalleryTabs {} }
-        View { width: "360px", GalleryLoader {} }
-        View { width: "360px", GalleryOverlay {} }
-        View { width: "360px", GallerySnippet {} }
+      View { width: "360px", GalleryInputText {} }
+      View { width: "360px", GalleryText {} }
+      View { width: "360px", GalleryCheckbox {} }
+      View { width: "360px", GalleryButton {} }
+      View { width: "360px", GalleryLink {} }
+      View { width: "360px", GalleryPager {} }
+      View {
+        width: "360px"
+
+        GalleryErrorHandling {}
       }
+      View { width: "360px", GallerySelect {} }
+      View { width: "360px", GalleryTable {} }
+      View { width: "360px", GalleryTabs {} }
+      View { width: "360px", GalleryLoader {} }
+      View { width: "360px", GalleryOverlay {} }
+      View { width: "360px", GallerySnippet {} }
     }
   }
 }
-
-App {}

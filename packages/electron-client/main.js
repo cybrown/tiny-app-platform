@@ -11,7 +11,7 @@ const PORT = findFreePort(16384 + Math.floor(Math.random() * 16384)).then(
   (ports) => ports[0]
 );
 
-async function createWindow() {
+async function createWindow(filePathFromMacOsEvent) {
   /** @type BrowserWindow */
   let sideBrowserWindow;
 
@@ -28,10 +28,10 @@ async function createWindow() {
 
   let openInSystemBrowser = false;
 
-  let sourcePath = null;
+  let sourcePath = filePathFromMacOsEvent ?? null;
   openInSystemBrowser = false;
   let sourceFromFile = await new Promise((resolve, reject) => {
-    if (process.argv.length > 1) {
+    if (filePathFromMacOsEvent == null && process.argv.length > 1) {
       sourcePath = process.argv[1];
     }
     if (sourcePath == null) {
@@ -154,11 +154,20 @@ async function createWindow() {
   });
 }
 
+let fileOpenFromMacos = false;
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+  // Wait for a file-open event, until 20 ms after which we open
+  // the default empty window.
+  // This is usefull only on MacOS, but still works on other OSes.
+  setTimeout(() => {
+    if (!fileOpenFromMacos) {
+      createWindow();
+    }
+  }, 20);
 
   app.on("activate", function() {
     // On macOS it's common to re-create a window in the app when the
@@ -172,6 +181,14 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on("window-all-closed", function() {
   if (process.platform !== "darwin") app.quit();
+});
+
+// MacOS doesn't pass file path as arguments when the program starts.
+// It send an open-file event.
+app.on('open-file', function(event, filePath) {
+  fileOpenFromMacos = true;
+  event.preventDefault();
+  createWindow(filePath);
 });
 
 // In this file you can include the rest of your app's specific main process

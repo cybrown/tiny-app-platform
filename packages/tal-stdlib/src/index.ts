@@ -22,6 +22,7 @@ import {
   array_find,
   array_find_index,
   array_set,
+  array_contains,
 } from './functions/array';
 import { bytes_to_string } from './functions/bytes';
 import { cheerio_find, cheerio_load } from './functions/cheerio';
@@ -143,6 +144,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
 
   ctx.registerFunction(array_append);
   ctx.registerFunction(array_concat);
+  ctx.registerFunction(array_contains);
   ctx.registerFunction(array_filter);
   ctx.registerFunction(array_set);
   ctx.registerFunction(array_find);

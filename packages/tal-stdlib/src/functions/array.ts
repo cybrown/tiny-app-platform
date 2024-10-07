@@ -98,6 +98,14 @@ export const array_concat = defineFunction(
   }
 );
 
+export const array_contains = defineFunction(
+  'array_contains',
+  [{ name: 'array' }, { name: 'value' }],
+  (ctx, { array, value }) => {
+    return (array as any[]).includes(value);
+  }
+);
+
 export const array_length = defineFunction(
   'array_length',
   [{ name: 'array' }],

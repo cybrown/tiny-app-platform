@@ -6,6 +6,7 @@ import {
   MongoLogItemData,
   PgLogItemData,
   ProcessLogItemData,
+  RedisLogItemData,
 } from "tal-stdlib";
 import {
   View,
@@ -46,6 +47,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const [includeMongo, setIncludeMongo] = useState(true);
   const [includePg, setIncludePg] = useState(true);
   const [includeHttp, setIncludeHttp] = useState(true);
+  const [includeRedis, setIncludeRedis] = useState(true);
   const [includeProcess, setIncludeProcess] = useState(true);
   const [includeUnknown, setIncludeUnknown] = useState(true);
 
@@ -63,6 +65,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
         <CheckBox label="📜" value={includeLogs} onChange={setIncludeLogs} />
         <CheckBox label="🐞" value={includeBugs} onChange={setIncludeBugs} />
         <CheckBox label="🌱" value={includeMongo} onChange={setIncludeMongo} />
+        <CheckBox label="🎲" value={includeRedis} onChange={setIncludeRedis} />
         <ViewChild flexGrow={1}> </ViewChild>
         <CheckBox
           label="❓"
@@ -89,6 +92,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
             (logItem.type === "mongo" && includeMongo) ||
             (logItem.type === "http-request" && includeHttp) ||
             (logItem.type === "process" && includeProcess) ||
+            (logItem.type === "redis" && includeRedis) ||
             (isUnknownLogType(logItem.type) && includeUnknown)
         )
         .map((logItem) => (
@@ -119,6 +123,8 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
       return (
         <RenderProcessLogItem item={item as LogItem<ProcessLogItemData>} />
       );
+    case "redis":
+      return <RenderRedisLogItem item={item as LogItem<RedisLogItemData>} />;
     case "error":
       return <RenderErrorLogItem item={item} />;
   }
@@ -639,10 +645,6 @@ function HttpRequestSummary({ data }: { data: HttpLogItemData }) {
   );
 }
 
-function bytesToString(bytes: ArrayBuffer): string {
-  return new TextDecoder().decode(bytes);
-}
-
 function statusToColor(status: number): string | undefined {
   if (status == null) {
     return undefined;
@@ -684,6 +686,149 @@ function requestToCurl(request: HttpLogItemData["request"]): string {
   );
 }
 
+function RenderRedisLogItem({ item }: { item: LogItem<RedisLogItemData> }) {
+  const [detailsTabToShow, setDetailsTabToShow] = useState<
+    null | "command" | "result" | "result-json"
+  >(null);
+  const showDetailsHandler = useCallback(
+    () => setDetailsTabToShow("command"),
+    []
+  );
+  const hideDetailsHandler = useCallback(() => setDetailsTabToShow(null), []);
+
+  const copyAsRedisCli = useCallback(() => {
+    const command = item.data as RedisLogItemData;
+    navigator.clipboard.writeText(commandToRedisCli(command));
+  }, [item.data]);
+
+  const copyUrl = useCallback(() => {
+    const request = item.data as RedisLogItemData;
+    navigator.clipboard.writeText(request.url);
+  }, [item.data]);
+
+  return (
+    <>
+      <Text text="🎲" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      <RedisCommandSummary data={item.data} />
+      {detailsTabToShow ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Command details"
+            onClose={hideDetailsHandler}
+          >
+            <View layout="flex-row">
+              <RedisCommandSummary data={item.data} />
+            </View>
+            <View layout="flex-row">
+              <Button text="Copy URL" onClick={copyUrl} outline />
+              <Button
+                text="Copy as redis-cli"
+                onClick={copyAsRedisCli}
+                outline
+              />
+            </View>
+            <Tabs
+              value={detailsTabToShow}
+              onChange={(newValue) => setDetailsTabToShow(newValue as any)}
+              tabs={[
+                { label: "Command", value: "command" },
+                { label: "Result", value: "result" },
+                { label: "Result JSON", value: "result-json" },
+              ]}
+            />
+            {detailsTabToShow === "command" ? (
+              <>
+                <Text text={item.data.url} />
+                {item.data.insecure ? <Text text="⚠️ Insecure" /> : null}
+                <Text text={item.data.command.toUpperCase()} weight="bold" />
+                {item.data.args.map((arg, index) => (
+                  <Text text={arg} key={index} />
+                ))}
+              </>
+            ) : detailsTabToShow === "result" ? (
+              <>
+                {item.data.result ? (
+                  <>
+                    <Button
+                      text="Copy"
+                      outline
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          bytesToString(item?.data.result)
+                        )
+                      }
+                    />
+                    <Text preformatted text={bytesToString(item.data.result)} />
+                  </>
+                ) : (
+                  <Loader />
+                )}
+              </>
+            ) : detailsTabToShow === "result-json" ? (
+              item.data.result ? (
+                <>
+                  <Button
+                    text="Copy"
+                    outline
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        bytesToString(item?.data.result)
+                      )
+                    }
+                  />
+                  <TryDebugJson bytes={item?.data.result}>
+                    <Text text="Invalid JSON" color="red" />
+                  </TryDebugJson>
+                </>
+              ) : (
+                <Loader />
+              )
+            ) : null}
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+    </>
+  );
+}
+
+function RedisCommandSummary({ data }: { data: RedisLogItemData }) {
+  return (
+    <>
+      {data.result && data.stage === "fulfilled" ? (
+        <Text text="OK" weight="bold" color="green" />
+      ) : data.stage === "rejected" ? (
+        <Text text="KO" weight="bold" color="red" />
+      ) : (
+        <Loader size="md" />
+      )}
+      <Text weight="bold" text={data.command.toUpperCase()} />
+      <Text text={data.args.join(" ")} ellipsis />
+    </>
+  );
+}
+
+function bytesToString(bytes: ArrayBuffer): string {
+  return new TextDecoder().decode(bytes);
+}
+
 function escapeShellQuote(str: string): string {
   return str.replaceAll("'", "'\\''");
+}
+
+function commandToRedisCli(command: RedisLogItemData): string {
+  return [
+    "redis-cli",
+    `-u '${escapeShellQuote(command.url)}'`,
+    ...(command.insecure ? ["--insecure"] : []),
+    command.command,
+    ...command.args.map((arg) => `'${escapeShellQuote(arg)}'`),
+  ].join(" ");
 }

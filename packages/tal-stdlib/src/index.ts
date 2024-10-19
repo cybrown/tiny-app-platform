@@ -131,6 +131,7 @@ import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
 import { ssh_exec } from './functions/ssh';
 import { sleep, spawn } from './functions/spawn';
+import { redis } from './functions/redis';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -217,6 +218,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(process_exec);
   ctx.registerFunction(process_exec_stream);
   ctx.registerFunction(process_kill);
+  ctx.registerFunction(redis);
   ctx.registerFunction(regex_match);
   ctx.registerFunction(set_system_property);
   ctx.registerFunction(storage_list);
@@ -268,6 +270,7 @@ export { HttpLogItemData } from './functions/http';
 export { MongoLogItemData } from './functions/mongodb';
 export { PgLogItemData } from './functions/pg';
 export { ProcessLogItemData } from './functions/process';
+export { RedisLogItemData } from './functions/redis';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';
 export { secretCreate } from './util/secret';
 export {

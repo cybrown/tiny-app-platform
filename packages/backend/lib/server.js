@@ -4,6 +4,7 @@ const {
   superHandler,
   createResponse,
   readBody,
+  okBytes,
   okJson,
   okText,
   noContent,
@@ -22,6 +23,7 @@ const bson = require("bson");
 const child_process = require("child_process");
 const { Client } = require("pg");
 const ssh2 = require("ssh2");
+const { createRedisClient } = require("./redis");
 
 const server = createServer();
 
@@ -506,7 +508,7 @@ const routes = [
         const dbName = rUri.pathname.slice(1);
         const db = client.db(dbName);
         const collection = db.collection("apps");
-        const doc = await collection.updateOne(
+        await collection.updateOne(
           {
             name: appName,
           },
@@ -588,6 +590,26 @@ const routes = [
           });
         });
       };
+    },
+  },
+  {
+    route: "/op/redis",
+    handler: async (req) => {
+      const body = await readBody(req);
+      const request = JSON.parse(body.toString());
+      const { url, command, args, insecure } = request;
+
+      const client = await createRedisClient({
+        url,
+        insecure,
+      });
+
+      try {
+        const response = await client.sendCommand([command, ...args]);
+        return okBytes(response);
+      } finally {
+        await client.quit();
+      }
     },
   },
 ];

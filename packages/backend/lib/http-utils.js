@@ -12,8 +12,20 @@ function okJson(body) {
   );
 }
 
-function okText(body) {
-  return createResponse(200, { "Content-Type": "text/plain" }, body);
+function okText(body, headers) {
+  return createResponse(
+    200,
+    { "Content-Type": "text/plain", ...headers },
+    body
+  );
+}
+
+function okBytes(body) {
+  return createResponse(
+    200,
+    { "Content-Type": "application/octet-stream" },
+    body
+  );
 }
 
 function notFound() {
@@ -99,6 +111,7 @@ function readBody(req) {
 }
 
 module.exports = {
+  okBytes,
   okJson,
   okText,
   noContent,

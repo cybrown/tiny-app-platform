@@ -1,0 +1,53 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "oneLinerTry",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Try",
+            "hasOnlyCatchKeyword": true,
+            "node": {
+              "kind": "Call",
+              "args": [
+                {
+                  "kind": "NamedArgument",
+                  "name": "arg",
+                  "value": {
+                    "kind": "Local",
+                    "name": "arg1"
+                  }
+                }
+              ],
+              "value": {
+                "kind": "Local",
+                "name": "some_function_that_throws"
+              }
+            },
+            "catchNode": {
+              "kind": "Call",
+              "args": [
+                {
+                  "kind": "PositionalArgument",
+                  "value": {
+                    "kind": "Local",
+                    "name": "error"
+                  }
+                }
+              ],
+              "value": {
+                "kind": "Local",
+                "name": "log"
+              }
+            }
+          }
+        ]
+      },
+      "parameters": []
+    }
+  }
+]

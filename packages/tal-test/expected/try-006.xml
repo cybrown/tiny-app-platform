@@ -1,0 +1,8 @@
+<program>
+  <try>
+    <local />
+    <block>
+      <local />
+    </block>
+  </try>
+</program>

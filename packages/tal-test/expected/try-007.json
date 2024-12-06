@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "Try",
+    "hasOnlyCatchKeyword": true,
+    "node": {
+      "kind": "Local",
+      "name": "missing_variable"
+    },
+    "catchNode": {
+      "kind": "Local",
+      "name": "error"
+    }
+  }
+]

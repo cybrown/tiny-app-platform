@@ -79,6 +79,7 @@ export type SwitchBranchNode = NodeMetadata & {
 export type TryNode = NodeMetadata & {
   kind: 'Try';
   node: Node;
+  hasOnlyCatchKeyword?: true;
   catchNode: Node | undefined;
 };
 

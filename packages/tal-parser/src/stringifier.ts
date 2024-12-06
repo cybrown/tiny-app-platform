@@ -585,7 +585,8 @@ class Stringifier {
   }
 
   stringifyTryOneLine(obj: TryNode) {
-    let result = 'try ' + this.stringify(obj.node);
+    let result =
+      (obj.hasOnlyCatchKeyword ? '' : 'try ') + this.stringify(obj.node);
     if (obj.catchNode) {
       result += ' catch ' + this.stringify(obj.catchNode);
     }
@@ -593,7 +594,7 @@ class Stringifier {
   }
 
   stringifyTryMultiLine(obj: TryNode) {
-    let result = 'try ';
+    let result = obj.hasOnlyCatchKeyword ? '' : 'try ';
     if (isNode(obj.node, 'Block')) {
       result += this.stringifyBlockMultiLine(obj.node);
     } else {

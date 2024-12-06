@@ -45,7 +45,15 @@ TopLevelNode
     / Node
 
 Node
-    = PipeNode
+    = CatchNode
+
+CatchNode
+    = node:PipeNode catchNodeArray:(_ 'catch' _ Node)?
+        {
+            if (!catchNodeArray) return node;
+            const catchNode = catchNodeArray ? catchNodeArray[3] : undefined
+            return { location: buildLocation(), kind: "Try", hasOnlyCatchKeyword: true, node, catchNode };
+        }
 
 PipeNode
 	= first:LogicalOrOperator tail:(_ '|' _ LogicalOrOperator)*
@@ -184,7 +192,8 @@ SwitchDefaultBranch
         { return { value }; }
 
 Try
-    = 'try' _ node:Node catchNodeArray:(_ 'catch' _ Node)?
+    // Parse PipeNode instead of CatchNode to avoid parsing catch two times
+    = 'try' _ node:PipeNode catchNodeArray:(_ 'catch' _ Node)?
         {
             const catchNode = catchNodeArray ? catchNodeArray[3] : undefined
             return { location: buildLocation(), kind: "Try", node, catchNode };

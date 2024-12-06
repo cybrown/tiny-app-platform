@@ -1,0 +1,11 @@
+fun toto1() {
+    missing_variable
+}
+
+fun toto2() {
+    toto1() catch {
+        "value from toto2"
+    }
+}
+
+toto2()

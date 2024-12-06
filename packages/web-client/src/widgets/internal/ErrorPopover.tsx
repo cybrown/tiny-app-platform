@@ -10,6 +10,10 @@ type ErrorPopoverProps = {
   setLastError: (arg: unknown) => void;
 };
 
+function extractError(error: Error): Error {
+  return error instanceof EvaluationError ? error.cause : error;
+}
+
 export default function ErrorPopover({
   lastError,
   setLastError,
@@ -18,6 +22,11 @@ export default function ErrorPopover({
   const clearLastErrorHandler = useCallback(() => {
     setLastError(null);
   }, [setLastError]);
+
+  const lastErrorMessage = useMemo(
+    () => lastError && extractError(lastError).message,
+    [lastError]
+  );
 
   const locationMessage = useMemo(() => {
     if (
@@ -28,19 +37,17 @@ export default function ErrorPopover({
     ) {
       return ` at location: (${lastError.node.location.start.line}, ${lastError.node.location.start.column})`;
     }
-    return null;
+    return "";
   }, [lastError]);
 
   const dumpErrorHandler = useCallback(() => {
-    console.error(
-      lastError instanceof EvaluationError ? lastError.cause : lastError
-    );
+    console.error(extractError(lastError));
   }, [lastError]);
 
   return lastError ? (
     <LowLevelErrorPopover target={target}>
       <View className={styles.ErrorPopover}>
-        <Text text={`Error : ${lastError.message} ${locationMessage}`} wrap />
+        <Text text={`Error : ${lastErrorMessage} ${locationMessage}`} wrap />
         <View layout="flex-row" wrap>
           <Button text="Dump to browser console" onClick={dumpErrorHandler} />
           <Button text="Close" onClick={clearLastErrorHandler} />

@@ -9,7 +9,7 @@ export class EvaluationError extends Error {
   constructor(
     public readonly detailedMessage: string,
     public readonly node: Opcode,
-    public readonly cause: unknown
+    public readonly cause: Error
   ) {
     super('Evaluation error');
   }
@@ -244,6 +244,8 @@ export class VM {
   private latestError: unknown;
 
   private handleError(err: unknown): VmExit | null {
+    const currentOpcode = this.currentOpcode();
+
     while (true) {
       // Get top most try state and jump to its catch or end label if present
       const previousTryState = this.tryStack.pop();
@@ -273,8 +275,8 @@ export class VM {
               ? err
               : new EvaluationError(
                   typeof err == 'object' && err ? (err as any).message : '',
-                  this.currentOpcode(),
-                  err
+                  currentOpcode,
+                  err instanceof Error ? err : new Error(String(err))
                 ),
         };
       }

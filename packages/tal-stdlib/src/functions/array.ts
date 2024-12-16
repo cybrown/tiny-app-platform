@@ -87,6 +87,13 @@ export const array_append = defineFunction(
   [{ name: 'array' }, { name: 'value' }],
   (_ctx, { array, value }) => {
     return [...array, value];
+  },
+  undefined,
+  {
+    description:
+      'Copies the array passed as first parameter and appends the second argument at its end',
+    parameters: { array: 'Array to copy', value: 'Value to put at the end' },
+    returns: 'Copy of array with value at its end',
   }
 );
 

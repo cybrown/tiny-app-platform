@@ -588,7 +588,11 @@ class Stringifier {
     let result =
       (obj.hasOnlyCatchKeyword ? '' : 'try ') + this.stringify(obj.node);
     if (obj.catchNode) {
-      result += ' catch ' + this.stringify(obj.catchNode);
+      result += ' catch ';
+      if (obj.errorBindingName) {
+        result += '(' + obj.errorBindingName + ') ';
+      }
+      result += this.stringify(obj.catchNode);
     }
     return result;
   }
@@ -602,10 +606,14 @@ class Stringifier {
     }
 
     if (obj.catchNode) {
+      result += ' catch ';
+      if (obj.errorBindingName) {
+        result += '(' + obj.errorBindingName + ') ';
+      }
       if (isNode(obj.catchNode, 'Block')) {
-        result += ' catch ' + this.stringifyBlockMultiLine(obj.catchNode);
+        result += this.stringifyBlockMultiLine(obj.catchNode);
       } else {
-        result += ' catch ' + this.stringify(obj.catchNode);
+        result += this.stringify(obj.catchNode);
       }
     }
     return result;

@@ -80,6 +80,7 @@ export type TryNode = NodeMetadata & {
   kind: 'Try';
   node: Node;
   hasOnlyCatchKeyword?: true;
+  errorBindingName?: string | null;
   catchNode: Node | undefined;
 };
 

@@ -48,11 +48,12 @@ Node
     = CatchNode
 
 CatchNode
-    = node:PipeNode catchNodeArray:(_ 'catch' _ Node)?
+    = node:PipeNode catchNodeArray:(_ 'catch' _ ('(' _ Identifier _ ')')? _ Node)?
         {
             if (!catchNodeArray) return node;
-            const catchNode = catchNodeArray ? catchNodeArray[3] : undefined
-            return { location: buildLocation(), kind: "Try", hasOnlyCatchKeyword: true, node, catchNode };
+            const catchNode = catchNodeArray ? catchNodeArray[5] : undefined;
+            const errorBindingName = catchNodeArray && catchNodeArray[3] ? catchNodeArray[3][2] : null;
+            return { location: buildLocation(), kind: "Try", hasOnlyCatchKeyword: true, errorBindingName, node, catchNode };
         }
 
 PipeNode
@@ -193,10 +194,11 @@ SwitchDefaultBranch
 
 Try
     // Parse PipeNode instead of CatchNode to avoid parsing catch two times
-    = 'try' _ node:PipeNode catchNodeArray:(_ 'catch' _ Node)?
+    = 'try' _ node:PipeNode catchNodeArray:(_ 'catch' _ ('(' _ Identifier _ ')')? _ Node)?
         {
-            const catchNode = catchNodeArray ? catchNodeArray[3] : undefined
-            return { location: buildLocation(), kind: "Try", node, catchNode };
+            const catchNode = catchNodeArray ? catchNodeArray[6] : undefined;
+            const errorBindingName = catchNodeArray && catchNodeArray[3] ? catchNodeArray[3][2] : null;
+            return { location: buildLocation(), kind: "Try", errorBindingName, node, catchNode };
         }
 
 Nested

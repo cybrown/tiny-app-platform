@@ -31,10 +31,12 @@ toto2_1()
     Jump              try_end_2
   try_catch_1:
     ScopeEnter
-    ScopeEnter
-    Literal           "value from toto2"
-    ScopeLeave        inBlock: false, count: 1
+    Local             errorToCatch
     ScopeLeave        inBlock: false
     Jump              try_end_2
   try_end_2:
-    MakeArrayForBlock count: 1
+    Pop               inBlock: false
+    ScopeEnter
+    Literal           "value from toto2"
+    ScopeLeave        inBlock: false, count: 1
+    MakeArrayForBlock count: 2

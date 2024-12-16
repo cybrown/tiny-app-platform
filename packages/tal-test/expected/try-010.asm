@@ -29,9 +29,6 @@ toto2_1()
     Jump              try_end_2
   try_catch_1:
     ScopeEnter
-    PushLatestError
-    DeclareLocal      mutable: false, name: err, hasInitialValue: true
-    Pop               inBlock: false
     ScopeEnter
     Literal           "value from toto2"
     ScopeLeave        inBlock: false, count: 1

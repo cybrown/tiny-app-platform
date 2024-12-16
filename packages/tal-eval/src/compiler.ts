@@ -267,14 +267,19 @@ export class Compiler {
         this.setCurrentLabel(catchLabel);
         if (node.catchNode) {
           this.appendOpcode('ScopeEnter', node.location, {});
-          this.appendOpcode('PushLatestError', node.location, {});
-          this.appendOpcode('DeclareLocal', node.location, {
-            mutable: false,
-            name: 'err',
-            hasInitialValue: true,
-          });
-          this.appendOpcode('Pop', node.location, { inBlock: false });
+
+          if (node.errorBindingName) {
+            this.appendOpcode('PushLatestError', node.location, {});
+            this.appendOpcode('DeclareLocal', node.location, {
+              mutable: false,
+              name: node.errorBindingName,
+              hasInitialValue: true,
+            });
+            this.appendOpcode('Pop', node.location, { inBlock: false });
+          }
+
           this.compile(node.catchNode);
+
           this.appendOpcode('ScopeLeave', node.location, {
             inBlock: false,
           });

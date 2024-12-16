@@ -6,9 +6,6 @@ main()
     Jump              try_end_2
   try_catch_1:
     ScopeEnter
-    PushLatestError
-    DeclareLocal      mutable: false, name: err, hasInitialValue: true
-    Pop               inBlock: false
     Local             error
     ScopeLeave        inBlock: false
     Jump              try_end_2

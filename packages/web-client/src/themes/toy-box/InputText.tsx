@@ -26,6 +26,15 @@ export default function InputText({
     [onSubmit]
   );
 
+  const onKeyDownMultilineHandler = useCallback(
+    async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.ctrlKey && e.key === "Enter" && onSubmit) {
+        await onSubmit();
+      }
+    },
+    [onSubmit]
+  );
+
   const onInputChangeHandler = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
       onChange && onChange(e.currentTarget.value),
@@ -46,6 +55,7 @@ export default function InputText({
           className={styles.InputText}
           placeholder={placeholder}
           onChange={onTextareaChangeHandler}
+          onKeyDown={onKeyDownMultilineHandler}
           disabled={disabled}
           value={value ?? ""}
         />

@@ -27,6 +27,7 @@ import Image, { ImageDocumentation } from "./widgets/Image";
 import Column, { ColumnDocumentation } from "./widgets/Column";
 import Loader, { LoaderDocumentation } from "./widgets/Loader";
 import Html, { HtmlDocumentation } from "./widgets/Html";
+import Md, { MdDocumentation } from "./widgets/Md";
 import Overlay, { OverlayDocumentation } from "./widgets/Overlay";
 import View, { ViewDocumentation } from "./widgets/View";
 import { backendUrl } from "./runtime/configuration";
@@ -197,6 +198,7 @@ function buildContext(
   ctx.registerWidget("Column", Column, ColumnDocumentation);
   ctx.registerWidget("Debug", Debug, DebugDocumentation);
   ctx.registerWidget("Html", Html, HtmlDocumentation);
+  ctx.registerWidget("Md", Md, MdDocumentation);
   ctx.registerWidget("Image", Image, ImageDocumentation);
   ctx.registerWidget("InputFile", InputFile, InputFileDocumentation);
   ctx.registerWidget("InputText", InputText, InputTextDocumentation);

@@ -3,7 +3,12 @@ import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import styles from "./Snippet.module.css";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
+import "prismjs/components/prism-bash.min";
+import "prismjs/components/prism-java.min";
 import "prismjs/components/prism-json.min";
+import "prismjs/components/prism-python.min";
+import "prismjs/components/prism-sql.min";
+import "prismjs/components/prism-typescript.min";
 import usePressEscape from "./internal/usePressEscape";
 import { Button, Container } from "../theme";
 

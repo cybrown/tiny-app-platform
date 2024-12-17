@@ -39,6 +39,7 @@ const renderer: Partial<ReactRenderer> = {
               lang +
               " is not supported, fallback to plain text code renderer:"
             }
+            wrap
           />
         ) : null}
         <Snippet

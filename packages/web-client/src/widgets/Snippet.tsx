@@ -9,6 +9,7 @@ import "prismjs/components/prism-json.min";
 import "prismjs/components/prism-python.min";
 import "prismjs/components/prism-sql.min";
 import "prismjs/components/prism-typescript.min";
+import "prismjs/components/prism-yaml.min";
 import usePressEscape from "./internal/usePressEscape";
 import { Button, Container } from "../theme";
 

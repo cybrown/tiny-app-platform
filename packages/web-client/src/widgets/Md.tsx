@@ -20,6 +20,7 @@ const SUPPORTED_LANGUAGES = [
   "python",
   "sql",
   "typescript",
+  "yaml",
 ];
 
 const renderer: Partial<ReactRenderer> = {

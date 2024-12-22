@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import { WidgetDocumentation } from "tal-eval";
 import styles from "./Snippet.module.css";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
@@ -14,7 +14,6 @@ import usePressEscape from "./internal/usePressEscape";
 import { Button, Container } from "../theme";
 
 type SnippetProps = {
-  ctx: RuntimeContext;
   text: string;
   language: string;
   format?: boolean;
@@ -22,7 +21,6 @@ type SnippetProps = {
 };
 
 export default function Snippet({
-  ctx,
   text,
   language,
   format,

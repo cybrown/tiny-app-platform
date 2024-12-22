@@ -43,9 +43,9 @@ const renderer: Partial<ReactRenderer> = {
           />
         ) : null}
         <Snippet
-          ctx={null as any}
           language={SUPPORTED_LANGUAGES.includes(lang) ? lang : "text"}
           text={snippet}
+          noMaxHeight
         />
       </>
     );

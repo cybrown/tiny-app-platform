@@ -1,0 +1,18 @@
+name: Build Electron client for Windows
+on: workflow_dispatch
+
+jobs:
+  build_on_win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: build
+        shell: bash
+        run: ./build-electron-client.sh
+      - uses: actions/upload-artifact@v3
+        with:
+          name: win
+          path: packages/electron-client/out/make/zip/win32/x64/*.zip

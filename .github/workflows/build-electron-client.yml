@@ -14,7 +14,7 @@ jobs:
           node-version: 20
       - name: build
         run: ./build-electron-client.sh
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: deb
           path: packages/electron-client/out/make/deb/x64/*.deb
@@ -28,7 +28,7 @@ jobs:
           node-version: 20
       - name: build
         run: ./build-electron-client.sh
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: mac
           path: packages/electron-client/out/make/zip/darwin/arm64/*.zip
@@ -43,7 +43,7 @@ jobs:
       - name: build
         shell: bash
         run: ./build-electron-client.sh
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: win
           path: packages/electron-client/out/make/zip/win32/x64/*.zip

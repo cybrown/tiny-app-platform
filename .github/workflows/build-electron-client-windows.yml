@@ -12,7 +12,7 @@ jobs:
       - name: build
         shell: bash
         run: ./build-electron-client.sh
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: win
           path: packages/electron-client/out/make/zip/win32/x64/*.zip

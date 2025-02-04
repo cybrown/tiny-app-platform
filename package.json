@@ -2,6 +2,9 @@
   "name": "my-nocode-workspace",
   "version": "0.0.1",
   "description": "",
+  "bin": {
+    "tas": "./bin/tas"
+  },
   "scripts": {
     "start": "nx run-many -t start -p backend web-client",
     "build": "nx run-many -t build",
@@ -22,7 +25,8 @@
     "packages/tal-eval",
     "packages/backend",
     "packages/web-client",
-    "packages/tal-stdlib"
+    "packages/tal-stdlib",
+    "packages/tal-runner"
   ],
   "devDependencies": {
     "nx": "^16.3.2"

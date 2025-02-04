@@ -24,6 +24,7 @@ const child_process = require("child_process");
 const { Client } = require("pg");
 const ssh2 = require("ssh2");
 const { createRedisClient } = require("./redis");
+const config = require("./config");
 
 const server = createServer();
 
@@ -102,7 +103,7 @@ const routes = [
       try {
         return await httpRequest(method, url, headers, req, insecure);
       } catch (err) {
-        console.error(err);
+        config.log && console.error(err);
         return createResponse(500);
       }
     },
@@ -193,7 +194,7 @@ const routes = [
           form
         );
       } catch (err) {
-        console.error(err);
+        config.log && console.error(err);
         return createResponse(500);
       }
     },
@@ -371,7 +372,7 @@ const routes = [
 
       req.on("close", () => childProcess.kill("SIGKILL"));
       req.on("error", (err) => {
-        console.error("request error:", err);
+        config.log && console.error("request error:", err);
         childProcess.kill("SIGKILL");
       });
 
@@ -390,12 +391,12 @@ const routes = [
           res.end();
         });
         childProcess.on("error", (err) => {
-          console.error("childProcess error:", err);
+          config.log && console.error("childProcess error:", err);
           childProcess.kill("SIGKILL");
         });
         res.on("close", () => childProcess.kill("SIGKILL"));
         res.on("error", (err) => {
-          console.error("response error:", err);
+          config.log && console.error("response error:", err);
           childProcess.kill("SIGKILL");
         });
 
@@ -635,7 +636,7 @@ const handleRequest = superHandler(routes, (req, res) => {
 });
 
 server.on("request", (req, res) => {
-  console.log(req.method, req.url);
+  config.log && console.log(req.method, req.url);
   servePublic(req, res, () => handleRequest(req, res));
 });
 

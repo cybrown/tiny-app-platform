@@ -1,3 +1,4 @@
+import { windowExists } from '../util/window';
 import { customRpc } from '../util/custom-rpc';
 import { defineFunction } from 'tal-eval';
 import {
@@ -8,7 +9,9 @@ import {
 
 let sourcePathDirname: string | null = null;
 try {
-  sourcePathDirname = (window as any).electronAPI.config().sourcePathDirname;
+  if (windowExists && 'electronAPI' in window) {
+    sourcePathDirname = (window.electronAPI as any).config().sourcePathDirname;
+  }
 } catch (err) {
   console.log('failed to initialize config event for sourcePathDirname');
 }

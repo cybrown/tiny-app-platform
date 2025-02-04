@@ -1,0 +1,1 @@
+log(http_request("get", "https://www.example.com").body | bytes_to_string)

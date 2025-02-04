@@ -1,4 +1,5 @@
 const Route = require("route-parser");
+const config = require("./config");
 
 function createResponse(status, headers, body) {
   return { status, headers, body };
@@ -78,7 +79,7 @@ const superHandler = (routes, defaultHandler) => {
             sendResponse(res, answer);
           }
         } catch (err) {
-          console.error(err);
+          config.log && console.error(err);
           sendResponse(
             res,
             createResponse(500, [], JSON.stringify({ message: err.message }))

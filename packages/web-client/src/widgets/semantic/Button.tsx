@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ConfirmPopup from "../internal/ConfirmPopup";
 import ErrorPopover from "../internal/ErrorPopover";
 import { Link, Button as ThemedButton } from "../../theme";
@@ -12,7 +12,21 @@ type ButtonProps = {
   disabled?: boolean;
   outline?: boolean;
   link?: boolean;
+  shortcut?: string;
 };
+
+// TODO: Allow same shortcuts for different modals ?
+// TODO: Allow modifiers
+const enabledShortcuts: Set<string> = new Set();
+
+function shouldTriggerEvent(e: KeyboardEvent, shortcut: string): boolean {
+  try {
+    const tagName = (e.target as any).tagName;
+    if (tagName === "INPUT" || tagName === "TEXTAREA") return false;
+  } catch {}
+  if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return false;
+  return shortcut.toLocaleLowerCase() === e.key.toLocaleLowerCase();
+}
 
 export default function Button({
   onClick,
@@ -22,6 +36,7 @@ export default function Button({
   disabled,
   outline,
   link,
+  shortcut,
 }: ButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,6 +56,24 @@ export default function Button({
     })();
   }, [onClick]);
 
+  useEffect(() => {
+    if (!shortcut || !shortcut.length || disabled) return;
+    if (enabledShortcuts.has(shortcut)) {
+      throw new Error("Shortcut already assigned: " + shortcut);
+    }
+    const handler = (e: KeyboardEvent) => {
+      if (shouldTriggerEvent(e, shortcut) && onClick) {
+        doClickAction();
+      }
+    };
+    enabledShortcuts.add(shortcut);
+    document.addEventListener("keypress", handler);
+    return () => {
+      enabledShortcuts.delete(shortcut);
+      document.removeEventListener("keypress", handler);
+    };
+  }, [doClickAction, onClick, shortcut, disabled]);
+
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
   const clickHandler = useCallback(() => {
@@ -55,6 +88,11 @@ export default function Button({
 
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
+  const textToDisplay = useMemo(
+    () => (shortcut ? text + " (" + shortcut.toUpperCase() + ")" : text),
+    [text, shortcut]
+  );
+
   return (
     <div className={commonStyles.refWrapper} ref={popoverTargetRef}>
       <ConfirmPopup
@@ -65,7 +103,7 @@ export default function Button({
       />
       {link ? (
         <Link
-          text={text}
+          text={textToDisplay}
           onClick={disabled ? undefined : clickHandler}
           disabled={disabled}
           url="#default"
@@ -75,7 +113,7 @@ export default function Button({
         <ThemedButton
           onClick={clickHandler}
           disabled={disabled || isLoading}
-          text={text}
+          text={textToDisplay}
           secondary={secondary}
           outline={outline}
           link={link}

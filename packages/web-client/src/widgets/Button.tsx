@@ -11,6 +11,7 @@ type ButtonProps = {
   disabled?: boolean;
   outline?: boolean;
   link?: boolean;
+  shortcut?: string;
 };
 
 export default function Button({ ctx, onClick, ...commonProps }: ButtonProps) {
@@ -31,5 +32,7 @@ export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {
     text: "Message to show inside the button",
     outline: "Give an outlined style",
     link: "Give a link style",
+    shortcut:
+      "Keyboard shortcut, only one character without modifier is supported",
   },
 };

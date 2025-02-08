@@ -41,6 +41,7 @@ export default function Button({
   const [isLoading, setIsLoading] = useState(false);
 
   const doClickAction = useCallback(() => {
+    if (isLoading) return;
     (async () => {
       if (!onClick) return;
       try {
@@ -54,7 +55,7 @@ export default function Button({
         setIsLoading(false);
       }
     })();
-  }, [onClick]);
+  }, [onClick, isLoading]);
 
   useEffect(() => {
     if (!shortcut || !shortcut.length || disabled) return;

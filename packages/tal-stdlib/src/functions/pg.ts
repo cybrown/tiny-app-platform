@@ -3,7 +3,7 @@ import { defineFunction, RuntimeContext } from 'tal-eval';
 
 export const pg_query = defineFunction(
   'pg_query',
-  [{ name: 'uri', onlyNamed: true }, { name: 'query' }, { name: 'params' }],
+  [{ name: 'uri' }, { name: 'query' }, { name: 'params' }],
   undefined,
   pg_query_impl
 );

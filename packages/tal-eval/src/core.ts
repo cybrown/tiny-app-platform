@@ -17,13 +17,12 @@ export type NativeFunctionBinding = {
 
 export type ParameterDef = {
   name: string;
-  onlyNamed?: boolean;
 };
 
 export type FunctionBody = {
   entry: Opcode[];
   [key: string]: Opcode[];
-}
+};
 
 export type FunctionDef = {
   parameters: ParameterDef[];

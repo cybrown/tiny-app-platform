@@ -18,8 +18,10 @@ const path = require("path");
 const FormData = require("form-data");
 const fs = require("fs");
 const contentDisposition = require("content-disposition");
-const { createMongoClient } = require("./mongodb");
-const bson = require("bson");
+const {
+  createMongoClient,
+  operations: mongodbOperations,
+} = require("./drivers/mongodb");
 const child_process = require("child_process");
 const { Client } = require("pg");
 const ssh2 = require("ssh2");
@@ -199,95 +201,7 @@ const routes = [
       }
     },
   },
-  {
-    route: "/op/mongodb-find",
-    handler: async (req, params) => {
-      const body = await readBody(req);
-      const request = JSON.parse(body.toString());
-      let { uri, query, options } = request;
-      if (query) {
-        query = bson.EJSON.parse(JSON.stringify(query));
-      }
-      const client = await createMongoClient(uri);
-      try {
-        const rUri = new URL.URL(uri);
-        const dbName = rUri.pathname.slice(1);
-        const db = client.db(dbName);
-        const collection = db.collection(request.collection);
-        const doc = await collection
-          .find(query, { limit: 10, ...options })
-          .toArray();
-        return createResponse(
-          200,
-          { "Content-Type": "application/json" },
-          bson.EJSON.stringify(doc)
-        );
-      } finally {
-        client.close();
-      }
-    },
-  },
-  {
-    route: "/op/mongodb-delete-one",
-    handler: async (req, params) => {
-      const body = await readBody(req);
-      const request = JSON.parse(body.toString());
-      let { uri, query, options } = request;
-      query = bson.EJSON.parse(JSON.stringify(query));
-      const client = await createMongoClient(uri);
-      try {
-        const rUri = new URL.URL(uri);
-        const dbName = rUri.pathname.slice(1);
-        const db = client.db(dbName);
-        const collection = db.collection(request.collection);
-        const deleteResult = await collection.deleteOne(query, options);
-        return okJson(deleteResult);
-      } finally {
-        client.close();
-      }
-    },
-  },
-  {
-    route: "/op/mongodb-update-one",
-    handler: async (req, params) => {
-      const body = await readBody(req);
-      const request = JSON.parse(body.toString());
-      let { uri, query, data, options } = request;
-      query = bson.EJSON.parse(JSON.stringify(query));
-      data = bson.EJSON.parse(JSON.stringify(data));
-      const client = await createMongoClient(uri);
-      try {
-        const rUri = new URL.URL(uri);
-        const dbName = rUri.pathname.slice(1);
-        const db = client.db(dbName);
-        const collection = db.collection(request.collection);
-        const updateResult = await collection.updateOne(query, data, options);
-        return okJson(updateResult);
-      } finally {
-        client.close();
-      }
-    },
-  },
-  {
-    route: "/op/mongodb-insert-one",
-    handler: async (req, params) => {
-      const body = await readBody(req);
-      const request = JSON.parse(body.toString());
-      let { uri, data, options } = request;
-      data = bson.EJSON.parse(JSON.stringify(data));
-      const client = await createMongoClient(uri);
-      try {
-        const rUri = new URL.URL(uri);
-        const dbName = rUri.pathname.slice(1);
-        const db = client.db(dbName);
-        const collection = db.collection(request.collection);
-        const insertionResult = await collection.insertOne(data, options);
-        return okJson(insertionResult);
-      } finally {
-        client.close();
-      }
-    },
-  },
+  ...mongodbOperations,
   {
     route: "/op/exec-process",
     handler: async (req, params) => {

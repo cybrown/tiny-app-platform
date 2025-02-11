@@ -4,8 +4,8 @@ import { defineFunction, RuntimeContext } from 'tal-eval';
 export const mongodb_find = defineFunction(
   'mongodb_find',
   [
-    { name: 'uri', onlyNamed: true },
-    { name: 'collection', onlyNamed: true },
+    { name: 'uri' },
+    { name: 'collection' },
     { name: 'query' },
     { name: 'options' },
   ],
@@ -16,8 +16,8 @@ export const mongodb_find = defineFunction(
 export const mongodb_insert_one = defineFunction(
   'mongodb_insert_one',
   [
-    { name: 'uri', onlyNamed: true },
-    { name: 'collection', onlyNamed: true },
+    { name: 'uri' },
+    { name: 'collection' },
     { name: 'data' },
     { name: 'options' },
   ],
@@ -28,8 +28,8 @@ export const mongodb_insert_one = defineFunction(
 export const mongodb_update_one = defineFunction(
   'mongodb_update_one',
   [
-    { name: 'uri', onlyNamed: true },
-    { name: 'collection', onlyNamed: true },
+    { name: 'uri' },
+    { name: 'collection' },
     { name: 'query' },
     { name: 'data' },
     { name: 'options' },
@@ -41,8 +41,8 @@ export const mongodb_update_one = defineFunction(
 export const mongodb_delete_one = defineFunction(
   'mongodb_delete_one',
   [
-    { name: 'uri', onlyNamed: true },
-    { name: 'collection', onlyNamed: true },
+    { name: 'uri' },
+    { name: 'collection' },
     { name: 'query' },
     { name: 'options' },
   ],

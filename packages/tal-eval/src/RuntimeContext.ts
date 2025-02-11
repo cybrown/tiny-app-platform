@@ -470,7 +470,6 @@ export type LogItem<T> = {
 
 type ParameterDeclaration<T extends string> = {
   name: T;
-  onlyNamed?: boolean;
 };
 
 export type FunctionDocumentation<T extends string> = {

@@ -1,0 +1,22 @@
+let uri = "mongodb://127.0.0.1:27017/test"
+let collection = "collection"
+
+log("Insert id: 1")
+mongodb_insert_one(uri: uri, collection: collection, {id: 1, hello: "world"})
+log(mongodb_find(uri: uri, collection: collection))
+
+log("Insert id: 2")
+mongodb_insert_one(uri: uri, collection: collection, {id: 2, hello: "world"})
+log(mongodb_find(uri: uri, collection: collection))
+
+log("Update id: 2")
+mongodb_update_one(uri: uri, collection: collection, {id: 2}, {$set: {hello: "world2"}})
+log(mongodb_find(uri: uri, collection: collection))
+
+log("Delete id: 1")
+mongodb_delete_one(uri: uri, collection: collection, {id: 1})
+log(mongodb_find(uri: uri, collection: collection))
+
+log("Delete id: 2")
+mongodb_delete_one(uri: uri, collection: collection, {id: 2})
+log(mongodb_find(uri: uri, collection: collection))

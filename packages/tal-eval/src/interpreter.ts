@@ -762,13 +762,11 @@ function resolveArgumentNames(
       })
       .filter(([, value]) => value !== undefined)
   );
-  func.parameters
-    .filter(({ onlyNamed }) => !onlyNamed)
-    .forEach(({ name }) => {
-      if (!(name in namedArgs)) {
-        namedArgs[name] = args.length ? args.shift() : null;
-      }
-    });
+  func.parameters.forEach(({ name }) => {
+    if (!(name in namedArgs)) {
+      namedArgs[name] = args.length ? args.shift() : null;
+    }
+  });
   return [namedArgs, args];
 }
 

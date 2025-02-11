@@ -16,7 +16,7 @@
     "lint": "tsdx lint",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "compile-tal-parser": "pegjs -o src/parser.js src/parser.pegjs",
+    "compile-tal-parser": "peggy -o src/parser.js src/parser.pegjs",
     "postcompile-tal-parser": "node ./scripts/fix-parser.js",
     "postinstall": "npm run compile-tal-parser",
     "prebuild": "npm run compile-tal-parser"
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^8.2.4",
     "husky": "^8.0.3",
-    "pegjs": "^0.10.0",
+    "peggy": "^4.2.0",
     "size-limit": "^8.2.4",
     "tsdx": "^0.14.1",
     "tslib": "^2.6.3",

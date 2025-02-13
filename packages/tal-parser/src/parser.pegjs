@@ -41,8 +41,15 @@ Document
 
 TopLevelNode
     = 'export' __ node:Node
-        { return { location: buildLocation(), kind: 'Export', node }; }
-    / Node
+        {
+            options.onNode && options.onNode(node);
+            return { location: buildLocation(), kind: 'Export', node };
+        }
+    / node:Node
+        {
+            options.onNode && options.onNode(node);
+            return node;
+        }
 
 Node
     = CatchNode

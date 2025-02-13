@@ -422,6 +422,10 @@ export function lower(node: Node[]): Node[] {
   return new Lowerer().lowerTopLevel(node);
 }
 
+export function lowerSingle(node: Node): Node {
+  return new Lowerer().lowerSingle(node);
+}
+
 function removeNodes(node: Node): boolean {
   return !(node.kind == 'Literal' && !!node.doRemoveFromBlock);
 }

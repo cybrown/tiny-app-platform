@@ -186,7 +186,7 @@ function buildContext(
     (window as any).electronAPI ? electronSourceFetcher : webSourceFetcher
   );
   ctx.promptPassword = async () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setPromptPasswordVisible(true);
       resolveRef.current = resolve;
     });

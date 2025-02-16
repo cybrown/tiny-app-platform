@@ -25,6 +25,7 @@
     "packages/tal-eval",
     "packages/backend",
     "packages/web-client",
+    "packages/web-client2",
     "packages/tal-stdlib",
     "packages/tal-runner"
   ],

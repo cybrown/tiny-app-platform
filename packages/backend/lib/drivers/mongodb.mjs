@@ -1,16 +1,16 @@
-const { createResponse, readBody, okJson } = require("../http-utils");
-const URL = require("url");
-const bson = require("bson");
-const mongodb = require("mongodb");
+import { createResponse, readBody, okJson } from "../http-utils.mjs";
+import URL from "url";
+import * as bson from "bson";
+import mongodb from "mongodb";
 
-async function createMongoClient(uri) {
+export async function createMongoClient(uri) {
   const client = new mongodb.MongoClient(uri);
   await client.connect();
   await client.db("admin").command({ ping: 1 });
   return client;
 }
 
-operations = [
+export const operations = [
   {
     route: "/op/mongodb-find",
     handler: async (req, params) => {
@@ -105,6 +105,3 @@ operations = [
     },
   },
 ];
-
-module.exports.createMongoClient = createMongoClient;
-module.exports.operations = operations;

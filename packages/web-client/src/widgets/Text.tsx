@@ -19,7 +19,6 @@ export type TextProps = {
 };
 
 export default function Text({
-  ctx,
   copy,
   preformatted,
   text,

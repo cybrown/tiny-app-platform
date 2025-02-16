@@ -1,8 +1,9 @@
 {
   "version": "0.1.0",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.mts",
   "files": [
     "dist",
     "src"
@@ -11,16 +12,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "lint": "tsdx lint",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
+    "build": "tsup",
+    "start": "tsup --watch"
   },
   "prettier": {
     "printWidth": 80,
@@ -30,27 +23,25 @@
   },
   "name": "tal-eval",
   "author": "Cy Brown",
-  "module": "dist/tal-eval.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/tal-eval.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/tal-eval.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^8.2.4",
-    "husky": "^8.0.3",
-    "size-limit": "^8.2.4",
-    "tsdx": "^0.14.1",
     "tslib": "^2.6.3",
-    "typescript": "^5.5.3"
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@types/react": "^18.0.29",
     "tal-parser": "*"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "esm"
+    ],
+    "sourcemap": true,
+    "clean": true,
+    "dts": true,
+    "minify": true
   }
 }

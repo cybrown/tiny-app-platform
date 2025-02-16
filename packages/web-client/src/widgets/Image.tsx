@@ -7,7 +7,7 @@ type ImageProps = {
   fit?: boolean;
 };
 
-export default function Image({ ctx, url, fit }: ImageProps) {
+export default function Image({ url, fit }: ImageProps) {
   return (
     <div>
       <img

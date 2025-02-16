@@ -1,4 +1,3 @@
-import React from "react";
 import Markdown, { ReactRenderer } from "marked-react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import Snippet from "./Snippet";
@@ -52,8 +51,10 @@ const renderer: Partial<ReactRenderer> = {
   },
 };
 
-export default function Md({ ctx, doc }: MdProps) {
-  return <Markdown value={doc} renderer={renderer} />;
+const Markdown2: any = Markdown;
+
+export default function Md({ doc }: MdProps) {
+  return <Markdown2 value={doc} renderer={renderer} />;
 }
 
 export const MdDocumentation: WidgetDocumentation<MdProps> = {

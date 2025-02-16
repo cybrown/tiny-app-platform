@@ -1,11 +1,11 @@
-const Route = require("route-parser");
-const config = require("./config");
+import Route from "route-parser";
+import config from "./config.mjs";
 
-function createResponse(status, headers, body) {
+export function createResponse(status, headers, body) {
   return { status, headers, body };
 }
 
-function okJson(body) {
+export function okJson(body) {
   return createResponse(
     200,
     { "Content-Type": "application/json" },
@@ -13,7 +13,7 @@ function okJson(body) {
   );
 }
 
-function okText(body, headers) {
+export function okText(body, headers) {
   return createResponse(
     200,
     { "Content-Type": "text/plain", ...headers },
@@ -21,7 +21,7 @@ function okText(body, headers) {
   );
 }
 
-function okBytes(body) {
+export function okBytes(body) {
   return createResponse(
     200,
     { "Content-Type": "application/octet-stream" },
@@ -29,15 +29,15 @@ function okBytes(body) {
   );
 }
 
-function notFound() {
+export function notFound() {
   return createResponse(404);
 }
 
-function noContent() {
+export function noContent() {
   return createResponse(204);
 }
 
-function sendResponse(res, response) {
+export function sendResponse(res, response) {
   if (response.status) {
     res.statusCode = response.status;
   }
@@ -59,7 +59,7 @@ function sendResponse(res, response) {
   res.end();
 }
 
-const superHandler = (routes, defaultHandler) => {
+export const superHandler = (routes, defaultHandler) => {
   const compiledRoutes = routes.map((routeDefinition) => {
     var compiledRoute = new Route(routeDefinition.route);
     return { ...routeDefinition, compiledRoute };
@@ -98,7 +98,7 @@ const superHandler = (routes, defaultHandler) => {
   };
 };
 
-function readBody(req) {
+export function readBody(req) {
   return new Promise((resolve, reject) => {
     const buffers = [];
     req.on("data", (data) => buffers.push(data));
@@ -110,15 +110,3 @@ function readBody(req) {
     });
   });
 }
-
-module.exports = {
-  okBytes,
-  okJson,
-  okText,
-  noContent,
-  notFound,
-  createResponse,
-  sendResponse,
-  superHandler,
-  readBody,
-};

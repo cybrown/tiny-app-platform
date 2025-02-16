@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { InputText, Link, Tabs, Text, View } from "../theme";
-import { RegisterableFunction } from "tal-eval/dist/RuntimeContext";
+import { RegisterableFunction } from "tal-eval";
 
 export default function Documentation({
   ctx,
@@ -18,7 +18,7 @@ export default function Documentation({
     return ctx
       .listLocals()
       .filter(
-        ([name, value]) =>
+        ([, value]) =>
           value != null &&
           typeof value == "object" &&
           (("call" in value && typeof value.call == "function") ||

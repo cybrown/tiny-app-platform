@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { ReactNode, useContext } from "react";
 
 const THEME_CONTEXT = React.createContext<null | Theme>(null);
 
@@ -133,7 +133,7 @@ export interface PagerProps {
   disabled?: boolean;
   lastIndex: number;
   size: number;
-  PagerButtonComponent?(props: PagerButtonProps): JSX.Element | null;
+  PagerButtonComponent?(props: PagerButtonProps): ReactNode | null;
 }
 
 export interface ModalBackdropProps extends React.PropsWithChildren {

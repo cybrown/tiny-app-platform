@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useState } from "react";
 import { RuntimeContext, EvaluationError } from "tal-eval";
-import { LogItem } from "tal-eval/dist/RuntimeContext";
+import { LogItem } from "tal-eval";
 import {
   HttpLogItemData,
   MongoLogItemData,

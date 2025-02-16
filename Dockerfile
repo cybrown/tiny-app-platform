@@ -18,8 +18,8 @@ WORKDIR /opt/app
 COPY --from=tini_fetcher /tini /tini
 COPY --from=builder /build/node_modules node_modules
 COPY --from=builder /build/packages/backend .
-COPY --from=builder /build/packages/web-client/build public
+COPY --from=builder /build/packages/web-client/dist public
 EXPOSE 3001
 USER node
-CMD ["node", "index.js"]
+CMD ["node", "start.mjs"]
 ENTRYPOINT ["/tini", "--"]

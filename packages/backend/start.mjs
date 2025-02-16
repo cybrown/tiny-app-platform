@@ -1,5 +1,5 @@
-const server = require("./lib/server");
-const config = require("./lib/config");
+import server from "./lib/server.mjs";
+import config from "./lib/config.mjs";
 
 const PORT = 3001;
 

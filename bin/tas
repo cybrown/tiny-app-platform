@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require("../packages/tal-runner/dist");
+import "../packages/tal-runner/dist/index.mjs";

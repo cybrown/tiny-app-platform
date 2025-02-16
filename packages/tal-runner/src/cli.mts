@@ -1,6 +1,5 @@
 import fs from 'fs';
 import findFreePort from 'find-free-port';
-import { parse, Node } from 'tal-parser';
 import {
   lowerSingle,
   compile,
@@ -9,9 +8,11 @@ import {
   Program,
   EvaluationError,
 } from 'tal-eval';
+import { parse, Node } from 'tal-parser';
 import { importStdlibInContext } from 'tal-stdlib';
 import repl from 'node:repl';
 import tty from 'node:tty';
+import {} from 'backend';
 
 /*
 TODO:
@@ -22,7 +23,7 @@ no serialization custom rpc
 
 */
 
-(async function() {
+(async function () {
   const backend = await startBackend();
 
   if (!tty.isatty(process.stdin.fd)) {
@@ -77,9 +78,9 @@ function createContext() {
 async function startBackend() {
   const port = (await findFreePort(16384))[0];
   (globalThis as any).backendUrl = 'http://127.0.0.1:' + port;
-  const server = require('../../backend/lib/server.js');
-  require('../../backend/lib/config.js').log = false;
-  await new Promise(resolve =>
+  const server = (await import('backend')).server;
+  (await import('backend')).config.log = false;
+  await new Promise<void>((resolve) =>
     server.listen({ port, host: '127.0.0.1' }, resolve)
   );
   return {
@@ -101,7 +102,7 @@ async function doRun(
 
   try {
     try {
-      parse(source, 'stdin', node => {
+      parse(source, 'stdin', (node) => {
         csts.push(node);
       });
     } catch (err) {

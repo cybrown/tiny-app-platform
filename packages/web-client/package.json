@@ -1,9 +1,15 @@
 {
-  "name": "web-client",
-  "version": "0.1.0",
+  "name": "web-client2",
   "private": true,
-  "proxy": "http://localhost:3001",
-  "homepage": ".",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.0",
     "@testing-library/jest-dom": "^5.16.5",
@@ -22,36 +28,23 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hotkeys-hook": "^3.4.7",
-    "react-scripts": "5.0.1",
     "tal-eval": "*",
     "tal-parser": "*",
     "tal-stdlib": "*",
-    "typescript": "^5.5.3",
-    "web-vitals": "^2.1.4",
+    "typescript": "^5.7.3",
     "yaml": "^2.1.3"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "postbuild": "cp -r public/sw.js build/sw.js"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "ignorePatterns": "src/tal/parser.js"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.22.0",
+    "vite": "^6.1.0"
   }
 }

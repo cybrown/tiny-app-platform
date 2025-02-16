@@ -1,19 +1,25 @@
-import { createContext, useContext, useMemo, useReducer } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useMemo,
+  useReducer,
+} from "react";
 import styles from "./notifications.module.css";
 import { Button, Text } from "../theme";
 
 type NotificationState = {
-  notifications: Record<string, JSX.Element>;
+  notifications: Record<string, ReactNode>;
   list: string[];
 };
 
 type NotificationAction =
-  | { kind: "NOTIFY"; message: JSX.Element }
+  | { kind: "NOTIFY"; message: ReactNode }
   | { kind: "REMOVE"; id: string }
   | { kind: "CLEAR" };
 
 type NotificationController = {
-  notify(message: JSX.Element): void;
+  notify(message: ReactNode): void;
   remove(id: string): void;
   clear(): void;
 };
@@ -27,7 +33,7 @@ function notificationControllerBuilder(
         dispatcher({ kind: "CLEAR" });
       });
     },
-    notify(message: JSX.Element) {
+    notify(message: ReactNode) {
       setTimeout(() => {
         dispatcher({ kind: "NOTIFY", message });
       });
@@ -52,6 +58,7 @@ function useNotificationBase() {
           };
         }
         case "REMOVE": {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [action.id]: _, ...notifications } = state.notifications;
           return {
             notifications: { ...notifications },

@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "build": "echo nothing to build yet",
-    "start": "node index.js"
+    "start": "node start.mjs"
   },
   "author": "",
   "license": "ISC",

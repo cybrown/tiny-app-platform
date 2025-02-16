@@ -119,7 +119,6 @@ function RenderArray({
 
 function RenderKindedRecord({
   value,
-  path,
   kind,
 }: {
   value: object;
@@ -127,7 +126,7 @@ function RenderKindedRecord({
   path: string;
 }) {
   switch (kind) {
-    case "Function":
+    case "Function": {
       const func = value as FunctionNode & {
         location: NodeLocation;
       }; // TODO: Find a better way to pass expression nodes
@@ -137,6 +136,7 @@ function RenderKindedRecord({
           {func.location.start.line}:{func.location.start.column}
         </span>
       );
+    }
   }
   if (
     "location" in value &&

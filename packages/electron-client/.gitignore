@@ -1,12 +1,11 @@
 node_modules
 
-out/
-
-/back/
-/asset-manifest.json
-/static/
-/index.html
+/assets
+/back
 /fonts
+/front
+/out
+/index.html
 /mozaic-lm.min.css
 /sw.js
 /unregister.html

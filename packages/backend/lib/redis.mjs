@@ -1,6 +1,6 @@
-const redis = require("redis");
+import redis from "redis";
 
-module.exports.createRedisClient = async function({ url, insecure } = {}) {
+export async function createRedisClient({ url, insecure } = {}) {
   const client = redis.createClient({
     url,
     socket: {
@@ -11,4 +11,4 @@ module.exports.createRedisClient = async function({ url, insecure } = {}) {
   await client.connect();
 
   return client;
-};
+}

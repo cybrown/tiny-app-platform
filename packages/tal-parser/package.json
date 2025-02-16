@@ -1,8 +1,9 @@
 {
   "version": "0.1.0",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.mts",
   "files": [
     "dist",
     "src"
@@ -11,20 +12,11 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "lint": "tsdx lint",
-    "size": "size-limit",
-    "analyze": "size-limit --why",
-    "compile-tal-parser": "peggy -o src/parser.js src/parser.pegjs",
-    "postcompile-tal-parser": "node ./scripts/fix-parser.js",
+    "build": "tsup",
+    "start": "tsup --watch",
+    "compile-tal-parser": "peggy --format es -o src/parser.js src/parser.pegjs",
     "postinstall": "npm run compile-tal-parser",
     "prebuild": "npm run compile-tal-parser"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
   },
   "prettier": {
     "printWidth": 80,
@@ -33,28 +25,25 @@
     "trailingComma": "es5"
   },
   "name": "tal-parser",
-  "module": "dist/tal-parser.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/tal-parser.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/tal-parser.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^8.2.4",
-    "husky": "^8.0.3",
     "peggy": "^4.2.0",
-    "size-limit": "^8.2.4",
-    "tsdx": "^0.14.1",
     "tslib": "^2.6.3",
-    "typescript": "^5.5.3"
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3"
   },
-  "description": "Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.",
   "directories": {
     "test": "test"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "esm"
+    ],
+    "sourcemap": true,
+    "clean": true,
+    "dts": true,
+    "minify": true
   }
 }

@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { RuntimeContext } from "tal-eval";
 
 export default class ErrorBoundary extends React.Component<
   {
     ctx: RuntimeContext;
     children: any;
-    onError: (err: any, retry: () => void) => JSX.Element;
+    onError: (err: any, retry: () => void) => ReactNode;
   },
   { error: any }
 > {

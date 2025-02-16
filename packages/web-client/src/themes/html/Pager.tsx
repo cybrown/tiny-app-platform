@@ -64,7 +64,7 @@ export default function Pager(props: PagerProps) {
 
   const updateValue = useCallback(
     (value: PagerOnChangeAction) => {
-      onChange && onChange(value);
+      if (onChange) onChange(value);
     },
     [onChange]
   );

@@ -7,7 +7,7 @@ const UNLOCK_KEY_SALT = base64_to_bytes('TUqmuN0i/8qUfdw7Kpjpxw==');
 
 type KeySaltPair = {
   key: CryptoKey;
-  salt: ArrayBuffer;
+  salt: Uint8Array;
 };
 
 async function unlockKey(password: string): Promise<ArrayBuffer> {
@@ -58,7 +58,7 @@ async function deriveKey(
 
 async function encrypt(
   unlockKey: ArrayBuffer,
-  data: ArrayBuffer
+  data: Uint8Array
 ): Promise<ArrayBuffer> {
   try {
     const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));

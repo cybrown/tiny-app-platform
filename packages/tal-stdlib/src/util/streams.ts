@@ -62,9 +62,9 @@ class ReadableReader {
  * Concatenate two Uint8Arrays or only the first one if the second one is undefined
  */
 function concatUint8Arrays(
-  a: Uint8Array,
+  a: Uint8Array<ArrayBuffer>,
   b: Uint8Array | undefined
-): Uint8Array {
+): Uint8Array<ArrayBuffer> {
   if (!b) return a;
   const result = new Uint8Array(a.length + b.length);
   result.set(a);

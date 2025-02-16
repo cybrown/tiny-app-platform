@@ -1,6 +1,6 @@
-const { createServer } = require("http");
-const serveStatic = require("serve-static");
-const {
+import { createServer } from "http";
+import serveStatic from "serve-static";
+import {
   superHandler,
   createResponse,
   readBody,
@@ -10,23 +10,24 @@ const {
   noContent,
   sendResponse,
   notFound,
-} = require("./http-utils");
-const https = require("https");
-const http = require("http");
-const URL = require("url");
-const path = require("path");
-const FormData = require("form-data");
-const fs = require("fs");
-const contentDisposition = require("content-disposition");
-const {
+} from "./http-utils.mjs";
+import https from "https";
+import http from "http";
+import URL from "url";
+import path from "path";
+import FormData from "form-data";
+import fs from "fs";
+import contentDisposition from "content-disposition";
+import {
   createMongoClient,
-  operations: mongodbOperations,
-} = require("./drivers/mongodb");
-const child_process = require("child_process");
-const { Client } = require("pg");
-const ssh2 = require("ssh2");
-const { createRedisClient } = require("./redis");
-const config = require("./config");
+  operations as mongodbOperations,
+} from "./drivers/mongodb.mjs";
+import child_process from "child_process";
+import * as pg_module from "pg";
+const { Client } = pg_module;
+import ssh2 from "ssh2";
+import { createRedisClient } from "./redis.mjs";
+import config from "./config.mjs";
 
 const server = createServer();
 
@@ -151,9 +152,8 @@ const routes = [
             }
             case "url": {
               valueToAppend = await new Promise((resolve, reject) => {
-                const req = (info.value.startsWith("https")
-                  ? https
-                  : http
+                const req = (
+                  info.value.startsWith("https") ? https : http
                 ).request(info.value, (response) => {
                   let filename;
                   if (response.headers["content-disposition"]) {
@@ -554,4 +554,4 @@ server.on("request", (req, res) => {
   servePublic(req, res, () => handleRequest(req, res));
 });
 
-module.exports = server;
+export default server;

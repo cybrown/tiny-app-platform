@@ -10,7 +10,7 @@ export type TerminalProps = {
   rows?: number;
 };
 
-export default function Terminal({ ctx, stream, rows }: TerminalProps) {
+export default function Terminal({ stream, rows }: TerminalProps) {
   const divRef = useRef<HTMLDivElement>(null);
 
   const term = useMemo(

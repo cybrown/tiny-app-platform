@@ -1,7 +1,7 @@
 import { RuntimeContext, runForAllStack } from "tal-eval";
 import { ReactNode, useCallback, useRef } from "react";
 import Debug from "../widgets/Debug";
-import { Closure } from "tal-eval/dist/core";
+import { Closure } from "tal-eval";
 import Text from "../widgets/Text";
 import ErrorBoundary from "./ErrorBoundary";
 import CustomWidgetHost from "./CustomWidgetHost";
@@ -110,7 +110,7 @@ interface CustomWidget {
 
 interface NativeWidget {
   ctx: RuntimeContext;
-  kind: Function;
+  kind: React.FC<{ ctx: RuntimeContext; children: unknown }>;
   children: unknown[];
   props: Record<string, unknown>;
 }

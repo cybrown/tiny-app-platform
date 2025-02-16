@@ -6,7 +6,7 @@ set -ex
 
 CUR_DIR=$(pwd)
 
-cp -r packages/web-client/build/* packages/electron-client
+cp -r packages/web-client/dist/* packages/electron-client
 mkdir -p packages/electron-client/back/lib
 cp -r packages/backend/lib packages/backend/*.json packages/electron-client/back
 

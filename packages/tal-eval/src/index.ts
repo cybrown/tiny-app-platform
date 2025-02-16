@@ -4,6 +4,8 @@ export {
   WidgetDocumentation,
   SourceFetcher,
   FetchedSource,
+  RegisterableFunction,
+  LogItem,
 } from './RuntimeContext';
 export { compile } from './compiler';
 export { run, runForAllStack, runAsync, EvaluationError } from './interpreter';

@@ -3,19 +3,16 @@
   "version": "0.1.0",
   "license": "MIT",
   "author": "Cy Brown",
-  "main": "dist/index.js",
-  "module": "dist/tal-stdlib.esm.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.mts",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "analyze": "size-limit --why",
-    "build": "dts build",
-    "lint": "dts lint",
-    "size": "size-limit",
-    "start": "dts watch",
+    "build": "tsup",
+    "start": "tsup --watch",
     "test": "dts test"
   },
   "husky": {
@@ -51,13 +48,25 @@
     "dts-cli": "^2.0.5",
     "husky": "^9.1.1",
     "size-limit": "^11.1.4",
-    "tslib": "^2.6.3",
-    "typescript": "^5.5.3"
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "jmespath": "^0.16.0",
     "tal-eval": "*",
     "uuid": "^9.0.0"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "esm"
+    ],
+    "sourcemap": true,
+    "clean": true,
+    "dts": true,
+    "minify": true
   }
 }

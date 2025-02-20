@@ -15,8 +15,36 @@ export const http_request = defineFunction(
   http_request_impl
 );
 
+export const http = defineFunction(
+  'http',
+  [
+    { name: 'method' },
+    { name: 'url' },
+    { name: 'headers' },
+    { name: 'body' },
+    { name: 'allowErrorStatusCode' },
+    { name: 'insecure' },
+  ],
+  undefined,
+  http_request_impl
+);
+
 export const http_request_form = defineFunction(
   'http_request_form',
+  [
+    { name: 'method' },
+    { name: 'url' },
+    { name: 'headers' },
+    { name: 'elements' },
+    { name: 'allowErrorStatusCode' },
+    { name: 'insecure' },
+  ],
+  undefined,
+  http_request_form_impl
+);
+
+export const http_form = defineFunction(
+  'http_form',
   [
     { name: 'method' },
     { name: 'url' },

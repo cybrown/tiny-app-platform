@@ -1,11 +1,20 @@
 import { defineFunction } from 'tal-eval';
 import { search } from 'jmespath';
+import { bytes_to_string_impl } from '../util/bytes';
 
 export const json_parse = defineFunction(
   'json_parse',
   [{ name: 'string' }],
   (_ctx, { string }) => {
-    return JSON.parse(string);
+    let strToParse: string;
+    if (string instanceof ArrayBuffer) {
+      strToParse = bytes_to_string_impl(string);
+    } else if (typeof string === 'string') {
+      strToParse = string;
+    } else {
+      throw new Error('Not supported type for json parsing');
+    }
+    return JSON.parse(strToParse);
   }
 );
 

@@ -419,6 +419,7 @@ export class Compiler {
       case 'PositionalArgument':
       case 'RecordEntry':
       case 'SwitchBranch':
+      case 'AttributeLambdaSugar':
         throw new Error('Unreachable node kind: ' + node.kind);
       default: {
         const _: never = node;

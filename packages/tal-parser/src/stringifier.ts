@@ -142,6 +142,8 @@ class Stringifier {
         return this.stringifyExport(obj);
       case 'Comment':
         return this.stringifyComment(obj);
+      case 'AttributeLambdaSugar':
+        return '.' + obj.key;
       default:
         throw new Error('Failed to stringify kind: ' + obj.kind);
     }

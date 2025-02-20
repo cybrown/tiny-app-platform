@@ -382,6 +382,21 @@ class Lowerer {
       case 'Intrinsic': {
         return node;
       }
+      case 'AttributeLambdaSugar': {
+        return {
+          ...node,
+          kind: 'Function',
+          parameters: ["$$arg$$"],
+          body: {
+            kind: "Attribute",
+            key: node.key,
+            value: {
+              kind: "Local",
+              name: "$$arg$$"
+            }
+          }
+        }
+      }
       case 'KindedRecordEntry':
       case 'RecordEntry':
       case 'NamedArgument':

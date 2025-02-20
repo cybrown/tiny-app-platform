@@ -152,6 +152,11 @@ NodeLevel1
     / Array
     / Nested
     / Comment
+    / AttributeLambdaSugar
+
+AttributeLambdaSugar
+    = '.' _ key:Identifier
+        { return { location: buildLocation(), kind: "AttributeLambdaSugar", key }; }
 
 Comment
     = '//' text:Comment_text '\n' _ node:Node?

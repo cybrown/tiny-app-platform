@@ -19,7 +19,7 @@ function* walkArray(node: Node[]): Iterable<NodeWithParents> {
   }
 }
 
-const LEAVE_KINDS = ['Literal', 'Local', 'Import', 'Intrinsic'];
+const LEAVE_KINDS = ['Literal', 'Local', 'Import', 'Intrinsic', 'AttributeLambdaSugar'];
 
 function* walkSingle(node: Node): Iterable<NodeWithParents> {
   if (!LEAVE_KINDS.includes(node.kind)) {
@@ -147,6 +147,7 @@ function* walkSingle(node: Node): Iterable<NodeWithParents> {
     case 'Local':
     case 'Import':
     case 'Intrinsic':
+    case 'AttributeLambdaSugar':
       yield { node, mode: 'visit' };
       break;
     default:

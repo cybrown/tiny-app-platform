@@ -1,0 +1,19 @@
+[
+  {
+    "kind": "Pipe",
+    "first": {
+      "kind": "Call",
+      "args": [],
+      "value": {
+        "kind": "Local",
+        "name": "get_record"
+      }
+    },
+    "values": [
+      {
+        "kind": "AttributeLambdaSugar",
+        "key": "toto"
+      }
+    ]
+  }
+]

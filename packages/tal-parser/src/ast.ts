@@ -217,6 +217,11 @@ export type IntrinsicNode = NodeMetadata & {
   op: 'ForceRender';
 };
 
+export type AttributeLambdaSugarNode = NodeMetadata & {
+  kind: 'AttributeLambdaSugar';
+  key: string;
+}
+
 export type NodeByKind = {
   Literal: LiteralNode;
   Addressable: AddressableNode;
@@ -245,6 +250,7 @@ export type NodeByKind = {
   RecordEntry: RecordEntryNode;
   PositionalArgument: PositionalArgumentNode;
   NamedArgument: NamedArgumentNode;
+  AttributeLambdaSugar: AttributeLambdaSugarNode;
 };
 
 export type Node = NodeByKind[keyof NodeByKind];

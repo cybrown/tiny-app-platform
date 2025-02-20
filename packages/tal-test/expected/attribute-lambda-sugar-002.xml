@@ -1,0 +1,8 @@
+<program>
+  <pipe>
+    <call>
+      <local />
+    </call>
+    <attributelambdasugar />
+  </pipe>
+</program>

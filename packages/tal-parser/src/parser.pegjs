@@ -400,6 +400,6 @@ __ "mandatory whitespace"
 	= chars:([ \t\n\r]+)
     	{ return [...chars].filter(c => c === "\n").length; }
 
-_NoNewLine_ "whitespace expect newline"
+_NoNewLine_ "whitespace except newline"
 	= chars:([ \t]*)
     	{ return [...chars].filter(c => c === "\n").length; }

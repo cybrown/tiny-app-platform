@@ -293,14 +293,14 @@ class Stringifier {
 
   stringifyBlockOneLine(obj: BlockNode): string {
     return (
-      '{ ' + obj.children.map(child => this.stringify(child)).join(' ') + ' }'
+      '{ ' + obj.children.map((child) => this.stringify(child)).join(' ') + ' }'
     );
   }
 
   stringifyBlockMultiLine(obj: BlockNode): string {
     let result = '{\n';
     this.incrementDepth();
-    (obj.children ?? []).forEach(e => {
+    (obj.children ?? []).forEach((e) => {
       result += this.depthSpace() + this.stringify(e) + '\n';
       if (e.newLines) {
         for (let i = 0; i < e.newLines - 1; i++) {
@@ -352,8 +352,11 @@ class Stringifier {
     let result = '{ ';
     const entriesArray = [];
     const namedAttributesStringified = obj.entries
-      .map(({ key, value }) => {
+      .map(({ key, value, short }) => {
         const stringifiedKey = this.stringifyRecordKey(key);
+        if (short != null) {
+          return '-' + (short ? '-' : '!') + stringifiedKey;
+        }
         return stringifiedKey + ': ' + this.stringify(value);
       })
       .join(', ');
@@ -366,7 +369,7 @@ class Stringifier {
       obj.children.length > 0
     ) {
       entriesArray.push(
-        obj.children.map(child => this.stringify(child)).join(', ')
+        obj.children.map((child) => this.stringify(child)).join(', ')
       );
     }
     result += entriesArray.join(', ');
@@ -382,6 +385,7 @@ class Stringifier {
     }
     let longestEntry = 0;
     for (let entry of obj.entries) {
+      if (entry.short != null) continue;
       longestEntry = Math.max(
         longestEntry,
         this.stringifyRecordKey(entry.key).length
@@ -390,16 +394,21 @@ class Stringifier {
     result = '{\n';
     this.incrementDepth();
     let hasNamedAttributes = false;
-    obj.entries.forEach(({ key, value }) => {
+    obj.entries.forEach(({ key, value, short }) => {
       const stringifiedKey = this.stringifyRecordKey(key);
       hasNamedAttributes = true;
-      result +=
-        this.depthSpace() +
-        stringifiedKey +
-        ': ' +
-        padSpaces(longestEntry - stringifiedKey.length) +
-        this.stringify(value as any) +
-        '\n';
+      if (short != null) {
+        result +=
+          this.depthSpace() + '-' + (short ? '-' : '!') + stringifiedKey + '\n';
+      } else {
+        result +=
+          this.depthSpace() +
+          stringifiedKey +
+          ': ' +
+          padSpaces(longestEntry - stringifiedKey.length) +
+          this.stringify(value as any) +
+          '\n';
+      }
     });
     if (obj.children && Array.isArray(obj.children)) {
       obj.children.forEach((child, index) => {
@@ -437,8 +446,15 @@ class Stringifier {
       this.stringify(obj.value) +
       '(' +
       obj.args
-        .map(arg => {
+        .map((arg) => {
           if (arg.kind === 'NamedArgument') {
+            if (arg.short != null) {
+              return (
+                '-' +
+                (arg.short ? '-' : '!') +
+                this.stringifyRecordKey(arg.name)
+              );
+            }
             return (
               this.stringifyRecordKey(arg.name) +
               ': ' +
@@ -550,7 +566,7 @@ class Stringifier {
     result += ' {\n';
     this.incrementDepth();
     const stringifiedBranches = obj.branches.map(
-      branch =>
+      (branch) =>
         [
           this.stringify(branch.comparator),
           this.stringifyWithIndent(branch.value),
@@ -619,22 +635,32 @@ class Stringifier {
     let longestEntry = 0;
     for (let entry of obj.args) {
       if (entry.kind === 'NamedArgument') {
+        if (entry.short != null) continue;
         longestEntry = Math.max(
           longestEntry,
           this.stringifyRecordKey(entry.name).length
         );
       }
     }
-    obj.args.forEach(arg => {
+    obj.args.forEach((arg) => {
       if (arg.kind === 'NamedArgument') {
         const identifier = this.stringifyRecordKey(arg.name);
-        result +=
-          this.depthSpace() +
-          identifier +
-          ': ' +
-          padSpaces(longestEntry - identifier.length) +
-          this.stringify(arg.value) +
-          '\n';
+        if (arg.short != null) {
+          result +=
+            this.depthSpace() +
+            '-' +
+            (arg.short ? '-' : '!') +
+            this.stringifyRecordKey(arg.name) +
+            '\n';
+        } else {
+          result +=
+            this.depthSpace() +
+            identifier +
+            ': ' +
+            padSpaces(longestEntry - identifier.length) +
+            this.stringify(arg.value) +
+            '\n';
+        }
       } else {
         result += this.depthSpace() + this.stringify(arg.value) + '\n';
       }
@@ -660,7 +686,7 @@ class Stringifier {
     if (value.length === 0) {
       return '[]';
     }
-    return '[' + value.map(child => this.stringify(child)).join(', ') + ']';
+    return '[' + value.map((child) => this.stringify(child)).join(', ') + ']';
   }
 
   stringifyArrayMultiline(value: Node[], isRoot: boolean): string {
@@ -672,7 +698,7 @@ class Stringifier {
       result = '[\n';
       this.incrementDepth();
     }
-    value.forEach(child => {
+    value.forEach((child) => {
       const stringifiedElement = this.stringify(child);
       result += this.depthSpace() + stringifiedElement + '\n';
       if (child.newLines) {

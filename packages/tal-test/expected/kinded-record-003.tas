@@ -1,0 +1,10 @@
+View {
+  --boolPropTrue1
+  --boolPropTrue2
+  -!boolPropFalse
+  propA:   "a"
+  propAAA: "aaa"
+
+  Text
+  View { -!boolPropFalse }
+}

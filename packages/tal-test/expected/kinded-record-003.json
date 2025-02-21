@@ -1,0 +1,61 @@
+[
+  {
+    "kind": "KindedRecord",
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "View"
+    },
+    "children": [
+      {
+        "kind": "Local",
+        "name": "Text"
+      },
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "View"
+        },
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "boolPropFalse",
+            "value": false,
+            "short": false
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "kind": "KindedRecordEntry",
+        "key": "boolPropTrue1",
+        "value": true,
+        "short": true
+      },
+      {
+        "kind": "KindedRecordEntry",
+        "key": "boolPropTrue2",
+        "value": true,
+        "short": true
+      },
+      {
+        "kind": "KindedRecordEntry",
+        "key": "boolPropFalse",
+        "value": false,
+        "short": false
+      },
+      {
+        "kind": "KindedRecordEntry",
+        "key": "propA",
+        "value": "a"
+      },
+      {
+        "kind": "KindedRecordEntry",
+        "key": "propAAA",
+        "value": "aaa"
+      }
+    ]
+  }
+]

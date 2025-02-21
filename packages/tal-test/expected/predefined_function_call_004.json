@@ -1,0 +1,72 @@
+[
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "boolArgTrue",
+        "value": true,
+        "short": true
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "boolArgFalse",
+        "value": false,
+        "short": false
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": "arg1",
+        "value": "a"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": "b"
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "boolArgTrue",
+        "value": true,
+        "short": true
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "boolArgFalse",
+        "value": false,
+        "short": false
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 1
+      },
+      {
+        "kind": "NamedArgument",
+        "name": "boolArgFalse",
+        "value": false,
+        "short": false
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "predefined_function"
+    }
+  }
+]

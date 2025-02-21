@@ -13,7 +13,8 @@
 
     function buildBinaryOperator(left, right) {
         if (right.length == 0) return left;
-        return right.map(a => ({ location: buildLocation(), kind: "BinaryOperator", operator: a[1], right: a[3]}))
+        // Handle array for a[1] in case it's a minus operator with a check
+        return right.map(a => ({ location: buildLocation(), kind: "BinaryOperator", operator: Array.isArray(a[1]) ? a[1][0] : a[1], right: a[3]}))
             .reduce((left, right) => {
                 right.left = left;
                 return right;
@@ -91,7 +92,8 @@ ComparisonOperators
     	{ return buildBinaryOperator(left, right); }
 
 PlusAndMinusOperators
-	= left:MultiplicationOperators right:(_ ('+' / '-') _ MultiplicationOperators)*
+	= left:MultiplicationOperators right:(_ ('+' / ('-' !('-'/'!'))) _ MultiplicationOperators)*
+        // We don't want to parse -- and -! because they're reserved for named arguments
     	{ return buildBinaryOperator(left, right); }
 
 MultiplicationOperators
@@ -130,6 +132,16 @@ PositionalArgument
 NamedArgument
     = name:Identifier _ ':' _ value:Node
         { return { location: buildLocation(), kind: "NamedArgument", name, value }; }
+    / '-' value:('-'/'!') name:Identifier
+        {
+            return {
+                location: buildLocation(),
+                kind: "NamedArgument",
+                name,
+                value: { location: buildLocation(), kind: "Literal", value: value === '-' },
+                short: value === '-',
+            };
+        }
 
 NodeLevel1
     = Null
@@ -258,6 +270,22 @@ KindedRecordEntry
                 error("Record with kind must not have a key called 'children'")
             }
             return { location: buildLocation(), kind: 'KindedRecordEntry', key, value };
+        }
+    / '-' value:('-' / '!') key:RecordKey
+    	{
+            if (key === 'kind') {
+                error("Record with kind must not have a key called 'kind'")
+            }
+            if (key === 'children') {
+                error("Record with kind must not have a key called 'children'")
+            }
+            return {
+                location: buildLocation(),
+                kind: 'KindedRecordEntry',
+                key,
+                value: { location: buildLocation(), kind: "Literal", value: value === '-' },
+                short: value === '-',
+            };
         }
 
 Record

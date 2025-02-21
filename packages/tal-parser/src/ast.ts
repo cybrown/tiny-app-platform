@@ -98,6 +98,7 @@ export type NamedArgumentNode = NodeMetadata & {
   kind: 'NamedArgument';
   name: string;
   value: Node;
+  short?: boolean;
 };
 
 export type RecordNode = NodeMetadata & {
@@ -168,6 +169,7 @@ export type KindedRecordEntryNode = NodeMetadata & {
   kind: 'KindedRecordEntry';
   key: string;
   value: Node | Node[];
+  short?: boolean;
 };
 
 export type ArrayNode = NodeMetadata & {

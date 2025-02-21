@@ -51,7 +51,8 @@ function RenderAny({
     const hasMore = valueAsJson.length > 250;
     return (
       <CopyOnClick value={typeof value === "string" ? value : valueAsJson}>
-        {valueAsJson.slice(0, 250) + (hasMore ? " truncated..." : "")}
+        {valueAsJson.slice(0, 250) +
+          (hasMore ? `truncated... (total ${valueAsJson.length})` : "")}
       </CopyOnClick>
     );
   } else if (typeof value == "function") {
@@ -83,9 +84,21 @@ function RenderArray({
 }) {
   const [isOpen, toggleIsOpen] = useIsOpen(!!extended);
   const [showAll, setShowAll] = useState(false);
-  const handleClickMore = useCallback(() => {
-    setShowAll(true);
-  }, []);
+  const [visibleMaxEntries, setVisibleMaxEntries] = useState(10);
+  const handleClick10More = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.preventDefault();
+      setVisibleMaxEntries((visibleMaxEntries) => visibleMaxEntries + 10);
+    },
+    []
+  );
+  const handleClickShowAll = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.preventDefault();
+      setShowAll(true);
+    },
+    []
+  );
 
   return (
     <span>
@@ -95,19 +108,30 @@ function RenderArray({
       {isOpen ? (
         <>
           <div className={styles.offseted}>
-            {(showAll ? value : value.slice(0, 10)).map((sub, i) => (
-              <div key={i}>
-                <CopyOnClick value={path + "[" + i + "]"}>{i}</CopyOnClick>:{" "}
-                <RenderAny
-                  value={sub}
-                  path={path + "[" + i + "]"}
-                  extended={extended ? extended - 1 : undefined}
-                />
-              </div>
-            ))}
-            {value.length > 10 && !showAll ? (
-              <div onClick={handleClickMore}>
-                more... (click to show all entries)
+            {(showAll ? value : value.slice(0, visibleMaxEntries)).map(
+              (sub, i) => (
+                <div key={i}>
+                  <CopyOnClick value={path + "[" + i + "]"}>{i}</CopyOnClick>:{" "}
+                  <RenderAny
+                    value={sub}
+                    path={path + "[" + i + "]"}
+                    extended={extended ? extended - 1 : undefined}
+                  />
+                </div>
+              )
+            )}
+            {value.length > visibleMaxEntries &&
+            !showAll &&
+            value.length - visibleMaxEntries > 0 ? (
+              <div>
+                {value.length - visibleMaxEntries} more:{" "}
+                <a href="#" onClick={handleClick10More}>
+                  expand
+                </a>
+                ,{" "}
+                <a href="#" onClick={handleClickShowAll}>
+                  all
+                </a>
               </div>
             ) : null}
           </div>

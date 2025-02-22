@@ -1,5 +1,9 @@
 if(a == 3) { "ok" }
-if(a == 3) { "ok1" "ok2" }
+if(a == 3) { "ok1" 
+"ok2" }
 if(a == 3) { "ok" } else { "ko" }
-if(a == 3) { "ok1" "ok2" } else { "ko1" "ko2" }
-if(a == 3) { "ok" } toto
+if(a == 3) { "ok1" 
+"ok2" } else { "ko1" 
+"ko2" }
+if(a == 3) { "ok" }
+ toto

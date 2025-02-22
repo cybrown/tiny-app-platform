@@ -64,7 +64,7 @@ CatchNode
         }
 
 PipeNode
-	= first:LogicalOrOperator tail:(_ '|' _ LogicalOrOperator)*
+	= first:ShellLikeCommand tail:(_ '|' _ ShellLikeCommand)*
     	{
             if (tail.length == 0) return first;
             return {
@@ -72,6 +72,44 @@ PipeNode
                 kind: "Pipe",
                 first,
                 values: tail.map(a => a[3])
+            };
+        }
+
+ShellLikeCommand
+    = value:LogicalOrOperator args:(__SameLine ShellFunctionArgument)*
+        {
+            if (!args || args.length == 0) {
+                return value;
+            }
+
+            return {
+                location: buildLocation(),
+                kind: "Call",
+                shell: true,
+                value,
+                args: args.map(a => a[1])
+            };
+        }
+
+ShellFunctionArgument
+    = ShellNamedArgument
+    / ShellPositionalArgument
+
+ShellPositionalArgument
+	= node:LogicalOrOperator
+    	{ return { location: buildLocation(), kind: "PositionalArgument", value: node }; }
+
+ShellNamedArgument
+    = name:Identifier _SameLine ':' __SameLine value:LogicalOrOperator
+        { return { location: buildLocation(), kind: "NamedArgument", name, value }; }
+    / '-' value:('-'/'!') name:Identifier
+        {
+            return {
+                location: buildLocation(),
+                kind: "NamedArgument",
+                name,
+                value: { location: buildLocation(), kind: "Literal", value: value === '-' },
+                short: value === '-',
             };
         }
 
@@ -101,10 +139,13 @@ MultiplicationOperators
     	{ return buildBinaryOperator(left, right); }
 
 UnaryPrefixOperatorNode
-	= operator:("-" / "+" / "!")? _ operand:NodeLevel2
+	= operator:("-" / "+" / "!") _ operand:NodeLevel2
      	{
-            if (!operator) return operand;
             return { location: buildLocation(), kind: "UnaryOperator", operator, operand };
+        }
+	/ node:NodeLevel2
+     	{
+            return node;
         }
 
 NodeLevel2 // Dotted, indexed and call nodes
@@ -115,9 +156,9 @@ NodeLevel2 // Dotted, indexed and call nodes
 
 NodeLevel2Right
 	= DottedNodeTail
-    / _NoNewLine_ '[' _ index:Node _ ']'
+    / _SameLine '[' _ index:Node _ ']'
     	{ return { location: buildLocation(), kind: 'Index', index }; }
-    / _NoNewLine_ "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
+    / _SameLine "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
         & { return !isLambda; }
         { return { location: buildLocation(), kind: "Call", args: values.map(a => a[0]) }; }
 
@@ -217,7 +258,7 @@ SwitchDefaultBranch
 
 Try
     // Parse PipeNode instead of CatchNode to avoid parsing catch two times
-    = 'try' _ node:PipeNode catchNodeArray:(_ 'catch' _ Node)?
+    = 'try' _ node:ShellLikeCommand catchNodeArray:(_ 'catch' _ Node)?
         {
             const catchNode = catchNodeArray ? catchNodeArray[3] : undefined
             return { location: buildLocation(), kind: "Try", node, catchNode };
@@ -238,7 +279,7 @@ Function
         { return { location: buildLocation(), kind: "Function", body: body, parameters: [parameter] }; }
 
 KindedRecord
-    = kind:DottedNode _NoNewLine_ "{" _ values:((KindedRecordEntry / Node) _ ','? _)* "}"
+    = kind:DottedNode _SameLine "{" _ values:((KindedRecordEntry / Node) _ ','? _)* "}"
         {
             const children = values.filter(a => a[0].kind !== "KindedRecordEntry")
                 .map(a => ({ ...a[0], newLines: (a[1] ?? 0) + (a[3] ?? 0) }));
@@ -257,7 +298,7 @@ DottedNode
         { return tail.reduce((prev, cur) => ({ ...cur, value: prev }), first); }
 
 DottedNodeTail
-	= _ '.' _ key:Identifier
+	= '.' _ key:Identifier
     	{ return { location: buildLocation(), kind: 'Attribute', key }; }
 
 KindedRecordEntry
@@ -306,6 +347,7 @@ Array
 
 Local
     = id:Identifier
+        & { return !["catch", "else"].includes(id); }
     	{ return { location: buildLocation(), kind: 'Local', name: id}; }
 
 RawString
@@ -392,14 +434,18 @@ ManyNodes
     = nodes:(Node _ ','? _)*
         { return nodes.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })); }
 
-_ "whitespace"
+_ "whitespace on multiple lines"
 	= chars:([ \t\n\r]*)
     	{ return [...chars].filter(c => c === "\n").length; }
 
-__ "mandatory whitespace"
+__ "mandatory whitespace on multiple lines"
 	= chars:([ \t\n\r]+)
     	{ return [...chars].filter(c => c === "\n").length; }
 
-_NoNewLine_ "whitespace except newline"
+_SameLine "whitespace on the same line"
 	= chars:([ \t]*)
-    	{ return [...chars].filter(c => c === "\n").length; }
+    	{ return 0; }
+
+__SameLine "mandatory whitespace on the same line"
+	= chars:([ \t]+)
+    	{ return 0; }

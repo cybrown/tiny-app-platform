@@ -86,6 +86,7 @@ export type TryNode = NodeMetadata & {
 export type CallNode = NodeMetadata & {
   kind: 'Call';
   value: Node;
+  shell?: boolean;
   args: (PositionalArgumentNode | NamedArgumentNode)[];
 };
 

@@ -430,6 +430,7 @@ class Stringifier {
   }
 
   stringifyCall(obj: CallNode) {
+    if (obj.shell) return this.stringifyCallShellLike(obj);
     // Maybe optimize this to not stringify twice ?
     if (obj.args.length > 3) {
       return this.stringifyCallMultiLine(obj);
@@ -439,6 +440,26 @@ class Stringifier {
       return this.stringifyCallMultiLine(obj);
     }
     return result;
+  }
+
+  stringifyCallShellLike(obj: CallNode) {
+    return this.stringify(obj.value) + ' ' + obj.args.map(arg => {
+      if (arg.kind == 'NamedArgument') {
+        if (arg.short != null) {
+          return (
+            '-' +
+            (arg.short ? '-' : '!') +
+            this.stringifyRecordKey(arg.name)
+          );
+        }
+        return (
+          this.stringifyRecordKey(arg.name) +
+          ': ' +
+          this.stringify(arg.value)
+        );
+      }
+      return this.stringify(arg.value);
+    }).join(' ')
   }
 
   stringifyCallOneLine(obj: CallNode) {

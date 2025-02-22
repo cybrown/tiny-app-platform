@@ -40,7 +40,12 @@ import {
   on_destroy,
   exit,
 } from './functions/core';
-import { http_request_form, http_request, http, http_form } from './functions/http';
+import {
+  http_request_form,
+  http_request,
+  http,
+  http_form,
+} from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
 import {
   mongodb_delete_one,
@@ -126,6 +131,22 @@ import {
   stream_read,
   stream_write,
 } from './functions/stream';
+import {
+  skip,
+  take,
+  filter,
+  find,
+  find_index,
+  map,
+  map_parallel,
+  flat_map,
+  sort,
+  reverse,
+  reduce,
+  contains,
+  length,
+  unique,
+} from './functions/util';
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
@@ -266,6 +287,21 @@ export function importStdlibInContext(ctx: RuntimeContext) {
 
   ctx.registerFunction(spawn);
   ctx.registerFunction(sleep);
+
+  ctx.registerFunction(skip);
+  ctx.registerFunction(take);
+  ctx.registerFunction(filter);
+  ctx.registerFunction(find);
+  ctx.registerFunction(find_index);
+  ctx.registerFunction(map);
+  ctx.registerFunction(map_parallel);
+  ctx.registerFunction(flat_map);
+  ctx.registerFunction(sort);
+  ctx.registerFunction(reverse);
+  ctx.registerFunction(reduce);
+  ctx.registerFunction(contains);
+  ctx.registerFunction(length);
+  ctx.registerFunction(unique);
 }
 
 export { HttpLogItemData } from './functions/http';

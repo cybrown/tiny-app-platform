@@ -18,7 +18,7 @@ export const take = defineFunction(
     if (Array.isArray(value)) {
       return value.slice(0, take);
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for take');
   }
 );
 
@@ -31,7 +31,7 @@ export const filter = defineFunction(
         ctx.callFunction(predicate, [it, index])
       );
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for filter');
   }
 );
 
@@ -44,7 +44,7 @@ export const find = defineFunction(
         ctx.callFunction(predicate, [it, index])
       );
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for find');
   }
 );
 
@@ -58,7 +58,7 @@ export const find_index = defineFunction(
       );
       return foundIndex == -1 ? null : foundIndex;
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for find_index');
   },
   undefined,
   {
@@ -81,9 +81,10 @@ export const map = defineFunction(
         ctx.callFunction(mapper, [it, index])
       );
     }
-    throw new Error('Type not supported for skip');
+    return ctx.callFunction(mapper, [value, 0]);
   },
   async (ctx, { value, mapper }) => {
+    if (value == null) return null;
     if (Array.isArray(value)) {
       const result = [];
       for (let index = 0; index < value.length; index++) {
@@ -92,7 +93,7 @@ export const map = defineFunction(
       }
       return result;
     }
-    throw new Error('Type not supported for skip');
+    return await ctx.callFunctionAsync(mapper, [value, 0]);
   }
 );
 
@@ -101,6 +102,7 @@ export const map_parallel = defineFunction(
   [{ name: 'value' }, { name: 'mapper' }],
   undefined,
   async (ctx, { value, mapper }) => {
+    if (value == null) return null;
     if (Array.isArray(value)) {
       return Promise.all(
         (value as any[]).map((it, index) =>
@@ -108,7 +110,7 @@ export const map_parallel = defineFunction(
         )
       );
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for map_parallel');
   }
 );
 
@@ -121,7 +123,7 @@ export const flat_map = defineFunction(
         ctx.callFunction(mapper, [it, index])
       );
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for flat_map');
   },
   async (ctx, { value, mapper }) => {
     if (Array.isArray(value)) {
@@ -133,7 +135,7 @@ export const flat_map = defineFunction(
         )
       ).flat();
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for flat_map');
   }
 );
 
@@ -146,7 +148,7 @@ export const sort = defineFunction(
         .slice()
         .sort((a, b) => ctx.callFunction(comparator, [a, b]) as number);
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for sort');
   }
 );
 
@@ -157,7 +159,7 @@ export const reverse = defineFunction(
     if (Array.isArray(value)) {
       return (value as any[]).slice().reverse();
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for reverse');
   }
 );
 
@@ -170,7 +172,7 @@ export const reduce = defineFunction(
         return ctx.callFunction(reducer, [previous, current]);
       });
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for reduce');
   }
 );
 
@@ -178,10 +180,11 @@ export const contains = defineFunction(
   'contains',
   [{ name: 'value' }, { name: 'element' }],
   (ctx, { value, element }) => {
+    if (value == null) return false;
     if (Array.isArray(value)) {
       return (value as any[]).includes(element);
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for contains');
   }
 );
 
@@ -189,10 +192,10 @@ export const length = defineFunction(
   'length',
   [{ name: 'value' }],
   (_ctx, { value }) => {
-    if (Array.isArray(value)) {
+    if (Array.isArray(value) || typeof value == 'string') {
       return value.length;
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for length');
   }
 );
 
@@ -203,6 +206,6 @@ export const unique = defineFunction(
     if (Array.isArray(value)) {
       return [...new Set(value as unknown[])];
     }
-    throw new Error('Type not supported for skip');
+    throw new Error('Type not supported for unique');
   }
 );

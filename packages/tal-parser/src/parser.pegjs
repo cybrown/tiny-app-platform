@@ -100,7 +100,7 @@ ShellPositionalArgument
     	{ return { location: buildLocation(), kind: "PositionalArgument", value: node }; }
 
 ShellNamedArgument
-    = name:Identifier _SameLine ':' __SameLine value:LogicalOrOperator
+    = name:Identifier _SameLine ':' _SameLine value:LogicalOrOperator
         { return { location: buildLocation(), kind: "NamedArgument", name, value }; }
     / '-' value:('-'/'!') name:Identifier
         {

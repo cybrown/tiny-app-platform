@@ -132,7 +132,7 @@ async function doRun(
     return { kind: 'done', value: lastResult };
   } catch (err) {
     if (err instanceof EvaluationError) {
-      const errorMsg = `Error at ${err.node.location?.start.line}:${err.node.location?.start.column} : ${err.detailedMessage}`;
+      const errorMsg = `Error at ${err.node?.location?.start.line}:${err.node?.location?.start.column} : ${err.detailedMessage}`;
       return { kind: 'done', value: errorMsg };
     } else if (
       typeof err == 'object' &&

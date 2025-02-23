@@ -18,33 +18,25 @@ export const http_request = defineFunction(
 export const http = defineFunction(
   'http',
   [
-    { name: 'method' },
     { name: 'url' },
-    { name: 'headers' },
     { name: 'body' },
-    { name: 'allowErrorStatusCode' },
-    { name: 'insecure' },
+    { name: 'headers', onlyNamed: true },
+    { name: 'allowErrorStatusCode', onlyNamed: true },
+    { name: 'insecure', onlyNamed: true },
+    { name: 'method', onlyNamed: true },
+    { name: 'get', onlyNamed: true },
+    { name: 'post', onlyNamed: true },
+    { name: 'put', onlyNamed: true },
+    { name: 'delete', onlyNamed: true },
+    { name: 'patch', onlyNamed: true },
+    { name: 'head', onlyNamed: true },
   ],
   undefined,
-  http_request_impl
+  http_impl
 );
 
 export const http_request_form = defineFunction(
   'http_request_form',
-  [
-    { name: 'method' },
-    { name: 'url' },
-    { name: 'headers' },
-    { name: 'elements' },
-    { name: 'allowErrorStatusCode' },
-    { name: 'insecure' },
-  ],
-  undefined,
-  http_request_form_impl
-);
-
-export const http_form = defineFunction(
-  'http_form',
   [
     { name: 'method' },
     { name: 'url' },
@@ -150,6 +142,62 @@ async function http_request_impl(
 ) {
   const requestConfiguration = {
     method: value.method ?? 'get',
+    url: value.url,
+    headers: value.headers,
+    ...(value.body ? { body: value.body } : {}),
+    insecure: value.insecure,
+  };
+  const logItem = ctx.log('http-request', {
+    request: requestConfiguration,
+    stage: 'pending',
+    response: null,
+  } as HttpLogItemData);
+  try {
+    const response = await httpRequest(requestConfiguration);
+    logItem.data.stage = 'fulfilled';
+    logItem.data.response = {
+      status: response.status,
+      headers: response.headers,
+      body: response.body,
+    };
+    if (response.status === 0) {
+      throw new Error(
+        'HTTP Request failed: Internal error, check backend logs'
+      );
+    }
+    if (
+      !value.allowErrorStatusCode &&
+      (response.status < 200 || response.status >= 400)
+    ) {
+      throw new HttpErrorStatus(
+        'HTTP Request failed with status: ' + response.status
+      );
+    }
+    return response;
+  } catch (e) {
+    if (!(e instanceof HttpErrorStatus)) {
+      logItem.data.stage = 'rejected';
+    }
+    throw e;
+  }
+}
+
+const HTTP_METHODS = ['get', 'post', 'put', 'delete', 'patch', 'head'];
+
+async function http_impl(ctx: RuntimeContext, value: { [key: string]: any }) {
+  let method: string | null = value.method ?? null;
+
+  HTTP_METHODS.forEach((methodName) => {
+    if (value[methodName]) {
+      if (method != null) {
+        throw new Error('Only one method is expected for http function');
+      }
+      method = methodName;
+    }
+  });
+
+  const requestConfiguration = {
+    method: method ?? (value.body ? 'post' : 'get'),
     url: value.url,
     headers: value.headers,
     ...(value.body ? { body: value.body } : {}),

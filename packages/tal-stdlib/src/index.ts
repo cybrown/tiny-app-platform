@@ -40,12 +40,7 @@ import {
   on_destroy,
   exit,
 } from './functions/core';
-import {
-  http_request_form,
-  http_request,
-  http,
-  http_form,
-} from './functions/http';
+import { http_request_form, http_request, http } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
 import {
   mongodb_delete_one,
@@ -209,7 +204,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(exit);
   ctx.registerFunction(http_request_form);
   ctx.registerFunction(http_request);
-  ctx.registerFunction(http_form);
   ctx.registerFunction(http);
   ctx.registerFunction(is_defined);
   ctx.registerFunction(jmespath_search);

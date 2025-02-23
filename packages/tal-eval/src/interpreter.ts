@@ -301,13 +301,12 @@ export class VM {
         const positionalArgs = this.popArray();
 
         if ('ctx' in closure) {
-          const [
-            namedArguments /* positionalArguments */,
-          ] = resolveArgumentNames(
-            this.ctx.program![closure.name],
-            namedArgs,
-            positionalArgs
-          );
+          const [namedArguments /* positionalArguments */] =
+            resolveArgumentNames(
+              this.ctx.program![closure.name],
+              namedArgs,
+              positionalArgs
+            );
           const childContext = closure.ctx
             .createChild(namedArguments, false)
             .createChild({});
@@ -762,11 +761,13 @@ function resolveArgumentNames(
       })
       .filter(([, value]) => value !== undefined)
   );
-  func.parameters.forEach(({ name }) => {
-    if (!(name in namedArgs)) {
-      namedArgs[name] = args.length ? args.shift() : null;
-    }
-  });
+  func.parameters
+    .filter(({ onlyNamed }) => !onlyNamed)
+    .forEach(({ name }) => {
+      if (!(name in namedArgs)) {
+        namedArgs[name] = args.length ? args.shift() : null;
+      }
+    });
   return [namedArgs, args];
 }
 
@@ -783,10 +784,9 @@ async function resolveModule(
     return ctx.moduleCache.get(normalizedPath);
   }
 
-  const {
-    source: moduleSource,
-    path: modulePath,
-  } = await ctx.getSourceFetcher().fetch(path);
+  const { source: moduleSource, path: modulePath } = await ctx
+    .getSourceFetcher()
+    .fetch(path);
 
   if (!moduleSource) {
     throw new Error('Source not found: ' + path);

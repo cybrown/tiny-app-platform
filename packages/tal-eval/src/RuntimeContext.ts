@@ -153,7 +153,7 @@ export class RuntimeContext {
       this.parent?.triggerDestructors();
       return;
     }
-    this.destructors.forEach(destructor => {
+    this.destructors.forEach((destructor) => {
       if (typeof destructor === 'function') {
         try {
           destructor();
@@ -164,7 +164,7 @@ export class RuntimeContext {
           this.log('error', err);
         }
       } else {
-        this.callFunctionAsync(destructor, []).catch(err => {
+        this.callFunctionAsync(destructor, []).catch((err) => {
           this.notify(
             'An error occurred while destroying a widget, check devtools for details'
           );
@@ -187,7 +187,7 @@ export class RuntimeContext {
     if (this.parent) {
       this.parent.triggerStateChangedListeners();
     }
-    this.stateChangedListeners.forEach(listener => listener());
+    this.stateChangedListeners.forEach((listener) => listener());
   }
 
   beginReinit() {
@@ -423,9 +423,7 @@ export class RuntimeContext {
       return this.parent.log(type, value);
     }
     const logItem: LogItem<T> = {
-      id: Math.random()
-        .toString(16)
-        .slice(2, 8),
+      id: Math.random().toString(16).slice(2, 8),
       timestamp: Date.now(),
       type,
       data: value,
@@ -470,6 +468,7 @@ export type LogItem<T> = {
 
 type ParameterDeclaration<T extends string> = {
   name: T;
+  onlyNamed?: boolean;
 };
 
 export type FunctionDocumentation<T extends string> = {

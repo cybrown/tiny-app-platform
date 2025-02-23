@@ -5,7 +5,7 @@
   "main": "index.mjs",
   "scripts": {
     "build": "echo nothing to build yet",
-    "start": "node start.mjs"
+    "start": "node --watch start.mjs"
   },
   "author": "",
   "license": "ISC",

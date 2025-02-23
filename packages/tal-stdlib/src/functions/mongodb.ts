@@ -62,7 +62,7 @@ async function mongodb_delete_one_impl(
   ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  return withLog(ctx, 'delete-one', value, () =>
+  return withLog(ctx, 'delete-one', value, value.options, () =>
     mongodbDeleteOne({
       uri: getUri(value.uri),
       collection: getCollection(value.collection),
@@ -90,7 +90,7 @@ async function mongodb_find_impl(
   ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  return withLog(ctx, 'find', value, () =>
+  return withLog(ctx, 'find', value, value.options, () =>
     mongodbQuery({
       uri: getUri(value.uri),
       collection: getCollection(value.collection),
@@ -118,7 +118,7 @@ async function mongodb_insert_one_impl(
   ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  return withLog(ctx, 'insert-one', value, () =>
+  return withLog(ctx, 'insert-one', value, value.options, () =>
     mongodbInsertOne({
       uri: getUri(value.uri),
       collection: getCollection(value.collection),
@@ -146,7 +146,7 @@ async function mongodb_update_one_impl(
   ctx: RuntimeContext,
   value: { [key: string]: any }
 ) {
-  return withLog(ctx, 'update-one', value, () =>
+  return withLog(ctx, 'update-one', value, value.options, () =>
     mongodbUpdateOne({
       uri: getUri(value.uri),
       collection: getCollection(value.collection),
@@ -178,6 +178,7 @@ export type MongoLogItemData = {
     uri: string;
     collection: string;
     query: unknown;
+    options: unknown;
     data: unknown;
   };
   stage: 'pending' | 'fulfilled' | 'rejected';
@@ -188,12 +189,14 @@ async function withLog(
   ctx: RuntimeContext,
   operation: string,
   query: any,
+  options: any,
   fn: () => Promise<any>
 ) {
   const logItemData: MongoLogItemData = {
     query: {
       ...query,
       operation,
+      options,
     },
     stage: 'pending',
   };

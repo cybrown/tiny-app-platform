@@ -237,6 +237,8 @@ function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
               <>
                 <Text text="Query" size={1.1} />
                 <Debug force value={query.query} extend={2} />
+                <Text text="Options" size={1.1} />
+                <Debug force value={query.options} extend={2} />
                 <Text text="Data" size={1.1} />
                 <Debug force value={query.data} extend={2} />
               </>

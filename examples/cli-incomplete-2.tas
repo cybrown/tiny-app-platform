@@ -1,0 +1,4 @@
+var a = 1
+set a = 3
+log(a)
+log(a

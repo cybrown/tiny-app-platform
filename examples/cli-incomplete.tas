@@ -1,0 +1,9 @@
+log("start")
+
+let a = 1
+
+let b = 2
+
+log(a + b)
+
+log("en

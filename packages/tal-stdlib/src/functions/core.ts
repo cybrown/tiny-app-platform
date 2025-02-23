@@ -94,7 +94,7 @@ export const watch = defineFunction(
       currentCtxMap.set(expr, newValue);
       ctx
         .callFunctionAsync(action, [oldValue, newValue, oldValue === undefined])
-        .catch(err => {
+        .catch((err) => {
           ctx.notify(
             'An error occurred while watching an expression, check devtools for details'
           );
@@ -314,20 +314,17 @@ export const eval_js = defineFunction(
   'eval_js',
   [{ name: 'code' }, { name: 'context' }],
   (_ctx, { code, context }) => {
-    function evalInContext() {
-      return function() {
-        // eslint-disable-next-line no-eval
-        return eval(code);
-      }.call(context);
-    }
-    return evalInContext();
+    return new Function(...Object.keys(context), `return (${code})`)(
+      ...Object.values(context)
+    );
   },
   undefined,
   {
-    description: 'Evaluate JavaScript code with given attributes on this',
+    description:
+      'Evaluate JavaScript code with given local variables, JavaScript version depends on your runtime.',
     parameters: {
-      code: 'The code to evaluate',
-      context: 'The attributes available on this',
+      code: 'The JavaScript code to evaluate, must be an expression, no statement allowed',
+      context: 'The local variables',
     },
     returns: 'The result of the evaluation',
   }

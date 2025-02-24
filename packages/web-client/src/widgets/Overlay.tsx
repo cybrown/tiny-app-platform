@@ -18,6 +18,7 @@ type OverlayProps = {
   modal?: boolean;
   size?: string;
   title?: string;
+  noFrame?: boolean;
 };
 
 export default function Overlay({
@@ -28,11 +29,24 @@ export default function Overlay({
   modal,
   size,
   title,
+  noFrame,
 }: OverlayProps) {
   const childContext = ctx.createChild({});
   const onCloseHandler = useCallback(() => {
     onClose && ctx.callFunctionAsync(onClose, []);
   }, [ctx, onClose]);
+
+  const content = (children ?? [])
+    .flat(Infinity)
+    .filter((child) => child)
+    .map((child) => ({
+      node: <RenderExpression ctx={childContext} ui={child} />,
+      meta: metadataGet(child) ?? {},
+    }))
+    .map((child, index) => (
+      <React.Fragment key={index}>{child.node}</React.Fragment>
+    ));
+
   return (
     <LowLevelOverlay
       onClose={onCloseHandler}
@@ -40,23 +54,18 @@ export default function Overlay({
       modal={modal ?? true}
       size={size}
     >
-      <WindowFrame
-        title={title}
-        onClose={onCloseHandler}
-        position={position}
-        modal={modal ?? true}
-      >
-        {(children ?? [])
-          .flat(Infinity)
-          .filter((child) => child)
-          .map((child) => ({
-            node: <RenderExpression ctx={childContext} ui={child} />,
-            meta: metadataGet(child) ?? {},
-          }))
-          .map((child, index) => (
-            <React.Fragment key={index}>{child.node}</React.Fragment>
-          ))}
-      </WindowFrame>
+      {noFrame ? (
+        content
+      ) : (
+        <WindowFrame
+          title={title}
+          onClose={onCloseHandler}
+          position={position}
+          modal={modal ?? true}
+        >
+          {content}
+        </WindowFrame>
+      )}
     </LowLevelOverlay>
   );
 }
@@ -71,5 +80,6 @@ export const OverlayDocumentation: WidgetDocumentation<OverlayProps> = {
     modal: "Make the Overlay modal (default true)",
     size: "Size: xl",
     title: "Title to display",
+    noFrame: "Hide window frame",
   },
 };

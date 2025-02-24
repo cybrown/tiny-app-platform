@@ -332,18 +332,30 @@ export const eval_js = defineFunction(
 
 export const exit = defineFunction(
   'exit',
-  [],
-  () => {
+  [{ name: 'code' }],
+  (_ctx, { code }) => {
     try {
-      (window as any).electronAPI.exit();
+      if (typeof window != 'undefined' && (window as any).electronAPI) {
+        (window as any).electronAPI.exit();
+      } else if (typeof process != 'undefined') {
+        process.exit(code);
+      } else {
+        console.error(
+          'Failed to exit, make sure it is running on Electron or command line'
+        );
+      }
     } catch (err) {
-      console.error('Failed to exit, make sure it is running on Electron', err);
+      console.error(
+        'Failed to exit, make sure it is running on Electron or command line',
+        err
+      );
     }
   },
   undefined,
   {
-    description: 'Exit the application, only available on Electron',
-    parameters: {},
+    description:
+      'Exit the application, only available on Electron and command line',
+    parameters: { code: 'Error code to return, only for command line' },
     returns: 'Never',
   }
 );

@@ -150,7 +150,9 @@ class Stringifier {
   }
 
   stringifyLiteral(obj: LiteralNode): string {
-    if (obj.value == null) {
+    if (obj.text) {
+      return obj.text;
+    } else if (obj.value == null) {
       return 'null';
     } else if (typeof obj.value === 'boolean') {
       return String(obj.value);
@@ -443,23 +445,29 @@ class Stringifier {
   }
 
   stringifyCallShellLike(obj: CallNode) {
-    return this.stringify(obj.value) + ' ' + obj.args.map(arg => {
-      if (arg.kind == 'NamedArgument') {
-        if (arg.short != null) {
-          return (
-            '-' +
-            (arg.short ? '-' : '!') +
-            this.stringifyRecordKey(arg.name)
-          );
-        }
-        return (
-          this.stringifyRecordKey(arg.name) +
-          ': ' +
-          this.stringify(arg.value)
-        );
-      }
-      return this.stringify(arg.value);
-    }).join(' ')
+    return (
+      this.stringify(obj.value) +
+      ' ' +
+      obj.args
+        .map((arg) => {
+          if (arg.kind == 'NamedArgument') {
+            if (arg.short != null) {
+              return (
+                '-' +
+                (arg.short ? '-' : '!') +
+                this.stringifyRecordKey(arg.name)
+              );
+            }
+            return (
+              this.stringifyRecordKey(arg.name) +
+              ': ' +
+              this.stringify(arg.value)
+            );
+          }
+          return this.stringify(arg.value);
+        })
+        .join(' ')
+    );
   }
 
   stringifyCallOneLine(obj: CallNode) {

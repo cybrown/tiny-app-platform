@@ -45,6 +45,7 @@ export type NodeMetadata = {
 export type LiteralNode = NodeMetadata & {
   kind: 'Literal';
   value: null | boolean | number | string;
+  text?: string;
   doRemoveFromBlock?: boolean;
 };
 
@@ -223,7 +224,7 @@ export type IntrinsicNode = NodeMetadata & {
 export type AttributeLambdaSugarNode = NodeMetadata & {
   kind: 'AttributeLambdaSugar';
   key: string;
-}
+};
 
 export type NodeByKind = {
   Literal: LiteralNode;

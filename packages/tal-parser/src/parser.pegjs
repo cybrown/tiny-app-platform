@@ -388,7 +388,11 @@ String
     	{ return { location: buildLocation(), kind: "Literal", value }; }
 
 Number
-	= num:[0-9] num2:[0-9_]* '.' num3:[0-9_]* exponent:('e' [0-9_]+)?
+	= '0b' num:[01_]+
+    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: parseInt([...num.filter(c => c != '_')].join(''), 2) }; }
+	/ '0x' num:[0-9a-fA-F_]+
+    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: parseInt([...num.filter(c => c != '_')].join(''), 16) }; }
+	/ num:[0-9] num2:[0-9_]* '.' num3:[0-9_]* exponent:('e' [0-9_]+)?
     	{ return { location: buildLocation(), kind: "Literal", text: text(), value: Number([num, ...num2.filter(c => c != '_'), '.', ...num3.filter(c => c != '_'), ...(exponent ?? []).flat().filter(c => c != '_')].join('')) }; }
 	/ num:[0-9] num2:[0-9_]* exponent:('e' [0-9_]+)?
     	{ return { location: buildLocation(), kind: "Literal", text: text(), value: Number([num, ...num2.filter(c => c != '_'), ...(exponent ?? []).flat().filter(c => c != '_')].join('')) }; }

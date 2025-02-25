@@ -6,9 +6,9 @@
     "tas": "./bin/tas"
   },
   "scripts": {
-    "start": "nx run-many -t start -p backend web-client",
-    "build": "nx run-many -t build",
-    "test": "nx run-many -t test"
+    "start": "turbo start",
+    "build": "turbo build",
+    "test": "turbo test"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "packages/tal-runner"
   ],
   "devDependencies": {
-    "nx": "^16.3.2"
-  }
+    "turbo": "^2.4.4"
+  },
+  "packageManager": "npm@10.9.0"
 }

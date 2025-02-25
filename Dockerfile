@@ -1,7 +1,7 @@
 FROM node:20-alpine AS builder
 RUN mkdir -p /build
 WORKDIR /build
-COPY package.json package-lock.json nx.json .
+COPY package.json package-lock.json turbo.json .
 COPY packages packages
 RUN npm ci && \
     npm run build && \

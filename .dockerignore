@@ -1,5 +1,5 @@
 *
-!/nx.json
+!/turbo.json
 !/package-lock.json
 !/package.json
 !/packages/backend/index.mjs

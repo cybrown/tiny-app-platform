@@ -388,16 +388,32 @@ String
     	{ return { location: buildLocation(), kind: "Literal", value }; }
 
 Number
-	= '0b' num:[01_]+
-    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: parseInt([...num.filter(c => c != '_')].join(''), 2) }; }
-	/ '0x' num:[0-9a-fA-F_]+
-    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: parseInt([...num.filter(c => c != '_')].join(''), 16) }; }
-	/ num:[0-9] num2:[0-9_]* '.' num3:[0-9_]* exponent:('e' [0-9_]+)?
-    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: Number([num, ...num2.filter(c => c != '_'), '.', ...num3.filter(c => c != '_'), ...(exponent ?? []).flat().filter(c => c != '_')].join('')) }; }
-	/ num:[0-9] num2:[0-9_]* exponent:('e' [0-9_]+)?
-    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: Number([num, ...num2.filter(c => c != '_'), ...(exponent ?? []).flat().filter(c => c != '_')].join('')) }; }
-	/ '.' num:[0-9_]+ exponent:('e' [0-9_]+)?
-    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: Number(['.', ...num.filter(c => c != '_'), ...(exponent ?? []).flat().filter(c => c != '_')].join('')) }; }
+	= '0b' num:DigitsBinary
+    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: parseInt(num, 2) }; }
+	/ '0x' num:DigitsHexadecimal
+    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: parseInt(num, 16) }; }
+    / float:NumberFloatDecimal exponent:('e' DigitsDecimal)?
+    	{ return { location: buildLocation(), kind: "Literal", text: text(), value: Number([float, (exponent ? 'e' + exponent[1] : '')].join('')) }; }
+
+NumberFloatDecimal
+	= integerPart:DigitsDecimal '.' fractionPart:DigitsDecimal?
+    	{ return integerPart + '.' + (fractionPart ?? ''); }
+	/ integerPart:DigitsDecimal
+    	{ return integerPart; }
+	/ '.' fractionPart:DigitsDecimal
+    	{ return '.' + fractionPart; }
+
+DigitsBinary
+    = head:[01] tail:('_'* [01])*
+        { return [head, ...tail.map(a => a[1]).filter(c => c != '_')].join(''); }
+
+DigitsDecimal
+    = head:[0-9] tail:('_'* [0-9])*
+        { return [head, ...tail.map(a => a[1]).filter(c => c != '_')].join(''); }
+
+DigitsHexadecimal
+    = head:[0-9a-fA-F] tail:('_'* [0-9a-fA-F])*
+        { return [head, ...tail.map(a => a[1]).filter(c => c != '_')].join(''); }
 
 Boolean
 	= bool:("true" / "false") ! IdentifierTailCharacters

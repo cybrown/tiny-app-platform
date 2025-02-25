@@ -1,4 +1,4 @@
-const staticFiles = ["/static/", "/fonts/"];
+const staticFiles = ["/assets/"];
 
 function log(...args) {
   console.log("[SW]", ...args);

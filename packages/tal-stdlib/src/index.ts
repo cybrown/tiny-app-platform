@@ -146,7 +146,7 @@ import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
 import { ssh_exec } from './functions/ssh';
-import { sleep, spawn } from './functions/spawn';
+import { wait, sleep, spawn } from './functions/spawn';
 import { redis } from './functions/redis';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
@@ -281,6 +281,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
 
   ctx.registerFunction(spawn);
   ctx.registerFunction(sleep);
+  ctx.registerFunction(wait);
 
   ctx.registerFunction(skip);
   ctx.registerFunction(take);

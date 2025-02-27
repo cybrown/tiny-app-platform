@@ -1,7 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { InputText, Link, Tabs, Text, View } from "../theme";
+import { Button, InputText, Link, Tabs, Text, View } from "../theme";
 import { RegisterableFunction } from "tal-eval";
+import {
+  keyboardEventToShortcutDefinition,
+  KEYS_TO_IGNORE,
+  stringifyShortcutDefinition,
+} from "../widgets/internal/keyboard-util";
 
 export default function Documentation({
   ctx,
@@ -154,11 +159,51 @@ export default function Documentation({
                       )
                     )}
                   </ul>
+                  {name == "Button" && <InputShortcutCodeViewer />}
                 </div>
               ))}
           </View>
         )}
       </div>
+    </View>
+  );
+}
+
+function InputShortcutCodeViewer() {
+  const [shortcut, setShortcut] = useState("");
+
+  const handleKeydown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (KEYS_TO_IGNORE.includes(e.key)) return;
+      setShortcut(
+        stringifyShortcutDefinition(
+          keyboardEventToShortcutDefinition(e.nativeEvent, false)
+        )
+      );
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    []
+  );
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(shortcut);
+  }, [shortcut]);
+
+  return (
+    <View layout="flex-row">
+      <Text
+        text="Focus this input to check a shortcut: "
+        weight="bold"
+        color="grey"
+      />
+      <input value={shortcut} onChange={() => null} onKeyDown={handleKeydown} />
+      <Button
+        text="Copy"
+        disabled={shortcut == ""}
+        outline
+        onClick={handleCopy}
+      />
     </View>
   );
 }

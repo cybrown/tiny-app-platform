@@ -3,6 +3,14 @@ import ConfirmPopup from "../internal/ConfirmPopup";
 import ErrorPopover from "../internal/ErrorPopover";
 import { Link, Button as ThemedButton } from "../../theme";
 import commonStyles from "./common.module.css";
+import {
+  keyboardEventToShortcutDefinition,
+  KEYS_TO_IGNORE,
+  ShortcutDefinition,
+  shortcutDefinitionEquals,
+  stringifyShortcutDefinition,
+  stringShortcutToShortcutDefinition,
+} from "../internal/keyboard-util";
 
 type ButtonProps = {
   onClick?: () => unknown;
@@ -16,16 +24,19 @@ type ButtonProps = {
 };
 
 // TODO: Allow same shortcuts for different modals ?
-// TODO: Allow modifiers
 const enabledShortcuts: Set<string> = new Set();
 
-function shouldTriggerEvent(e: KeyboardEvent, shortcut: string): boolean {
+function shouldTriggerEvent(
+  e: KeyboardEvent,
+  shortcut: ShortcutDefinition
+): boolean {
   try {
     const tagName = (e.target as any).tagName;
     if (tagName === "INPUT" || tagName === "TEXTAREA") return false;
+    if ((e.target as HTMLElement).contentEditable == "true") return false;
   } catch {}
-  if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return false;
-  return shortcut.toLocaleLowerCase() === e.key.toLocaleLowerCase();
+  const currentDefinition = keyboardEventToShortcutDefinition(e);
+  return shortcutDefinitionEquals(currentDefinition, shortcut);
 }
 
 export default function Button({
@@ -59,19 +70,24 @@ export default function Button({
 
   useEffect(() => {
     if (!shortcut || !shortcut.length || disabled) return;
-    if (enabledShortcuts.has(shortcut)) {
+    const shortcutDefinition = stringShortcutToShortcutDefinition(shortcut);
+    const shortcutDefinitionStringCanonical =
+      stringifyShortcutDefinition(shortcutDefinition);
+    if (enabledShortcuts.has(shortcutDefinitionStringCanonical)) {
       throw new Error("Shortcut already assigned: " + shortcut);
     }
     const handler = (e: KeyboardEvent) => {
-      if (shouldTriggerEvent(e, shortcut) && onClick) {
+      if (e.repeat) return;
+      if (KEYS_TO_IGNORE.includes(e.key)) return;
+      if (shouldTriggerEvent(e, shortcutDefinition) && onClick) {
         doClickAction();
       }
     };
-    enabledShortcuts.add(shortcut);
-    document.addEventListener("keypress", handler);
+    enabledShortcuts.add(shortcutDefinitionStringCanonical);
+    document.addEventListener("keydown", handler);
     return () => {
-      enabledShortcuts.delete(shortcut);
-      document.removeEventListener("keypress", handler);
+      enabledShortcuts.delete(shortcutDefinitionStringCanonical);
+      document.removeEventListener("keydown", handler);
     };
   }, [doClickAction, onClick, shortcut, disabled]);
 
@@ -90,7 +106,15 @@ export default function Button({
   const popoverTargetRef = useRef<HTMLDivElement | null>(null);
 
   const textToDisplay = useMemo(
-    () => (shortcut ? text + " (" + shortcut.toUpperCase() + ")" : text),
+    () =>
+      shortcut
+        ? text +
+          " (" +
+          stringifyShortcutDefinition(
+            stringShortcutToShortcutDefinition(shortcut)
+          ) +
+          ")"
+        : text,
     [text, shortcut]
   );
 

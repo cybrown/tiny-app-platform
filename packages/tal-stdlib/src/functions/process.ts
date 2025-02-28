@@ -26,9 +26,15 @@ export type ProcessLogItemData = {
 
 export const process_exec = defineFunction(
   'process_exec',
-  [{ name: 'name' }, { name: 'args' }, { name: 'env' }, { name: 'timeout' }],
+  [
+    { name: 'name' },
+    { name: 'args' },
+    { name: 'cwd' },
+    { name: 'env' },
+    { name: 'timeout' },
+  ],
   undefined,
-  async (ctx, { name, args, env, timeout }) => {
+  async (ctx, { name, args, cwd, env, timeout }) => {
     const logItem: ProcessLogItemData = {
       command: name,
       args,
@@ -42,7 +48,7 @@ export const process_exec = defineFunction(
           fileName: name,
           args,
           env,
-          cwd: sourcePathDirname,
+          cwd: cwd ?? sourcePathDirname,
           timeout,
         }),
         []
@@ -88,15 +94,21 @@ export const process_kill = defineFunction(
 
 export const process_exec_stream = defineFunction(
   'process_exec_stream',
-  [{ name: 'name' }, { name: 'args' }, { name: 'env' }, { name: 'timeout' }],
+  [
+    { name: 'name' },
+    { name: 'args' },
+    { name: 'cwd' },
+    { name: 'env' },
+    { name: 'timeout' },
+  ],
   undefined,
-  async (ctx, { name, args, env, timeout }) => {
+  async (ctx, { name, args, cwd, env, timeout }) => {
     const result = await customRpc(
       'exec-process-stream',
       JSON.stringify({
         fileName: name,
         args,
-        cwd: sourcePathDirname,
+        cwd: cwd ?? sourcePathDirname,
         env,
         timeout,
       }),
@@ -121,7 +133,7 @@ export const process_exec_stream = defineFunction(
       stderr: stderrBuffer,
     };
 
-    (async function() {
+    (async function () {
       if (!output) return;
       for await (const message of streamToMessages(output)) {
         const dv = new DataView(message.buffer);

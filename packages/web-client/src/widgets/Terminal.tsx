@@ -1,5 +1,6 @@
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { Terminal as XTermTerminal } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
 import { useEffect, useMemo, useRef } from "react";
 import { MessageStream } from "tal-stdlib";
 import "@xterm/xterm/css/xterm.css";
@@ -26,7 +27,11 @@ export default function Terminal({ stream, rows }: TerminalProps) {
 
   useEffect(() => {
     if (!divRef.current) return;
+    divRef.current.style.width = "100%";
     term.open(divRef.current);
+    const fitAddon = new FitAddon();
+    term.loadAddon(fitAddon);
+    fitAddon.fit();
     return () => {
       term.dispose();
     };
@@ -37,7 +42,7 @@ export default function Terminal({ stream, rows }: TerminalProps) {
     term.clear();
     let doCancel = false;
     // eslint-disable-next-line no-loop-func
-    (async function() {
+    (async function () {
       for await (const message of stream.messages()) {
         if (doCancel) return;
         term.write(message);
@@ -54,7 +59,6 @@ export default function Terminal({ stream, rows }: TerminalProps) {
   return (
     <div style={{ display: "flex" }}>
       <div ref={divRef} />
-      <div style={{ width: 30, height: 1 }}></div>
     </div>
   );
 }

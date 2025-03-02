@@ -75,6 +75,9 @@ import {
   process_exec,
   process_exec_stream,
   process_kill,
+  process_pty_create,
+  process_pty_resize,
+  process_pty_write,
 } from './functions/process';
 import { regex_match } from './functions/regex';
 import {
@@ -234,6 +237,9 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(pg_query);
   ctx.registerFunction(process_exec);
   ctx.registerFunction(process_exec_stream);
+  ctx.registerFunction(process_pty_create);
+  ctx.registerFunction(process_pty_write);
+  ctx.registerFunction(process_pty_resize);
   ctx.registerFunction(process_kill);
   ctx.registerFunction(redis);
   ctx.registerFunction(regex_match);
@@ -302,7 +308,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
 export { HttpLogItemData } from './functions/http';
 export { MongoLogItemData } from './functions/mongodb';
 export { PgLogItemData } from './functions/pg';
-export { ProcessLogItemData } from './functions/process';
+export { ProcessLogItemData, ProcessPtyObject } from './functions/process';
 export { RedisLogItemData } from './functions/redis';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';
 export { secretCreate } from './util/secret';

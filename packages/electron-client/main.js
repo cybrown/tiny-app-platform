@@ -193,8 +193,8 @@ app.on('open-file', function(event, filePath) {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-PORT.then((port) => {
-  const server = require("./back/lib/server");
+PORT.then(async (port) => {
+  const server = (await import("./back/lib/server.mjs")).default;
   server.listen({ port, host: "127.0.0.1" }, () => {
     console.log(`Server listening on port ${port}`);
   });

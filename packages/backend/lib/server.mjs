@@ -28,6 +28,8 @@ const { Client } = pg_module;
 import ssh2 from "ssh2";
 import { createRedisClient } from "./redis.mjs";
 import config from "./config.mjs";
+import pty from "node-pty";
+import { WebSocketServer } from "ws";
 
 const server = createServer();
 
@@ -553,5 +555,103 @@ server.on("request", (req, res) => {
   config.log && console.log(req.method, req.url);
   servePublic(req, res, () => handleRequest(req, res));
 });
+
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (client) => {
+  client.on("error", (e) => {
+    config.log && console.error("Error while receiving incoming connection", e);
+  });
+
+  client.once("message", async (message) => {
+    const { command, headers, body } = JSON.parse(message);
+
+    if (command == "process_pty_create") {
+      try {
+        process_pty_start(client, body);
+        const frame = Buffer.alloc(1);
+        frame.writeUInt8(0, 0);
+        client.send(frame);
+      } catch (e) {
+        const frame = Buffer.alloc(1);
+        frame.writeUInt8(1, 0);
+        client.send(Buffer.concat([frame, Buffer.from(e.message)]));
+        client.close();
+      }
+    } else {
+      const errorMessage = `Command not found: ` + command;
+      const frame = Buffer.alloc(1);
+      frame.writeUInt8(1, 0);
+      client.send(Buffer.concat([frame, Buffer.from(errorMessage)]));
+    }
+  });
+});
+
+function process_pty_start(client, body) {
+  if (process.env.hasOwnProperty("DISABLE_PROCESS_OPS")) {
+    throw new Error("Process related operations disabled on this server");
+  }
+
+  setTimeout(() => {
+    let { fileName, args, env, cwd, timeout } = body;
+
+    const ptyProcess = pty.spawn(fileName, args, {
+      name: "xterm-color",
+      cols: 80,
+      rows: 24,
+      cwd,
+      env: { ...process.env, ...env },
+    });
+    if (timeout != null) {
+      setTimeout(() => ptyProcess.kill("SIGKILL"), timeout);
+    }
+
+    client.on("message", (message) => {
+      const messageKind = message[0];
+      const messageBody = message.slice(1);
+      switch (messageKind) {
+        case 0: {
+          // Write to process
+          ptyProcess.write(messageBody);
+          break;
+        }
+        case 1: {
+          // Resize
+          const cols = messageBody.readUInt32LE(0);
+          const rows = messageBody.readUInt32LE(4);
+          ptyProcess.resize(cols, rows);
+          break;
+        }
+      }
+    });
+
+    client.on("close", () => ptyProcess.kill("SIGKILL"));
+    client.on("error", (err) => {
+      config.log && console.error("request error:", err);
+      ptyProcess.kill("SIGKILL");
+    });
+
+    const frame = Buffer.alloc(5);
+    frame.writeUInt8(4, 0);
+    frame.writeUInt32LE(ptyProcess.pid, 1);
+    client.send(frame);
+
+    ptyProcess.onExit((statusCode) => {
+      const frame = Buffer.alloc(7);
+      frame.writeUInt32BE(3, 0);
+      frame.writeUint8(3, 4);
+      frame.writeUint8(statusCode != null ? 1 : 0, 5);
+      frame.writeUint8(statusCode ?? 0, 6);
+      client.send(frame);
+      client.close();
+    });
+
+    ptyProcess.onData((data) => {
+      const frameHeader = Buffer.alloc(1);
+      frameHeader.writeUInt8(1, 0);
+      client.send(Buffer.concat([frameHeader, Buffer.from(data)]));
+    });
+  });
+}
 
 export default server;

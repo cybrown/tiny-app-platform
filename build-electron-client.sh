@@ -15,9 +15,12 @@ cd packages/electron-client || exit 1
 
 cd back || exit 1
 npm i
+../node_modules/.bin/electron-rebuild
 cd .. || exit 1
 
+rm -rf node_modules
 npm i
+./node_modules/.bin/electron-rebuild
 
 npm run make
 

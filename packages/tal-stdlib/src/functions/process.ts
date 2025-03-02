@@ -1,8 +1,9 @@
 import { windowExists } from '../util/window';
-import { customRpc } from '../util/custom-rpc';
+import { customRpc, customRpcWs } from '../util/custom-rpc';
 import { defineFunction } from 'tal-eval';
 import {
   BufferedMessageStream,
+  MessageStream,
   MessageStreamSink,
   streamToMessages,
 } from '../util/streams';
@@ -29,9 +30,9 @@ export const process_exec = defineFunction(
   [
     { name: 'name' },
     { name: 'args' },
-    { name: 'cwd' },
-    { name: 'env' },
-    { name: 'timeout' },
+    { name: 'cwd', onlyNamed: true },
+    { name: 'env', onlyNamed: true },
+    { name: 'timeout', onlyNamed: true },
   ],
   undefined,
   async (ctx, { name, args, cwd, env, timeout }) => {
@@ -97,9 +98,9 @@ export const process_exec_stream = defineFunction(
   [
     { name: 'name' },
     { name: 'args' },
-    { name: 'cwd' },
-    { name: 'env' },
-    { name: 'timeout' },
+    { name: 'cwd', onlyNamed: true },
+    { name: 'env', onlyNamed: true },
+    { name: 'timeout', onlyNamed: true },
   ],
   undefined,
   async (ctx, { name, args, cwd, env, timeout }) => {
@@ -159,5 +160,106 @@ export const process_exec_stream = defineFunction(
     })();
 
     return processObject;
+  }
+);
+
+export type ProcessPtyObject = {
+  pid: number;
+  done: boolean;
+  statusCode: null | number;
+  data: MessageStream;
+  send: (data: any) => void;
+  resize: (cols: number, rows: number) => void;
+};
+
+export const process_pty_create = defineFunction(
+  'process_pty_create',
+  [
+    { name: 'name' },
+    { name: 'args' },
+    { name: 'cwd', onlyNamed: true },
+    { name: 'env', onlyNamed: true },
+    { name: 'timeout', onlyNamed: true },
+  ],
+  undefined,
+  async (ctx, { name, args, cwd, env, timeout }) => {
+    const result = await customRpcWs(
+      'process_pty_create',
+      {
+        fileName: name,
+        args,
+        cwd: cwd ?? sourcePathDirname,
+        env,
+        timeout,
+      },
+      []
+    );
+
+    const dataStream = new MessageStreamSink();
+
+    const { resolve: pidResolve, promise: pidPromise } =
+      Promise.withResolvers();
+
+    (async function () {
+      while (true) {
+        const message = await result.messages.next();
+        if (message.done) break;
+
+        if (message.value) {
+          const messageKind = message.value[0];
+          const messageData = message.value.slice(1);
+          switch (messageKind) {
+            case 1:
+              dataStream.push(messageData);
+              break;
+            case 4: {
+              const arr = new Uint32Array(messageData.buffer);
+              pidResolve(arr[0]);
+              break;
+            }
+          }
+        }
+      }
+    })();
+
+    let processObject: ProcessPtyObject = {
+      pid: Number(await pidPromise),
+      done: false,
+      statusCode: null as number | null,
+      data: dataStream,
+      send(p: any) {
+        const buf = new TextEncoder().encode(p);
+        const frame = new Uint8Array(buf.length + 1);
+        frame.set(buf, 1);
+        result.send(frame);
+      },
+      resize(cols: number, rows: number) {
+        const dv = new DataView(new ArrayBuffer(9));
+        dv.setUint8(0, 1);
+        dv.setUint32(1, cols, true);
+        dv.setUint32(5, rows, true);
+        result.send(dv.buffer);
+      },
+    };
+
+    return processObject;
+  }
+);
+
+export const process_pty_write = defineFunction(
+  'process_pty_write',
+  [{ name: 'process' }, { name: 'data' }],
+  undefined,
+  async (_ctx, { process, data }) => {
+    (process as ProcessPtyObject).send(data);
+  }
+);
+
+export const process_pty_resize = defineFunction(
+  'process_pty_resize',
+  [{ name: 'process' }, { name: 'cols' }, { name: 'rows' }],
+  undefined,
+  async (_ctx, { process, cols, rows }) => {
+    (process as ProcessPtyObject).resize(cols, rows);
   }
 );

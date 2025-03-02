@@ -1,5 +1,6 @@
 FROM node:20-alpine AS builder
-RUN mkdir -p /build
+RUN mkdir -p /build && \
+    apk add --no-cache python3 make g++
 WORKDIR /build
 COPY package.json package-lock.json turbo.json .
 COPY packages packages

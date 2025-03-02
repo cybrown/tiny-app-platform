@@ -2,7 +2,11 @@ import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
 import { Terminal as XTermTerminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { useEffect, useMemo, useRef } from "react";
-import { MessageStream, ProcessPtyObject } from "tal-stdlib";
+import {
+  MessageStream,
+  ProcessPtyObject,
+  SshConnectionObject,
+} from "tal-stdlib";
 import "@xterm/xterm/css/xterm.css";
 
 export type TerminalProps = {
@@ -12,7 +16,10 @@ export type TerminalProps = {
   onData?: Closure;
   onResize?: Closure;
   process?: ProcessPtyObject;
+  ssh?: SshConnectionObject;
 };
+
+const textEncoder = new TextEncoder();
 
 export default function Terminal({
   ctx,
@@ -21,37 +28,57 @@ export default function Terminal({
   onData,
   onResize,
   process,
+  ssh,
 }: TerminalProps) {
   const divRef = useRef<HTMLDivElement>(null);
 
-  if (process && (onResize || onData || stream)) {
+  if (
+    [ssh, process, onResize || onData || stream]
+      .filter(Boolean)
+      .reduce((a, b) => a + (b ? 1 : 0), 0) > 1
+  ) {
     throw new Error(
-      "process prop is exclusive with onResize, onData and stream"
+      "Props process, (onResize, onData and stream) and ssh are exclusive"
     );
   }
 
-  const term = useMemo(
-    () =>
-      new XTermTerminal({
+  const term = useMemo<XTermTerminal>(
+    () => {
+      return new XTermTerminal({
         convertEol: true,
         ...(rows != null ? { rows } : {}),
-      }),
+      });
+    },
     // Do not re-create the terminal when rows changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
+  const fitApplied = useRef(false);
+
   useEffect(() => {
     if (!divRef.current) return;
-    divRef.current.style.width = "100%";
-    term.open(divRef.current);
-    const fitAddon = new FitAddon();
-    term.loadAddon(fitAddon);
+
+    if (!fitApplied.current) {
+      divRef.current.style.width = "100%";
+      const fitAddon = new FitAddon();
+      term.loadAddon(fitAddon);
+      fitAddon.fit();
+      term.open(divRef.current);
+      const observer = new ResizeObserver(() => {
+        fitAddon.fit();
+      });
+      observer.observe(divRef.current);
+      fitApplied.current = true;
+    }
+
     term.onData((str) => {
       if (onData) {
         ctx.callFunctionAsync(onData, [str]);
       } else if (process) {
         process.send(str);
+      } else if (ssh) {
+        ssh.write(textEncoder.encode(str));
       }
     });
     term.onResize((size) => {
@@ -59,32 +86,25 @@ export default function Terminal({
         ctx.callFunctionAsync(onResize, [size]);
       } else if (process) {
         process.resize(size.cols, size.rows);
+      } else if (ssh) {
+        ssh.resize(size.cols, size.rows);
       }
     });
-    fitAddon.fit();
-
-    const observer = new ResizeObserver(() => {
-      fitAddon.fit();
-    });
-
-    observer.observe(divRef.current);
-
-    return () => {
-      term.dispose();
-      observer.disconnect();
-    };
-  }, [term]);
+  }, [term, process, ssh, onResize, onData, stream]);
 
   useEffect(() => {
-    if (!stream && !process) return;
-    term.clear();
+    if (!term) return;
+    if (!stream && !process && !ssh) return;
+    term.reset();
     let doCancel = false;
     // eslint-disable-next-line no-loop-func
     (async function () {
       for await (const message of process
         ? process.data.messages()
+        : ssh
+        ? ssh.stdout.messages()
         : stream.messages()) {
-        if (doCancel) return;
+        if (doCancel) break;
         term.write(message);
       }
     })().catch((err) => {
@@ -94,7 +114,7 @@ export default function Terminal({
     return () => {
       doCancel = true;
     };
-  }, [term, stream, process]);
+  }, [term, stream, process, ssh]);
 
   return (
     <div style={{ display: "flex" }}>
@@ -111,6 +131,7 @@ export const TerminalDocumentation: WidgetDocumentation<TerminalProps> = {
     onData: "Input data handler",
     onResize: "Resize event handler",
     process:
-      "A process object created by process_run_pty, exclusive with stream, onData and onResize",
+      "A process object created by process_run_pty, exclusive with ssh, stream, onData and onResize",
+    ssh: "An SSH connection object created by ssh_exec, exclusive with process, stream, onData and onResize",
   },
 };

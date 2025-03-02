@@ -148,7 +148,7 @@ import {
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
-import { ssh_exec } from './functions/ssh';
+import { ssh_exec, ssh_resize, ssh_write } from './functions/ssh';
 import { wait, sleep, spawn } from './functions/spawn';
 import { redis } from './functions/redis';
 
@@ -284,6 +284,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(stream_merge);
 
   ctx.registerFunction(ssh_exec);
+  ctx.registerFunction(ssh_write);
+  ctx.registerFunction(ssh_resize);
 
   ctx.registerFunction(spawn);
   ctx.registerFunction(sleep);
@@ -312,6 +314,7 @@ export { ProcessLogItemData, ProcessPtyObject } from './functions/process';
 export { RedisLogItemData } from './functions/redis';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';
 export { secretCreate } from './util/secret';
+export { SshConnectionObject } from './functions/ssh';
 export {
   BufferedMessageStream,
   MessageStream,

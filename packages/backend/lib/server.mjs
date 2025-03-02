@@ -445,71 +445,6 @@ const routes = [
     },
   },
   {
-    route: "/op/ssh-exec",
-    handler: async (req) => {
-      const body = await readBody(req);
-      const request = JSON.parse(body.toString());
-      const { host, port, username, password, timeout, command, pty } = request;
-
-      const conn = new ssh2.Client();
-
-      conn.connect({
-        host,
-        port: port ?? 22,
-        username,
-        password,
-      });
-
-      if (timeout != null) {
-        setTimeout(() => conn.destroy(), timeout);
-      }
-
-      return (res) => {
-        res.on("close", () => {
-          conn.destroy();
-        });
-
-        res.on("error", () => {
-          conn.destroy();
-        });
-
-        conn.on("ready", () => {
-          conn.exec(command, { pty: pty ?? false }, (err, stream) => {
-            if (err) throw err;
-            stream.on("close", (code) => {
-              const frame = Buffer.alloc(7);
-              frame.writeUInt32BE(3, 0);
-              frame.writeUint8(3, 4);
-              frame.writeUint8(code != null ? 1 : 0, 5);
-              frame.writeUint8(code ?? 0, 6);
-              res.write(frame);
-              conn.end();
-              res.end();
-            });
-
-            stream.on("data", (data) => {
-              const frameHeader = Buffer.alloc(4 + 1);
-              frameHeader.writeUInt32BE(1 + data.length, 0);
-              frameHeader.writeUInt8(1, 4);
-              res.write(frameHeader);
-              res.write(data);
-            });
-
-            stream.stderr.on("data", (data) => {
-              const frameHeader = Buffer.alloc(4 + 1);
-              frameHeader.writeUInt32BE(data.length + 1, 0);
-              frameHeader.writeUInt8(2, 4);
-              res.write(frameHeader);
-              res.write(data);
-            });
-
-            res.writeHead(200, {});
-          });
-        });
-      };
-    },
-  },
-  {
     route: "/op/redis",
     handler: async (req) => {
       const body = await readBody(req);
@@ -558,6 +493,11 @@ server.on("request", (req, res) => {
 
 const wss = new WebSocketServer({ server });
 
+const wsCommands = {
+  process_pty_create: process_pty_create,
+  ssh_exec: ssh_exec,
+};
+
 wss.on("connection", (client) => {
   client.on("error", (e) => {
     config.log && console.error("Error while receiving incoming connection", e);
@@ -566,9 +506,10 @@ wss.on("connection", (client) => {
   client.once("message", async (message) => {
     const { command, headers, body } = JSON.parse(message);
 
-    if (command == "process_pty_create") {
+    const websocketHandler = wsCommands[command];
+    if (websocketHandler != null) {
       try {
-        process_pty_start(client, body);
+        websocketHandler(client, body);
         const frame = Buffer.alloc(1);
         frame.writeUInt8(0, 0);
         client.send(frame);
@@ -587,7 +528,7 @@ wss.on("connection", (client) => {
   });
 });
 
-function process_pty_start(client, body) {
+function process_pty_create(client, body) {
   if (process.env.hasOwnProperty("DISABLE_PROCESS_OPS")) {
     throw new Error("Process related operations disabled on this server");
   }
@@ -650,6 +591,113 @@ function process_pty_start(client, body) {
       const frameHeader = Buffer.alloc(1);
       frameHeader.writeUInt8(1, 0);
       client.send(Buffer.concat([frameHeader, Buffer.from(data)]));
+    });
+  });
+}
+
+/**
+ *
+ * @param {WebSocket} client
+ * @param {*} body
+ */
+async function ssh_exec(client, body) {
+  setTimeout(async () => {
+    const { host, port, username, password, timeout, command, pty } = body;
+
+    const conn = new ssh2.Client();
+
+    conn.connect({
+      host,
+      port: port ?? 22,
+      username,
+      password,
+    });
+
+    if (timeout != null) {
+      setTimeout(() => conn.destroy(), timeout);
+    }
+
+    client.on("close", () => {
+      conn.destroy();
+    });
+
+    client.on("error", () => {
+      conn.destroy();
+    });
+
+    conn.on("error", () => {
+      client.close();
+    });
+
+    /**
+     * @type {ssh2.ClientChannel}
+     */
+    let clientStream = null;
+
+    const pendingMessages = [];
+
+    client.on("message", (data) => {
+      if (clientStream == null) {
+        pendingMessages.push(data);
+      } else {
+        handleMessage(data);
+      }
+    });
+
+    /**
+     *
+     * @param {Buffer} data
+     */
+    function handleMessage(data) {
+      switch (data[0]) {
+        case 0: {
+          // stdin
+          clientStream.write(data.slice(1));
+          break;
+        }
+        case 3: {
+          //resize
+          const cols = data.readUInt32LE(1);
+          const rows = data.readUInt32LE(5);
+          clientStream.setWindow(rows, cols);
+          break;
+        }
+      }
+    }
+
+    conn.on("ready", () => {
+      conn.exec(command, { pty: pty ?? false }, (err, stream) => {
+        if (err) throw err;
+
+        clientStream = stream;
+
+        for (const pendingMessage of pendingMessages) {
+          handleMessage(pendingMessage);
+        }
+        pendingMessages.length = 0;
+
+        stream.on("close", (code) => {
+          const frame = Buffer.alloc(3);
+          frame.writeUint8(3, 0);
+          frame.writeUint8(code != null ? 1 : 0, 1);
+          frame.writeUint8(code ?? 0, 2);
+          client.send(frame);
+          conn.end();
+          client.close();
+        });
+
+        stream.on("data", (data) => {
+          const frameHeader = Buffer.alloc(1);
+          frameHeader.writeUInt8(1, 0);
+          client.send(Buffer.concat([frameHeader, data]));
+        });
+
+        stream.stderr.on("data", (data) => {
+          const frameHeader = Buffer.alloc(1);
+          frameHeader.writeUInt8(2, 0);
+          client.send(Buffer.concat([frameHeader, data]));
+        });
+      });
     });
   });
 }

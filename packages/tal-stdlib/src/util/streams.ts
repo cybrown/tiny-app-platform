@@ -1,97 +1,23 @@
-export async function* streamToMessages(
-  stream: ReadableStreamDefaultReader<Uint8Array>
-) {
-  const reader = new ReadableReader(stream);
-  let buffer = new Uint8Array(0);
-
-  while (reader.hasMore || buffer.length) {
-    // When there's not enough bytes to read the length, read more from the stream until there's enough
-    while (buffer.length < 4) {
-      if (!(reader.hasMore || buffer.length)) return;
-      buffer = concatUint8Arrays(
-        buffer,
-        await reader.readOrThrow(
-          'Not enough data to read message length: ' + buffer.length
-        )
-      );
-    }
-
-    // buffer has more than 4 bytes, read length and infer expected message length
-    let expectedMessageLength = new DataView(buffer.buffer).getUint32(0);
-
-    // Read more data until there's enough to read the expected message
-    while (buffer.length - 4 < expectedMessageLength) {
-      buffer = concatUint8Arrays(
-        buffer,
-        await reader.readOrThrow('Not enough data to read message')
-      );
-    }
-
-    // Yield messages until there's not enough data to complete one message
-    while (buffer.length - 4 >= expectedMessageLength) {
-      yield buffer.slice(4, 4 + expectedMessageLength);
-      buffer = buffer.slice(4 + expectedMessageLength);
-
-      if (buffer.length < 4) break;
-      expectedMessageLength = new DataView(buffer.buffer).getUint32(0);
-    }
-  }
-}
-
-/**
- * Helper class to read from a ReadableStreamDefaultReader<Uint8Array>
- */
-class ReadableReader {
-  private isDone = false;
-
-  public get hasMore() {
-    return !this.isDone;
-  }
-
-  constructor(private reader: ReadableStreamDefaultReader<Uint8Array>) {}
-
-  async readOrThrow(message: string) {
-    if (this.isDone) throw new Error(message);
-    const { done, value } = await this.reader.read();
-    if (done || !value) this.isDone = true;
-    return value;
-  }
-}
-
-/**
- * Concatenate two Uint8Arrays or only the first one if the second one is undefined
- */
-function concatUint8Arrays(
-  a: Uint8Array<ArrayBuffer>,
-  b: Uint8Array | undefined
-): Uint8Array<ArrayBuffer> {
-  if (!b) return a;
-  const result = new Uint8Array(a.length + b.length);
-  result.set(a);
-  result.set(b, a.length);
-  return result;
-}
-
 export interface MessageStream {
-  messages(): AsyncGenerator<Uint8Array, void, unknown>;
+  messages(): AsyncGenerator<ArrayBuffer, void, unknown>;
 }
 
 export class MessageStreamSink implements MessageStream {
-  private promise = Promise.withResolvers<Uint8Array | undefined>();
-  private promiseQueue: Promise<Uint8Array | undefined>[] = [];
+  private promise = Promise.withResolvers<ArrayBuffer | undefined>();
+  private promiseQueue: Promise<ArrayBuffer | undefined>[] = [];
   private done = false;
 
-  push(message: Uint8Array) {
-    if (this.done) throw new Error('Cannot push to a done MessageStreamSink');
+  push(message: ArrayBuffer) {
+    if (this.done) throw new Error('Cannot push to a done MessageStream');
     this.promise.resolve(message);
     this.promiseQueue.push(this.promise.promise);
-    this.promise = Promise.withResolvers<Uint8Array | undefined>();
+    this.promise = Promise.withResolvers<ArrayBuffer | undefined>();
   }
 
   end() {
     this.promise.resolve(undefined);
     this.promiseQueue.push(this.promise.promise);
-    this.promise = Promise.withResolvers<Uint8Array | undefined>();
+    this.promise = Promise.withResolvers<ArrayBuffer | undefined>();
     this.done = true;
   }
 
@@ -134,58 +60,6 @@ export class MessageStreamSink implements MessageStream {
         yield nextMessage;
       }
       await this.promise.promise;
-      if (this.done) {
-        break;
-      }
-    }
-  }
-}
-
-export class BufferedMessageStream implements MessageStream {
-  private buffer: Uint8Array[] = [];
-  private done = false;
-  private currentPromise = Promise.withResolvers<Uint8Array | undefined>();
-  private promiseQueue: Promise<Uint8Array | undefined>[] = [];
-
-  constructor(source: MessageStream) {
-    (async () => {
-      for await (const message of source.messages()) {
-        this.push(message);
-      }
-      this.end();
-    })();
-  }
-
-  private push(message: Uint8Array) {
-    this.buffer.push(message);
-    this.currentPromise.resolve(message);
-    this.promiseQueue.push(this.currentPromise.promise);
-    this.currentPromise = Promise.withResolvers<Uint8Array | undefined>();
-  }
-
-  private end() {
-    this.done = true;
-    this.currentPromise.resolve(undefined);
-    this.promiseQueue.push(this.currentPromise.promise);
-    this.currentPromise = Promise.withResolvers<Uint8Array | undefined>();
-  }
-
-  async *messages() {
-    let index = 0;
-    while (true) {
-      while (index < this.buffer.length) {
-        yield this.buffer[index++];
-      }
-
-      while (this.promiseQueue.length) {
-        await this.promiseQueue.shift();
-
-        while (index < this.buffer.length) {
-          yield this.buffer[index++];
-        }
-      }
-
-      await this.currentPromise.promise;
       if (this.done) {
         break;
       }

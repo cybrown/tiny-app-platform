@@ -24,7 +24,7 @@ import {
   array_set,
   array_contains,
 } from './functions/array';
-import { bytes_to_string } from './functions/bytes';
+import { bytes_from, bytes_to_string } from './functions/bytes';
 import { cheerio_find, cheerio_load } from './functions/cheerio';
 import {
   default$,
@@ -73,7 +73,6 @@ import {
 import { pg_query } from './functions/pg';
 import {
   process_exec,
-  process_exec_stream,
   process_kill,
   process_pty_create,
   process_pty_resize,
@@ -186,6 +185,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(array_take);
   ctx.registerFunction(array_to_record);
   ctx.registerFunction(bytes_to_string);
+  ctx.registerFunction(bytes_from);
   ctx.registerFunction(cheerio_find);
   ctx.registerFunction(cheerio_load);
 
@@ -236,7 +236,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(record_exclude);
   ctx.registerFunction(pg_query);
   ctx.registerFunction(process_exec);
-  ctx.registerFunction(process_exec_stream);
   ctx.registerFunction(process_pty_create);
   ctx.registerFunction(process_pty_write);
   ctx.registerFunction(process_pty_resize);
@@ -315,9 +314,4 @@ export { RedisLogItemData } from './functions/redis';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';
 export { secretCreate } from './util/secret';
 export { SshConnectionObject } from './functions/ssh';
-export {
-  BufferedMessageStream,
-  MessageStream,
-  MessageStreamSink,
-  streamToMessages,
-} from './util/streams';
+export { MessageStream, MessageStreamSink } from './util/streams';

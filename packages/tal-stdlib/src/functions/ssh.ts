@@ -1,11 +1,6 @@
-import { customRpc, customRpcWs } from '../util/custom-rpc';
+import { customRpcWs } from '../util/custom-rpc';
 import { defineFunction } from 'tal-eval';
-import {
-  BufferedMessageStream,
-  MessageStream,
-  MessageStreamSink,
-  streamToMessages,
-} from '../util/streams';
+import { MessageStream, MessageStreamSink } from '../util/streams';
 
 export type SshConnectionObject = {
   done: boolean;
@@ -51,14 +46,11 @@ export const ssh_exec = defineFunction(
     const stdoutSink = new MessageStreamSink();
     const stderrSink = new MessageStreamSink();
 
-    const stdoutBuffer = new BufferedMessageStream(stdoutSink);
-    const stderrBuffer = new BufferedMessageStream(stderrSink);
-
     let sshConnectionObject: SshConnectionObject = {
       done: false,
       statusCode: null as number | null,
-      stdout: stdoutBuffer,
-      stderr: stderrBuffer,
+      stdout: stdoutSink,
+      stderr: stderrSink,
       write(data: ArrayBuffer) {
         if (!result.isOpen()) return;
         const i8 = new Uint8Array(new ArrayBuffer(1 + data.byteLength));
@@ -74,7 +66,7 @@ export const ssh_exec = defineFunction(
         dv.setUint32(1, cols, true);
         dv.setUint32(5, rows, true);
         result.send(dv.buffer);
-      }
+      },
     };
 
     (async function () {
@@ -85,7 +77,7 @@ export const ssh_exec = defineFunction(
           break;
         }
 
-        const dv = new DataView(message.buffer);
+        const dv = new DataView(message);
         const outid = dv.getUint8(0);
         switch (outid) {
           case 1:
@@ -118,7 +110,7 @@ export const ssh_write = defineFunction(
   async (ctx, { connection, data }) => {
     let dataToSend = data;
     if (typeof data == 'string') {
-      dataToSend = new TextEncoder().encode(data);
+      dataToSend = new TextEncoder().encode(data).buffer;
     }
     (connection as SshConnectionObject).write(dataToSend);
   },

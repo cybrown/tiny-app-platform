@@ -12,7 +12,7 @@ export const string_to_bytes = defineFunction(
       case 'base64url':
         return base64_to_bytes(string);
       case 'utf-8':
-        return new TextEncoder().encode(string);
+        return new TextEncoder().encode(string).buffer;
       default:
         throw new Error('Encoding not supported: ' + pEncoding);
     }
@@ -147,7 +147,7 @@ const extractPlaceholdersRegexp = /\$[a-zA-Z_$]+[a-zA-Z_$0-9]*/g;
 function replacePlaceholdersByLocals(ctx: RuntimeContext, str: string) {
   return str.replace(
     extractPlaceholdersRegexp,
-    name => ctx.getLocalOr(name.substring(1), '') as string
+    (name) => ctx.getLocalOr(name.substring(1), '') as string
   );
 }
 
@@ -156,7 +156,7 @@ function replacePlaceholdersByExpressions(
   str: string,
   values: { [key: string]: string }
 ) {
-  return str.replace(extractPlaceholdersRegexp, name => {
+  return str.replace(extractPlaceholdersRegexp, (name) => {
     try {
       return values[name.substring(1)];
     } catch (err) {

@@ -73,12 +73,13 @@ export default function Terminal({
     }
 
     const disposeOnData = term.onData((str) => {
+      const asArrayBuffer = textEncoder.encode(str).buffer;
       if (onData) {
-        ctx.callFunctionAsync(onData, [str]);
+        ctx.callFunctionAsync(onData, [asArrayBuffer]);
       } else if (process) {
-        process.send(str);
+        process.send(asArrayBuffer);
       } else if (ssh) {
-        ssh.write(textEncoder.encode(str));
+        ssh.write(asArrayBuffer);
       }
     });
     const disposeOnResize = term.onResize((size) => {
@@ -110,7 +111,7 @@ export default function Terminal({
         ? ssh.stdout.messages()
         : stream.messages()) {
         if (doCancel) break;
-        term.write(message);
+        term.write(new Uint8Array(message));
       }
     })().catch((err) => {
       // TODO: Log an error and show a notification

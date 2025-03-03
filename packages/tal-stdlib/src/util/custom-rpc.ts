@@ -43,7 +43,7 @@ export async function customRpcWs(
       }
       successResolve();
     } else {
-      messages.push(new Uint8Array(await message.data.arrayBuffer()));
+      messages.push(await message.data.arrayBuffer());
     }
   }
   client.addEventListener('message', firstMessageHandler);
@@ -64,8 +64,8 @@ export async function customRpcWs(
   await successPromise;
 
   return {
-    send(data: unknown) {
-      client.send(data as any);
+    send(data: ArrayBuffer) {
+      client.send(data);
     },
     messages,
     close() {

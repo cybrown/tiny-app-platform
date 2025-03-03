@@ -228,12 +228,14 @@ export const process_pty_create = defineFunction(
       statusCode: null as number | null,
       data: dataStream,
       send(p: any) {
+        if (!result.isOpen()) return;
         const buf = new TextEncoder().encode(p);
         const frame = new Uint8Array(buf.length + 1);
         frame.set(buf, 1);
         result.send(frame);
       },
       resize(cols: number, rows: number) {
+        if (!result.isOpen()) return;
         const dv = new DataView(new ArrayBuffer(9));
         dv.setUint8(0, 1);
         dv.setUint32(1, cols, true);

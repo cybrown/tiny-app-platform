@@ -71,5 +71,8 @@ export async function customRpcWs(
     close() {
       client.close();
     },
+    isOpen() {
+      return client.readyState == client.OPEN
+    }
   };
 }

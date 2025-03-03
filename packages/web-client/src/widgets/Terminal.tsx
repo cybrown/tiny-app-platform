@@ -72,7 +72,7 @@ export default function Terminal({
       fitApplied.current = true;
     }
 
-    term.onData((str) => {
+    const disposeOnData = term.onData((str) => {
       if (onData) {
         ctx.callFunctionAsync(onData, [str]);
       } else if (process) {
@@ -81,7 +81,7 @@ export default function Terminal({
         ssh.write(textEncoder.encode(str));
       }
     });
-    term.onResize((size) => {
+    const disposeOnResize = term.onResize((size) => {
       if (onResize) {
         ctx.callFunctionAsync(onResize, [size]);
       } else if (process) {
@@ -90,6 +90,11 @@ export default function Terminal({
         ssh.resize(size.cols, size.rows);
       }
     });
+
+    return () => {
+      disposeOnData.dispose();
+      disposeOnResize.dispose();
+    };
   }, [term, process, ssh, onResize, onData, stream]);
 
   useEffect(() => {

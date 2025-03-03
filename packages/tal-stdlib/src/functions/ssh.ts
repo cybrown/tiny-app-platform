@@ -60,6 +60,7 @@ export const ssh_exec = defineFunction(
       stdout: stdoutBuffer,
       stderr: stderrBuffer,
       write(data: ArrayBuffer) {
+        if (!result.isOpen()) return;
         const i8 = new Uint8Array(new ArrayBuffer(1 + data.byteLength));
         const dv = new DataView(i8.buffer);
         dv.setUint8(0, 0);
@@ -67,6 +68,7 @@ export const ssh_exec = defineFunction(
         result.send(dv.buffer);
       },
       resize(cols: number, rows: number) {
+        if (!result.isOpen()) return;
         const dv = new DataView(new ArrayBuffer(9));
         dv.setUint8(0, 3);
         dv.setUint32(1, cols, true);

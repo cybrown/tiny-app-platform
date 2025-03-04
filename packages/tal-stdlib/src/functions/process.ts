@@ -93,8 +93,9 @@ export type ProcessPtyObject = {
   done: boolean;
   statusCode: null | number;
   data: MessageStream;
-  send: (data: ArrayBuffer) => void;
-  resize: (cols: number, rows: number) => void;
+  send(data: ArrayBuffer): void;
+  resize(cols: number, rows: number): void;
+  wait(): Promise<number>;
 };
 
 export const process_pty_create = defineFunction(
@@ -122,8 +123,8 @@ export const process_pty_create = defineFunction(
 
     const dataStream = new MessageStreamSink();
 
-    const { resolve: pidResolve, promise: pidPromise } =
-      Promise.withResolvers();
+    const pidReceived = Promise.withResolvers();
+    const processEnded = Promise.withResolvers<number>();
 
     (async function () {
       while (true) {
@@ -135,11 +136,23 @@ export const process_pty_create = defineFunction(
           const messageData = message.value.slice(1);
           switch (messageKind) {
             case 1:
+              // Received data
               dataStream.push(messageData);
               break;
+            case 3: {
+              // Received process status and process has stopped
+              let arr = new Uint8Array(messageData);
+              if (!arr[0])
+                return processEnded.reject(
+                  new Error('Failed to start process')
+                );
+              dataStream.end();
+              return processEnded.resolve(arr[1]);
+            }
             case 4: {
+              // Received process pid
               const arr = new Uint32Array(messageData);
-              pidResolve(arr[0]);
+              pidReceived.resolve(arr[0]);
               break;
             }
           }
@@ -148,7 +161,7 @@ export const process_pty_create = defineFunction(
     })();
 
     let processObject: ProcessPtyObject = {
-      pid: Number(await pidPromise),
+      pid: Number(await pidReceived.promise),
       done: false,
       statusCode: null as number | null,
       data: dataStream,
@@ -165,6 +178,9 @@ export const process_pty_create = defineFunction(
         dv.setUint32(1, cols, true);
         dv.setUint32(5, rows, true);
         result.send(dv.buffer);
+      },
+      async wait() {
+        return processEnded.promise;
       },
     };
 
@@ -191,5 +207,14 @@ export const process_pty_resize = defineFunction(
   undefined,
   async (_ctx, { process, cols, rows }) => {
     (process as ProcessPtyObject).resize(cols, rows);
+  }
+);
+
+export const process_pty_wait = defineFunction(
+  'process_pty_wait',
+  [{ name: 'process' }],
+  undefined,
+  async (_ctx, { process }) => {
+    return (process as ProcessPtyObject).wait();
   }
 );

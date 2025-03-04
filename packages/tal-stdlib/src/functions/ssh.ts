@@ -4,11 +4,11 @@ import { MessageStream, MessageStreamSink } from '../util/streams';
 
 export type SshConnectionObject = {
   done: boolean;
-  statusCode: number | null;
   stdout: MessageStream;
   stderr: MessageStream;
   write(data: ArrayBuffer): void;
   resize(cols: number, rows: number): void;
+  wait(): Promise<number>;
 };
 
 export const ssh_exec = defineFunction(
@@ -45,10 +45,10 @@ export const ssh_exec = defineFunction(
 
     const stdoutSink = new MessageStreamSink();
     const stderrSink = new MessageStreamSink();
+    const endPromise = Promise.withResolvers<number>();
 
     let sshConnectionObject: SshConnectionObject = {
       done: false,
-      statusCode: null as number | null,
       stdout: stdoutSink,
       stderr: stderrSink,
       write(data: ArrayBuffer) {
@@ -67,10 +67,14 @@ export const ssh_exec = defineFunction(
         dv.setUint32(5, rows, true);
         result.send(dv.buffer);
       },
+      wait() {
+        return endPromise.promise;
+      },
     };
 
     (async function () {
-      while (true) {
+      let doContinue = true;
+      while (doContinue) {
         const { value: message, done } = await result.messages.next();
 
         if (done || message == null) {
@@ -88,8 +92,11 @@ export const ssh_exec = defineFunction(
             break;
           case 3:
             if (dv.getUint8(1) === 1) {
-              sshConnectionObject.statusCode = dv.getUint8(2);
+              endPromise.resolve(dv.getUint8(2));
+            } else {
+              endPromise.reject(new Error('Failed to run ssh'));
             }
+            doContinue = false;
             break;
         }
       }
@@ -137,6 +144,22 @@ export const ssh_resize = defineFunction(
       connection: 'Connection to resize',
       cols: 'Number of columns in the terminal',
       rows: 'Number of rows in the terminal',
+    },
+    returns: 'Nothing',
+  }
+);
+
+export const ssh_wait = defineFunction(
+  'ssh_wait',
+  [{ name: 'connection' }],
+  undefined,
+  async (ctx, { connection }) => {
+    return await (connection as SshConnectionObject).wait();
+  },
+  {
+    description: 'Wait for the SSH connection to close',
+    parameters: {
+      connection: 'Connection to resize',
     },
     returns: 'Nothing',
   }

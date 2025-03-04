@@ -76,6 +76,7 @@ import {
   process_kill,
   process_pty_create,
   process_pty_resize,
+  process_pty_wait,
   process_pty_write,
 } from './functions/process';
 import { regex_match } from './functions/regex';
@@ -147,7 +148,7 @@ import {
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
 import { secret, secret_create } from './functions/secret';
-import { ssh_exec, ssh_resize, ssh_write } from './functions/ssh';
+import { ssh_exec, ssh_resize, ssh_wait, ssh_write } from './functions/ssh';
 import { wait, sleep, spawn } from './functions/spawn';
 import { redis } from './functions/redis';
 
@@ -239,6 +240,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(process_pty_create);
   ctx.registerFunction(process_pty_write);
   ctx.registerFunction(process_pty_resize);
+  ctx.registerFunction(process_pty_wait);
   ctx.registerFunction(process_kill);
   ctx.registerFunction(redis);
   ctx.registerFunction(regex_match);
@@ -285,6 +287,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(ssh_exec);
   ctx.registerFunction(ssh_write);
   ctx.registerFunction(ssh_resize);
+  ctx.registerFunction(ssh_wait);
 
   ctx.registerFunction(spawn);
   ctx.registerFunction(sleep);

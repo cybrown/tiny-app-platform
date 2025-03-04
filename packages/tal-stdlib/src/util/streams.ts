@@ -2,6 +2,12 @@ export interface MessageStream {
   messages(): AsyncGenerator<ArrayBuffer, void, unknown>;
 }
 
+export function isMessageStream(value: unknown): value is MessageStream {
+  return (
+    value instanceof MessageStreamSink || value instanceof MergedMessageStream
+  );
+}
+
 export class MessageStreamSink implements MessageStream {
   private promise = Promise.withResolvers<ArrayBuffer | undefined>();
   private promiseQueue: Promise<ArrayBuffer | undefined>[] = [];
@@ -89,10 +95,10 @@ class MergedMessageStream implements MessageStream {
         [
           nextMessageFromA == null
             ? null
-            : nextMessageFromA.then(response => ({ origin: 'a', response })),
+            : nextMessageFromA.then((response) => ({ origin: 'a', response })),
           nextMessageFromB == null
             ? null
-            : nextMessageFromB.then(response => ({ origin: 'b', response })),
+            : nextMessageFromB.then((response) => ({ origin: 'b', response })),
         ].filter(Boolean)
       );
 

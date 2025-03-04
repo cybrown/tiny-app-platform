@@ -1,4 +1,5 @@
 import { defineFunction } from 'tal-eval';
+import { isMessageStream, MessageStreamSink } from '../util/streams';
 
 export const skip = defineFunction(
   'skip',
@@ -81,6 +82,11 @@ export const map = defineFunction(
         ctx.callFunction(mapper, [it, index])
       );
     }
+    if (value instanceof MessageStreamSink) {
+      throw new Error(
+        'map() over MessageStream is not supported in synchronous mode.'
+      );
+    }
     return ctx.callFunction(mapper, [value, 0]);
   },
   async (ctx, { value, mapper }) => {
@@ -90,6 +96,20 @@ export const map = defineFunction(
       for (let index = 0; index < value.length; index++) {
         const it = value[index];
         result.push(await ctx.callFunctionAsync(mapper, [it, index]));
+      }
+      return result;
+    }
+    if (isMessageStream(value)) {
+      const result: unknown[] = [];
+      let index = 0;
+      const messages = value.messages();
+      while (true) {
+        const currentMessage = await messages.next();
+        if (currentMessage.done || currentMessage.value == null) break;
+        result.push(
+          await ctx.callFunctionAsync(mapper, [currentMessage.value, index])
+        );
+        index++;
       }
       return result;
     }

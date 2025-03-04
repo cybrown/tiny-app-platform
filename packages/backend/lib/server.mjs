@@ -578,11 +578,10 @@ function process_pty_create(client, body) {
     client.send(frame);
 
     ptyProcess.onExit((statusCode) => {
-      const frame = Buffer.alloc(7);
-      frame.writeUInt32BE(3, 0);
-      frame.writeUint8(3, 4);
-      frame.writeUint8(statusCode != null ? 1 : 0, 5);
-      frame.writeUint8(statusCode ?? 0, 6);
+      const frame = Buffer.alloc(3);
+      frame.writeUint8(3, 0);
+      frame.writeUint8(statusCode != null ? 1 : 0, 1);
+      frame.writeUint8(statusCode.exitCode ?? 0, 2);
       client.send(frame);
       client.close();
     });

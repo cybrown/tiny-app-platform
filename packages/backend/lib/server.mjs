@@ -30,6 +30,7 @@ import { createRedisClient } from "./redis.mjs";
 import config from "./config.mjs";
 import pty from "node-pty";
 import { WebSocketServer } from "ws";
+import { exec } from "child_process";
 
 const server = createServer();
 
@@ -544,7 +545,7 @@ function process_pty_create(client, body) {
       env: { ...process.env, ...env },
     });
     if (timeout != null) {
-      setTimeout(() => ptyProcess.kill("SIGKILL"), timeout);
+      setTimeout(() => killPtyProcess(ptyProcess), timeout);
     }
 
     client.on("message", (message) => {
@@ -566,10 +567,12 @@ function process_pty_create(client, body) {
       }
     });
 
-    client.on("close", () => ptyProcess.kill("SIGKILL"));
+    client.on("close", () => {
+      killPtyProcess(ptyProcess);
+    });
     client.on("error", (err) => {
       config.log && console.error("request error:", err);
-      ptyProcess.kill("SIGKILL");
+      killPtyProcess(ptyProcess);
     });
 
     const frame = Buffer.alloc(5);
@@ -702,3 +705,23 @@ async function ssh_exec(client, body) {
 }
 
 export default server;
+
+async function killPtyProcess(ptyProcess) {
+  if (process.platform == "win32") {
+    return new Promise((resolve, reject) => {
+      exec(
+        `C:\\Windows\\System32\\taskkill.exe /PID ${ptyProcess.pid} /T /F`,
+        (err) => {
+          if (err) {
+            console.error("Failed to kill process");
+            console.error(err);
+            return reject(err);
+          }
+          resolve();
+        }
+      );
+    });
+  } else {
+    ptyProcess.kill("SIGKILL");
+  }
+}

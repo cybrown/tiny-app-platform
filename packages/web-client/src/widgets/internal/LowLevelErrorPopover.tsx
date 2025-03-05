@@ -97,58 +97,59 @@ export default function LowLevelErrorPopover({
       );
 
       if (placeAboveTarget) {
-        popoverMainElement.style.top = `${Math.min(
-          window.innerHeight,
-          Math.max(0, targetRect.top)
-        ) -
+        popoverMainElement.style.top = `${
+          Math.min(window.innerHeight, Math.max(0, targetRect.top)) -
           ARROW_SIZE -
           popoverRect.height +
-          1}px`;
-        popoverArrowElement.style.top = `${Math.min(
-          window.innerHeight,
-          Math.max(0, targetRect.top)
-        ) - ARROW_SIZE}px`;
+          1
+        }px`;
+        popoverArrowElement.style.top = `${
+          Math.min(window.innerHeight, Math.max(0, targetRect.top)) - ARROW_SIZE
+        }px`;
         popoverArrowElement.style.transform = "rotate(180deg)";
       } else {
-        popoverMainElement.style.top = `${Math.min(
-          window.innerHeight,
-          Math.max(0, targetRect.bottom)
-        ) +
+        popoverMainElement.style.top = `${
+          Math.min(window.innerHeight, Math.max(0, targetRect.bottom)) +
           ARROW_SIZE -
-          1}px`;
-        popoverArrowElement.style.top = `${Math.min(
-          window.innerHeight,
-          Math.max(0, targetRect.bottom)
-        ) - ARROW_SIZE}px`;
+          1
+        }px`;
+        popoverArrowElement.style.top = `${
+          Math.min(window.innerHeight, Math.max(0, targetRect.bottom)) -
+          ARROW_SIZE
+        }px`;
         popoverArrowElement.style.transform = "";
       }
 
       highlightElement.style.top = `${targetRect.top - TARGET_WIDTH}px`;
-      highlightElement.style.height = `${targetRect.height +
-        TARGET_WIDTH * 2}px`;
+      highlightElement.style.height = `${
+        targetRect.height + TARGET_WIDTH * 2
+      }px`;
       highlightElement.style.left = `${targetRect.left - TARGET_WIDTH}px`;
       highlightElement.style.width = `${targetRect.width + TARGET_WIDTH * 2}px`;
 
       popoverMainElement.style.left = `${left}px`;
-      popoverArrowElement.style.left = `${targetRect.left +
-        targetRect.width / 2 -
-        ARROW_SIZE}px`;
+      popoverArrowElement.style.left = `${
+        targetRect.left + targetRect.width / 2 - ARROW_SIZE
+      }px`;
     }
 
     requestAnimationFrame(updatePopoverPosition);
 
     return () => {
       doContinue = false;
-      popoverArrowElement &&
+      if (popoverArrowElement) {
         document
           .getElementById("tap-overlays")!
           .removeChild(popoverArrowElement);
-      popoverMainElement &&
+      }
+      if (popoverMainElement) {
         document
           .getElementById("tap-overlays")!
           .removeChild(popoverMainElement);
-      highlightElement &&
+      }
+      if (highlightElement) {
         document.getElementById("tap-overlays")!.removeChild(highlightElement);
+      }
     };
   }, [target, popoverMainElement, popoverArrowElement, highlightElement]);
 

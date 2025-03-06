@@ -28,7 +28,9 @@ export default function RenderError({
       <Text
         text={`Failed to evaluate ${
           expression ? nameKindOfExpression(expression) : "an expression"
-        } during ${phase} because of: <${err}>${locationMessage}`}
+        } during ${phase} because of: <${
+          err instanceof EvaluationError ? err.cause.message : err
+        }>${locationMessage}`}
         wrap
         color="rgb(245, 242, 242)"
       />

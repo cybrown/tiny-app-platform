@@ -401,7 +401,7 @@ function App() {
   showUpdateNotificationCallback.value = () => setShowUpdateNotification(true);
 
   useEffect(() => {
-    (async function() {
+    (async function () {
       try {
         setIsLoadingApp(true);
         setIsLoadError(false);
@@ -443,11 +443,34 @@ function App() {
     resolvePasswordRef.current = null;
   }, []);
 
-  const forceRender = useForceRender();
+  const renderAllApp = useForceRender();
+
+  const currentRenderRef = useRef<number>(null);
+
+  const queueRenderAllApp = useCallback(() => {
+    if (currentRenderRef.current) return;
+    currentRenderRef.current = requestAnimationFrame(() => {
+      currentRenderRef.current = null;
+      renderAllApp();
+    });
+  }, [renderAllApp]);
+
+  useEffect(() => {
+    return () => {
+      if (currentRenderRef.current) {
+        cancelAnimationFrame(currentRenderRef.current);
+      }
+    };
+  }, []);
+
   const ctx: RuntimeContext = useMemo(
     () =>
-      buildContext(forceRender, setPasswordPromptVisible, resolvePasswordRef),
-    [forceRender]
+      buildContext(
+        queueRenderAllApp,
+        setPasswordPromptVisible,
+        resolvePasswordRef
+      ),
+    [queueRenderAllApp]
   );
 
   const [parseError, setParseError] = useState<unknown | null>(null);
@@ -487,9 +510,8 @@ function App() {
     [ctx]
   );
 
-  const [lastCompileErrorToLog, setLastCompileErrorToLog] = useState<unknown>(
-    null
-  );
+  const [lastCompileErrorToLog, setLastCompileErrorToLog] =
+    useState<unknown>(null);
 
   useEffect(() => {
     if (!lastCompileErrorToLog) return;

@@ -229,3 +229,77 @@ export const unique = defineFunction(
     throw new Error('Type not supported for unique');
   }
 );
+
+export const notify = defineFunction(
+  'notify',
+  [{ name: 'title' }, { name: 'body' }, { name: 'modal' }],
+  undefined,
+  async (_ctx, { title, body, modal }) => {
+    if (Notification.permission !== 'granted') {
+      await Notification.requestPermission();
+    }
+    if (Notification.permission != 'granted') {
+      return;
+    }
+
+    const notification = await createNotification(title, body, modal);
+
+    notification.addEventListener('click', () => {
+      window.focus();
+    });
+  }
+);
+
+let createNotification = createNotificationTryingAllMethods;
+
+async function createNotificationTryingAllMethods(
+  title: string,
+  body: string,
+  modal: boolean
+): Promise<Notification> {
+  try {
+    const notification = await createNotificationViaConstructor(
+      title,
+      body,
+      modal
+    );
+    createNotification = createNotificationViaConstructor;
+    return notification;
+  } catch (err) {
+    const notification = await createNotificationViaServiceWorker(
+      title,
+      body,
+      modal
+    );
+    createNotification = createNotificationViaServiceWorker;
+    return notification;
+  }
+}
+
+async function createNotificationViaServiceWorker(
+  title: string,
+  body: string,
+  modal: boolean
+) {
+  const registration = await navigator.serviceWorker.ready;
+  const tag = Math.random().toString();
+
+  await registration.showNotification(title ?? 'Notification', {
+    body: body ?? '',
+    requireInteraction: !!modal,
+    tag,
+  });
+
+  return (await registration.getNotifications({ tag }))[0];
+}
+
+async function createNotificationViaConstructor(
+  title: string,
+  body: string,
+  modal: boolean
+) {
+  return new Notification(title, {
+    body,
+    requireInteraction: modal,
+  });
+}

@@ -144,6 +144,7 @@ import {
   contains,
   length,
   unique,
+  notify,
 } from './functions/util';
 import { metadata_set, metadata_get } from './functions/metadata';
 import { flex, scroller } from './functions/widget';
@@ -307,6 +308,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(contains);
   ctx.registerFunction(length);
   ctx.registerFunction(unique);
+  ctx.registerFunction(notify);
 }
 
 export { HttpLogItemData } from './functions/http';

@@ -9,14 +9,26 @@ type DebugProps = {
   value: unknown;
   force?: boolean;
   extend?: number;
+  widget?: boolean;
 };
 
-export default function Debug({ ctx, value, force, extend }: DebugProps) {
+export default function Debug({
+  ctx,
+  value,
+  force,
+  extend,
+  widget,
+}: DebugProps) {
   // If ctx is null, the value is a raw value to show to the user
   if (force || !ctx || ctx.getLocalOr(APP_DEBUG_MODE_ENV, false)) {
     return (
       <div className={styles.Debug}>
-        <RenderAny value={value} path="" extended={extend} />
+        <RenderAny
+          value={value}
+          path=""
+          extended={extend}
+          widget={widget ?? false}
+        />
       </div>
     );
   }
@@ -27,25 +39,41 @@ function RenderAny({
   value,
   path,
   extended,
+  widget,
 }: {
   value: unknown;
   path: string;
   extended?: number;
+  widget: boolean;
 }): any {
   if (value === null) {
     return <span>null</span>;
   } else if (value === undefined) {
     return <span>undefined</span>;
   } else if (Array.isArray(value)) {
-    return <RenderArray value={value} path={path} extended={extended} />;
+    return (
+      <RenderArray
+        value={value}
+        path={path}
+        extended={extended}
+        widget={widget}
+      />
+    );
   } else if (typeof value === "object") {
-    if ("kind" in value && typeof value.kind === "string") {
+    if (widget && "kind" in value && typeof value.kind === "string") {
       const kind = value.kind;
       if (typeof kind == "string") {
         return <RenderKindedRecord value={value} path={path} kind={kind} />;
       }
     }
-    return <RenderObject value={value} path={path} extended={extended} />;
+    return (
+      <RenderObject
+        value={value}
+        path={path}
+        extended={extended}
+        widget={widget}
+      />
+    );
   } else if (["string", "number", "boolean"].includes(typeof value)) {
     const valueAsJson = JSON.stringify(value);
     const hasMore = valueAsJson.length > 250;
@@ -77,10 +105,12 @@ function RenderArray({
   value,
   path,
   extended,
+  widget,
 }: {
   value: unknown[];
   path: string;
   extended?: number;
+  widget: boolean;
 }) {
   const [isOpen, toggleIsOpen] = useIsOpen(!!extended);
   const [showAll, setShowAll] = useState(false);
@@ -116,6 +146,7 @@ function RenderArray({
                     value={sub}
                     path={path + "[" + i + "]"}
                     extended={extended ? extended - 1 : undefined}
+                    widget={widget}
                   />
                 </div>
               )
@@ -189,10 +220,12 @@ function RenderObject({
   value,
   path,
   extended,
+  widget,
 }: {
   value: object;
   path: string;
   extended?: number;
+  widget: boolean;
 }) {
   const [isOpen, toggleIsOpen] = useIsOpen(!!extended);
   return (
@@ -216,6 +249,7 @@ function RenderObject({
                 value={sub}
                 path={(path !== "" ? path + "." : "") + key}
                 extended={extended ? extended - 1 : undefined}
+                widget={widget}
               />
             </div>
           ))}
@@ -264,5 +298,6 @@ export const DebugDocumentation: WidgetDocumentation<DebugProps> = {
     value: "Value to inspect, when debug env is true",
     force: "Force enable debug mode locally",
     extend: "Number of levels to extends by default",
+    widget: "Render short info for widgets, default false",
   },
 };

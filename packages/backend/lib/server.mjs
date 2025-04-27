@@ -23,7 +23,7 @@ import {
   operations as mongodbOperations,
 } from "./drivers/mongodb.mjs";
 import child_process from "child_process";
-import * as pg_module from "pg";
+import pg_module from "pg";
 const { Client } = pg_module;
 import ssh2 from "ssh2";
 import { createRedisClient } from "./redis.mjs";
@@ -341,9 +341,23 @@ const routes = [
     handler: async (req, pathParams) => {
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
-      let { uri, query, params } = request;
+      let { uri, query, params, ssl, insecure } = request;
 
-      const client = new Client({ connectionString: uri });
+      const sslOptions = ssl
+        ? insecure
+          ? {
+              ssl: {
+                rejectUnauthorized: false,
+                allowPartialTrustChain: true,
+              },
+            }
+          : { ssl: {} }
+        : {};
+
+      const client = new Client({
+        connectionString: uri,
+        ...sslOptions,
+      });
       try {
         await client.connect();
 

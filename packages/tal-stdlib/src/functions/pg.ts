@@ -3,7 +3,13 @@ import { defineFunction, RuntimeContext } from 'tal-eval';
 
 export const pg_query = defineFunction(
   'pg_query',
-  [{ name: 'uri' }, { name: 'query' }, { name: 'params' }],
+  [
+    { name: 'uri' },
+    { name: 'query' },
+    { name: 'params' },
+    { name: 'ssl' },
+    { name: 'insecure' },
+  ],
   undefined,
   pg_query_impl
 );
@@ -36,6 +42,8 @@ async function pg_query_impl(
       uri: getUri(value.uri),
       query: value.query,
       params: value.params,
+      ssl: value.ssl,
+      insecure: value.insecure,
     });
     logItem.data.result = response;
     logItem.data.stage = 'fulfilled';
@@ -50,6 +58,8 @@ async function pgQuery(params: {
   uri: string;
   query: string;
   params: unknown;
+  ssl: boolean;
+  insecure: boolean;
 }) {
   const response = await customRpc('pg-query', params);
   if (response.status === 500) {

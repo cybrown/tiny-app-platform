@@ -7,6 +7,7 @@ import {
   PgLogItemData,
   ProcessLogItemData,
   RedisLogItemData,
+  SqliteLogItemData,
 } from "tal-stdlib";
 import {
   View,
@@ -34,7 +35,8 @@ function isUnknownLogType(type: string): boolean {
     type !== "mongo" &&
     type !== "pg" &&
     type !== "http-request" &&
-    type !== "process"
+    type !== "process" &&
+    type !== "sqlite"
   );
 }
 
@@ -48,6 +50,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const [includePg, setIncludePg] = useState(true);
   const [includeHttp, setIncludeHttp] = useState(true);
   const [includeRedis, setIncludeRedis] = useState(true);
+  const [includeSqlite, setIncludeSqlite] = useState(true);
   const [includeProcess, setIncludeProcess] = useState(true);
   const [includeUnknown, setIncludeUnknown] = useState(true);
 
@@ -82,6 +85,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
           onChange={setIncludeProcess}
         />
         <CheckBox label="🌐" value={includeHttp} onChange={setIncludeHttp} />
+        <CheckBox label="🪶" value={includeRedis} onChange={setIncludeSqlite} />
       </View>
       {logs
         .filter(
@@ -93,6 +97,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
             (logItem.type === "http-request" && includeHttp) ||
             (logItem.type === "process" && includeProcess) ||
             (logItem.type === "redis" && includeRedis) ||
+            (logItem.type === "sqlite" && includeSqlite) ||
             (isUnknownLogType(logItem.type) && includeUnknown)
         )
         .map((logItem) => (
@@ -125,6 +130,8 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
       );
     case "redis":
       return <RenderRedisLogItem item={item as LogItem<RedisLogItemData>} />;
+    case "sqlite":
+      return <RenderSqliteLogItem item={item as LogItem<SqliteLogItemData>} />;
     case "error":
       return <RenderErrorLogItem item={item} />;
   }
@@ -265,6 +272,59 @@ function RenderPgLogItem({ item }: { item: LogItem<PgLogItemData> }) {
   return (
     <>
       <Text text="🐘" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      {stage === "fulfilled" ? (
+        <Text text="OK" color="green" weight="bold" />
+      ) : stage === "rejected" ? (
+        <Text text="KO" color="red" weight="bold" />
+      ) : (
+        <Loader size="md" />
+      )}
+      <Text text={query} ellipsis />
+      {isDetailsTabVisible ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Query details"
+            onClose={hideDetailsHandler}
+          >
+            <View layout="flex-row">
+              <Text text="URI:" />
+              <Text text={uri} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Query:" />
+              <Text text={query} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Params:" />
+              <Text text={JSON.stringify(params)} />
+            </View>
+            <Text text="Result" size={1.1} />
+            <Debug force value={result} extend={3} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+    </>
+  );
+}
+
+function RenderSqliteLogItem({ item }: { item: LogItem<SqliteLogItemData> }) {
+  const { uri, query, stage, params, result } = item.data;
+
+  const [isDetailsTabVisible, setDetailsTabVisible] = useState<boolean>(false);
+  const showDetailsHandler = useCallback(() => setDetailsTabVisible(true), []);
+  const hideDetailsHandler = useCallback(() => setDetailsTabVisible(false), []);
+
+  return (
+    <>
+      <Text text="🪶" />
       <Button text="🔎" onClick={showDetailsHandler} outline />
       {stage === "fulfilled" ? (
         <Text text="OK" color="green" weight="bold" />

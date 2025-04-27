@@ -152,6 +152,7 @@ import { secret, secret_create } from './functions/secret';
 import { ssh_exec, ssh_resize, ssh_wait, ssh_write } from './functions/ssh';
 import { wait, sleep, spawn } from './functions/spawn';
 import { redis } from './functions/redis';
+import { sqlite_query } from './functions/sqlite';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -280,6 +281,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(flex);
   ctx.registerFunction(scroller);
 
+  ctx.registerFunction(sqlite_query);
+
   ctx.registerFunction(stream_create);
   ctx.registerFunction(stream_read);
   ctx.registerFunction(stream_write);
@@ -320,3 +323,4 @@ export { base64_to_bytes, bytes_to_base64 } from './util/base64';
 export { secretCreate } from './util/secret';
 export { SshConnectionObject } from './functions/ssh';
 export { MessageStream, MessageStreamSink } from './util/streams';
+export { SqliteLogItemData } from './functions/sqlite';

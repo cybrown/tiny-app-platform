@@ -177,7 +177,7 @@ try {
 }
 
 function buildContext(
-  onStateChange: () => void,
+  onStateChange: (sync: boolean) => void,
   setPromptPasswordVisible: (visible: boolean) => void,
   resolveRef: React.MutableRefObject<((password: string) => void) | null>
 ): RuntimeContext {
@@ -447,13 +447,20 @@ function App() {
 
   const currentRenderRef = useRef<number>(null);
 
-  const queueRenderAllApp = useCallback(() => {
-    if (currentRenderRef.current) return;
-    currentRenderRef.current = requestAnimationFrame(() => {
-      currentRenderRef.current = null;
-      renderAllApp();
-    });
-  }, [renderAllApp]);
+  const queueRenderAllApp = useCallback(
+    (sync: boolean) => {
+      if (currentRenderRef.current) return;
+      if (sync) {
+        renderAllApp();
+        return;
+      }
+      currentRenderRef.current = requestAnimationFrame(() => {
+        currentRenderRef.current = null;
+        renderAllApp();
+      });
+    },
+    [renderAllApp]
+  );
 
   useEffect(() => {
     return () => {

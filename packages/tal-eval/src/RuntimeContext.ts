@@ -38,7 +38,7 @@ export class RuntimeContext {
   private childIdCounter = 0;
 
   constructor(
-    onStateChange: () => void,
+    onStateChange: (sync: boolean) => void,
     private _locals: { [key: string]: unknown } = {},
     private parent?: RuntimeContext,
     private extendable: boolean = true
@@ -174,20 +174,20 @@ export class RuntimeContext {
     });
   }
 
-  private stateChangedListeners: Set<() => void> = new Set();
+  private stateChangedListeners: Set<(sync: boolean) => void> = new Set();
   private isValueRedeclarationAllowed = false;
   private mutableLocals = new Set<string>();
   private _isWidgetState = false;
 
   forceRefresh() {
-    this.triggerStateChangedListeners();
+    this.triggerStateChangedListeners(this.forInput);
   }
 
-  private triggerStateChangedListeners() {
+  private triggerStateChangedListeners(sync: boolean) {
     if (this.parent) {
-      this.parent.triggerStateChangedListeners();
+      this.parent.triggerStateChangedListeners(sync);
     }
-    this.stateChangedListeners.forEach((listener) => listener());
+    this.stateChangedListeners.forEach((listener) => listener(sync));
   }
 
   beginReinit() {
@@ -259,7 +259,7 @@ export class RuntimeContext {
       throw new Error('Tried to set a not mutable local: ' + name);
     }
     this._locals[name] = value;
-    this.triggerStateChangedListeners();
+    this.triggerStateChangedListeners(this.forInput);
   }
 
   setOwnLocalWithoutRender(name: string, value: unknown): void {
@@ -323,12 +323,44 @@ export class RuntimeContext {
     }
   }
 
+  // When updating inputs, render must be synchronous and can't wait for the next animation frame
+  private _forInput = false;
+
+  private set forInput(value: boolean) {
+    if (this.parent) {
+      this.parent.forInput = value;
+    } else {
+      this._forInput = value;
+    }
+  }
+
+  private get forInput(): boolean {
+    return this.parent?.forInput ?? this._forInput;
+  }
+
+  async callFunctionAsyncForInput(
+    func: Closure,
+    args: unknown[],
+    kwargs: { [name: string]: unknown } = {}
+  ) {
+    if (!this.program) throw new Error('missing program');
+    this.forInput = true;
+    try {
+      return await runAsync(func.ctx, func.name, kwargs, args);
+    } catch (e) {
+      this.log('error', e);
+      throw e;
+    } finally {
+      this.forInput = false;
+    }
+  }
+
   createChild(
     initialValues: { [x: string]: unknown },
     extendable?: boolean
   ): RuntimeContext {
     return new RuntimeContext(
-      () => this.triggerStateChangedListeners(),
+      (sync) => this.triggerStateChangedListeners(sync),
       initialValues,
       this,
       extendable
@@ -339,7 +371,7 @@ export class RuntimeContext {
     [x: string]: unknown;
   }): RuntimeContext {
     const ctx = new RuntimeContext(
-      () => this.triggerStateChangedListeners(),
+      (sync) => this.triggerStateChangedListeners(sync),
       initialValues,
       this,
       true
@@ -350,7 +382,7 @@ export class RuntimeContext {
 
   createWithSameRootLocals(): RuntimeContext {
     return new RuntimeContext(
-      () => this.triggerStateChangedListeners(),
+      (sync) => this.triggerStateChangedListeners(sync),
       this.rootParent._locals,
       undefined,
       false

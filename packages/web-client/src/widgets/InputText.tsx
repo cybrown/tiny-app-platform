@@ -25,7 +25,7 @@ export default function InputText({
   const onChangeHandler = useCallback(
     (newValue: string) => {
       if (!onChange) return;
-      return ctx.callFunctionAsync(onChange, [newValue]);
+      return ctx.callFunctionAsyncForInput(onChange, [newValue]);
     },
     [ctx, onChange]
   );

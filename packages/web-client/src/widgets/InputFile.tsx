@@ -18,7 +18,7 @@ export default function InputFile({
   const onChangeHandler = useCallback(
     async (newFile: string) => {
       if (!onChange) return;
-      return ctx.callFunctionAsync(onChange, [newFile]);
+      return ctx.callFunctionAsyncForInput(onChange, [newFile]);
     },
     [ctx, onChange]
   );

@@ -39,6 +39,7 @@ import {
   on_create,
   on_destroy,
   exit,
+  rpc,
 } from './functions/core';
 import { http_request_form, http_request, http } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
@@ -312,6 +313,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(length);
   ctx.registerFunction(unique);
   ctx.registerFunction(notify);
+  ctx.registerFunction(rpc);
 }
 
 export { HttpLogItemData } from './functions/http';

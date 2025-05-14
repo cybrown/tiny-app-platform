@@ -1,5 +1,6 @@
 import { RuntimeContext, defineFunction } from 'tal-eval';
 import { Node } from 'tal-parser';
+import { customRpc } from '../util/custom-rpc';
 
 export const on_create = defineFunction(
   'on_create',
@@ -357,5 +358,42 @@ export const exit = defineFunction(
       'Exit the application, only available on Electron and command line',
     parameters: { code: 'Error code to return, only for command line' },
     returns: 'Never',
+  }
+);
+
+export const rpc = defineFunction(
+  'rpc',
+  [
+    { name: 'command' },
+    { name: 'body' },
+    { name: 'headers' },
+    { name: 'kind' },
+  ],
+  undefined,
+  async (_ctx, { command, headers, body }) => {
+    /*
+    const logItemData: SqliteLogItemData = {
+      uri: value.uri,
+      params: params,
+      query: value.query,
+      forceResult: value.forceResult,
+      stage: 'pending',
+    };
+    const logItem = _ctx.log('sqlite', logItemData);
+    */
+    try {
+      const response = await customRpc(command, body, headers ?? undefined);
+      if (response.status === 500) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message);
+      }
+      const responseJson = await response.json();
+      //logItem.data.result = responseJson;
+      //logItem.data.stage = 'fulfilled';
+      return responseJson;
+    } catch (e) {
+      //logItem.data.stage = 'rejected';
+      throw e;
+    }
   }
 );

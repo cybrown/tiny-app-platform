@@ -72,7 +72,7 @@ export async function customRpcWs(
       client.close();
     },
     isOpen() {
-      return client.readyState == client.OPEN
-    }
+      return client.readyState == client.OPEN;
+    },
   };
 }

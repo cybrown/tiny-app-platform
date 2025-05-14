@@ -409,8 +409,8 @@ const routes = [
 
       const result =
         forceResult || /^select /.test(query)
-          ? prepared.all(...params)
-          : prepared.run(...params);
+          ? prepared.all(...(params ?? []))
+          : prepared.run(...(params ?? []));
 
       return okJson(result);
     },

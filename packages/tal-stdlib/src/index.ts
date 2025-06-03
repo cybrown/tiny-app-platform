@@ -64,6 +64,7 @@ import {
   record_delete,
   record_entries,
   record_exclude,
+  record_from_entries,
   record_get,
   record_has,
   record_keys,
@@ -106,6 +107,8 @@ import {
   string_to_number,
   string_trim,
   string_length,
+  string_percent_encode,
+  string_percent_decode,
 } from './functions/string';
 import { time_parse, time_day_of_week } from './functions/time';
 import { uuid_v4 } from './functions/uuid';
@@ -230,6 +233,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(number_random);
   ctx.registerFunction(number_randint);
   ctx.registerFunction(record_entries);
+  ctx.registerFunction(record_from_entries);
   ctx.registerFunction(record_get);
   ctx.registerFunction(record_has);
   ctx.registerFunction(record_keys);
@@ -267,6 +271,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(string_trim_end);
   ctx.registerFunction(string_pad_start);
   ctx.registerFunction(string_pad_end);
+  ctx.registerFunction(string_percent_encode);
+  ctx.registerFunction(string_percent_decode);
   ctx.registerFunction(string_to_bytes);
   ctx.registerFunction(string_to_number);
   ctx.registerFunction(string_trim);

@@ -51,6 +51,23 @@ export const record_entries = defineFunction(
   }
 );
 
+export const record_from_entries = defineFunction(
+  'record_from_entries',
+  [{ name: 'entries' }],
+  (_ctx, { entries }) => {
+    return Object.fromEntries(entries);
+  },
+  undefined,
+  {
+    description:
+      'Create a record containing all the entries of the array, as two arrays of two values',
+    parameters: {
+      entries: 'Array of key/values tuples',
+    },
+    returns: 'The record with all entries',
+  }
+);
+
 export const record_get = defineFunction(
   'record_get',
   [{ name: 'record' }, { name: 'key' }],

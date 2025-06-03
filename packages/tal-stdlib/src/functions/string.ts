@@ -19,6 +19,100 @@ export const string_to_bytes = defineFunction(
   }
 );
 
+export const string_percent_encode = defineFunction(
+  'string_percent_encode',
+  [{ name: 'string' }, { name: 'safe_chars' }],
+  (_ctx, { string, safe_chars }) => {
+    return percent_encode(string, safe_chars);
+  }
+);
+
+function percent_encode(
+  str: string,
+  context: 'component' | 'path' | 'query' | string[] = 'component'
+) {
+  const DEFAULT_SAFE_CHARACTERS = {
+    component: "A-Za-z0-9\\-_.!~*'()",
+    query: "A-Za-z0-9\\-_.!~*'()",
+    path: "A-Za-z0-9\\-_.!~*'()\\/:",
+  };
+
+  let safePattern;
+
+  if (Array.isArray(context)) {
+    // Convert character list to regex-safe string
+    const escaped = context
+      .map((c) => c.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'))
+      .join('');
+    safePattern = new RegExp(`^[${escaped}]$`);
+  } else if (typeof context === 'string' && DEFAULT_SAFE_CHARACTERS[context]) {
+    safePattern = new RegExp(`^[${DEFAULT_SAFE_CHARACTERS[context]}]$`);
+  } else {
+    throw new Error(
+      "Invalid context: must be 'component', 'path', 'query' or an array of characters"
+    );
+  }
+
+  const encoder = new TextEncoder();
+  let result = '';
+
+  for (const char of str) {
+    if (safePattern.test(char)) {
+      result += char;
+    } else {
+      const encodedBytes = encoder.encode(char);
+      for (const byte of encodedBytes) {
+        result += '%' + byte.toString(16).toUpperCase().padStart(2, '0');
+      }
+    }
+  }
+
+  return result;
+}
+
+export const string_percent_decode = defineFunction(
+  'string_percent_decode',
+  [{ name: 'string' }],
+  (_ctx, { string }) => {
+    return percent_decode(string);
+  }
+);
+
+function percent_decode(str: string) {
+  const bytes = [];
+
+  for (let i = 0; i < str.length; ) {
+    const char = str[i];
+
+    if (char === '%') {
+      if (i + 2 >= str.length) {
+        throw new Error(
+          `Invalid percent-encoding at position ${i}: incomplete sequence`
+        );
+      }
+
+      const hex = str.slice(i + 1, i + 3);
+
+      if (!/^[0-9a-fA-F]{2}$/.test(hex)) {
+        throw new Error(
+          `Invalid percent-encoding at position ${i}: '${hex}' is not valid hex`
+        );
+      }
+
+      bytes.push(parseInt(hex, 16));
+      i += 3;
+    } else {
+      const encoder = new TextEncoder();
+      const encoded = encoder.encode(char);
+      bytes.push(...encoded);
+      i++;
+    }
+  }
+
+  const decoder = new TextDecoder();
+  return decoder.decode(new Uint8Array(bytes));
+}
+
 export const string_to_number = defineFunction(
   'string_to_number',
   [{ name: 'string' }],

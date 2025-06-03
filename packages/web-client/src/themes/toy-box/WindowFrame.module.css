@@ -5,6 +5,10 @@
   max-height: 100%;
 }
 
+.WindowFrame.xl {
+  height: 100%;
+}
+
 .WindowFrame.center.noBackdrop {
   box-shadow: 0px 0px 5px grey;
   margin: 5px; /* Add a margin to show the box-shadow */

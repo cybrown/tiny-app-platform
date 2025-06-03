@@ -204,6 +204,7 @@ export type WindowFrameProps = {
   footer?: React.ReactElement;
   modal?: boolean;
   drag?: boolean;
+  size?: string;
   onClose(): void;
 } & React.PropsWithChildren;
 

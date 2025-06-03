@@ -12,12 +12,13 @@ export function WindowFrame({
   footer,
   modal,
   drag,
+  size
 }: WindowFrameProps) {
   return (
     <div
       className={`${styles.WindowFrame} ${
         position === "center" ? styles.center : ""
-      } ${!modal ? styles.noBackdrop : ""}`}
+      } ${!modal ? styles.noBackdrop : ""} ${size ? styles[size] : ""}`}
     >
       <div className={styles.Header} style={drag ? ELECTRON_DRAG : {}}>
         {title ? <Text text={title} size={1.2} /> : null}

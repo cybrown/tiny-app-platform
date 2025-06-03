@@ -62,6 +62,7 @@ export default function Overlay({
           onClose={onCloseHandler}
           position={position}
           modal={modal ?? true}
+          size={size}
         >
           {content}
         </WindowFrame>
@@ -78,7 +79,7 @@ export const OverlayDocumentation: WidgetDocumentation<OverlayProps> = {
     position:
       "Overlay position: center (default) | left | right | top | bottom",
     modal: "Make the Overlay modal (default true)",
-    size: "Size: xl",
+    size: "Size: m, l, xl",
     title: "Title to display",
     noFrame: "Hide window frame",
   },

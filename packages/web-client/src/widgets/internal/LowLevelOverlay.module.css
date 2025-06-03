@@ -11,16 +11,15 @@
 
 .center {
   width: min(640px, 100% - 40px);
-  max-height: 100% - 40px;
+  max-height: calc(100% - 40px);
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-100%);
 }
 
 .center.xl {
-  width: initial;
-  max-width: calc(100% - 40px);
-  max-height: calc(100% - 40px);
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
 }
 
 .center.openVisible {

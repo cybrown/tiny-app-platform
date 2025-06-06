@@ -96,13 +96,16 @@ async function createWindow(filePathFromMacOsEvent) {
   mainWindow.webContents.on("did-navigate", async function() {
     const port = await PORT;
     const sourcePathDirname = path.dirname(sourcePath);
+    const windowId = Math.random().toString(16).slice(2).padEnd(13, '0');
     mainWindow.webContents.send("config", {
+      windowId,
       backendUrl: "http://localhost:" + port,
       sourceFromFile,
       sourcePath,
       sourcePathDirname,
     });
-    ipcMain.on("set-property", (e, key, value) => {
+    ipcMain.on("set-property", (e, targetWindowId, key, value) => {
+      if (windowId != targetWindowId) return;
       switch (key) {
         case "useSystemBrowser":
           openInSystemBrowser = value;
@@ -112,18 +115,21 @@ async function createWindow(filePathFromMacOsEvent) {
       }
     });
 
-    ipcMain.on("save-file", (e, source) => {
+    ipcMain.on("save-file", (e, targetWindowId, source) => {
+      if (windowId != targetWindowId) return;
       sourceFromFile = source;
       fs.writeFile(sourcePath, source, (err) => {
         if (err) throw err;
       });
     });
 
-    ipcMain.on("exit", (e) => {
+    ipcMain.on("exit", (e, targetWindowId) => {
+      if (windowId != targetWindowId) return;
       mainWindow.close();
     });
 
-    ipcMain.on("getSourceForImport", (e, requestId, sourceRelativePath) => {
+    ipcMain.on("getSourceForImport", (e, targetWindowId, requestId, sourceRelativePath) => {
+      if (windowId != targetWindowId) return;
       const modulePath = path.join(
         sourcePathDirname,
         sourceRelativePath + ".tas"

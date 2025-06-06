@@ -27,10 +27,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return config;
   },
   setProperty(key, value) {
-    ipcRenderer.send("set-property", key, value);
+    ipcRenderer.send("set-property", config.windowId, key, value);
   },
   saveFile(source) {
-    ipcRenderer.send("save-file", source);
+    ipcRenderer.send("save-file", config.windowId, source);
   },
   getSourceForImport(sourceRelativePath) {
     return new Promise((resolve, reject) => {
@@ -43,10 +43,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
         }
       }
       ipcRenderer.on("getSourceForImport-response", responseHandler);
-      ipcRenderer.send("getSourceForImport", requestId, sourceRelativePath);
+      ipcRenderer.send("getSourceForImport", config.windowId, requestId, sourceRelativePath);
     });
   },
   exit() {
-    ipcRenderer.send("exit");
+    ipcRenderer.send("exit", config.windowId);
   },
 });

@@ -22,6 +22,7 @@ import {
   createMongoClient,
   operations as mongodbOperations,
 } from "./drivers/mongodb.mjs";
+import { operations as sqliteOperations } from "./drivers/sqlite.mjs";
 import child_process from "child_process";
 import pg_module from "pg";
 const { Client } = pg_module;
@@ -31,7 +32,6 @@ import config from "./config.mjs";
 import pty from "node-pty";
 import { WebSocketServer } from "ws";
 import { exec } from "child_process";
-import sqlite3 from "better-sqlite3";
 
 const server = createServer();
 
@@ -206,6 +206,7 @@ const routes = [
     },
   },
   ...mongodbOperations,
+  ...sqliteOperations,
   {
     route: "/op/exec-process",
     handler: async (req, params) => {
@@ -393,26 +394,6 @@ const routes = [
       } finally {
         await client.end();
       }
-    },
-  },
-  {
-    route: "/op/sqlite-query",
-    handler: async (req, pathParams) => {
-      const body = await readBody(req);
-      const request = JSON.parse(body.toString());
-      let { uri, query, params, forceResult } = request;
-
-      const db = sqlite3(uri);
-      db.pragma("journal_mode = WAL");
-
-      const prepared = db.prepare(query);
-
-      const result =
-        forceResult || /^select /.test(query)
-          ? prepared.all(...(params ?? []))
-          : prepared.run(...(params ?? []));
-
-      return okJson(result);
     },
   },
   {

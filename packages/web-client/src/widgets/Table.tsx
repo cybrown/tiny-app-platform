@@ -18,7 +18,8 @@ type TableModelColumn =
           field: string;
         }
     ))
-  | string;
+  | string
+  | null;
 
 type EffectiveTableModelColumn = {
   useRemaining?: boolean;
@@ -60,21 +61,23 @@ export default function Table({
       effectiveColumns.push({ description: name });
     });
   } else {
-    effectiveColumns = columns.map((col) => {
-      if (typeof col == "string") {
-        return {
-          description: col,
-        };
-      } else if (typeof col == "object" && "field" in col) {
-        return {
-          description: col.field,
-          useRemaining: col.useRemaining,
-          width: col.width,
-        };
-      } else {
-        return col;
-      }
-    });
+    effectiveColumns = columns
+      .filter((col) => col != null)
+      .map((col) => {
+        if (typeof col == "string") {
+          return {
+            description: col,
+          };
+        } else if (typeof col == "object" && "field" in col) {
+          return {
+            description: col.field,
+            useRemaining: col.useRemaining,
+            width: col.width,
+          };
+        } else {
+          return col;
+        }
+      });
   }
 
   const numberOfColsWithRemaining = effectiveColumns.filter(

@@ -157,6 +157,13 @@ import { ssh_exec, ssh_resize, ssh_wait, ssh_write } from './functions/ssh';
 import { wait, sleep, spawn } from './functions/spawn';
 import { redis } from './functions/redis';
 import { sqlite_query } from './functions/sqlite';
+import {
+  regexp_find,
+  regexp_find_global,
+  regexp_find_groups_global,
+  regexp_find_groups,
+  regexp_test,
+} from './functions/regexp';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -251,6 +258,11 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(process_kill);
   ctx.registerFunction(redis);
   ctx.registerFunction(regex_match);
+  ctx.registerFunction(regexp_find);
+  ctx.registerFunction(regexp_find_global);
+  ctx.registerFunction(regexp_find_groups_global);
+  ctx.registerFunction(regexp_find_groups);
+  ctx.registerFunction(regexp_test);
   ctx.registerFunction(set_system_property);
   ctx.registerFunction(storage_list);
   ctx.registerFunction(storage_read);

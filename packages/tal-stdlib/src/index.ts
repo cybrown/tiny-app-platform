@@ -164,6 +164,7 @@ import {
   regexp_find_groups,
   regexp_test,
 } from './functions/regexp';
+import { human_date } from './functions/human';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -332,6 +333,8 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(unique);
   ctx.registerFunction(notify);
   ctx.registerFunction(rpc);
+
+  ctx.registerFunction(human_date);
 }
 
 export { HttpLogItemData } from './functions/http';

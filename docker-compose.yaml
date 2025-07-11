@@ -1,0 +1,10 @@
+# https://docs.docker.com/reference/compose-file/
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "20001:27017"
+    volumes:
+      - mongodb_data:/data/db
+volumes:
+  mongodb_data:

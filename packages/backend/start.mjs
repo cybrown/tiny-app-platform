@@ -1,3 +1,4 @@
+import "dotenv/config";
 import server from "./lib/server.mjs";
 import config from "./lib/config.mjs";
 

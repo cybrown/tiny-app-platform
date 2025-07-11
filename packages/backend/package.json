@@ -12,6 +12,7 @@
   "dependencies": {
     "better-sqlite3": "^11.9.1",
     "content-disposition": "^0.5.4",
+    "dotenv": "^17.2.0",
     "form-data": "^4.0.0",
     "mongodb": "^6",
     "node-pty": "^1.0.0",

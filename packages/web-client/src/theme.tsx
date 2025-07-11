@@ -92,6 +92,7 @@ export type TableCell = {
 
 export interface TableProps {
   titles: TableTitle[];
+  onTitleClick?(index: number): void;
   rows: TableRow[];
   bordered?: boolean;
   striped?: boolean;

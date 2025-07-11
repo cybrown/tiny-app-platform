@@ -8,6 +8,7 @@ export default function Table({
   striped = true,
   noHeader,
   noHighlight,
+  onTitleClick,
 }: TableProps) {
   return (
     <table
@@ -39,8 +40,11 @@ export default function Table({
       {noHeader ? null : (
         <thead>
           <tr>
-            {titles.map((title) => (
-              <th key={title.text}>
+            {titles.map((title, index) => (
+              <th
+                key={title.text}
+                onClick={() => onTitleClick && onTitleClick(index)}
+              >
                 <Text text={title.text} weight="bold" />
               </th>
             ))}

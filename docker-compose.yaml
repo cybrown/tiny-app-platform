@@ -6,5 +6,14 @@ services:
       - "20001:27017"
     volumes:
       - mongodb_data:/data/db
+  mongo-ui:
+    image: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_URL: "mongodb://mongodb/admin"
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: "admin"
+      ME_CONFIG_BASICAUTH_PASSWORD: "admin"
+    ports:
+      - "3003:8081"
 volumes:
   mongodb_data:

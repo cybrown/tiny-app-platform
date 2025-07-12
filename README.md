@@ -44,3 +44,5 @@ docker compose up -d
 ```bash
 echo "MONGODB_URI=mongodb://localhost:20001" > packages/backend/.env
 ```
+
+Check mongo-ui here: http://localhost:3003/ (creds: admin/admin)

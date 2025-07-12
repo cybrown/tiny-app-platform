@@ -1,4 +1,4 @@
-import { defineFunction } from "tal-eval";
+import { defineFunction } from 'tal-eval';
 
 interface StorageDriver {
   read(key: string): Promise<unknown>;
@@ -8,7 +8,7 @@ interface StorageDriver {
 }
 
 class LocalStorageDriver implements StorageDriver {
-  private static PREFIX = "$tal_";
+  private static PREFIX = '$tal_';
 
   async read(key: string): Promise<unknown> {
     const valueFromStorage = localStorage.getItem(
@@ -40,37 +40,64 @@ function getStorageDriver(): StorageDriver {
 }
 
 export const storage_read = defineFunction(
-  "storage_read",
-  [{ name: "key" }],
+  'storage_read',
+  [{ name: 'key' }],
   undefined,
   async (_ctx, { key }) => {
     return getStorageDriver().read(key);
+  },
+  {
+    description: 'Read a value from the storage by key',
+    parameters: {
+      key: 'Key of the item to read',
+    },
+    returns: 'Value associated with the key, or undefined if not found',
   }
 );
 
 export const storage_write = defineFunction(
-  "storage_write",
-  [{ name: "key" }, { name: "value" }],
+  'storage_write',
+  [{ name: 'key' }, { name: 'value' }],
   undefined,
   async (_ctx, { key, value }) => {
     return getStorageDriver().write(key, value);
+  },
+  {
+    description: 'Write a value to the storage under a given key',
+    parameters: {
+      key: 'Key under which to store the value',
+      value: 'Value to store',
+    },
+    returns: 'Nothing',
   }
 );
 
 export const storage_list = defineFunction(
-  "storage_list",
+  'storage_list',
   [],
   undefined,
   async () => {
     return getStorageDriver().list();
+  },
+  {
+    description: 'List all keys currently stored',
+    parameters: {},
+    returns: 'Array of stored keys',
   }
 );
 
 export const storage_remove = defineFunction(
-  "storage_remove",
-  [{ name: "key" }],
+  'storage_remove',
+  [{ name: 'key' }],
   undefined,
   async (_ctx, { key }) => {
     return getStorageDriver().remove(key);
+  },
+  {
+    description: 'Remove a value from the storage by key',
+    parameters: {
+      key: 'Key of the item to remove',
+    },
+    returns: 'Nothing',
   }
 );

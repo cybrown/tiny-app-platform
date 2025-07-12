@@ -11,7 +11,19 @@ export const pg_query = defineFunction(
     { name: 'insecure' },
   ],
   undefined,
-  pg_query_impl
+  pg_query_impl,
+  {
+    description:
+      'Execute a parameterized SQL query against a PostgreSQL database',
+    parameters: {
+      uri: 'PostgreSQL connection URI',
+      query: 'SQL query string with placeholders ($1, $2, ...)',
+      params: 'Array of parameter values for the query',
+      ssl: 'Whether to use SSL for the connection',
+      insecure: 'Whether to allow insecure SSL connections',
+    },
+    returns: 'Result set of the query as JSON',
+  }
 );
 
 function getUri(uri: string) {

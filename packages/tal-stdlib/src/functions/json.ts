@@ -15,6 +15,14 @@ export const json_parse = defineFunction(
       throw new Error('Not supported type for json parsing');
     }
     return JSON.parse(strToParse);
+  },
+  undefined,
+  {
+    description: 'Parse a JSON string or ArrayBuffer into a JavaScript object',
+    parameters: {
+      string: 'JSON input as string or ArrayBuffer',
+    },
+    returns: 'Parsed JavaScript object',
   }
 );
 
@@ -26,6 +34,16 @@ export const json_stringify = defineFunction(
       return JSON.stringify(any, null, '  ');
     }
     return JSON.stringify(any);
+  },
+  undefined,
+  {
+    description:
+      'Convert a JavaScript value to a JSON string, optionally formatted',
+    parameters: {
+      any: 'Value to stringify',
+      format: 'Whether to pretty-print with indentation',
+    },
+    returns: 'JSON string representation of the input',
   }
 );
 
@@ -34,5 +52,14 @@ export const jmespath_search = defineFunction(
   [{ name: 'json' }, { name: 'query' }],
   (_ctx, { json, query }) => {
     return search(json, query as string);
+  },
+  undefined,
+  {
+    description: 'Run a JMESPath query against a JSON object',
+    parameters: {
+      json: 'Object to query',
+      query: 'JMESPath query string',
+    },
+    returns: 'Result of the JMESPath query',
   }
 );

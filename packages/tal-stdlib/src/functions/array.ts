@@ -5,7 +5,7 @@ export const array_group = defineFunction(
   [{ name: 'array' }, { name: 'key_extractor' }, { name: 'value_extractor' }],
   (ctx, { array, key_extractor, value_extractor }) => {
     const result: { [key: string]: any } = {};
-    (array as any[]).forEach(it => {
+    (array as any[]).forEach((it) => {
       const key = ctx.callFunction(key_extractor, [it]) as string;
       const value = value_extractor
         ? ctx.callFunction(value_extractor, [it])
@@ -42,7 +42,7 @@ export const array_to_record = defineFunction(
   (ctx, { array, key_extractor, value_extractor, accumulator }) => {
     const result: { [key: string]: any } = {};
     if (accumulator) {
-      (array as any[]).forEach(it => {
+      (array as any[]).forEach((it) => {
         const key = ctx.callFunction(key_extractor, [it]) as string;
         const value = value_extractor
           ? ctx.callFunction(value_extractor, [it])
@@ -54,7 +54,7 @@ export const array_to_record = defineFunction(
         }
       });
     } else {
-      (array as any[]).forEach(it => {
+      (array as any[]).forEach((it) => {
         const key = ctx.callFunction(key_extractor, [it]) as string;
         if (result.hasOwnProperty(key)) {
           throw new Error('Value already defined for key: ' + key);
@@ -102,6 +102,15 @@ export const array_concat = defineFunction(
   [{ name: 'array' }, { name: 'other' }],
   (_ctx, { array, other }) => {
     return [...array, ...other];
+  },
+  undefined,
+  {
+    description: 'Concatenate two arrays',
+    parameters: {
+      array: 'Array',
+      other: 'Array to concatenate',
+    },
+    returns: 'New array with concatenated values',
   }
 );
 
@@ -110,6 +119,15 @@ export const array_contains = defineFunction(
   [{ name: 'array' }, { name: 'value' }],
   (ctx, { array, value }) => {
     return (array as any[]).includes(value);
+  },
+  undefined,
+  {
+    description: 'Check if an array contains a value',
+    parameters: {
+      array: 'Array to search value in',
+      value: 'Value to search for',
+    },
+    returns: 'True if array contains value',
   }
 );
 
@@ -118,6 +136,14 @@ export const array_length = defineFunction(
   [{ name: 'array' }],
   (_ctx, { array }) => {
     return array.length;
+  },
+  undefined,
+  {
+    description: 'Get the length of an array',
+    parameters: {
+      array: 'Array to get the length from',
+    },
+    returns: 'Length of the array',
   }
 );
 
@@ -126,6 +152,14 @@ export const array_unique = defineFunction(
   [{ name: 'array' }],
   (_ctx, { array }) => {
     return [...new Set(array as unknown[])];
+  },
+  undefined,
+  {
+    description: 'Create a new array without duplicates',
+    parameters: {
+      array: 'Source array',
+    },
+    returns: 'Array without duplicate',
   }
 );
 
@@ -134,6 +168,15 @@ export const array_remove = defineFunction(
   [{ name: 'array' }, { name: 'index' }],
   (_ctx, { array, index }) => {
     return (array as unknown[]).filter((_value, i) => index !== i);
+  },
+  undefined,
+  {
+    description: 'Remove the element at the specified index from an array',
+    parameters: {
+      array: 'Source array',
+      index: 'Index of the element to remove',
+    },
+    returns: 'New array without the removed element',
   }
 );
 
@@ -166,6 +209,15 @@ export const array_get = defineFunction(
   [{ name: 'array' }, { name: 'index' }],
   (_ctx, { array, index }) => {
     return array[index];
+  },
+  undefined,
+  {
+    description: 'Get the element at the specified index of an array',
+    parameters: {
+      array: 'Source array',
+      index: 'Index of the element to retrieve',
+    },
+    returns: 'Element at the specified index',
   }
 );
 
@@ -179,7 +231,7 @@ export const array_set = defineFunction(
   },
   undefined,
   {
-    description: 'Mutates an array and set a value at the specified index',
+    description: 'Mutates an array and sets a value at the specified index',
     parameters: {
       array: 'Array to mutate',
       index: 'Index to place the new value to',
@@ -194,6 +246,15 @@ export const array_join = defineFunction(
   [{ name: 'array' }, { name: 'separator' }],
   (_ctx, { array, separator }) => {
     return array.join(separator);
+  },
+  undefined,
+  {
+    description: 'Join array elements into a string with a separator',
+    parameters: {
+      array: 'Array of elements',
+      separator: 'Separator string',
+    },
+    returns: 'Joined string',
   }
 );
 
@@ -202,6 +263,15 @@ export const array_skip = defineFunction(
   [{ name: 'array' }, { name: 'offset' }],
   (_ctx, { array, offset }) => {
     return array.slice(offset);
+  },
+  undefined,
+  {
+    description: 'Skip the first N elements of an array',
+    parameters: {
+      array: 'Source array',
+      offset: 'Number of elements to skip',
+    },
+    returns: 'Array starting from the offset',
   }
 );
 
@@ -210,6 +280,15 @@ export const array_take = defineFunction(
   [{ name: 'array' }, { name: 'take' }],
   (_ctx, { array, take }) => {
     return array.slice(0, take);
+  },
+  undefined,
+  {
+    description: 'Take the first N elements of an array',
+    parameters: {
+      array: 'Source array',
+      take: 'Number of elements to take',
+    },
+    returns: 'Array of the first N elements',
   }
 );
 
@@ -220,6 +299,15 @@ export const array_filter = defineFunction(
     return (array as any[]).filter((it, index) =>
       ctx.callFunction(predicate, [it, index])
     );
+  },
+  undefined,
+  {
+    description: 'Filter an array using a predicate function',
+    parameters: {
+      array: 'Source array',
+      predicate: 'Function returning true when the item matches',
+    },
+    returns: 'Array of elements that match the predicate',
   }
 );
 
@@ -227,9 +315,20 @@ export const array_find = defineFunction(
   'array_find',
   [{ name: 'array' }, { name: 'predicate' }],
   (ctx, { array, predicate }) => {
-    return (array as any[]).find((it, index) =>
-      ctx.callFunction(predicate, [it, index])
+    return (
+      (array as any[]).find((it, index) =>
+        ctx.callFunction(predicate, [it, index])
+      ) ?? null
     );
+  },
+  undefined,
+  {
+    description: 'Find the first element in an array matching a predicate',
+    parameters: {
+      array: 'Source array',
+      predicate: 'Function returning true when the item matches',
+    },
+    returns: 'The found element or null if none match',
   }
 );
 
@@ -268,6 +367,14 @@ export const array_map = defineFunction(
       result.push(await ctx.callFunctionAsync(mapper, [it, index]));
     }
     return result;
+  },
+  {
+    description: 'Map each element of an array using a mapper function',
+    parameters: {
+      array: 'Source array',
+      mapper: 'Function to map each element',
+    },
+    returns: 'New array with mapped values',
   }
 );
 
@@ -281,6 +388,15 @@ export const array_map_parallel = defineFunction(
         ctx.callFunctionAsync(mapper, [it, index])
       )
     );
+  },
+  {
+    description:
+      'Asynchronously map each element of an array in parallel using a mapper function',
+    parameters: {
+      array: 'Source array',
+      mapper: 'Function returning a promise for each element',
+    },
+    returns: 'Promise resolving to an array of mapped values',
   }
 );
 
@@ -300,6 +416,14 @@ export const array_flat_map = defineFunction(
         )
       )
     ).flat();
+  },
+  {
+    description: 'Flat-map an array using a mapper function',
+    parameters: {
+      array: 'Source array',
+      mapper: 'Function to map and flatten each element',
+    },
+    returns: 'New flattened array',
   }
 );
 
@@ -310,6 +434,15 @@ export const array_sort = defineFunction(
     return (array as any[])
       .slice()
       .sort((a, b) => ctx.callFunction(comparator, [a, b]) as number);
+  },
+  undefined,
+  {
+    description: 'Sort an array using a comparator function',
+    parameters: {
+      array: 'Source array',
+      comparator: 'Function to compare two elements',
+    },
+    returns: 'New sorted array',
   }
 );
 
@@ -318,6 +451,14 @@ export const array_reverse = defineFunction(
   [{ name: 'array' }],
   (_ctx, { array }) => {
     return (array as any[]).slice().reverse();
+  },
+  undefined,
+  {
+    description: 'Reverse the elements of an array',
+    parameters: {
+      array: 'Source array',
+    },
+    returns: 'New array with elements in reverse order',
   }
 );
 
@@ -328,5 +469,14 @@ export const array_reduce = defineFunction(
     return (array as any[]).reduce((previous, current) => {
       return ctx.callFunction(reducer, [previous, current]);
     });
+  },
+  undefined,
+  {
+    description: 'Reduce an array to a single value using a reducer function',
+    parameters: {
+      array: 'Source array',
+      reducer: 'Function to reduce two values into one',
+    },
+    returns: 'The result of the reduction',
   }
 );

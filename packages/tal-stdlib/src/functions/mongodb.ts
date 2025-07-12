@@ -10,7 +10,17 @@ export const mongodb_find = defineFunction(
     { name: 'options' },
   ],
   undefined,
-  mongodb_find_impl
+  mongodb_find_impl,
+  {
+    description: 'Find documents in a MongoDB collection',
+    parameters: {
+      uri: 'MongoDB connection URI',
+      collection: 'Name of the collection',
+      query: 'Filter query object',
+      options: 'Query options (projection, sort, etc.)',
+    },
+    returns: 'Array of matching documents',
+  }
 );
 
 export const mongodb_insert_one = defineFunction(
@@ -22,7 +32,17 @@ export const mongodb_insert_one = defineFunction(
     { name: 'options' },
   ],
   undefined,
-  mongodb_insert_one_impl
+  mongodb_insert_one_impl,
+  {
+    description: 'Insert a single document into a MongoDB collection',
+    parameters: {
+      uri: 'MongoDB connection URI',
+      collection: 'Name of the collection',
+      data: 'Document to insert',
+      options: 'Insert options (e.g., write concern)',
+    },
+    returns: 'Result of the insertion operation',
+  }
 );
 
 export const mongodb_update_one = defineFunction(
@@ -35,7 +55,18 @@ export const mongodb_update_one = defineFunction(
     { name: 'options' },
   ],
   undefined,
-  mongodb_update_one_impl
+  mongodb_update_one_impl,
+  {
+    description: 'Update a single document in a MongoDB collection',
+    parameters: {
+      uri: 'MongoDB connection URI',
+      collection: 'Name of the collection',
+      query: 'Filter to select the document',
+      data: 'Update operations object',
+      options: 'Update options (e.g., upsert)',
+    },
+    returns: 'Result of the update operation',
+  }
 );
 
 export const mongodb_delete_one = defineFunction(
@@ -47,7 +78,17 @@ export const mongodb_delete_one = defineFunction(
     { name: 'options' },
   ],
   undefined,
-  mongodb_delete_one_impl
+  mongodb_delete_one_impl,
+  {
+    description: 'Delete a single document from a MongoDB collection',
+    parameters: {
+      uri: 'MongoDB connection URI',
+      collection: 'Name of the collection',
+      query: 'Filter to select the document',
+      options: 'Delete options',
+    },
+    returns: 'Result of the delete operation',
+  }
 );
 
 function getUri(uri: string) {

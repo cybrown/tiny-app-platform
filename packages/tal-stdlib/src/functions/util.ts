@@ -9,6 +9,15 @@ export const skip = defineFunction(
       return value.slice(offset);
     }
     throw new Error('Type not supported for skip');
+  },
+  undefined,
+  {
+    description: 'Skip the first N elements of a value',
+    parameters: {
+      value: 'Value to skip elements from',
+      offset: 'Number of elements to skip',
+    },
+    returns: 'Value starting from the offset',
   }
 );
 
@@ -20,6 +29,15 @@ export const take = defineFunction(
       return value.slice(0, take);
     }
     throw new Error('Type not supported for take');
+  },
+  undefined,
+  {
+    description: 'Take the first N elements of a value',
+    parameters: {
+      value: 'Value to take elements from',
+      take: 'Number of elements to take',
+    },
+    returns: 'Value containing the first N elements',
   }
 );
 
@@ -33,6 +51,15 @@ export const filter = defineFunction(
       );
     }
     throw new Error('Type not supported for filter');
+  },
+  undefined,
+  {
+    description: 'Filter a value using a predicate function',
+    parameters: {
+      value: 'Value to filter',
+      predicate: 'Function returning true to keep an element',
+    },
+    returns: 'Value containing elements that match the predicate',
   }
 );
 
@@ -46,6 +73,15 @@ export const find = defineFunction(
       );
     }
     throw new Error('Type not supported for find');
+  },
+  undefined,
+  {
+    description: 'Find the first element in a value matching a predicate',
+    parameters: {
+      value: 'Value to search',
+      predicate: 'Function returning true for the match',
+    },
+    returns: 'First matching element or undefined',
   }
 );
 
@@ -63,12 +99,12 @@ export const find_index = defineFunction(
   },
   undefined,
   {
-    description: 'Find the index of an element in an array using a predicate',
+    description: 'Find the index of an element in a value using a predicate',
     parameters: {
-      value: 'Value where to find the value from',
-      predicate: 'Function returning true when the item matches',
+      value: 'Value to search',
+      predicate: 'Function returning true for the match',
     },
-    returns: 'A number if the item is found, or else null',
+    returns: 'Index of the element or null if not found',
   }
 );
 
@@ -84,7 +120,7 @@ export const map = defineFunction(
     }
     if (value instanceof MessageStreamSink) {
       throw new Error(
-        'map() over MessageStream is not supported in synchronous mode.'
+        'map() over MessageStream is not supported synchronously'
       );
     }
     return ctx.callFunction(mapper, [value, 0]);
@@ -114,6 +150,14 @@ export const map = defineFunction(
       return result;
     }
     return await ctx.callFunctionAsync(mapper, [value, 0]);
+  },
+  {
+    description: 'Map over a value using a mapper function',
+    parameters: {
+      value: 'Value to map',
+      mapper: 'Function to apply to each element',
+    },
+    returns: 'Value of mapped results or null',
   }
 );
 
@@ -131,6 +175,14 @@ export const map_parallel = defineFunction(
       );
     }
     throw new Error('Type not supported for map_parallel');
+  },
+  {
+    description: 'Map over a value in parallel using an async mapper',
+    parameters: {
+      value: 'Value to map',
+      mapper: 'Async function to apply to each element',
+    },
+    returns: 'Value with mapped results',
   }
 );
 
@@ -156,6 +208,14 @@ export const flat_map = defineFunction(
       ).flat();
     }
     throw new Error('Type not supported for flat_map');
+  },
+  {
+    description: 'Flat map over a value using a mapper function',
+    parameters: {
+      value: 'Value to flat map',
+      mapper: 'Function or async function returning values to flatten',
+    },
+    returns: 'Flattened mapped results',
   }
 );
 
@@ -169,6 +229,15 @@ export const sort = defineFunction(
         .sort((a, b) => ctx.callFunction(comparator, [a, b]) as number);
     }
     throw new Error('Type not supported for sort');
+  },
+  undefined,
+  {
+    description: 'Sort a value using a comparator function',
+    parameters: {
+      value: 'Value to sort',
+      comparator: 'Function(a, b) returning number indicating order',
+    },
+    returns: 'Sorted value',
   }
 );
 
@@ -180,6 +249,12 @@ export const reverse = defineFunction(
       return (value as any[]).slice().reverse();
     }
     throw new Error('Type not supported for reverse');
+  },
+  undefined,
+  {
+    description: 'Reverse a value',
+    parameters: { value: 'Value to reverse' },
+    returns: 'Reversed value',
   }
 );
 
@@ -193,6 +268,15 @@ export const reduce = defineFunction(
       });
     }
     throw new Error('Type not supported for reduce');
+  },
+  undefined,
+  {
+    description: 'Reduce a value to a single result using a reducer function',
+    parameters: {
+      value: 'Value to reduce',
+      reducer: 'Function(previous, current) returning accumulator',
+    },
+    returns: 'Reduced result',
   }
 );
 
@@ -205,6 +289,15 @@ export const contains = defineFunction(
       return (value as any[]).includes(element);
     }
     throw new Error('Type not supported for contains');
+  },
+  undefined,
+  {
+    description: 'Check if a value contains an element',
+    parameters: {
+      value: 'Value to check',
+      element: 'Element to find',
+    },
+    returns: 'True if element is contained',
   }
 );
 
@@ -216,6 +309,12 @@ export const length = defineFunction(
       return value.length;
     }
     throw new Error('Type not supported for length');
+  },
+  undefined,
+  {
+    description: 'Get the length of a value',
+    parameters: { value: 'Value to measures' },
+    returns: 'Length as number',
   }
 );
 
@@ -227,6 +326,12 @@ export const unique = defineFunction(
       return [...new Set(value as unknown[])];
     }
     throw new Error('Type not supported for unique');
+  },
+  undefined,
+  {
+    description: 'Get unique elements from a value',
+    parameters: { value: 'Value to deduplicate' },
+    returns: 'Value containing unique elements',
   }
 );
 
@@ -247,6 +352,15 @@ export const notify = defineFunction(
     notification.addEventListener('click', () => {
       window.focus();
     });
+  },
+  {
+    description: 'Show a notification with title and body',
+    parameters: {
+      title: 'Notification title',
+      body: 'Notification body text',
+      modal: 'Whether the notification requires interaction',
+    },
+    returns: 'Nothing',
   }
 );
 

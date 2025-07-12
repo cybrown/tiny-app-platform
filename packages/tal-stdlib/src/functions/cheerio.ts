@@ -1,17 +1,32 @@
-import { defineFunction, RuntimeContext } from "tal-eval";
-import { load } from "cheerio";
-import { CheerioAPI } from "cheerio";
+import { defineFunction, RuntimeContext } from 'tal-eval';
+import { load } from 'cheerio';
+import { CheerioAPI } from 'cheerio';
 
 export const cheerio_load = defineFunction(
-  "cheerio_load",
-  [{ name: "source" }],
-  cheerio_load_impl
+  'cheerio_load',
+  [{ name: 'source' }],
+  cheerio_load_impl,
+  undefined,
+  {
+    description: 'Loads HTML source into a Cheerio document',
+    parameters: { source: 'HTML string to load' },
+    returns: 'A CheerioAPI document',
+  }
 );
 
 export const cheerio_find = defineFunction(
-  "cheerio_find",
-  [{ name: "doc" }, { name: "selector" }],
-  cheerio_find_impl
+  'cheerio_find',
+  [{ name: 'doc' }, { name: 'selector' }],
+  cheerio_find_impl,
+  undefined,
+  {
+    description: 'Finds elements matching a selector in a Cheerio document',
+    parameters: {
+      doc: 'Cheerio document to search',
+      selector: 'CSS selector string',
+    },
+    returns: 'Array of matched elements with tag, attributes, and content',
+  }
 );
 
 function cheerio_load_impl(

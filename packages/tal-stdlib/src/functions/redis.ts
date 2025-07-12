@@ -10,7 +10,17 @@ export const redis = defineFunction(
     { name: 'insecure' },
   ],
   undefined,
-  redis_impl
+  redis_impl,
+  {
+    description: 'Execute a Redis command',
+    parameters: {
+      url: 'Connection URL',
+      command: 'Command to execute',
+      args: 'Array of command arguments',
+      insecure: 'Whether to use insecure connection',
+    },
+    returns: 'Command result as bytes',
+  }
 );
 
 export type RedisLogItemData = {
@@ -33,7 +43,7 @@ async function redis_impl(_ctx: RuntimeContext, value: { [key: string]: any }) {
   const logItem = _ctx.log('redis', logItemData);
   try {
     const response = await redisCommand({
-      url: value.uri,
+      url: value.url,
       command: value.command,
       args: value.args,
       insecure: value.insecure,

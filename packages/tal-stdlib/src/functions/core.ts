@@ -395,5 +395,15 @@ export const rpc = defineFunction(
       //logItem.data.stage = 'rejected';
       throw e;
     }
+  },
+  {
+    description: 'Call a raw rpc method',
+    parameters: {
+      command: 'Command to call',
+      headers: 'Headers to add to call',
+      body: 'Body to send',
+      kind: 'Kind of log to display in the console',
+    },
+    returns: 'Raw response of the rpc call parsed as JSON',
   }
 );

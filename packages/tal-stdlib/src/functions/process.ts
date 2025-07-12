@@ -66,6 +66,18 @@ export const process_exec = defineFunction(
       log.data.stage = 'rejected';
       throw err;
     }
+  },
+  {
+    description:
+      'Execute a system process with arguments and optional environment, working directory, and timeout',
+    parameters: {
+      name: 'Command to execute',
+      args: 'Array of string arguments',
+      cwd: 'Working directory path',
+      env: 'Environment variables map',
+      timeout: 'Timeout in milliseconds',
+    },
+    returns: 'Object containing exitStatus, pid, and stdout buffer',
   }
 );
 
@@ -76,15 +88,20 @@ export const process_kill = defineFunction(
   async (_ctx, { pid, signal }) => {
     const result = await customRpc(
       'kill-process',
-      JSON.stringify({
-        pid,
-        signal,
-      }),
+      JSON.stringify({ pid, signal }),
       []
     );
     if (result.status !== 204) {
       throw new Error('Failed to kill process, check server logs');
     }
+  },
+  {
+    description: 'Kill a running process by PID and signal',
+    parameters: {
+      pid: 'Process ID to kill',
+      signal: 'Signal name or number to send',
+    },
+    returns: 'Undefined if successful, throws on failure',
   }
 );
 
@@ -179,12 +196,23 @@ export const process_pty_create = defineFunction(
         dv.setUint32(5, rows, true);
         result.send(dv.buffer);
       },
-      async wait() {
+      wait() {
         return processEnded.promise;
       },
     };
 
     return processObject;
+  },
+  {
+    description: 'Create a pseudo-terminal process with streaming I/O',
+    parameters: {
+      name: 'Command to execute in PTY',
+      args: 'Array of string arguments',
+      cwd: 'Working directory path',
+      env: 'Environment variables map',
+      timeout: 'Timeout in milliseconds',
+    },
+    returns: 'ProcessPtyObject with PID, data stream, and control methods',
   }
 );
 
@@ -198,6 +226,14 @@ export const process_pty_write = defineFunction(
     (process as ProcessPtyObject).send(
       typeof data === 'string' ? textEncoder.encode(data).buffer : data
     );
+  },
+  {
+    description: 'Send data to a PTY process stdin',
+    parameters: {
+      process: 'ProcessPtyObject to write to',
+      data: 'String or ArrayBuffer data to send',
+    },
+    returns: 'Undefined',
   }
 );
 
@@ -207,6 +243,15 @@ export const process_pty_resize = defineFunction(
   undefined,
   async (_ctx, { process, cols, rows }) => {
     (process as ProcessPtyObject).resize(cols, rows);
+  },
+  {
+    description: 'Resize a PTY process terminal dimensions',
+    parameters: {
+      process: 'ProcessPtyObject to resize',
+      cols: 'Number of columns',
+      rows: 'Number of rows',
+    },
+    returns: 'Undefined',
   }
 );
 
@@ -216,5 +261,10 @@ export const process_pty_wait = defineFunction(
   undefined,
   async (_ctx, { process }) => {
     return (process as ProcessPtyObject).wait();
+  },
+  {
+    description: 'Wait for a PTY process to exit and return its status code',
+    parameters: { process: 'ProcessPtyObject to wait on' },
+    returns: 'Exit status code as number',
   }
 );

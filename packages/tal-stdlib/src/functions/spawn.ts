@@ -39,7 +39,14 @@ export const sleep = defineFunction(
   'sleep',
   [{ name: 'ms' }],
   undefined,
-  (_ctx, { ms }) => new Promise((resolve) => setTimeout(resolve, ms))
+  (_ctx, { ms }) => new Promise((resolve) => setTimeout(resolve, ms)),
+  {
+    description: 'Sleep',
+    parameters: {
+      ms: 'Duration to sleep in ms',
+    },
+    returns: 'Nothing',
+  }
 );
 
 export const wait = defineFunction(

@@ -107,6 +107,20 @@ export const ssh_exec = defineFunction(
     })();
 
     return sshConnectionObject;
+  },
+  {
+    description: 'Execute an SSH command with interactive I/O',
+    parameters: {
+      command: 'Command string to run on remote host',
+      env: 'Environment variables map (optional)',
+      timeout: 'Timeout in milliseconds (optional)',
+      host: 'SSH server host',
+      port: 'SSH server port',
+      username: 'Username for authentication',
+      password: 'Password for authentication',
+      pty: 'Whether to allocate a pseudo-terminal',
+    },
+    returns: 'SshConnectionObject for interacting with the session',
   }
 );
 

@@ -12,7 +12,19 @@ export const http_request = defineFunction(
     { name: 'insecure' },
   ],
   undefined,
-  http_request_impl
+  http_request_impl,
+  {
+    description: 'Perform an HTTP request with full configuration and logging',
+    parameters: {
+      method: 'HTTP method (get, post, etc.)',
+      url: 'Request URL',
+      headers: 'Array of [name, value] header pairs',
+      body: 'Request body payload',
+      allowErrorStatusCode: 'Whether non-2xx status codes are allowed',
+      insecure: 'Whether to allow insecure TLS',
+    },
+    returns: 'Response object with status, headers, and body',
+  }
 );
 
 export const http = defineFunction(
@@ -32,7 +44,26 @@ export const http = defineFunction(
     { name: 'head', onlyNamed: true },
   ],
   undefined,
-  http_impl
+  http_impl,
+  {
+    description:
+      'Simplified HTTP helper supporting named parameters and shorthand methods',
+    parameters: {
+      url: 'Request URL',
+      body: 'Request body payload',
+      headers: 'Array of [name, value] header pairs',
+      allowErrorStatusCode: 'Whether non-2xx status codes are allowed',
+      insecure: 'Whether to allow insecure TLS',
+      method: 'Explicit HTTP method',
+      get: 'Shorthand for GET method',
+      post: 'Shorthand for POST method',
+      put: 'Shorthand for PUT method',
+      delete: 'Shorthand for DELETE method',
+      patch: 'Shorthand for PATCH method',
+      head: 'Shorthand for HEAD method',
+    },
+    returns: 'Response object with status, headers, and body',
+  }
 );
 
 export const http_request_form = defineFunction(
@@ -46,7 +77,19 @@ export const http_request_form = defineFunction(
     { name: 'insecure' },
   ],
   undefined,
-  http_request_form_impl
+  http_request_form_impl,
+  {
+    description: 'Submit multipart form data via HTTP and handle errors',
+    parameters: {
+      method: 'HTTP method (get, post, etc.)',
+      url: 'Endpoint URL',
+      headers: 'Array of [name, value] header pairs',
+      elements: 'Form elements as { [key]: { sourceKind, value } }',
+      allowErrorStatusCode: 'Whether non-2xx status codes are allowed',
+      insecure: 'Whether to allow insecure TLS',
+    },
+    returns: 'Response with status, headers, and body as bytes',
+  }
 );
 
 async function http_request_form_impl(
@@ -268,7 +311,6 @@ async function httpRequest({
   );
   return {
     status: Number(response.headers.get('x-fetch-status-code') ?? 0),
-    // TODO: Allow one header to have multiple values
     headers: Object.fromEntries(
       (() => {
         const headers: [string, string][] = [];

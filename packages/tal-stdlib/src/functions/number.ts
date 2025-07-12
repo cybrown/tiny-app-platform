@@ -10,11 +10,11 @@ export const number_to_string = defineFunction(
   ],
   (_ctx, { number, precision, base, code }) => {
     if (typeof number != 'number') {
-      throw new Error('Only number are supported');
+      throw new Error('Only numbers are supported');
     }
 
     if (base != null && precision != null && precision > 0) {
-      throw new Error('base and precision and exclusive');
+      throw new Error('base and precision are exclusive');
     }
 
     if (code && base != null && ![2, 10, 16].includes(base)) {
@@ -23,14 +23,12 @@ export const number_to_string = defineFunction(
       );
     }
 
-    let result;
+    let result: string;
 
     if (precision != null && precision > 0) {
-      result = (number as number).toFixed(precision);
+      result = number.toFixed(precision);
     } else if (base != null) {
-      result = (
-        precision != null ? Math.round(number as number) : (number as number)
-      ).toString(base);
+      result = (precision != null ? Math.round(number) : number).toString(base);
     } else {
       result = String(number);
     }
@@ -42,12 +40,12 @@ export const number_to_string = defineFunction(
         resultAsCode = resultAsCode.slice(1);
         isNegative = true;
       }
-      if (base == 2) {
+      if (base === 2) {
         if (resultAsCode.includes('.')) {
           throw new Error('Floating numbers are only supported in base 10');
         }
         return (isNegative ? '-' : '') + '0b' + resultAsCode;
-      } else if (base == 16) {
+      } else if (base === 16) {
         if (resultAsCode.includes('.')) {
           throw new Error('Floating numbers are only supported in base 10');
         }
@@ -59,30 +57,39 @@ export const number_to_string = defineFunction(
   },
   undefined,
   {
-    description: 'Convert a number to a string',
+    description:
+      'Convert a number to a string with optional base, precision, or code prefix',
     parameters: {
       number: 'Number to convert',
-      base: 'Base to convert the number to, exclusive with precision except when precision == 0',
-      precision: 'Number of number after the point, uses rounding',
-      code: 'Convert to a code compatible representation',
+      precision: 'Number of digits after the decimal point (named)',
+      base: 'Radix for conversion (2, 10, 16) exclusive with precision (named)',
+      code: 'Include numeric literal prefix (0b, 0x) if true (named)',
     },
-    returns: 'A string representing the number',
+    returns: 'String representation of the number',
   }
 );
 
 export const number_ceil = defineFunction(
   'number_ceil',
   [{ name: 'number' }],
-  (_ctx, { number }) => {
-    return Math.ceil(number);
+  (_ctx, { number }) => Math.ceil(number),
+  undefined,
+  {
+    description: 'Round a number up to the nearest integer',
+    parameters: { number: 'Number to ceil' },
+    returns: 'Smallest integer greater than or equal to the input',
   }
 );
 
 export const number_floor = defineFunction(
   'number_floor',
   [{ name: 'number' }],
-  (_ctx, { number }) => {
-    return Math.floor(number);
+  (_ctx, { number }) => Math.floor(number),
+  undefined,
+  {
+    description: 'Round a number down to the nearest integer',
+    parameters: { number: 'Number to floor' },
+    returns: 'Largest integer less than or equal to the input',
   }
 );
 
@@ -93,40 +100,67 @@ export const number_round = defineFunction(
     if (precision == null || precision === 0) {
       return Math.round(number);
     }
-    return +(
-      Math.round(Number(number + ('e+' + precision))) +
-      ('e-' + precision)
-    );
+    const factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+  },
+  undefined,
+  {
+    description: 'Round a number to a given precision',
+    parameters: {
+      number: 'Number to round',
+      precision: 'Number of decimal places',
+    },
+    returns: 'Rounded number',
   }
 );
 
 export const number_trunc = defineFunction(
   'number_trunc',
   [{ name: 'number' }],
-  (_ctx, { number }) => {
-    return Math.trunc(number);
+  (_ctx, { number }) => Math.trunc(number),
+  undefined,
+  {
+    description: 'Truncate a number by removing fractional digits',
+    parameters: { number: 'Number to truncate' },
+    returns: 'Integer part of the number',
   }
 );
 
 export const number_abs = defineFunction(
   'number_abs',
   [{ name: 'number' }],
-  (_ctx, { number }) => {
-    return Math.abs(number);
+  (_ctx, { number }) => Math.abs(number),
+  undefined,
+  {
+    description: 'Get the absolute value of a number',
+    parameters: { number: 'Number to get absolute value of' },
+    returns: 'Absolute value of the input',
   }
 );
 
 export const number_sign = defineFunction(
   'number_sign',
   [{ name: 'number' }],
-  (_ctx, { number }) => {
-    return Math.sign(number);
+  (_ctx, { number }) => Math.sign(number),
+  undefined,
+  {
+    description: 'Get the sign of a number',
+    parameters: { number: 'Number to get sign of' },
+    returns: '-1, 0, or 1 depending on the sign',
   }
 );
 
-export const number_random = defineFunction('number_random', [], (_ctx) => {
-  return Math.random();
-});
+export const number_random = defineFunction(
+  'number_random',
+  [],
+  (_ctx) => Math.random(),
+  undefined,
+  {
+    description: 'Generate a floating-point random number in [0,1)',
+    parameters: {},
+    returns: 'Random number between 0 (inclusive) and 1 (exclusive)',
+  }
+);
 
 export const number_randint = defineFunction(
   'number_randint',
@@ -135,5 +169,14 @@ export const number_randint = defineFunction(
     const pMin = min ?? 0;
     const pMax = max ?? 100;
     return Math.floor(Math.random() * (pMax - pMin + 1)) + pMin;
+  },
+  undefined,
+  {
+    description: 'Generate a random integer between min and max inclusive',
+    parameters: {
+      min: 'Lower bound (inclusive)',
+      max: 'Upper bound (inclusive)',
+    },
+    returns: 'Random integer between min and max',
   }
 );

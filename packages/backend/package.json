@@ -10,17 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "better-sqlite3": "^11.9.1",
+    "better-sqlite3": "^12.2.0",
     "content-disposition": "^0.5.4",
     "dotenv": "^17.2.0",
-    "form-data": "^4.0.0",
+    "form-data": "^4.0.3",
     "mongodb": "^6",
-    "node-pty": "^1.0.0",
-    "pg": "^8.8.0",
-    "redis": "^4.7.0",
+    "@lydell/node-pty": "^1.1.0",
+    "pg": "^8.16.3",
+    "redis": "^5.6.0",
     "route-parser": "^0.0.5",
-    "serve-static": "^1.15.0",
-    "ssh2": "^1.15.0",
-    "ws": "^8.18.1"
+    "serve-static": "^2.2.0",
+    "ssh2": "^1.16.0",
+    "ws": "^8.18.3"
   }
 }

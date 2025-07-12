@@ -1,3 +1,4 @@
+import React from 'react';
 import { Closure, Program } from './core';
 import { run, runAsync } from './interpreter';
 
@@ -406,7 +407,7 @@ export class RuntimeContext {
 
   registerWidget<T>(
     kind: string,
-    widget: (props: T) => JSX.Element | null,
+    widget: (props: T) => React.JSX.Element | null,
     doc: WidgetDocumentation<T>
   ) {
     this._locals[kind] = widget;

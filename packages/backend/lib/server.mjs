@@ -29,7 +29,7 @@ const { Client } = pg_module;
 import ssh2 from "ssh2";
 import { createRedisClient } from "./redis.mjs";
 import config from "./config.mjs";
-import pty from "node-pty";
+import pty from "@lydell/node-pty";
 import { WebSocketServer } from "ws";
 import { exec } from "child_process";
 
@@ -552,6 +552,8 @@ function process_pty_create(client, body) {
 
   setTimeout(() => {
     let { fileName, args, env, cwd, timeout } = body;
+
+    console.log(args);
 
     const ptyProcess = pty.spawn(fileName, args, {
       name: "xterm-color",

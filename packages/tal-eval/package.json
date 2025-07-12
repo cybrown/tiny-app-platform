@@ -24,12 +24,12 @@
   "name": "tal-eval",
   "author": "Cy Brown",
   "devDependencies": {
-    "tslib": "^2.6.3",
-    "tsup": "^8.3.6",
-    "typescript": "^5.7.3"
+    "tslib": "^2.8.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@types/react": "^18.0.29",
+    "@types/react": "^19.1.8",
     "tal-parser": "*"
   },
   "tsup": {

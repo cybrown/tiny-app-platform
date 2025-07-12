@@ -26,10 +26,10 @@
   },
   "name": "tal-parser",
   "devDependencies": {
-    "peggy": "^4.2.0",
-    "tslib": "^2.6.3",
-    "tsup": "^8.3.6",
-    "typescript": "^5.7.3"
+    "peggy": "^5.0.5",
+    "tslib": "^2.8.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
   },
   "directories": {
     "test": "test"

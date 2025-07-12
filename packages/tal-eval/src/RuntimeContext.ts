@@ -389,6 +389,7 @@ export class RuntimeContext {
       false
     );
     newContext._logs = this.logs;
+    newContext.setSourceFetcher(this.getSourceFetcher());
     return newContext;
   }
 

@@ -382,12 +382,14 @@ export class RuntimeContext {
   }
 
   createWithSameRootLocals(): RuntimeContext {
-    return new RuntimeContext(
+    const newContext = new RuntimeContext(
       (sync) => this.triggerStateChangedListeners(sync),
       this.rootParent._locals,
       undefined,
       false
     );
+    newContext._logs = this.logs;
+    return newContext;
   }
 
   get rootParent(): RuntimeContext {

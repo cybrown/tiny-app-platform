@@ -81,7 +81,6 @@ import {
   process_pty_wait,
   process_pty_write,
 } from './functions/process';
-import { regex_match } from './functions/regex';
 import {
   storage_list,
   storage_read,
@@ -110,7 +109,6 @@ import {
   string_percent_encode,
   string_percent_decode,
 } from './functions/string';
-import { time_parse, time_day_of_week } from './functions/time';
 import { uuid_v4 } from './functions/uuid';
 import {
   date_current_timezone,
@@ -258,7 +256,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(process_pty_wait);
   ctx.registerFunction(process_kill);
   ctx.registerFunction(redis);
-  ctx.registerFunction(regex_match);
   ctx.registerFunction(regexp_find);
   ctx.registerFunction(regexp_find_global);
   ctx.registerFunction(regexp_find_groups_global);
@@ -289,8 +286,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(string_to_bytes);
   ctx.registerFunction(string_to_number);
   ctx.registerFunction(string_trim);
-  ctx.registerFunction(time_parse);
-  ctx.registerFunction(time_day_of_week);
   ctx.registerFunction(uuid_v4);
 
   ctx.registerFunction(secret);

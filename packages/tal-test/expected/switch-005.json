@@ -38,7 +38,9 @@
         ]
       },
       "parameters": [
-        "letter"
+        {
+          "name": "letter"
+        }
       ]
     }
   },

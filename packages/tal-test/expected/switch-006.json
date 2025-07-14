@@ -22,7 +22,9 @@
         ]
       },
       "parameters": [
-        "letter"
+        {
+          "name": "letter"
+        }
       ]
     }
   },

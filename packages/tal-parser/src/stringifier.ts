@@ -204,12 +204,12 @@ class Stringifier {
   }
 
   stringifyNamedFunction(obj: DeclareLocalNode, func: FunctionNode): string {
-    let argList = '(' + func.parameters.join(', ') + ') ';
+    let argList = '(' + func.parameters.map((p) => p.name).join(', ') + ') ';
     if (argList.length > 60) {
       argList = '(';
       this.incrementDepth();
       for (let parameter of func.parameters) {
-        argList += '\n' + this.depthSpace() + parameter;
+        argList += '\n' + this.depthSpace() + parameter.name;
       }
       this.decrementDepth();
       argList += '\n' + this.depthSpace() + ') ';
@@ -275,9 +275,10 @@ class Stringifier {
     if (obj.parameters.length === 0) {
       result += '()';
     } else if (obj.parameters.length === 1) {
-      result += obj.parameters[0];
+      result += obj.parameters[0].name;
     } else {
-      result += '(' + (obj.parameters ?? []).join(', ') + ')';
+      result +=
+        '(' + (obj.parameters ?? []).map((p) => p.name).join(', ') + ')';
     }
     return result + ' => ' + this.stringify(obj.body);
   }

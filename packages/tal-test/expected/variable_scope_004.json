@@ -15,7 +15,9 @@
         ]
       },
       "parameters": [
-        "value"
+        {
+          "name": "value"
+        }
       ]
     }
   },

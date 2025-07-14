@@ -268,15 +268,23 @@ Nested
 	= '(' _ node:Node _ ')'
     	{ return { location: buildLocation(), kind: 'Nested', node }; }
 
+Type
+    = "any" ! IdentifierTailCharacters
+        { return { kind: "any"}; }
+
 NamedFunction
-    = 'fun' __ name:Identifier _ '(' _ parameters:(Identifier _ (',' _)?)* ')' _ body:Node
-        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) } } }
+    = 'fun' __ name:Identifier _ parameters:ParameterList _ body:Node
+        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters } }; }
+
+ParameterList
+    = '(' _ parameters:(Identifier _ (':' _ Type)? _ (',' _)?)* ')'
+        { return parameters.map(parameter => ({name: parameter[0], type: (parameter[2] ?? [])[2]})); }
 
 Function
-    = '(' _ parameters:(Identifier _ (',' _)?)* ')' _ '=>' _ body:Node
-        { return { location: buildLocation(), kind: "Function", body: body, parameters: parameters.map(parameter => parameter[0]) }; }
+    = parameters:ParameterList _ '=>' _ body:Node
+        { return { location: buildLocation(), kind: "Function", body: body, parameters }; }
     / parameter:(Identifier) _ '=>' _ body:Node
-        { return { location: buildLocation(), kind: "Function", body: body, parameters: [parameter] }; }
+        { return { location: buildLocation(), kind: "Function", body: body, parameters: [{name: parameter}] }; }
 
 KindedRecord
     = kind:DottedNode _SameLine "{" _ values:((KindedRecordEntry / Node) _ ','? _)* "}"

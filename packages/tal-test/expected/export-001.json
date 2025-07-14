@@ -40,7 +40,9 @@
           ]
         },
         "parameters": [
-          "text"
+          {
+            "name": "text"
+          }
         ]
       }
     }

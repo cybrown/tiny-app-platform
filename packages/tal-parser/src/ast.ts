@@ -182,7 +182,7 @@ export type ArrayNode = NodeMetadata & {
 export type FunctionNode = NodeMetadata & {
   kind: 'Function';
   name?: string;
-  parameters: string[];
+  parameters: { name: string; type: unknown }[];
   body: Node;
 };
 

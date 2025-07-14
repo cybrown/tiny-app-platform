@@ -26,7 +26,7 @@ class Lowerer {
     if (exportedNames.length) {
       result.push({
         kind: 'Record',
-        entries: exportedNames.map(name => ({
+        entries: exportedNames.map((name) => ({
           kind: 'RecordEntry',
           key: name,
           value: { kind: 'Local', name },
@@ -38,7 +38,7 @@ class Lowerer {
 
   public lowerArray(node: Node[], returnArrayFromBlock = false): Node[] {
     return node
-      .map(e => this.lowerSingle(e, returnArrayFromBlock))
+      .map((e) => this.lowerSingle(e, returnArrayFromBlock))
       .filter(removeNodes);
   }
 
@@ -112,7 +112,7 @@ class Lowerer {
         return {
           ...node,
           value: this.lowerSingle(node.value),
-          args: node.args.map(arg => ({
+          args: node.args.map((arg) => ({
             ...arg,
             value: this.lowerSingle(arg.value),
           })),
@@ -239,7 +239,9 @@ class Lowerer {
       }
       case 'KindedRecord': {
         const bindToEntries: KindedRecordEntryNode[] = [];
-        const bindToEntry = node.entries.find(entry => entry.key === 'bindTo');
+        const bindToEntry = node.entries.find(
+          (entry) => entry.key === 'bindTo'
+        );
         if (
           bindToEntry &&
           !Array.isArray(bindToEntry.value) &&
@@ -255,7 +257,7 @@ class Lowerer {
             key: 'onChange',
             value: {
               kind: 'Function',
-              parameters: ['newValue'],
+              parameters: [{ name: 'newValue', type: { kind: 'any' } }],
               body: {
                 kind: 'Block',
                 children: [
@@ -386,16 +388,16 @@ class Lowerer {
         return {
           ...node,
           kind: 'Function',
-          parameters: ["$$arg$$"],
+          parameters: [{ name: '$$arg$$', type: { kind: 'any' } }],
           body: {
-            kind: "Attribute",
+            kind: 'Attribute',
             key: node.key,
             value: {
-              kind: "Local",
-              name: "$$arg$$"
-            }
-          }
-        }
+              kind: 'Local',
+              name: '$$arg$$',
+            },
+          },
+        };
       }
       case 'KindedRecordEntry':
       case 'RecordEntry':
@@ -418,7 +420,7 @@ class Lowerer {
     returnArrayFromBlock: boolean
   ): NodeByKind['Block'] {
     let loweredElements = block.children
-      .map(node => this.lowerSingle(node, returnArrayFromBlock))
+      .map((node) => this.lowerSingle(node, returnArrayFromBlock))
       .filter(removeNodes);
 
     if (returnArrayFromBlock) {

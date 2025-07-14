@@ -51,9 +51,8 @@ export class Compiler {
   }
 
   private setCurrentLabel(label: string): void {
-    const lastOpcode = this.functions[this.currentFunction].body[
-      this.currentLabel
-    ].at(-1);
+    const lastOpcode =
+      this.functions[this.currentFunction].body[this.currentLabel].at(-1);
 
     if (lastOpcode?.kind !== 'Jump') {
       throw new Error(
@@ -149,7 +148,7 @@ export class Compiler {
         const namedArgs: [string, Node][] = [];
 
         // Seperate positional and named arguments
-        node.args.forEach(arg => {
+        node.args.forEach((arg) => {
           if (arg.kind === 'NamedArgument') {
             namedArgs.push([arg.name, arg.value]);
           } else if (arg.kind == 'PositionalArgument') {
@@ -390,16 +389,6 @@ export class Compiler {
         });
         break;
       }
-      case 'Export':
-        throw new Error('Export node not supported');
-      case 'Switch':
-        throw new Error('Switch node not supported');
-      case 'Comment':
-        throw new Error('Comment node not supported');
-      case 'Pipe':
-        throw new Error('Pipe node not supported');
-      case 'Nested':
-        throw new Error('Nested node not supported');
       case 'Intrinsic': {
         switch (node.op) {
           case 'ForceRender': {
@@ -414,6 +403,11 @@ export class Compiler {
         }
         return;
       }
+      case 'Export':
+      case 'Switch':
+      case 'Comment':
+      case 'Pipe':
+      case 'Nested':
       case 'KindedRecordEntry':
       case 'NamedArgument':
       case 'PositionalArgument':
@@ -483,7 +477,9 @@ export class Compiler {
       (functionNode.name ? functionNode.name + '_' : 'func_') +
       (this.functionIndexCounter++).toString(16);
     this.functions[name] = {
-      parameters: functionNode.parameters.map(name => ({ name })),
+      parameters: functionNode.parameters.map((parameter) => ({
+        name: parameter.name,
+      })),
       body: { entry: [] },
     };
     return name;

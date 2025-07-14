@@ -1,0 +1,2 @@
+Only local variables are supported for Assignements
+null

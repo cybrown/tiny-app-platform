@@ -13,3 +13,4 @@ export { Program, Closure } from './core';
 export { lower, lowerSingle } from './lowerer';
 export * from './opcodes';
 export * from './metadata';
+export * from './typecheck';

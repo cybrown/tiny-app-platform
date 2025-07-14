@@ -1,0 +1,3 @@
+Local not found: some_function_that_throws
+Local not found: log
+null

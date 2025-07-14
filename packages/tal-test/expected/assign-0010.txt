@@ -1,0 +1,3 @@
+Only local variables are supported for Assignements
+Invalid type for attribute
+any

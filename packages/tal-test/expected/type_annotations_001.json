@@ -1,0 +1,93 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "myFunc",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          3
+        ]
+      },
+      "parameters": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "any"
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "string"
+      }
+    }
+  },
+  {
+    "kind": "Function",
+    "body": 42,
+    "parameters": [
+      {
+        "name": "a",
+        "type": {
+          "kind": "null"
+        }
+      },
+      {
+        "name": "data",
+        "type": {
+          "kind": "array",
+          "item": {
+            "kind": "number"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "myNumber",
+    "type": {
+      "kind": "number"
+    },
+    "value": 3
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "myObject",
+    "type": {
+      "kind": "record",
+      "fields": {
+        "a": {
+          "kind": "number"
+        },
+        "b": {
+          "kind": "array",
+          "item": {
+            "kind": "boolean"
+          }
+        },
+        "c": {
+          "kind": "union",
+          "types": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

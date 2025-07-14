@@ -1,0 +1,41 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "i",
+    "value": 0
+  },
+  {
+    "kind": "While",
+    "condition": {
+      "kind": "BinaryOperator",
+      "operator": "<",
+      "right": 10,
+      "left": {
+        "kind": "Local",
+        "name": "i"
+      }
+    },
+    "body": {
+      "kind": "Block",
+      "children": [
+        {
+          "kind": "Assign",
+          "address": {
+            "kind": "Local",
+            "name": "i"
+          },
+          "value": {
+            "kind": "BinaryOperator",
+            "operator": "+",
+            "right": 1,
+            "left": {
+              "kind": "Local",
+              "name": "i"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

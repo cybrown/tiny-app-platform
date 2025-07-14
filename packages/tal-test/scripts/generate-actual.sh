@@ -11,4 +11,5 @@ do
   node ./tal-format.mjs < "test-sources/$name.tas" > "actual/$name.tas"
   node ./tal-walk-to-xml.mjs < "test-sources/$name.tas" > "actual/$name.xml"
   node ./tal-compile-to-asm.mjs < "test-sources/$name.tas" > "actual/$name.asm"
+  node ./tal-typecheck.mjs < "test-sources/$name.tas" > "actual/$name.txt"
 done

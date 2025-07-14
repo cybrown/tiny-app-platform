@@ -1,3 +1,65 @@
+export type TypeAnyNode = NodeMetadata & {
+  kind: 'any';
+};
+
+export type TypeNullNode = NodeMetadata & {
+  kind: 'null';
+};
+
+export type TypeNumberNode = NodeMetadata & {
+  kind: 'number';
+};
+
+export type TypeStringNode = NodeMetadata & {
+  kind: 'string';
+};
+
+export type TypeBooleanNode = NodeMetadata & {
+  kind: 'boolean';
+};
+
+export type TypeKindedRecordNode = NodeMetadata & {
+  kind: 'kinded-record';
+};
+
+export type TypeUnionNode = NodeMetadata & {
+  kind: 'union';
+  types: TypeNode[];
+};
+
+export type TypeArrayNode = NodeMetadata & {
+  kind: 'array';
+  item: TypeNode;
+};
+
+export type TypeRecordNode = NodeMetadata & {
+  kind: 'record';
+  fields: Record<string, TypeNode>;
+};
+
+export type TypeParameter = NodeMetadata & {
+  name: string;
+  type: TypeNode;
+};
+
+export type TypeFunctionNode = NodeMetadata & {
+  kind: 'function';
+  parameters: TypeParameter[];
+  returnType: TypeNode;
+};
+
+export type TypeNode =
+  | TypeNumberNode
+  | TypeStringNode
+  | TypeBooleanNode
+  | TypeNullNode
+  | TypeKindedRecordNode
+  | TypeAnyNode
+  | TypeUnionNode
+  | TypeArrayNode
+  | TypeRecordNode
+  | TypeFunctionNode;
+
 export type LocalNode = NodeMetadata & {
   kind: 'Local';
   name: string;
@@ -158,6 +220,7 @@ export type DeclareLocalNode = NodeMetadata & {
   name: string;
   value?: Node;
   mutable: boolean;
+  type?: TypeNode;
 };
 
 export type KindedRecordNode = NodeMetadata & {
@@ -182,7 +245,8 @@ export type ArrayNode = NodeMetadata & {
 export type FunctionNode = NodeMetadata & {
   kind: 'Function';
   name?: string;
-  parameters: { name: string; type: unknown }[];
+  parameters: { name: string; type: TypeNode }[];
+  returnType?: TypeNode;
   body: Node;
 };
 

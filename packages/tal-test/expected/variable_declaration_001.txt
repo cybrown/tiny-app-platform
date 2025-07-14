@@ -1,0 +1,8 @@
+Local not found: b
+Local not found: b
+Local not found: b
+Local not found: b
+Assignement of non mutable local
+Local not found: b
+Local not found: b
+string

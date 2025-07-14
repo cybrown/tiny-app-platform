@@ -7,6 +7,8 @@ import {
   RuntimeContext,
   Program,
   EvaluationError,
+  TypeChecker,
+  typeToString,
 } from 'tal-eval';
 import { parse, Node } from 'tal-parser';
 import { importStdlibInContext } from 'tal-stdlib';
@@ -90,6 +92,8 @@ async function startBackend() {
   };
 }
 
+const typeChecker = new TypeChecker();
+
 async function doRun(
   source: string,
   ctx: RuntimeContext
@@ -113,6 +117,16 @@ async function doRun(
 
     for (const cst of csts) {
       const ast = lowerSingle(cst);
+      typeChecker.clearErrors();
+      const type = typeChecker.check(ast);
+      if (typeChecker.errors.length) {
+        console.log('Type errors:');
+        console.log(JSON.stringify(ast, null, 2));
+        for (const e of typeChecker.errors) {
+          console.log(e[1]);
+        }
+      }
+      console.log(typeToString(type));
       const newProgram = compile(ast);
       if (!ctx.program) throw new Error('Context must have a program');
       for (const key in newProgram) {

@@ -269,12 +269,26 @@ Nested
     	{ return { location: buildLocation(), kind: 'Nested', node }; }
 
 Type
-    = "any" ! IdentifierTailCharacters
+    = "boolean" ! IdentifierTailCharacters
+        { return { kind: "boolean"}; }
+    / "number" ! IdentifierTailCharacters
+        { return { kind: "number"}; }
+    / "string" ! IdentifierTailCharacters
+        { return { kind: "string"}; }
+    / "null" ! IdentifierTailCharacters
+        { return { kind: "null"}; }
+    / "any" ! IdentifierTailCharacters
         { return { kind: "any"}; }
+    / "array" _ "<" _ item:Type _ ">"
+        { return { kind: "array", item}; }
+    / "union" _ "<" _ types:(Type (',' _)?)* _ ">"
+        { return { kind: "union", types: types.map(t => t[0])}; }
+    / "{" _ fields:(identifier:Identifier _ ":" _ type:Type (',' _)?)* _ "}"
+        { return { kind: "record", fields: Object.fromEntries(fields.map(f => [f[0], f[4]]))}; }
 
 NamedFunction
-    = 'fun' __ name:Identifier _ parameters:ParameterList _ body:Node
-        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters } }; }
+    = 'fun' __ name:Identifier _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node
+        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters, returnType: returnType ? returnType[2] : undefined } }; }
 
 ParameterList
     = '(' _ parameters:(Identifier _ (':' _ Type)? _ (',' _)?)* ')'
@@ -451,8 +465,8 @@ Assignement
         { return { location: buildLocation(), kind: "Assign", address, value }; }
 
 LocalDeclaration
-    = keyword:("let" / "var") ! IdentifierTailCharacters __ name:Identifier value:(_ '=' _ Node)?
-        { return { location: buildLocation(), kind: "DeclareLocal", mutable: keyword === "var", name, value: value != null ? value[3] : undefined }; }
+    = keyword:("let" / "var") ! IdentifierTailCharacters __ name:Identifier _ type:(':' _ Type)? _ value:(_ '=' _ Node)?
+        { return { location: buildLocation(), kind: "DeclareLocal", mutable: keyword === "var", name, type: type ? type[2] : undefined, value: value != null ? value[3] : undefined }; }
 
 Block
     = "{" _ children:ManyNodes "}"

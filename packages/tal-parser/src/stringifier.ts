@@ -20,6 +20,7 @@ import {
   ExportNode,
   CommentNode,
   WhileNode,
+  TypeNode,
 } from './ast';
 
 export function stringify(value: Node[]): string {
@@ -197,6 +198,9 @@ class Stringifier {
       return this.stringifyNamedFunction(obj, obj.value);
     }
     let result = (obj.mutable ? 'var' : 'let') + ' ' + obj.name;
+    if (obj.type) {
+      result += this.stringifyTypeAnnotation(obj.type);
+    }
     if (obj.value !== undefined) {
       result += ' = ' + this.stringify(obj.value);
     }
@@ -204,7 +208,14 @@ class Stringifier {
   }
 
   stringifyNamedFunction(obj: DeclareLocalNode, func: FunctionNode): string {
-    let argList = '(' + func.parameters.map((p) => p.name).join(', ') + ') ';
+    let argList =
+      '(' +
+      func.parameters
+        .map((p) => p.name + this.stringifyTypeAnnotation(p.type))
+        .join(', ') +
+      ')' +
+      this.stringifyTypeAnnotation(func.returnType) +
+      ' ';
     if (argList.length > 60) {
       argList = '(';
       this.incrementDepth();
@@ -215,6 +226,52 @@ class Stringifier {
       argList += '\n' + this.depthSpace() + ') ';
     }
     return 'fun ' + obj.name + argList + this.stringify(func.body);
+  }
+
+  stringifyTypeAnnotation(obj: TypeNode | null | undefined): string {
+    return obj ? ': ' + this.stringifyType(obj) : '';
+  }
+
+  stringifyType(obj: TypeNode): string {
+    switch (obj.kind) {
+      case 'any':
+        return 'any';
+      case 'null':
+        return 'null';
+      case 'boolean':
+        return 'boolean';
+      case 'number':
+        return 'number';
+      case 'string':
+        return 'string';
+      case 'kinded-record':
+        return 'kinded-record';
+      case 'array':
+        return 'array<' + this.stringifyType(obj.item) + '>';
+      case 'union':
+        return (
+          'union<' +
+          obj.types.map((t) => this.stringifyType(t)).join(', ') +
+          '>'
+        );
+      case 'record':
+        return (
+          '{' +
+          Object.entries(obj.fields)
+            .map((entry) => entry[0] + ': ' + this.stringifyType(entry[1]))
+            .join(', ') +
+          '}'
+        );
+      case 'function':
+        return (
+          obj.parameters
+            .map((param) => param.name + ': ' + this.stringifyType(param.type))
+            .join(', ') +
+          ' => ' +
+          this.stringifyType(obj.returnType)
+        );
+    }
+    throw new Error('Unknown type to stringify');
   }
 
   stringifyNested(obj: NestedNode): string {
@@ -274,11 +331,15 @@ class Stringifier {
     let result = '';
     if (obj.parameters.length === 0) {
       result += '()';
-    } else if (obj.parameters.length === 1) {
+    } else if (obj.parameters.length === 1 && obj.parameters[0].type == null) {
       result += obj.parameters[0].name;
     } else {
       result +=
-        '(' + (obj.parameters ?? []).map((p) => p.name).join(', ') + ')';
+        '(' +
+        (obj.parameters ?? [])
+          .map((p) => p.name + this.stringifyTypeAnnotation(p.type))
+          .join(', ') +
+        ')';
     }
     return result + ' => ' + this.stringify(obj.body);
   }

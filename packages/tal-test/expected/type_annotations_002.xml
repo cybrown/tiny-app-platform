@@ -1,0 +1,20 @@
+<program>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <while>
+    <binaryoperator>
+      <local />
+      <literal />
+    </binaryoperator>
+    <block>
+      <assign>
+        <local />
+        <binaryoperator>
+          <local />
+          <literal />
+        </binaryoperator>
+      </assign>
+    </block>
+  </while>
+</program>

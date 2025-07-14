@@ -1,0 +1,10 @@
+Local not found: a
+Local not found: b
+Operator + not compatible with type boolean
+Local not found: a
+Local not found: b
+Operator + not compatible with type boolean
+Local not found: a
+Local not found: b
+Operator + not compatible with type boolean
+(a: any) => (b: any) => boolean

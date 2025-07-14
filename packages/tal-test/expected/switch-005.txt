@@ -1,0 +1,7 @@
+Local not found: letter
+Operator === not compatible with type string
+Local not found: letter
+Operator === not compatible with type string
+Local not found: letter
+Operator === not compatible with type string
+number

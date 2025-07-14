@@ -64,11 +64,3 @@ main()
     Literal           "1"
     Literal           1
     Intrinsic         INTRINSIC_NOT_EQUAL
-    Pop               inBlock: false
-    Literal           "1"
-    Literal           1
-    Intrinsic         INTRINSIC_EQUAL_STRICT
-    Pop               inBlock: false
-    Literal           "1"
-    Literal           1
-    Intrinsic         INTRINSIC_NOT_EQUAL_STRICT

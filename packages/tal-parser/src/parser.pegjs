@@ -122,7 +122,7 @@ LogicalAndOperator
     	{ return buildBinaryOperator(left, right); }
 
 EqualityOperators
-	= left:ComparisonOperators right:(_ ('===' / '!==' / '==' / '!=') _ ComparisonOperators)*
+	= left:ComparisonOperators right:(_ ('==' / '!=') _ ComparisonOperators)*
     	{ return buildBinaryOperator(left, right); }
 
 ComparisonOperators

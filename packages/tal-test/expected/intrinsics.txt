@@ -1,5 +1,3 @@
 Incompatible types for binary operator ==
 Incompatible types for binary operator !=
-Incompatible types for binary operator ===
-Incompatible types for binary operator !==
 any

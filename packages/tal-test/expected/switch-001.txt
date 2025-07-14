@@ -1,7 +1,4 @@
 Local not found: state
-Operator === not compatible with type string
 Local not found: state
-Operator === not compatible with type string
 Local not found: state
-Operator === not compatible with type string
 () => kinded-record

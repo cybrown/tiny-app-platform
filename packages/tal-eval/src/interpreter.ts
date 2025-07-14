@@ -634,22 +634,10 @@ export class VM {
       case 'INTRINSIC_EQUAL': {
         const operand2 = this.stack.pop();
         const operand1 = this.stack.pop();
-        this.stack.push(operand1 == operand2);
-        break;
-      }
-      case 'INTRINSIC_NOT_EQUAL': {
-        const operand2 = this.stack.pop();
-        const operand1 = this.stack.pop();
-        this.stack.push(operand1 != operand2);
-        break;
-      }
-      case 'INTRINSIC_EQUAL_STRICT': {
-        const operand2 = this.stack.pop();
-        const operand1 = this.stack.pop();
         this.stack.push(operand1 === operand2);
         break;
       }
-      case 'INTRINSIC_NOT_EQUAL_STRICT': {
+      case 'INTRINSIC_NOT_EQUAL': {
         const operand2 = this.stack.pop();
         const operand1 = this.stack.pop();
         this.stack.push(operand1 !== operand2);

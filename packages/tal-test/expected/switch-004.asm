@@ -2,7 +2,7 @@ main()
   entry:
     Literal           true
     Literal           true
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_1
     Jump              if_false_2
   if_true_1:
@@ -11,7 +11,7 @@ main()
   if_false_2:
     Literal           true
     Literal           false
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_4
     Jump              if_false_5
   if_true_4:

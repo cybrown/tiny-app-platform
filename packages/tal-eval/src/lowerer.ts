@@ -340,7 +340,7 @@ class Lowerer {
             condition: {
               kind: 'BinaryOperator',
               location: node.location,
-              operator: '===',
+              operator: '==',
               left: valueNode,
               right: this.lowerSingle(
                 node.branches[node.branches.length - 1].comparator
@@ -363,7 +363,7 @@ class Lowerer {
               condition: {
                 kind: 'BinaryOperator',
                 location: node.location,
-                operator: '===',
+                operator: '==',
                 left: valueNode,
                 right: this.lowerSingle(branch.comparator),
               },

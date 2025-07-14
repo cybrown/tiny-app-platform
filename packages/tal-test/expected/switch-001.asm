@@ -3,7 +3,7 @@ main()
     Local             state
     Attribute         name: name
     Literal           "list"
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_1
     Jump              if_false_2
   if_true_1:
@@ -13,7 +13,7 @@ main()
     Local             state
     Attribute         name: name
     Literal           "editor"
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_4
     Jump              if_false_5
   if_true_4:
@@ -23,7 +23,7 @@ main()
     Local             state
     Attribute         name: name
     Literal           "contact"
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_7
     Jump              if_false_8
   if_true_7:

@@ -101,17 +101,5 @@
     "operator": "!=",
     "right": 1,
     "left": "1"
-  },
-  {
-    "kind": "BinaryOperator",
-    "operator": "===",
-    "right": 1,
-    "left": "1"
-  },
-  {
-    "kind": "BinaryOperator",
-    "operator": "!==",
-    "right": 1,
-    "left": "1"
   }
 ]

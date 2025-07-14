@@ -1,3 +1,1 @@
-Operator === not compatible with type boolean
-Operator === not compatible with type boolean
 string

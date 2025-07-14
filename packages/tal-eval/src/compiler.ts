@@ -331,10 +331,6 @@ export class Compiler {
                 return 'INTRINSIC_EQUAL';
               case '!=':
                 return 'INTRINSIC_NOT_EQUAL';
-              case '===':
-                return 'INTRINSIC_EQUAL_STRICT';
-              case '!==':
-                return 'INTRINSIC_NOT_EQUAL_STRICT';
               default:
                 throw new Error(
                   'Unknown binary operator: ' + (node as AnyForNever).operator

@@ -38,7 +38,7 @@ letterToNumber_0(letter)
   entry:
     Local             letter
     Literal           "a"
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_1
     Jump              if_false_2
   if_true_1:
@@ -47,7 +47,7 @@ letterToNumber_0(letter)
   if_false_2:
     Local             letter
     Literal           "b"
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_4
     Jump              if_false_5
   if_true_4:
@@ -56,7 +56,7 @@ letterToNumber_0(letter)
   if_false_5:
     Local             letter
     Literal           "c"
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_7
     Jump              if_false_8
   if_true_7:

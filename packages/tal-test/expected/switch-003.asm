@@ -2,7 +2,7 @@ main()
   entry:
     Literal           true
     Local             expr1
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_1
     Jump              if_false_2
   if_true_1:
@@ -11,7 +11,7 @@ main()
   if_false_2:
     Literal           true
     Local             expr2
-    Intrinsic         INTRINSIC_EQUAL_STRICT
+    Intrinsic         INTRINSIC_EQUAL
     JumpTrue          if_true_4
     Jump              if_false_5
   if_true_4:

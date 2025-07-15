@@ -1,149 +1,29 @@
 import { Node } from 'tal-parser';
-import { AnyForNever } from './core';
-
-type TypeAny = {
-  kind: 'any';
-};
-
-type TypeNull = {
-  kind: 'null';
-};
-
-type TypeNumber = {
-  kind: 'number';
-};
-
-type TypeString = {
-  kind: 'string';
-};
-
-type TypeBoolean = {
-  kind: 'boolean';
-};
-
-type TypeKindedRecord = {
-  kind: 'kinded-record';
-};
-
-type TypeUnion = {
-  kind: 'union';
-  types: Type[];
-};
-
-type TypeArray = {
-  kind: 'array';
-  item: Type;
-};
-
-type TypeRecord = {
-  kind: 'record';
-  fields: Record<string, Type>;
-};
-
-type TypeParameter = {
-  name: string;
-  type: Type;
-};
-
-type TypeFunction = {
-  kind: 'function';
-  parameters: TypeParameter[];
-  returnType: Type;
-};
-
-function typeNull(): TypeNull {
-  return {
-    kind: 'null',
-  };
-}
-
-function typeAny(): TypeAny {
-  return {
-    kind: 'any',
-  };
-}
-
-function typeNumber(): TypeNumber {
-  return {
-    kind: 'number',
-  };
-}
-
-function typeString(): TypeString {
-  return {
-    kind: 'string',
-  };
-}
-
-function typeBoolean(): TypeBoolean {
-  return {
-    kind: 'boolean',
-  };
-}
-
-function typeKindedRecord(): TypeKindedRecord {
-  return {
-    kind: 'kinded-record',
-  };
-}
-
-function typeArray(itemType: Type): TypeArray {
-  return {
-    kind: 'array',
-    item: itemType,
-  };
-}
-
-function typeFunction(
-  parametersType: TypeParameter[],
-  returnType: Type
-): TypeFunction {
-  return {
-    kind: 'function',
-    parameters: parametersType,
-    returnType: returnType,
-  };
-}
-
-function typeUnion(...types: Type[]): TypeUnion {
-  for (let type of types) {
-    if (type.kind == 'any') {
-      throw new Error("Can't build an union type with any");
-    }
-    if (type.kind == 'union') {
-      throw new Error("Can't build an union type within an other union type");
-    }
-  }
-  return {
-    kind: 'union',
-    types,
-  };
-}
-
-function typeRecord(fields: Record<string, Type>): TypeRecord {
-  return {
-    kind: 'record',
-    fields,
-  };
-}
-
-type Type =
-  | TypeNumber
-  | TypeString
-  | TypeBoolean
-  | TypeNull
-  | TypeKindedRecord
-  | TypeAny
-  | TypeUnion
-  | TypeArray
-  | TypeRecord
-  | TypeFunction;
+import { AnyForNever } from '../core';
+import {
+  Type,
+  typeAny,
+  TypeAny,
+  typeArray,
+  TypeArray,
+  typeBoolean,
+  typeFunction,
+  TypeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeRecord,
+  TypeRecord,
+  typeString,
+  TypeUnion,
+  typeUnion,
+} from './types';
+import { SymbolTable } from './SymbolTable';
 
 export class TypeChecker {
   private types = new Map<Node, Type>();
   private _errors: [Node, string][] = [];
-  private currentContext: Record<string, { type: Type; mutable: boolean }> = {};
-  private contextStack: Record<string, { type: Type; mutable: boolean }>[] = [];
+  private symbolTable = new SymbolTable();
 
   public get errors() {
     return this._errors;
@@ -160,36 +40,6 @@ export class TypeChecker {
 
   private defError(node: Node, error: string): void {
     this._errors.push([node, error]);
-  }
-
-  private defValue(name: string, type: Type, mutable: boolean): Type {
-    this.currentContext[name] = { type, mutable };
-    return type;
-  }
-
-  private pushContext() {
-    this.contextStack.push(this.currentContext);
-    this.currentContext = {};
-  }
-
-  private popContext() {
-    const newCurrentContext = this.contextStack.pop();
-    if (!newCurrentContext) {
-      throw new Error('type context underflow');
-    }
-    this.currentContext = newCurrentContext;
-  }
-
-  private getValueType(name: string): { type: Type; mutable: boolean } | null {
-    if (Object.hasOwn(this.currentContext, name)) {
-      return this.currentContext[name];
-    }
-    for (let ctx of this.contextStack.reverse()) {
-      if (Object.hasOwn(ctx, name)) {
-        return ctx[name];
-      }
-    }
-    return null;
   }
 
   check(node: Node): Type {
@@ -210,17 +60,45 @@ export class TypeChecker {
         this._errors.push([node, 'Unsupported literal']);
         return this.defType(node, typeAny());
       case 'DeclareLocal':
-        if (node.value) {
-          // TODO: Is has type annotation, check for compatibility and use it as value type
-          this.defValue(node.name, this.check(node.value), node.mutable);
-        } else {
-          // TODO: set type annotation as type
-          this.defValue(node.name, typeNull(), node.mutable);
+        // TODO: If has type annotation, check for compatibility and use it as value type
+        // TODO: If has type annotation, use it as value type instead of typeNull()
+        const valueType = node.value ? this.check(node.value) : typeNull();
+        const symbolIsDeclared = this.symbolTable.declare(
+          node.name,
+          valueType,
+          node.mutable
+        );
+        if (!symbolIsDeclared) {
+          this.defError(node, 'Symbol already declared: ' + node.name);
         }
         return this.defType(node, typeNull());
       case 'BinaryOperator': {
         const left = this.check(node.left);
         const right = this.check(node.right);
+
+        if (isAny(left) && isAny(right)) {
+          switch (node.operator) {
+            case '==':
+            case '!=':
+            case '<=':
+            case '>=':
+            case '<':
+            case '>':
+              return this.defType(node, typeBoolean());
+            case '+':
+              return this.defType(
+                node,
+                mergeTypes(node, typeNumber(), typeString())
+              );
+            case '-':
+            case '*':
+            case '/':
+            case '%':
+              return this.defType(node, typeNumber());
+          }
+          this.defError(node, `Binary perator ${node.operator} unknown`);
+          return this.defType(node, typeAny());
+        }
 
         if (isAssignableToBoolean(left) && isAssignableToBoolean(right)) {
           if (!BINARY_OPERATOR_BOOLEAN.includes(node.operator)) {
@@ -277,7 +155,7 @@ export class TypeChecker {
         return this.defType(node, typeAny());
       }
       case 'Block': {
-        this.pushContext();
+        this.symbolTable.push();
         if (node.children.length == 0) {
           return this.defType(node, typeNull());
         }
@@ -285,7 +163,7 @@ export class TypeChecker {
         for (const child of node.children) {
           lastType = this.check(child);
         }
-        this.popContext();
+        this.symbolTable.pop();
         return this.defType(node, lastType!);
       }
       case 'If': {
@@ -305,9 +183,9 @@ export class TypeChecker {
         return this.defType(node, mergeTypes(node, trueType, falseType));
       }
       case 'Local': {
-        const type = this.getValueType(node.name);
+        const type = this.symbolTable.get(node.name);
         if (type == null) {
-          this.defError(node, 'Local not found: ' + node.name);
+          this.defError(node, 'Unknown symbol: ' + node.name);
           return this.defType(node, typeAny());
         }
         return this.defType(node, type.type);
@@ -322,9 +200,9 @@ export class TypeChecker {
           return this.defType(node, typeAny());
         }
         const valueType = this.check(node.value);
-        const type = this.getValueType(node.address.name);
+        const type = this.symbolTable.get(node.address.name);
         if (!type) {
-          this.defError(node, 'Local not found: ' + node.address.name);
+          this.defError(node, 'Unknown symbol: ' + node.address.name);
           return this.defType(node, typeAny());
         }
 
@@ -475,7 +353,20 @@ export class TypeChecker {
         return this.defType(node, typeKindedRecord());
       }
       case 'Function': {
+        // TODO: When parameter type is missing, infer from expected type (eg: for lambdas)
+        this.symbolTable.push();
+        const parametersType = node.parameters.map((parameter) => ({
+          name: parameter.name,
+          type: parameter.type ?? typeAny(),
+        }));
+        parametersType.forEach((parameter) => {
+          this.symbolTable.declare(parameter.name, parameter.type, true);
+        });
+
+        // TODO: Check parameter type
+
         const computedReturnType = this.check(node.body);
+        this.symbolTable.pop();
         const declaredReturnType = node.returnType;
 
         if (
@@ -484,14 +375,6 @@ export class TypeChecker {
         ) {
           this.defError(node, 'Return type not compatible');
         }
-
-        // TODO: When parameter type is missing, infer from expected type (eg: for lambdas)
-        const parametersType = node.parameters.map((parameter) => ({
-          name: parameter.name,
-          type: parameter.type ?? typeAny(),
-        }));
-
-        // TODO: Check parameter type
 
         return this.defType(
           node,
@@ -681,42 +564,4 @@ function typeIsAssignableTo(type1: Type, type2: Type): boolean {
 
   // For non union types other than any, their kinds must be the same
   return type1.kind == type2.kind;
-}
-
-export function typeToString(type: Type): string {
-  switch (type.kind) {
-    case 'any':
-      return 'any';
-    case 'null':
-      return 'null';
-    case 'boolean':
-      return 'boolean';
-    case 'number':
-      return 'number';
-    case 'string':
-      return 'string';
-    case 'kinded-record':
-      return 'kinded-record';
-    case 'union':
-      return 'union<' + type.types.map((t) => typeToString(t)).join(', ') + '>';
-    case 'array':
-      return 'array<' + typeToString(type.item) + '>';
-    case 'record':
-      return (
-        '{' +
-        Object.entries(type.fields)
-          .map((entry) => entry[0] + ': ' + typeToString(entry[1]))
-          .join(', ') +
-        '}'
-      );
-    case 'function':
-      return (
-        '(' +
-        type.parameters
-          .map((p) => p.name + ': ' + typeToString(p.type))
-          .join(', ') +
-        ') => ' +
-        typeToString(type.returnType)
-      );
-  }
 }

@@ -1,2 +1,2 @@
-Local not found: value
+Unknown symbol: value
 any

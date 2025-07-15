@@ -1,1 +1,1 @@
-{a: number, b: number}
+{a: any, b: any}

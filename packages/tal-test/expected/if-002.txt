@@ -1,4 +1,4 @@
-Local not found: a
-Local not found: a
-Local not found: a
+Unknown symbol: a
+Unknown symbol: a
+Unknown symbol: a
 string

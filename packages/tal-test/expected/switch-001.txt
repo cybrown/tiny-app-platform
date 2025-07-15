@@ -1,4 +1,4 @@
-Local not found: state
-Local not found: state
-Local not found: state
+Unknown symbol: state
+Unknown symbol: state
+Unknown symbol: state
 () => kinded-record

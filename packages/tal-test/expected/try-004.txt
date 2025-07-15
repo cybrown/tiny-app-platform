@@ -1,2 +1,2 @@
-Local not found: missing_variable
+Unknown symbol: missing_variable
 any

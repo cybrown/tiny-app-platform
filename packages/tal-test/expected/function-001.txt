@@ -1,5 +1,4 @@
-Local not found: a
-Local not found: b
-Operator + not compatible with type boolean
-Local not found: a
+Unknown symbol: a
+Unknown symbol: b
+Unknown symbol: a
 any

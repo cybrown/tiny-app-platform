@@ -1,2 +1,2 @@
-Local not found: log
+Unknown symbol: log
 number

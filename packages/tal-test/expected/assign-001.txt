@@ -1,2 +1,2 @@
-Local not found: toto
+Unknown symbol: toto
 any

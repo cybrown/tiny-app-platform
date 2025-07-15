@@ -1,0 +1,137 @@
+export type TypeAny = {
+  kind: 'any';
+};
+
+export type TypeNull = {
+  kind: 'null';
+};
+
+export type TypeNumber = {
+  kind: 'number';
+};
+
+export type TypeString = {
+  kind: 'string';
+};
+
+export type TypeBoolean = {
+  kind: 'boolean';
+};
+
+export type TypeKindedRecord = {
+  kind: 'kinded-record';
+};
+
+export type TypeUnion = {
+  kind: 'union';
+  types: Type[];
+};
+
+export type TypeArray = {
+  kind: 'array';
+  item: Type;
+};
+
+export type TypeRecord = {
+  kind: 'record';
+  fields: Record<string, Type>;
+};
+
+export type TypeParameter = {
+  name: string;
+  type: Type;
+};
+
+export type TypeFunction = {
+  kind: 'function';
+  parameters: TypeParameter[];
+  returnType: Type;
+};
+
+export function typeNull(): TypeNull {
+  return {
+    kind: 'null',
+  };
+}
+
+export function typeAny(): TypeAny {
+  return {
+    kind: 'any',
+  };
+}
+
+export function typeNumber(): TypeNumber {
+  return {
+    kind: 'number',
+  };
+}
+
+export function typeString(): TypeString {
+  return {
+    kind: 'string',
+  };
+}
+
+export function typeBoolean(): TypeBoolean {
+  return {
+    kind: 'boolean',
+  };
+}
+
+export function typeKindedRecord(): TypeKindedRecord {
+  return {
+    kind: 'kinded-record',
+  };
+}
+
+export function typeArray(itemType: Type): TypeArray {
+  return {
+    kind: 'array',
+    item: itemType,
+  };
+}
+
+export function typeFunction(
+  parametersType: TypeParameter[],
+  returnType: Type
+): TypeFunction {
+  return {
+    kind: 'function',
+    parameters: parametersType,
+    returnType: returnType,
+  };
+}
+
+export function typeUnion(...types: Type[]): TypeUnion {
+  for (let type of types) {
+    if (type.kind == 'any') {
+      throw new Error("Can't build an union type with any");
+    }
+    if (type.kind == 'union') {
+      throw new Error("Can't build an union type within an other union type");
+    }
+  }
+  return {
+    kind: 'union',
+    types,
+  };
+}
+
+export function typeRecord(fields: Record<string, Type>): TypeRecord {
+  return {
+    kind: 'record',
+    fields,
+  };
+}
+
+export type Type =
+  | TypeNumber
+  | TypeString
+  | TypeBoolean
+  | TypeNull
+  | TypeKindedRecord
+  | TypeAny
+  | TypeUnion
+  | TypeArray
+  | TypeRecord
+  | TypeFunction;

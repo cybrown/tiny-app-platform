@@ -1,2 +1,2 @@
-Local not found: Text
+Unknown symbol: Text
 () => kinded-record

@@ -10,6 +10,7 @@ do
   diff -q "actual/$name.tas" "expected/$name.tas" || has_errors=true
   diff -q "actual/$name.xml" "expected/$name.xml" || has_errors=true
   diff -q "actual/$name.asm" "expected/$name.asm" || has_errors=true
+  diff -q "actual/$name.txt" "expected/$name.txt" || has_errors=true
 done <<< "$(ls test-sources/*.tas)"
 
 if [ $has_errors = true ]

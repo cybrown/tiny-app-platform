@@ -1,10 +1,3 @@
-Local not found: a
-Local not found: b
-Operator + not compatible with type boolean
-Local not found: a
-Local not found: b
-Operator + not compatible with type boolean
-Local not found: a
-Local not found: b
-Operator + not compatible with type boolean
-(a: any) => (b: any) => boolean
+Unknown symbol: b
+Unknown symbol: b
+(a: any) => (b: any) => union<number, string>

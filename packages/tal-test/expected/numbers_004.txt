@@ -1,2 +1,2 @@
-Local not found: G
+Unknown symbol: G
 number

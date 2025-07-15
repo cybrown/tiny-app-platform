@@ -1,3 +1,3 @@
-Local not found: missing_variable
-Local not found: error
+Unknown symbol: missing_variable
+Unknown symbol: error
 any

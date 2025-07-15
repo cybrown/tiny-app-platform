@@ -1,8 +1,10 @@
-Local not found: b
-Local not found: b
-Local not found: b
-Local not found: b
+Unknown symbol: b
+Unknown symbol: b
+Symbol already declared: a
+Unknown symbol: b
+Symbol already declared: c
+Unknown symbol: b
 Assignement of non mutable local
-Local not found: b
-Local not found: b
+Unknown symbol: b
+Unknown symbol: b
 string

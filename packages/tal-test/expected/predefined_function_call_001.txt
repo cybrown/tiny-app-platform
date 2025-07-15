@@ -1,2 +1,2 @@
-Local not found: give_hello
+Unknown symbol: give_hello
 any

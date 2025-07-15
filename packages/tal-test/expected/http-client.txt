@@ -1,47 +1,16 @@
-Local not found: set_system_property
-Local not found: http_request
-Local not found: string_trim
-Local not found: bytes_to_string
-Local not found: method
-Local not found: newValue
-Local not found: method
-Local not found: url
-Local not found: newValue
-Local not found: url
-Local not found: array_map
-Local not found: array_append
-Local not found: headers
-Local not found: array_append
-Local not found: headers
-Local not found: body
-Local not found: newValue
-Local not found: body
-Local not found: array_filter
-Local not found: method
-Local not found: url
-Local not found: string_format
-Local not found: method
-Local not found: url
-Local not found: string_format
-Local not found: response
-Local not found: string_format
-Local not found: doShowHeaders
-Local not found: newValue
-Local not found: doShowHeaders
-Local not found: doShowHeaders
-Local not found: row
-Local not found: row
-Local not found: array_map
-Local not found: language
-Local not found: newValue
-Local not found: language
-Local not found: doFormat
-Local not found: newValue
-Local not found: doFormat
-Local not found: language
-Local not found: doFormat
-Local not found: json_parse
-Local not found: responseBodyString
-Local not found: language
-Local not found: doFormat
+Unknown symbol: set_system_property
+Unknown symbol: http_request
+Unknown symbol: string_trim
+Unknown symbol: bytes_to_string
+Unknown symbol: array_map
+Unknown symbol: array_append
+Unknown symbol: array_append
+Unknown symbol: array_filter
+Incompatible types for binary operator !=
+Unknown symbol: string_format
+Incompatible types for binary operator !=
+Unknown symbol: string_format
+Unknown symbol: string_format
+Unknown symbol: array_map
+Unknown symbol: json_parse
 () => kinded-record

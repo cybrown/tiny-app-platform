@@ -1,7 +1,7 @@
-Local not found: predefined_function
-Local not found: predefined_function
-Local not found: predefined_function
-Local not found: predefined_function
-Local not found: predefined_function
-Local not found: predefined_function
+Unknown symbol: predefined_function
+Unknown symbol: predefined_function
+Unknown symbol: predefined_function
+Unknown symbol: predefined_function
+Unknown symbol: predefined_function
+Unknown symbol: predefined_function
 any

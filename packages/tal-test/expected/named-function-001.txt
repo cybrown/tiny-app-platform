@@ -1,4 +1,1 @@
-Local not found: a
-Local not found: b
-Operator + not compatible with type boolean
 null

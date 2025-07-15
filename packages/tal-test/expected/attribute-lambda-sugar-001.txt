@@ -1,2 +1,1 @@
-Local not found: $$arg$$
 ($$arg$$: any) => any

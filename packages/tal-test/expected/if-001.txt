@@ -1,7 +1,7 @@
-Local not found: a
-Local not found: a
-Local not found: a
-Local not found: a
-Local not found: a
-Local not found: toto
+Unknown symbol: a
+Unknown symbol: a
+Unknown symbol: a
+Unknown symbol: a
+Unknown symbol: a
+Unknown symbol: toto
 any

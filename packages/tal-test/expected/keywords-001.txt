@@ -1,5 +1,5 @@
-Local not found: letwww
-Local not found: setwww
-Local not found: ifwww
-Local not found: varwww
+Unknown symbol: letwww
+Unknown symbol: setwww
+Unknown symbol: ifwww
+Unknown symbol: varwww
 any

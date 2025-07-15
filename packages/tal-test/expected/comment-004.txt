@@ -1,2 +1,2 @@
-Unknown symbol: print
+(2:1) Unknown symbol: print
 null

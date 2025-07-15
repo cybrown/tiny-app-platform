@@ -1,2 +1,2 @@
-Unknown symbol: value
+(1:22) Unknown symbol: value
 any

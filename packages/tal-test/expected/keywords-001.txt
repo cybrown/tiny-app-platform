@@ -1,5 +1,5 @@
-Unknown symbol: letwww
-Unknown symbol: setwww
-Unknown symbol: ifwww
-Unknown symbol: varwww
+(1:2) Unknown symbol: letwww
+(2:2) Unknown symbol: setwww
+(3:2) Unknown symbol: ifwww
+(4:2) Unknown symbol: varwww
 any

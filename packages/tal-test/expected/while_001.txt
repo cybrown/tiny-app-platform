@@ -1,2 +1,2 @@
-Unknown symbol: log
+(4:3) Unknown symbol: log
 number

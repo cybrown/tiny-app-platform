@@ -1,4 +1,4 @@
-Unknown symbol: a
-Unknown symbol: b
-Unknown symbol: a
+(2:7) Unknown symbol: a
+(2:11) Unknown symbol: b
+(7:2) Unknown symbol: a
 any

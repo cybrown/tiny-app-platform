@@ -1,16 +1,16 @@
-Unknown symbol: set_system_property
-Unknown symbol: http_request
-Unknown symbol: string_trim
-Unknown symbol: bytes_to_string
-Unknown symbol: array_map
-Unknown symbol: array_append
-Unknown symbol: array_append
-Unknown symbol: array_filter
-Incompatible types for binary operator !=
-Unknown symbol: string_format
-Incompatible types for binary operator !=
-Unknown symbol: string_format
-Unknown symbol: string_format
-Unknown symbol: array_map
-Unknown symbol: json_parse
+(1:1) Unknown symbol: set_system_property
+(12:18) Unknown symbol: http_request
+(20:80) Unknown symbol: string_trim
+(30:28) Unknown symbol: bytes_to_string
+(66:3) Unknown symbol: array_map
+(101:34) Unknown symbol: array_append
+(113:36) Unknown symbol: array_append
+(128:34) Unknown symbol: array_filter
+(131:11) Incompatible types for binary operator !=
+(135:16) Unknown symbol: string_format
+(148:11) Incompatible types for binary operator !=
+(152:16) Unknown symbol: string_format
+(175:17) Unknown symbol: string_format
+(207:18) Unknown symbol: array_map
+(236:41) Unknown symbol: json_parse
 () => kinded-record

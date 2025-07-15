@@ -1,2 +1,2 @@
-Unknown symbol: toto
+(1:1) Unknown symbol: toto
 any

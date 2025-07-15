@@ -1,7 +1,7 @@
-Unknown symbol: a
-Unknown symbol: a
-Unknown symbol: a
-Unknown symbol: a
-Unknown symbol: a
-Unknown symbol: toto
+(1:4) Unknown symbol: a
+(2:4) Unknown symbol: a
+(4:4) Unknown symbol: a
+(5:4) Unknown symbol: a
+(8:4) Unknown symbol: a
+(9:2) Unknown symbol: toto
 any

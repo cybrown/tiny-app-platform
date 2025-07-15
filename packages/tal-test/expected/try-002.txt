@@ -1,3 +1,3 @@
-Unknown symbol: missing_variable
-Unknown symbol: error
+(1:5) Unknown symbol: missing_variable
+(1:28) Unknown symbol: error
 any

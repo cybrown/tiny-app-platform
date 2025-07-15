@@ -1,2 +1,2 @@
-Unknown symbol: Text
+(3:3) Unknown symbol: Text
 () => kinded-record

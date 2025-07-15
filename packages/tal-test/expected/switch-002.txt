@@ -1,6 +1,6 @@
-Unknown symbol: expr1
-Unknown symbol: value1
-Unknown symbol: expr2
-Unknown symbol: value2
-Unknown symbol: defaultValue
+(2:5) Unknown symbol: expr1
+(2:14) Unknown symbol: value1
+(3:5) Unknown symbol: expr2
+(3:14) Unknown symbol: value2
+(4:14) Unknown symbol: defaultValue
 any

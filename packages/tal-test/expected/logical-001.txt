@@ -1,2 +1,2 @@
-If condition must be of type boolean or null
+(1:1) If condition must be of type boolean or null
 number

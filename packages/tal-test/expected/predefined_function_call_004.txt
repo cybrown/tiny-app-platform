@@ -1,4 +1,4 @@
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
+(1:1) Unknown symbol: predefined_function
+(2:1) Unknown symbol: predefined_function
+(3:1) Unknown symbol: predefined_function
 any

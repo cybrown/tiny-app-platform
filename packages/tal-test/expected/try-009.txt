@@ -1,2 +1,2 @@
-Unknown symbol: missing_variable
+(1:1) Unknown symbol: missing_variable
 any

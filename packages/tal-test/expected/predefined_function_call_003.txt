@@ -1,7 +1,7 @@
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
-Unknown symbol: predefined_function
+(1:1) Unknown symbol: predefined_function
+(2:1) Unknown symbol: predefined_function
+(3:1) Unknown symbol: predefined_function
+(4:1) Unknown symbol: predefined_function
+(5:1) Unknown symbol: predefined_function
+(6:1) Unknown symbol: predefined_function
 any

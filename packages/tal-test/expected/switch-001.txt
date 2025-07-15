@@ -1,4 +1,4 @@
-Unknown symbol: state
-Unknown symbol: state
-Unknown symbol: state
+(1:9) Unknown symbol: state
+(1:9) Unknown symbol: state
+(1:9) Unknown symbol: state
 () => kinded-record

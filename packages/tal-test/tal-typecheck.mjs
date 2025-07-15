@@ -30,6 +30,7 @@ if (Array.isArray(expressions)) {
 
 if (typeChecker.errors) {
   for (let error of typeChecker.errors) {
+    process.stdout.write(`(${error[0].location?.start.line}:${error[0].location?.start.column}) `);
     process.stdout.write(error[1]);
     process.stdout.write("\n");
   }
@@ -37,4 +38,5 @@ if (typeChecker.errors) {
 
 if (type) {
   process.stdout.write(typeToString(type));
+  process.stdout.write("\n");
 }

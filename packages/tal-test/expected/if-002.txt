@@ -1,4 +1,4 @@
-Unknown symbol: a
-Unknown symbol: a
-Unknown symbol: a
+(1:5) Unknown symbol: a
+(1:32) Unknown symbol: a
+(2:20) Unknown symbol: a
 string

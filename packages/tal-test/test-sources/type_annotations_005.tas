@@ -1,0 +1,5 @@
+fun string_split(a: string, b: string): array<string> {
+    [a]
+}
+
+let arr: array<number> = string_split("toto", " ")

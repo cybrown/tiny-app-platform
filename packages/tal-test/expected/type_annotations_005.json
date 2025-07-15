@@ -1,0 +1,72 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "string_split",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Array",
+            "value": [
+              {
+                "kind": "Local",
+                "name": "a"
+              }
+            ]
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "string"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "string"
+        }
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "arr",
+    "type": {
+      "kind": "array",
+      "item": {
+        "kind": "number"
+      }
+    },
+    "value": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": "toto"
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": " "
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "string_split"
+      }
+    }
+  }
+]

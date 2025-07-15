@@ -1,13 +1,33 @@
-import { defineFunction } from 'tal-eval';
+import {
+  defineFunction2,
+  typeBoolean,
+  typeNull,
+  typeNumber,
+  typeUnion,
+  typeString,
+} from 'tal-eval';
 
-export const number_to_string = defineFunction(
+export const number_to_string = defineFunction2(
   'number_to_string',
   [
-    { name: 'number' },
-    { name: 'precision', onlyNamed: true },
-    { name: 'base', onlyNamed: true },
-    { name: 'code', onlyNamed: true },
+    { name: 'number', type: typeNumber() },
+    {
+      name: 'precision',
+      type: typeUnion(typeNull(), typeNumber()),
+      onlyNamed: true,
+    },
+    {
+      name: 'base',
+      type: typeUnion(typeNull(), typeNumber()),
+      onlyNamed: true,
+    },
+    {
+      name: 'code',
+      type: typeUnion(typeNull(), typeBoolean()),
+      onlyNamed: true,
+    },
   ],
+  typeString(),
   (_ctx, { number, precision, base, code }) => {
     if (typeof number != 'number') {
       throw new Error('Only numbers are supported');
@@ -69,9 +89,10 @@ export const number_to_string = defineFunction(
   }
 );
 
-export const number_ceil = defineFunction(
+export const number_ceil = defineFunction2(
   'number_ceil',
-  [{ name: 'number' }],
+  [{ name: 'number', type: typeNumber() }],
+  typeNumber(),
   (_ctx, { number }) => Math.ceil(number),
   undefined,
   {
@@ -81,9 +102,10 @@ export const number_ceil = defineFunction(
   }
 );
 
-export const number_floor = defineFunction(
+export const number_floor = defineFunction2(
   'number_floor',
-  [{ name: 'number' }],
+  [{ name: 'number', type: typeNumber() }],
+  typeNumber(),
   (_ctx, { number }) => Math.floor(number),
   undefined,
   {
@@ -93,9 +115,13 @@ export const number_floor = defineFunction(
   }
 );
 
-export const number_round = defineFunction(
+export const number_round = defineFunction2(
   'number_round',
-  [{ name: 'number' }, { name: 'precision' }],
+  [
+    { name: 'number', type: typeNumber() },
+    { name: 'precision', type: typeUnion(typeNull(), typeNumber()) },
+  ],
+  typeNumber(),
   (_ctx, { number, precision }) => {
     if (precision == null || precision === 0) {
       return Math.round(number);
@@ -114,9 +140,10 @@ export const number_round = defineFunction(
   }
 );
 
-export const number_trunc = defineFunction(
+export const number_trunc = defineFunction2(
   'number_trunc',
-  [{ name: 'number' }],
+  [{ name: 'number', type: typeNumber() }],
+  typeNumber(),
   (_ctx, { number }) => Math.trunc(number),
   undefined,
   {
@@ -126,9 +153,10 @@ export const number_trunc = defineFunction(
   }
 );
 
-export const number_abs = defineFunction(
+export const number_abs = defineFunction2(
   'number_abs',
-  [{ name: 'number' }],
+  [{ name: 'number', type: typeNumber() }],
+  typeNumber(),
   (_ctx, { number }) => Math.abs(number),
   undefined,
   {
@@ -138,9 +166,10 @@ export const number_abs = defineFunction(
   }
 );
 
-export const number_sign = defineFunction(
+export const number_sign = defineFunction2(
   'number_sign',
-  [{ name: 'number' }],
+  [{ name: 'number', type: typeNumber() }],
+  typeNumber(),
   (_ctx, { number }) => Math.sign(number),
   undefined,
   {
@@ -150,9 +179,10 @@ export const number_sign = defineFunction(
   }
 );
 
-export const number_random = defineFunction(
+export const number_random = defineFunction2(
   'number_random',
   [],
+  typeNumber(),
   (_ctx) => Math.random(),
   undefined,
   {
@@ -162,9 +192,13 @@ export const number_random = defineFunction(
   }
 );
 
-export const number_randint = defineFunction(
+export const number_randint = defineFunction2(
   'number_randint',
-  [{ name: 'min' }, { name: 'max' }],
+  [
+    { name: 'min', type: typeUnion(typeNull(), typeNumber()) },
+    { name: 'max', type: typeUnion(typeNull(), typeNumber()) },
+  ],
+  typeNumber(),
   (_ctx, { min, max }) => {
     const pMin = min ?? 0;
     const pMax = max ?? 100;

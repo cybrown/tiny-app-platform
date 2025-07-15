@@ -1,0 +1,18 @@
+<program>
+  <declarelocal>
+    <function>
+      <block>
+        <array>
+          <local />
+        </array>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <call>
+      <local />
+      <literal />
+      <literal />
+    </call>
+  </declarelocal>
+</program>

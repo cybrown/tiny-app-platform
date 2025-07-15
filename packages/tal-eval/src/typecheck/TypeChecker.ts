@@ -431,6 +431,77 @@ export class TypeChecker {
           return this.defType(node, typeAny());
         }
 
+        const paramsByName = new Map<string, Type>();
+
+        for (let param of funType.parameters) {
+          paramsByName.set(param.name, param.type);
+        }
+
+        let remainingParams = funType.parameters.map((p) => p.name);
+
+        for (let arg of node.args) {
+          if (remainingParams.length == 0) {
+            this.defError(node, `Too many arguments for function call`);
+            return this.defType(node, typeAny());
+          }
+          if (arg.kind == 'NamedArgument') {
+            remainingParams = remainingParams.filter((p) => p != arg.name);
+            if (!paramsByName.has(arg.name)) {
+              this.defError(
+                node,
+                `Unknown parameter name: ${arg.name} in function call`
+              );
+              return this.defType(node, typeAny());
+            }
+
+            const isAssignable = typeIsAssignableTo(
+              paramsByName.get(arg.name) ?? typeAny(),
+              this.check(arg.value)
+            );
+            if (!isAssignable.result) {
+              this.defError(
+                node,
+                `Argument ${
+                  arg.name
+                } is not assignable: ${assignmentFailureText(isAssignable)}`
+              );
+            }
+          }
+        }
+
+        for (let arg of node.args) {
+          if (arg.kind == 'PositionalArgument') {
+            if (remainingParams.length == 0) {
+              this.defError(node, `Too many arguments for function call`);
+              return this.defType(node, typeAny());
+            }
+            const currentParamName = remainingParams.shift()!; // Ok to ! because we checked length above
+
+            const isAssignable = typeIsAssignableTo(
+              paramsByName.get(currentParamName) ?? typeAny(),
+              this.check(arg.value)
+            );
+            if (!isAssignable.result) {
+              this.defError(
+                node,
+                `Argument ${currentParamName} is not assignable: ${assignmentFailureText(
+                  isAssignable
+                )}`
+              );
+            }
+          }
+        }
+
+        for (const remainingParam of remainingParams) {
+          const paramType = paramsByName.get(remainingParam);
+          if (paramType && !isNullable(paramType)) {
+            this.defError(
+              node,
+              `Missing argument for parameter ${remainingParam}`
+            );
+          }
+        }
+
         // TODO: Check args compatibility
 
         return this.defType(node, funType.returnType);
@@ -664,6 +735,37 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
           ],
         };
       }
+    }
+    return AssignableResult_TRUE;
+  }
+
+  const type1IsArray = isArray(type1);
+  const type2IsArray = isArray(type2);
+  if (type1IsArray != type2IsArray) {
+    // If one is an array and the other is not, they are not assignable
+    return {
+      result: false,
+      reasons: [
+        `Type ${typeToString(type2)} is not assignable to ${typeToString(
+          type1
+        )}`,
+      ],
+    };
+  }
+  if (type1IsArray && type2IsArray) {
+    // If both are arrays, check item types
+    const itemType1 = type1.item;
+    const itemType2 = type2.item;
+    const assignResult = typeIsAssignableTo(itemType1, itemType2);
+    if (!assignResult.result) {
+      return {
+        result: false,
+        reasons: [
+          `Item type ${typeToString(itemType2)} is not assignable to ${typeToString(
+            itemType1
+          )}: ${assignmentFailureText(assignResult)}`,
+        ],
+      };
     }
     return AssignableResult_TRUE;
   }

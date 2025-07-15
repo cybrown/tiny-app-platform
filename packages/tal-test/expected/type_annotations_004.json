@@ -1,0 +1,244 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "myFunction",
+    "value": {
+      "kind": "Function",
+      "body": null,
+      "parameters": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "number"
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "union",
+            "types": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "null"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": 4
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO: Unknown parameter c\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": 4
+        },
+        {
+          "kind": "NamedArgument",
+          "name": "c",
+          "value": 4
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO: Unknown parameter c\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        },
+        {
+          "kind": "NamedArgument",
+          "name": "c",
+          "value": 5
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": 4
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": null
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "NamedArgument",
+          "name": "b",
+          "value": null
+        },
+        {
+          "kind": "NamedArgument",
+          "name": "a",
+          "value": 3
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "NamedArgument",
+          "name": "b",
+          "value": null
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO: Wrong type for a\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": "3"
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO: Missing parameter a\r",
+    "node": {
+      "kind": "Call",
+      "args": [],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO: Too many arguments\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 3
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": 4
+        },
+        {
+          "kind": "NamedArgument",
+          "name": "b",
+          "value": 16
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "myFunction"
+      }
+    }
+  }
+]

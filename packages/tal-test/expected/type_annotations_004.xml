@@ -1,0 +1,76 @@
+<program>
+  <declarelocal>
+    <function>
+      <literal />
+    </function>
+  </declarelocal>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+    </call>
+  </comment>
+  <comment>
+    <call>
+      <local />
+      <literal />
+      <literal />
+      <literal />
+    </call>
+  </comment>
+</program>

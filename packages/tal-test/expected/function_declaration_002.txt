@@ -1,1 +1,4 @@
+(14:1) Unknown parameter name: c in function call
+(15:1) Unknown parameter name: c in function call
+(16:1) Unknown parameter name: c in function call
 {a: any, b: any}

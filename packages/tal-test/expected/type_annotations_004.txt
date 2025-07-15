@@ -1,0 +1,6 @@
+(7:1) Unknown parameter name: c in function call
+(10:1) Unknown parameter name: c in function call
+(25:1) Argument a is not assignable: Type string is not assignable to number
+(28:1) Missing argument for parameter a
+(31:1) Too many arguments for function call
+any

@@ -275,6 +275,8 @@ Type
         { return { kind: "number"}; }
     / "string" ! IdentifierTailCharacters
         { return { kind: "string"}; }
+    / "bytes" ! IdentifierTailCharacters
+        { return { kind: "bytes"}; }
     / "null" ! IdentifierTailCharacters
         { return { kind: "null"}; }
     / "any" ! IdentifierTailCharacters

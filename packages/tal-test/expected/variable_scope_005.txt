@@ -1,1 +1,2 @@
-string
+(7:3) Too many arguments for function call
+any

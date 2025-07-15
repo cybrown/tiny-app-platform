@@ -14,6 +14,10 @@ export type TypeStringNode = NodeMetadata & {
   kind: 'string';
 };
 
+export type TypeBytesNode = NodeMetadata & {
+  kind: 'bytes';
+};
+
 export type TypeBooleanNode = NodeMetadata & {
   kind: 'boolean';
 };
@@ -51,6 +55,7 @@ export type TypeFunctionNode = NodeMetadata & {
 export type TypeNode =
   | TypeNumberNode
   | TypeStringNode
+  | TypeBytesNode
   | TypeBooleanNode
   | TypeNullNode
   | TypeKindedRecordNode

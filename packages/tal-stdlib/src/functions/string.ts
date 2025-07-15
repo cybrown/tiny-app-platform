@@ -1,9 +1,24 @@
-import { defineFunction, RuntimeContext } from 'tal-eval';
+import {
+  defineFunction2,
+  RuntimeContext,
+  typeString,
+  typeBytes,
+  typeUnion,
+  typeArray,
+  typeNull,
+  typeNumber,
+  typeBoolean,
+  typeAny,
+} from 'tal-eval';
 import { base64_to_bytes } from '../util/base64';
 
-export const string_to_bytes = defineFunction(
+export const string_to_bytes = defineFunction2(
   'string_to_bytes',
-  [{ name: 'string' }, { name: 'encoding' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'encoding', type: typeString() },
+  ],
+  typeBytes(),
   (_ctx, { string, encoding }) => {
     const pEncoding = encoding ?? 'utf-8';
     switch (pEncoding) {
@@ -27,9 +42,16 @@ export const string_to_bytes = defineFunction(
   }
 );
 
-export const string_percent_encode = defineFunction(
+export const string_percent_encode = defineFunction2(
   'string_percent_encode',
-  [{ name: 'string' }, { name: 'safe_chars' }],
+  [
+    { name: 'string', type: typeString() },
+    {
+      name: 'safe_chars',
+      type: typeUnion(typeNull(), typeString(), typeArray(typeString())),
+    },
+  ],
+  typeBytes(),
   (_ctx, { string, safe_chars }) => {
     return percent_encode(string, safe_chars);
   },
@@ -88,9 +110,10 @@ function percent_encode(
   return result;
 }
 
-export const string_percent_decode = defineFunction(
+export const string_percent_decode = defineFunction2(
   'string_percent_decode',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeString(),
   (_ctx, { string }) => {
     return percent_decode(string);
   },
@@ -139,9 +162,10 @@ function percent_decode(str: string) {
   return decoder.decode(new Uint8Array(bytes));
 }
 
-export const string_to_number = defineFunction(
+export const string_to_number = defineFunction2(
   'string_to_number',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeNumber(),
   (_ctx, { string }) => {
     return Number(string);
   },
@@ -158,9 +182,13 @@ export const string_to_number = defineFunction(
   }
 );
 
-export const string_split = defineFunction(
+export const string_split = defineFunction2(
   'string_split',
-  [{ name: 'string' }, { name: 'separator' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'separator', type: typeString() },
+  ],
+  typeArray(typeString()),
   (_ctx, { string, separator }) => {
     return string.split(separator);
   },
@@ -175,9 +203,13 @@ export const string_split = defineFunction(
   }
 );
 
-export const string_locale_compare = defineFunction(
+export const string_locale_compare = defineFunction2(
   'string_locale_compare',
-  [{ name: 'a' }, { name: 'b' }],
+  [
+    { name: 'a', type: typeString() },
+    { name: 'b', type: typeString() },
+  ],
+  typeNumber(),
   (_ctx, { a, b }) => a.localeCompare(b),
   undefined,
   {
@@ -190,9 +222,10 @@ export const string_locale_compare = defineFunction(
   }
 );
 
-export const string_trim = defineFunction(
+export const string_trim = defineFunction2(
   'string_trim',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeString(),
   (_ctx, { string }) => (string as string).trim(),
   undefined,
   {
@@ -202,9 +235,13 @@ export const string_trim = defineFunction(
   }
 );
 
-export const string_starts_with = defineFunction(
+export const string_starts_with = defineFunction2(
   'string_starts_with',
-  [{ name: 'string' }, { name: 'search' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'search', type: typeString() },
+  ],
+  typeBoolean(),
   (_ctx, { string, search }) => (string as string).startsWith(search),
   undefined,
   {
@@ -217,9 +254,13 @@ export const string_starts_with = defineFunction(
   }
 );
 
-export const string_ends_with = defineFunction(
+export const string_ends_with = defineFunction2(
   'string_ends_with',
-  [{ name: 'string' }, { name: 'search' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'search', type: typeString() },
+  ],
+  typeBoolean(),
   (_ctx, { string, search }) => (string as string).endsWith(search),
   undefined,
   {
@@ -232,9 +273,14 @@ export const string_ends_with = defineFunction(
   }
 );
 
-export const string_contains = defineFunction(
+export const string_contains = defineFunction2(
   'string_contains',
-  [{ name: 'string' }, { name: 'search' }, { name: 'ignoreCase' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'search', type: typeString() },
+    { name: 'ignoreCase', type: typeUnion(typeBoolean(), typeNull()) },
+  ],
+  typeBoolean(),
   (_ctx, { string, search, ignoreCase }) =>
     ignoreCase
       ? (string as string).toLowerCase().includes(search.toLowerCase())
@@ -252,9 +298,13 @@ export const string_contains = defineFunction(
   }
 );
 
-export const string_format = defineFunction(
+export const string_format = defineFunction2(
   'string_format',
-  [{ name: 'template' }, { name: 'values' }],
+  [
+    { name: 'template', type: typeString() },
+    { name: 'values', type: typeAny() },
+  ],
+  typeString(),
   string_format_impl,
   undefined,
   {
@@ -268,9 +318,10 @@ export const string_format = defineFunction(
   }
 );
 
-export const string_lower = defineFunction(
+export const string_lower = defineFunction2(
   'string_lower',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeString(),
   (_ctx, { string }) => (string as string).toLowerCase(),
   undefined,
   {
@@ -280,9 +331,10 @@ export const string_lower = defineFunction(
   }
 );
 
-export const string_upper = defineFunction(
+export const string_upper = defineFunction2(
   'string_upper',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeString(),
   (_ctx, { string }) => (string as string).toUpperCase(),
   undefined,
   {
@@ -292,9 +344,14 @@ export const string_upper = defineFunction(
   }
 );
 
-export const string_slice = defineFunction(
+export const string_slice = defineFunction2(
   'string_slice',
-  [{ name: 'string' }, { name: 'start' }, { name: 'end' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'start', type: typeUnion(typeNull(), typeNumber()) },
+    { name: 'end', type: typeUnion(typeNull(), typeNumber()) },
+  ],
+  typeString(),
   (_ctx, { string, start, end }) => (string as string).slice(start, end),
   undefined,
   {
@@ -308,9 +365,10 @@ export const string_slice = defineFunction(
   }
 );
 
-export const string_repeat = defineFunction(
+export const string_repeat = defineFunction2(
   'string_repeat',
-  [{ name: 'string' }, { name: 'count' }],
+  [{ name: 'string', type: typeString() }, { name: 'count', type: typeNumber() }],
+  typeString(),
   (_ctx, { string, count }) => (string as string).repeat(count),
   undefined,
   {
@@ -323,9 +381,10 @@ export const string_repeat = defineFunction(
   }
 );
 
-export const string_trim_start = defineFunction(
+export const string_trim_start = defineFunction2(
   'string_trim_start',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeString(),
   (_ctx, { string }) => (string as string).trimStart(),
   undefined,
   {
@@ -335,9 +394,10 @@ export const string_trim_start = defineFunction(
   }
 );
 
-export const string_trim_end = defineFunction(
+export const string_trim_end = defineFunction2(
   'string_trim_end',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeString(),
   (_ctx, { string }) => (string as string).trimEnd(),
   undefined,
   {
@@ -347,9 +407,14 @@ export const string_trim_end = defineFunction(
   }
 );
 
-export const string_pad_start = defineFunction(
+export const string_pad_start = defineFunction2(
   'string_pad_start',
-  [{ name: 'string' }, { name: 'length' }, { name: 'fill' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'length', type: typeNumber() },
+    { name: 'fill', type: typeUnion(typeNull(), typeString()) },
+  ],
+  typeString(),
   (_ctx, { string, length, fill }) => (string as string).padStart(length, fill),
   undefined,
   {
@@ -364,9 +429,14 @@ export const string_pad_start = defineFunction(
   }
 );
 
-export const string_pad_end = defineFunction(
+export const string_pad_end = defineFunction2(
   'string_pad_end',
-  [{ name: 'string' }, { name: 'length' }, { name: 'fill' }],
+  [
+    { name: 'string', type: typeString() },
+    { name: 'length', type: typeNumber() },
+    { name: 'fill', type: typeUnion(typeNull(), typeString()) },
+  ],
+  typeString(),
   (_ctx, { string, length, fill }) => (string as string).padEnd(length, fill),
   undefined,
   {
@@ -381,9 +451,10 @@ export const string_pad_end = defineFunction(
   }
 );
 
-export const string_length = defineFunction(
+export const string_length = defineFunction2(
   'string_length',
-  [{ name: 'string' }],
+  [{ name: 'string', type: typeString() }],
+  typeNumber(),
   (_ctx, { string }) => (string as string).length,
   undefined,
   {

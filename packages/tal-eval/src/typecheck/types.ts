@@ -14,6 +14,10 @@ export type TypeString = {
   kind: 'string';
 };
 
+export type TypeBytes = {
+  kind: 'bytes';
+};
+
 export type TypeBoolean = {
   kind: 'boolean';
 };
@@ -69,6 +73,12 @@ export function typeNumber(): TypeNumber {
 export function typeString(): TypeString {
   return {
     kind: 'string',
+  };
+}
+
+export function typeBytes(): TypeBytes {
+  return {
+    kind: 'bytes',
   };
 }
 
@@ -134,4 +144,5 @@ export type Type =
   | TypeUnion
   | TypeArray
   | TypeRecord
-  | TypeFunction;
+  | TypeFunction
+  | TypeBytes;

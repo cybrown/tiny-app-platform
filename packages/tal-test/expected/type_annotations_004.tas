@@ -1,0 +1,31 @@
+fun myFunction(a: number, b: union<number, null>) null
+
+// OK
+myFunction(3, 4)
+
+// KO: Unknown parameter c
+myFunction(3, 4, c: 4)
+
+// KO: Unknown parameter c
+myFunction(3, c: 5, 4)
+
+// OK
+myFunction(3, null)
+
+// OK
+myFunction(3)
+
+// OK
+myFunction(b: null, a: 3)
+
+// OK
+myFunction(b: null, 3)
+
+// KO: Wrong type for a
+myFunction("3")
+
+// KO: Missing parameter a
+myFunction()
+
+// KO: Too many arguments
+myFunction(3, 4, b: 16)

@@ -244,6 +244,8 @@ class Stringifier {
         return 'number';
       case 'string':
         return 'string';
+      case 'bytes':
+        return 'bytes';
       case 'kinded-record':
         return 'kinded-record';
       case 'array':

@@ -1,4 +1,10 @@
-import { lower, RuntimeContext, TypeChecker } from "tal-eval";
+import {
+  lower,
+  RegisterableFunction,
+  RuntimeContext,
+  typeAny,
+  TypeChecker,
+} from "tal-eval";
 import { Editor, EditorApi } from "./Editor";
 import ToolBar from "./Toolbar";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
@@ -260,7 +266,7 @@ export default function SourceTab({
             onClose={onHideTypeCheckHandler}
             modal
           >
-            <ErrorReport source={editorApiRef.current?.getSource()} />
+            <ErrorReport ctx={ctx} source={editorApiRef.current?.getSource()} />
           </WindowFrame>
         </LowLevelOverlay>
       ) : null}
@@ -325,17 +331,42 @@ export default function SourceTab({
   );
 }
 
-const ErrorReport = ({ source }: { source?: string }) => {
+const ErrorReport = ({
+  ctx,
+  source,
+}: {
+  ctx: RuntimeContext;
+  source?: string;
+}) => {
   const [errors, setErrors] = useState<string[]>([]);
 
   const typeChecker = useMemo(() => {
     const result = new TypeChecker();
     // TODO: Use info from the context to declare symbols
-    result.declareSymbol("number_to_string", {
-      kind: "function",
-      parameters: [{ name: "number", type: { kind: "number" } }],
-      returnType: { kind: "string" },
-    });
+
+    ctx
+      .listLocals()
+      .filter((local) => {
+        return (
+          Array.isArray(local) &&
+          local.length > 1 &&
+          local[1] &&
+          (local[1] as any) &&
+          (local[1] as any).parameters
+        );
+      })
+      .map((a) => a as [string, RegisterableFunction<string>])
+      .forEach((local) => {
+        result.declareSymbol(local[0], {
+          kind: "function",
+          parameters: local[1].parameters.map((p) => ({
+            name: p.name,
+            type: p.type ?? typeAny(),
+          })),
+          returnType: local[1].returnType ?? typeAny(),
+        });
+      });
+
     return result;
   }, []);
 

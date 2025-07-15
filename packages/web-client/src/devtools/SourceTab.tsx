@@ -1,10 +1,10 @@
-import { RuntimeContext } from "tal-eval";
+import { lower, RuntimeContext, TypeChecker } from "tal-eval";
 import { Editor, EditorApi } from "./Editor";
 import ToolBar from "./Toolbar";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
-import { Button, View, WindowFrame } from "../theme";
-import { useCallback, useRef, useState } from "react";
+import { Button, Text, View, WindowFrame } from "../theme";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { walk, parse } from "tal-parser";
 import { secretCreate } from "tal-stdlib";
 
@@ -49,7 +49,7 @@ export default function SourceTab({
   const [showDocumentation, setShowDocumentation] = useState(false);
 
   const toggleShowDocumentationHandler = useCallback(
-    () => setShowDocumentation(!showDocumentation),
+    () => setShowDocumentation((showDocumentation) => !showDocumentation),
     [showDocumentation]
   );
 
@@ -190,13 +190,23 @@ export default function SourceTab({
     );
   }, []);
 
-  const [
-    wrapSelectionOverlayVisible,
-    setWrapSelectionOverlayVisible,
-  ] = useState(false);
+  const [wrapSelectionOverlayVisible, setWrapSelectionOverlayVisible] =
+    useState(false);
 
   const onShowWrapSelectionOverlay = useCallback(
     () => setWrapSelectionOverlayVisible(true),
+    []
+  );
+
+  const [typeCheckVisible, setTypeCheckVisible] = useState(false);
+
+  const onShowTypeCheckHandler = useCallback(
+    () => setTypeCheckVisible(true),
+    []
+  );
+
+  const onHideTypeCheckHandler = useCallback(
+    () => setTypeCheckVisible(false),
     []
   );
 
@@ -237,6 +247,23 @@ export default function SourceTab({
 
   return (
     <>
+      {typeCheckVisible ? (
+        <LowLevelOverlay
+          size="m"
+          position="bottom"
+          onClose={onHideTypeCheckHandler}
+          modal
+        >
+          <WindowFrame
+            title="Errors"
+            position="bottom"
+            onClose={onHideTypeCheckHandler}
+            modal
+          >
+            <ErrorReport source={editorApiRef.current?.getSource()} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
       {!hidden ? (
         <ToolBar
           onFormat={onFormatHandler}
@@ -246,6 +273,7 @@ export default function SourceTab({
           onRedo={onRedoHandler}
           onExtendSelection={onExtendSelection}
           onWrapSelection={onShowWrapSelectionOverlay}
+          onShowTypeCheck={onShowTypeCheckHandler}
         />
       ) : null}
       <Editor
@@ -296,3 +324,62 @@ export default function SourceTab({
     </>
   );
 }
+
+const ErrorReport = ({ source }: { source?: string }) => {
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const typeChecker = useMemo(() => {
+    const result = new TypeChecker();
+    // TODO: Use info from the context to declare symbols
+    result.declareSymbol("number_to_string", {
+      kind: "function",
+      parameters: [{ name: "number", type: { kind: "number" } }],
+      returnType: { kind: "string" },
+    });
+    return result;
+  }, []);
+
+  useEffect(() => {
+    if (!source) return;
+
+    typeChecker.pushSymbolTable();
+    typeChecker.clearErrors();
+
+    try {
+      const expressions = lower(parse(source, "any"));
+
+      for (const expression of expressions) {
+        typeChecker.check(expression);
+      }
+      if (typeChecker.errors.length) {
+        setErrors(
+          typeChecker.errors.map(
+            (e) =>
+              `(${e[0]?.location?.start.line}:${e[0]?.location?.start.column}) ${e[1]}`
+          )
+        );
+      } else {
+        setErrors([]);
+      }
+    } catch (err) {
+    } finally {
+      typeChecker.popSymbolTable();
+    }
+  }, [source, typeChecker]);
+
+  return (
+    <View>
+      {errors.length ? (
+        <View layout="flex-column">
+          {errors.map((error, index) => (
+            <View key={index} padding={0.5}>
+              <Text text={error} />
+            </View>
+          ))}
+        </View>
+      ) : (
+        <Text text="No errors found" />
+      )}
+    </View>
+  );
+};

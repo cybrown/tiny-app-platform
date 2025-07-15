@@ -43,6 +43,18 @@ export class TypeChecker {
     this._errors.push([node, error]);
   }
 
+  public declareSymbol(name: string, type: Type): boolean {
+    return this.symbolTable.declare(name, type, false);
+  }
+
+  public pushSymbolTable(): void {
+    this.symbolTable.push();
+  }
+
+  public popSymbolTable(): void {
+    this.symbolTable.pop();
+  }
+
   check(node: Node): Type {
     switch (node.kind) {
       case 'Literal':

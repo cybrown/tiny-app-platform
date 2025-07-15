@@ -1,0 +1,62 @@
+<program>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+</program>

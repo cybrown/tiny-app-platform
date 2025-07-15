@@ -1,2 +1,2 @@
-Return type not compatible
+Return type not compatible: Type number is not assignable to string
 null

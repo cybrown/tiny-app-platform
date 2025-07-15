@@ -1,2 +1,2 @@
-Type of expression is not compatible during assignment
+Type of expression is not compatible during assignment: Type string is not assignable to null
 null

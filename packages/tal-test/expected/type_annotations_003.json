@@ -1,0 +1,185 @@
+[
+  {
+    "kind": "Comment",
+    "text": " same fields => OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "i1",
+      "type": {
+        "kind": "record",
+        "fields": {
+          "a": {
+            "kind": "number"
+          },
+          "b": {
+            "kind": "string"
+          }
+        }
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "a",
+            "value": 32
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "b",
+            "value": "4"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " extra field => OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "i2",
+      "type": {
+        "kind": "record",
+        "fields": {
+          "a": {
+            "kind": "number"
+          },
+          "b": {
+            "kind": "string"
+          }
+        }
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "a",
+            "value": 32
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "b",
+            "value": "4"
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "c",
+            "value": 3
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " missing field => KO\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "i3",
+      "type": {
+        "kind": "record",
+        "fields": {
+          "a": {
+            "kind": "number"
+          },
+          "b": {
+            "kind": "string"
+          }
+        }
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "a",
+            "value": 32
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " wrong type field => KO\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "i4",
+      "type": {
+        "kind": "record",
+        "fields": {
+          "a": {
+            "kind": "number"
+          },
+          "b": {
+            "kind": "string"
+          }
+        }
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "a",
+            "value": 32
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "b",
+            "value": 0
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " missing nullable field and extra field => OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "i5",
+      "type": {
+        "kind": "record",
+        "fields": {
+          "a": {
+            "kind": "union",
+            "types": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "null"
+              }
+            ]
+          },
+          "b": {
+            "kind": "string"
+          }
+        }
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "b",
+            "value": "4"
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "c",
+            "value": 3
+          }
+        ]
+      }
+    }
+  }
+]

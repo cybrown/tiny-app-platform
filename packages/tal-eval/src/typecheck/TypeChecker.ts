@@ -19,6 +19,7 @@ import {
   typeUnion,
 } from './types';
 import { SymbolTable } from './SymbolTable';
+import { typeToString } from './utils';
 
 export class TypeChecker {
   private types = new Map<Node, Type>();
@@ -60,9 +61,24 @@ export class TypeChecker {
         this._errors.push([node, 'Unsupported literal']);
         return this.defType(node, typeAny());
       case 'DeclareLocal':
-        // TODO: If has type annotation, check for compatibility and use it as value type
-        // TODO: If has type annotation, use it as value type instead of typeNull()
-        const valueType = node.value ? this.check(node.value) : typeNull();
+        const valueType = node.value
+          ? this.check(node.value)
+          : node.type ?? typeNull();
+
+        if (node.type) {
+          const assignementResult = typeIsAssignableTo(node.type, valueType);
+          if (!assignementResult.result) {
+            this.defError(
+              node,
+              `Declared type ${
+                node.type.kind
+              } is not compatible with value type ${
+                valueType.kind
+              }: ${assignmentFailureText(assignementResult)}`
+            );
+          }
+        }
+
         const symbolIsDeclared = this.symbolTable.declare(
           node.name,
           valueType,
@@ -210,10 +226,12 @@ export class TypeChecker {
           this.defError(node, 'Assignement of non mutable local');
         }
 
-        if (!typeIsAssignableTo(type.type, valueType)) {
+        const isAssignable = typeIsAssignableTo(type.type, valueType);
+        if (!isAssignable.result) {
           this.defError(
             node,
-            'Type of expression is not compatible during assignment'
+            'Type of expression is not compatible during assignment: ' +
+              isAssignable.reasons.join(', ')
           );
         }
         return type.type;
@@ -369,11 +387,18 @@ export class TypeChecker {
         this.symbolTable.pop();
         const declaredReturnType = node.returnType;
 
-        if (
-          declaredReturnType &&
-          !typeIsAssignableTo(declaredReturnType, computedReturnType)
-        ) {
-          this.defError(node, 'Return type not compatible');
+        if (declaredReturnType) {
+          const isAssignable = typeIsAssignableTo(
+            declaredReturnType,
+            computedReturnType
+          );
+          if (!isAssignable.result) {
+            this.defError(
+              node,
+              'Return type not compatible: ' +
+                assignmentFailureText(isAssignable)
+            );
+          }
         }
 
         return this.defType(
@@ -516,10 +541,10 @@ function mergeTypes(node: Node, type1: Type, type2: Type): Type {
   if (isAny(type1) || isAny(type2)) {
     return typeAny();
   }
-  if (typeIsAssignableTo(type1, type2)) {
+  if (typeIsAssignableTo(type1, type2).result) {
     return type1;
   }
-  if (typeIsAssignableTo(type2, type1)) {
+  if (typeIsAssignableTo(type2, type1).result) {
     return type2;
   }
   if (isUnion(type1)) {
@@ -531,37 +556,136 @@ function mergeTypes(node: Node, type1: Type, type2: Type): Type {
   return typeUnion(type1, type2);
 }
 
-function typeIsAssignableTo(type1: Type, type2: Type): boolean {
+type AssignableResult =
+  | {
+      result: true;
+    }
+  | {
+      result: false;
+      reasons: string[];
+    };
+
+const AssignableResult_TRUE: AssignableResult = {
+  result: true,
+};
+
+function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
   // Any is assignable to anything and anything is assignable to any
   if (isAny(type1) || isAny(type2)) {
-    return true;
+    return AssignableResult_TRUE;
   }
 
   // All types of 2 must be assignable to at least one type of 1
   if (isUnion(type1) && isUnion(type2)) {
     for (let typeOf2 of type2.types) {
-      if (!typeIsAssignableTo(type1, typeOf2)) {
-        return false;
+      const assignmentResult = typeIsAssignableTo(type1, typeOf2);
+      if (!assignmentResult.result) {
+        return assignmentResult;
       }
     }
-    return true;
+    return AssignableResult_TRUE;
   }
 
   // 2 must be assignable to at least one type of 1
   if (isUnion(type1)) {
     for (let type of type1.types) {
-      if (typeIsAssignableTo(type, type2)) {
-        return true;
+      if (typeIsAssignableTo(type, type2).result) {
+        return AssignableResult_TRUE;
       }
     }
-    return false;
+    return {
+      result: false,
+      reasons: [
+        `Type ${typeToString(
+          type2
+        )} is not assignable to any of the union types ${type1.types
+          .map((t) => typeToString(t))
+          .join(', ')}`,
+      ],
+    };
   }
 
   // A union type is not assignable to a non union type
   if (isUnion(type2)) {
-    return false;
+    return {
+      result: false,
+      reasons: [
+        `Type ${type2.kind} is a union type and cannot be assigned to ${type1.kind}`,
+      ],
+    };
+  }
+
+  const type1IsRecord = isRecord(type1);
+  const type2IsRecord = isRecord(type2);
+
+  if (type1IsRecord != type2IsRecord) {
+    // If one is a record and the other is not, they are not assignable
+    return {
+      result: false,
+      reasons: [
+        `Type ${typeToString(type2)} is not assignable to ${typeToString(
+          type1
+        )}`,
+      ],
+    };
+  }
+
+  if (type1IsRecord && type2IsRecord) {
+    // TODO: Add option for extra fields ?
+    for (const key in type1.fields) {
+      if (!(key in type2.fields) && !isNullable(type1.fields[key])) {
+        return {
+          result: false,
+          reasons: [`Non nullable field ${key} is missing`],
+        };
+      }
+      const fieldType1 = type1.fields[key];
+      const fieldType2 = type2.fields[key] ?? typeNull();
+      const assignResult = typeIsAssignableTo(fieldType1, fieldType2);
+      if (!assignResult.result) {
+        return {
+          result: false,
+          reasons: [
+            `Field ${key} is not assignable: ${assignmentFailureText(
+              assignResult
+            )}`,
+          ],
+        };
+      }
+    }
+    return AssignableResult_TRUE;
   }
 
   // For non union types other than any, their kinds must be the same
-  return type1.kind == type2.kind;
+  return type1.kind == type2.kind
+    ? AssignableResult_TRUE
+    : {
+        result: false,
+        reasons: [
+          `Type ${typeToString(type2)} is not assignable to ${typeToString(
+            type1
+          )}`,
+        ],
+      };
+}
+
+function isNullable(type: Type): boolean {
+  if (type.kind == 'null' || type.kind == 'any') {
+    return true;
+  }
+
+  if (isUnion(type)) {
+    return type.types.some((t) => isNullable(t));
+  }
+
+  return false;
+}
+
+function assignmentFailureText(isAssignable: AssignableResult): string {
+  if (isAssignable.result) {
+    return 'No reason';
+  }
+  return isAssignable.reasons.length > 0
+    ? isAssignable.reasons.join(', ')
+    : 'Unknown reason';
 }

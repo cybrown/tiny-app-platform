@@ -1,0 +1,14 @@
+// same fields => OK
+var i1: {a: number, b: string} = {a: 32, b: "4"}
+
+// extra field => OK
+var i2: {a: number, b: string} = {a: 32, b: "4", c: 3}
+
+// missing field => KO
+var i3: {a: number, b: string} = {a: 32}
+
+// wrong type field => KO
+var i4: {a: number, b: string} = {a: 32, b: 0}
+
+// missing nullable field and extra field => OK
+var i5: {a: union<number, null>, b: string} = {b: "4", c: 3}

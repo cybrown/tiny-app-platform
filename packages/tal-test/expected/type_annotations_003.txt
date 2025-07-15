@@ -1,0 +1,3 @@
+Declared type record is not compatible with value type record: Non nullable field b is missing
+Declared type record is not compatible with value type record: Field b is not assignable: Type number is not assignable to string
+null

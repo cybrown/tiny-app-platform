@@ -6,4 +6,4 @@ fun myFunc (a: any, b: number): string {
 
 let myNumber: number = 3
 
-let myObject: {a: number, b: array<boolean>, c: union<string, null>}
+let myObject: {a: number, b: array<boolean>, c: string | null}

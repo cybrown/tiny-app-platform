@@ -17,7 +17,14 @@ export function typeToString(type: Type): string {
     case 'kinded-record':
       return 'kinded-record';
     case 'union':
-      return 'union<' + type.types.map((t) => typeToString(t)).join(', ') + '>';
+      return type.types
+        .map((t) => {
+          if (t.kind == 'function' && t.returnType.kind == 'union') {
+            return `(${typeToString(t)})`;
+          }
+          return typeToString(t);
+        })
+        .join(' | ');
     case 'array':
       return 'array<' + typeToString(type.item) + '>';
     case 'record':

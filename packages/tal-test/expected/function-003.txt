@@ -1,3 +1,3 @@
 (1:12) Unknown symbol: b
 (2:10) Unknown symbol: b
-(a: any) => (b: any) => union<number, string>
+(a: any) => (b: any) => number | string

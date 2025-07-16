@@ -41,6 +41,11 @@ export type TypeRecordNode = NodeMetadata & {
   fields: Record<string, TypeNode>;
 };
 
+export type TypeNested = NodeMetadata & {
+  kind: 'nested';
+  type: TypeNode;
+};
+
 export type TypeParameter = NodeMetadata & {
   name: string;
   type: TypeNode;
@@ -63,7 +68,8 @@ export type TypeNode =
   | TypeUnionNode
   | TypeArrayNode
   | TypeRecordNode
-  | TypeFunctionNode;
+  | TypeFunctionNode
+  | TypeNested;
 
 export type LocalNode = NodeMetadata & {
   kind: 'Local';

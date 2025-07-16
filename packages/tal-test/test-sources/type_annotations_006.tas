@@ -1,0 +1,6 @@
+let toto1: () => (string | number)
+let toto2: () => string | number
+
+let string_split: (a: string, b: string) => array<string>
+
+string_split

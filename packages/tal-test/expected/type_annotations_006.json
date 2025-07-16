@@ -1,0 +1,77 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto1",
+    "type": {
+      "kind": "function",
+      "parameters": [],
+      "returnType": {
+        "kind": "nested",
+        "type": {
+          "kind": "union",
+          "types": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto2",
+    "type": {
+      "kind": "function",
+      "parameters": [],
+      "returnType": {
+        "kind": "union",
+        "types": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "string_split",
+    "type": {
+      "kind": "function",
+      "parameters": [
+        {
+          "name": "a",
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "string"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "string"
+        }
+      }
+    }
+  },
+  {
+    "kind": "Local",
+    "name": "string_split"
+  }
+]

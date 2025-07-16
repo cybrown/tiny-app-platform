@@ -1,4 +1,4 @@
-fun myFunction(a: number, b: union<number, null>) null
+fun myFunction(a: number, b: number | null) null
 
 // OK
 myFunction(3, 4)

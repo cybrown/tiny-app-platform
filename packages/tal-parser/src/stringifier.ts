@@ -251,11 +251,7 @@ class Stringifier {
       case 'array':
         return 'array<' + this.stringifyType(obj.item) + '>';
       case 'union':
-        return (
-          'union<' +
-          obj.types.map((t) => this.stringifyType(t)).join(', ') +
-          '>'
-        );
+        return obj.types.map((t) => this.stringifyType(t)).join(' | ');
       case 'record':
         return (
           '{' +
@@ -264,12 +260,15 @@ class Stringifier {
             .join(', ') +
           '}'
         );
+      case 'nested':
+        return '(' + this.stringifyType(obj.type) + ')';
       case 'function':
         return (
+          '(' +
           obj.parameters
             .map((param) => param.name + ': ' + this.stringifyType(param.type))
             .join(', ') +
-          ' => ' +
+          ') => ' +
           this.stringifyType(obj.returnType)
         );
     }

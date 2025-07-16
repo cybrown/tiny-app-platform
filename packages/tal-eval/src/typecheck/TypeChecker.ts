@@ -1,4 +1,4 @@
-import { Node } from 'tal-parser';
+import { Node, TypeNode } from 'tal-parser';
 import { AnyForNever } from '../core';
 import {
   Type,
@@ -7,6 +7,7 @@ import {
   typeArray,
   TypeArray,
   typeBoolean,
+  typeBytes,
   typeFunction,
   TypeFunction,
   typeKindedRecord,
@@ -78,7 +79,10 @@ export class TypeChecker {
           : node.type ?? typeNull();
 
         if (node.type) {
-          const assignementResult = typeIsAssignableTo(node.type, valueType);
+          const assignementResult = typeIsAssignableTo(
+            mapTypeAst(node.type),
+            mapTypeAst(valueType)
+          );
           if (!assignementResult.result) {
             this.defError(
               node,
@@ -93,7 +97,7 @@ export class TypeChecker {
 
         const symbolIsDeclared = this.symbolTable.declare(
           node.name,
-          valueType,
+          mapTypeAst(valueType),
           node.mutable
         );
         if (!symbolIsDeclared) {
@@ -390,7 +394,11 @@ export class TypeChecker {
           type: parameter.type ?? typeAny(),
         }));
         parametersType.forEach((parameter) => {
-          this.symbolTable.declare(parameter.name, parameter.type, true);
+          this.symbolTable.declare(
+            parameter.name,
+            mapTypeAst(parameter.type),
+            true
+          );
         });
 
         // TODO: Check parameter type
@@ -401,7 +409,7 @@ export class TypeChecker {
 
         if (declaredReturnType) {
           const isAssignable = typeIsAssignableTo(
-            declaredReturnType,
+            mapTypeAst(declaredReturnType),
             computedReturnType
           );
           if (!isAssignable.result) {
@@ -415,7 +423,15 @@ export class TypeChecker {
 
         return this.defType(
           node,
-          typeFunction(parametersType, declaredReturnType ?? computedReturnType)
+          typeFunction(
+            parametersType.map((a) => ({
+              name: a.name,
+              type: mapTypeAst(a.type),
+            })),
+            declaredReturnType
+              ? mapTypeAst(declaredReturnType)
+              : computedReturnType
+          )
         );
       }
       case 'Call': {
@@ -761,7 +777,9 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
       return {
         result: false,
         reasons: [
-          `Item type ${typeToString(itemType2)} is not assignable to ${typeToString(
+          `Item type ${typeToString(
+            itemType2
+          )} is not assignable to ${typeToString(
             itemType1
           )}: ${assignmentFailureText(assignResult)}`,
         ],
@@ -802,4 +820,46 @@ function assignmentFailureText(isAssignable: AssignableResult): string {
   return isAssignable.reasons.length > 0
     ? isAssignable.reasons.join(', ')
     : 'Unknown reason';
+}
+
+function mapTypeAst(typeAst: TypeNode): Type {
+  switch (typeAst.kind) {
+    case 'any':
+      return typeAny();
+    case 'null':
+      return typeNull();
+    case 'number':
+      return typeNumber();
+    case 'string':
+      return typeString();
+    case 'bytes':
+      return typeBytes();
+    case 'boolean':
+      return typeBoolean();
+    case 'kinded-record':
+      return typeKindedRecord();
+    case 'union':
+      return typeUnion(...typeAst.types.map(mapTypeAst));
+    case 'array':
+      return typeArray(mapTypeAst(typeAst.item));
+    case 'record':
+      return typeRecord(
+        Object.fromEntries(
+          Object.entries(typeAst.fields).map(([key, value]) => [
+            key,
+            mapTypeAst(value),
+          ])
+        )
+      );
+    case 'nested':
+      return mapTypeAst(typeAst.type);
+    case 'function':
+      return typeFunction(
+        typeAst.parameters.map((p) => ({
+          name: p.name,
+          type: mapTypeAst(p.type),
+        })),
+        mapTypeAst(typeAst.returnType)
+      );
+  }
 }

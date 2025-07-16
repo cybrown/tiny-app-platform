@@ -11,4 +11,4 @@ var i3: {a: number, b: string} = {a: 32}
 var i4: {a: number, b: string} = {a: 32, b: 0}
 
 // missing nullable field and extra field => OK
-var i5: {a: union<number, null>, b: string} = {b: "4", c: 3}
+var i5: {a: number | null, b: string} = {b: "4", c: 3}

@@ -269,6 +269,13 @@ Nested
     	{ return { location: buildLocation(), kind: 'Nested', node }; }
 
 Type
+    = type:SimpleType types:(_ '|' _ SimpleType )*
+        {
+            if (types.length === 0) return type;
+            return { location: buildLocation(), kind: "union", types: [type, ...types.map(t => t[3])] };
+        }
+
+SimpleType
     = "boolean" ! IdentifierTailCharacters
         { return { kind: "boolean"}; }
     / "number" ! IdentifierTailCharacters
@@ -283,10 +290,13 @@ Type
         { return { kind: "any"}; }
     / "array" _ "<" _ item:Type _ ">"
         { return { kind: "array", item}; }
-    / "union" _ "<" _ types:(Type (',' _)?)* _ ">"
-        { return { kind: "union", types: types.map(t => t[0])}; }
     / "{" _ fields:(identifier:Identifier _ ":" _ type:Type (',' _)?)* _ "}"
         { return { kind: "record", fields: Object.fromEntries(fields.map(f => [f[0], f[4]]))}; }
+    / "(" _ type:Type _ ")" isFunctionType:((_ '=>') ?)
+        & { return !isFunctionType; }
+        { return { kind: "nested", type }; }
+    / parameters:ParameterList _ "=>" _ returnType:Type
+        { return { kind: "function", parameters, returnType }; }
 
 NamedFunction
     = 'fun' __ name:Identifier _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node

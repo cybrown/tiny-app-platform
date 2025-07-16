@@ -1,1 +1,1 @@
-(a: any, b: any) => union<number, string>
+(a: any, b: any) => number | string

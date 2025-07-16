@@ -15,18 +15,21 @@
         {
           "name": "a",
           "type": {
-            "kind": "any"
+            "kind": "named",
+            "name": "any"
           }
         },
         {
           "name": "b",
           "type": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           }
         }
       ],
       "returnType": {
-        "kind": "string"
+        "kind": "named",
+        "name": "string"
       }
     }
   },
@@ -37,7 +40,8 @@
       {
         "name": "a",
         "type": {
-          "kind": "null"
+          "kind": "named",
+          "name": "null"
         }
       },
       {
@@ -45,7 +49,8 @@
         "type": {
           "kind": "array",
           "item": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           }
         }
       }
@@ -56,7 +61,8 @@
     "mutable": false,
     "name": "myNumber",
     "type": {
-      "kind": "number"
+      "kind": "named",
+      "name": "number"
     },
     "value": 3
   },
@@ -68,22 +74,26 @@
       "kind": "record",
       "fields": {
         "a": {
-          "kind": "number"
+          "kind": "named",
+          "name": "number"
         },
         "b": {
           "kind": "array",
           "item": {
-            "kind": "boolean"
+            "kind": "named",
+            "name": "boolean"
           }
         },
         "c": {
           "kind": "union",
           "types": [
             {
-              "kind": "string"
+              "kind": "named",
+              "name": "string"
             },
             {
-              "kind": "null"
+              "kind": "named",
+              "name": "null"
             }
           ]
         }

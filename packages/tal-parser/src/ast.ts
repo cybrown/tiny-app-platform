@@ -1,25 +1,6 @@
-export type TypeAnyNode = NodeMetadata & {
-  kind: 'any';
-};
-
-export type TypeNullNode = NodeMetadata & {
-  kind: 'null';
-};
-
-export type TypeNumberNode = NodeMetadata & {
-  kind: 'number';
-};
-
-export type TypeStringNode = NodeMetadata & {
-  kind: 'string';
-};
-
-export type TypeBytesNode = NodeMetadata & {
-  kind: 'bytes';
-};
-
-export type TypeBooleanNode = NodeMetadata & {
-  kind: 'boolean';
+export type TypeNamedNode = NodeMetadata & {
+  kind: 'named';
+  name: string;
 };
 
 export type TypeKindedRecordNode = NodeMetadata & {
@@ -58,13 +39,8 @@ export type TypeFunctionNode = NodeMetadata & {
 };
 
 export type TypeNode =
-  | TypeNumberNode
-  | TypeStringNode
-  | TypeBytesNode
-  | TypeBooleanNode
-  | TypeNullNode
+  | TypeNamedNode
   | TypeKindedRecordNode
-  | TypeAnyNode
   | TypeUnionNode
   | TypeArrayNode
   | TypeRecordNode

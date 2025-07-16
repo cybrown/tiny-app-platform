@@ -10,7 +10,8 @@
         {
           "name": "a",
           "type": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           }
         },
         {
@@ -19,10 +20,12 @@
             "kind": "union",
             "types": [
               {
-                "kind": "number"
+                "kind": "named",
+                "name": "number"
               },
               {
-                "kind": "null"
+                "kind": "named",
+                "name": "null"
               }
             ]
           }

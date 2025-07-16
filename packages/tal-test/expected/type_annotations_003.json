@@ -10,10 +10,12 @@
         "kind": "record",
         "fields": {
           "a": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           },
           "b": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       },
@@ -45,10 +47,12 @@
         "kind": "record",
         "fields": {
           "a": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           },
           "b": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       },
@@ -85,10 +89,12 @@
         "kind": "record",
         "fields": {
           "a": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           },
           "b": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       },
@@ -115,10 +121,12 @@
         "kind": "record",
         "fields": {
           "a": {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           },
           "b": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       },
@@ -153,15 +161,18 @@
             "kind": "union",
             "types": [
               {
-                "kind": "number"
+                "kind": "named",
+                "name": "number"
               },
               {
-                "kind": "null"
+                "kind": "named",
+                "name": "null"
               }
             ]
           },
           "b": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       },

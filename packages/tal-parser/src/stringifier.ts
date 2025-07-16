@@ -234,18 +234,8 @@ class Stringifier {
 
   stringifyType(obj: TypeNode): string {
     switch (obj.kind) {
-      case 'any':
-        return 'any';
-      case 'null':
-        return 'null';
-      case 'boolean':
-        return 'boolean';
-      case 'number':
-        return 'number';
-      case 'string':
-        return 'string';
-      case 'bytes':
-        return 'bytes';
+      case 'named':
+        return obj.name;
       case 'kinded-record':
         return 'kinded-record';
       case 'array':

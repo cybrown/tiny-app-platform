@@ -257,7 +257,9 @@ class Lowerer {
             key: 'onChange',
             value: {
               kind: 'Function',
-              parameters: [{ name: 'newValue', type: { kind: 'any' } }],
+              parameters: [
+                { name: 'newValue', type: { kind: 'named', name: 'any' } },
+              ],
               body: {
                 kind: 'Block',
                 children: [
@@ -388,7 +390,9 @@ class Lowerer {
         return {
           ...node,
           kind: 'Function',
-          parameters: [{ name: '$$arg$$', type: { kind: 'any' } }],
+          parameters: [
+            { name: '$$arg$$', type: { kind: 'named', name: 'any' } },
+          ],
           body: {
             kind: 'Attribute',
             key: node.key,

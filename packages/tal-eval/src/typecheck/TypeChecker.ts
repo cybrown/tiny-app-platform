@@ -76,12 +76,14 @@ export class TypeChecker {
       case 'DeclareLocal':
         const valueType = node.value
           ? this.check(node.value)
-          : node.type ?? typeNull();
+          : node.type
+          ? mapTypeAst((e) => this.defError(node, e), node.type)
+          : typeNull();
 
         if (node.type) {
           const assignementResult = typeIsAssignableTo(
-            mapTypeAst(node.type),
-            mapTypeAst(valueType)
+            mapTypeAst((e) => this.defError(node, e), node.type),
+            valueType
           );
           if (!assignementResult.result) {
             this.defError(
@@ -97,7 +99,7 @@ export class TypeChecker {
 
         const symbolIsDeclared = this.symbolTable.declare(
           node.name,
-          mapTypeAst(valueType),
+          valueType,
           node.mutable
         );
         if (!symbolIsDeclared) {
@@ -391,14 +393,12 @@ export class TypeChecker {
         this.symbolTable.push();
         const parametersType = node.parameters.map((parameter) => ({
           name: parameter.name,
-          type: parameter.type ?? typeAny(),
+          type: parameter.type
+            ? mapTypeAst((e) => this.defError(node, e), parameter.type)
+            : typeAny(),
         }));
         parametersType.forEach((parameter) => {
-          this.symbolTable.declare(
-            parameter.name,
-            mapTypeAst(parameter.type),
-            true
-          );
+          this.symbolTable.declare(parameter.name, parameter.type, true);
         });
 
         // TODO: Check parameter type
@@ -409,7 +409,7 @@ export class TypeChecker {
 
         if (declaredReturnType) {
           const isAssignable = typeIsAssignableTo(
-            mapTypeAst(declaredReturnType),
+            mapTypeAst((e) => this.defError(node, e), declaredReturnType),
             computedReturnType
           );
           if (!isAssignable.result) {
@@ -426,10 +426,10 @@ export class TypeChecker {
           typeFunction(
             parametersType.map((a) => ({
               name: a.name,
-              type: mapTypeAst(a.type),
+              type: a.type,
             })),
             declaredReturnType
-              ? mapTypeAst(declaredReturnType)
+              ? mapTypeAst((e) => this.defError(node, e), declaredReturnType)
               : computedReturnType
           )
         );
@@ -822,44 +822,51 @@ function assignmentFailureText(isAssignable: AssignableResult): string {
     : 'Unknown reason';
 }
 
-function mapTypeAst(typeAst: TypeNode): Type {
+function mapTypeAst(defError: (err: string) => void, typeAst: TypeNode): Type {
   switch (typeAst.kind) {
-    case 'any':
+    case 'named':
+      switch (typeAst.name) {
+        case 'any':
+          return typeAny();
+        case 'null':
+          return typeNull();
+        case 'number':
+          return typeNumber();
+        case 'string':
+          return typeString();
+        case 'bytes':
+          return typeBytes();
+        case 'boolean':
+          return typeBoolean();
+        case 'kinded-record':
+          return typeKindedRecord();
+      }
+      defError('Unknown named type: ' + typeAst.name);
       return typeAny();
-    case 'null':
-      return typeNull();
-    case 'number':
-      return typeNumber();
-    case 'string':
-      return typeString();
-    case 'bytes':
-      return typeBytes();
-    case 'boolean':
-      return typeBoolean();
     case 'kinded-record':
       return typeKindedRecord();
     case 'union':
-      return typeUnion(...typeAst.types.map(mapTypeAst));
+      return typeUnion(...typeAst.types.map((a) => mapTypeAst(defError, a)));
     case 'array':
-      return typeArray(mapTypeAst(typeAst.item));
+      return typeArray(mapTypeAst(defError, typeAst.item));
     case 'record':
       return typeRecord(
         Object.fromEntries(
           Object.entries(typeAst.fields).map(([key, value]) => [
             key,
-            mapTypeAst(value),
+            mapTypeAst(defError, value),
           ])
         )
       );
     case 'nested':
-      return mapTypeAst(typeAst.type);
+      return mapTypeAst(defError, typeAst.type);
     case 'function':
       return typeFunction(
         typeAst.parameters.map((p) => ({
           name: p.name,
-          type: mapTypeAst(p.type),
+          type: mapTypeAst(defError, p.type),
         })),
-        mapTypeAst(typeAst.returnType)
+        mapTypeAst(defError, typeAst.returnType)
       );
   }
 }

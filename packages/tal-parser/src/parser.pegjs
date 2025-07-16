@@ -276,19 +276,7 @@ Type
         }
 
 SimpleType
-    = "boolean" ! IdentifierTailCharacters
-        { return { kind: "boolean"}; }
-    / "number" ! IdentifierTailCharacters
-        { return { kind: "number"}; }
-    / "string" ! IdentifierTailCharacters
-        { return { kind: "string"}; }
-    / "bytes" ! IdentifierTailCharacters
-        { return { kind: "bytes"}; }
-    / "null" ! IdentifierTailCharacters
-        { return { kind: "null"}; }
-    / "any" ! IdentifierTailCharacters
-        { return { kind: "any"}; }
-    / "array" _ "<" _ item:Type _ ">"
+    = "array" _ "<" _ item:Type _ ">"
         { return { kind: "array", item}; }
     / "{" _ fields:(identifier:Identifier _ ":" _ type:Type (',' _)?)* _ "}"
         { return { kind: "record", fields: Object.fromEntries(fields.map(f => [f[0], f[4]]))}; }
@@ -297,6 +285,8 @@ SimpleType
         { return { kind: "nested", type }; }
     / parameters:ParameterList _ "=>" _ returnType:Type
         { return { kind: "function", parameters, returnType }; }
+    / name:Identifier
+        { return { kind: "named", name }; }
 
 NamedFunction
     = 'fun' __ name:Identifier _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node

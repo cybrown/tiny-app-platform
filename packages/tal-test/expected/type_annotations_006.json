@@ -12,10 +12,12 @@
           "kind": "union",
           "types": [
             {
-              "kind": "string"
+              "kind": "named",
+              "name": "string"
             },
             {
-              "kind": "number"
+              "kind": "named",
+              "name": "number"
             }
           ]
         }
@@ -33,10 +35,12 @@
         "kind": "union",
         "types": [
           {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           },
           {
-            "kind": "number"
+            "kind": "named",
+            "name": "number"
           }
         ]
       }
@@ -52,20 +56,23 @@
         {
           "name": "a",
           "type": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         },
         {
           "name": "b",
           "type": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       ],
       "returnType": {
         "kind": "array",
         "item": {
-          "kind": "string"
+          "kind": "named",
+          "name": "string"
         }
       }
     }

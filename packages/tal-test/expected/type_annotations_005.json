@@ -23,20 +23,23 @@
         {
           "name": "a",
           "type": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         },
         {
           "name": "b",
           "type": {
-            "kind": "string"
+            "kind": "named",
+            "name": "string"
           }
         }
       ],
       "returnType": {
         "kind": "array",
         "item": {
-          "kind": "string"
+          "kind": "named",
+          "name": "string"
         }
       }
     }
@@ -48,7 +51,8 @@
     "type": {
       "kind": "array",
       "item": {
-        "kind": "number"
+        "kind": "named",
+        "name": "number"
       }
     },
     "value": {

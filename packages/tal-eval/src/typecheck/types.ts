@@ -52,6 +52,12 @@ export type TypeFunction = {
   returnType: Type;
 };
 
+export type TypeAliased = {
+  kind: 'aliased';
+  name: string;
+  type: Type;
+};
+
 export function typeNull(): TypeNull {
   return {
     kind: 'null',
@@ -91,6 +97,14 @@ export function typeBoolean(): TypeBoolean {
 export function typeKindedRecord(): TypeKindedRecord {
   return {
     kind: 'kinded-record',
+  };
+}
+
+export function typeAliased(name: string, type: Type): TypeAliased {
+  return {
+    kind: 'aliased',
+    name,
+    type,
   };
 }
 
@@ -145,4 +159,5 @@ export type Type =
   | TypeArray
   | TypeRecord
   | TypeFunction
-  | TypeBytes;
+  | TypeBytes
+  | TypeAliased;

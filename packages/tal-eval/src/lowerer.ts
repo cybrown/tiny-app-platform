@@ -403,6 +403,9 @@ class Lowerer {
           },
         };
       }
+      case "TypeAlias": {
+        return node;
+      }
       case 'KindedRecordEntry':
       case 'RecordEntry':
       case 'NamedArgument':

@@ -1,0 +1,33 @@
+[
+  {
+    "kind": "TypeAlias",
+    "name": "myNumber",
+    "type": {
+      "kind": "named",
+      "name": "number"
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "type": {
+      "kind": "named",
+      "name": "myNumber"
+    },
+    "value": 4
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "b",
+    "type": {
+      "kind": "named",
+      "name": "number"
+    },
+    "value": {
+      "kind": "Local",
+      "name": "a"
+    }
+  }
+]

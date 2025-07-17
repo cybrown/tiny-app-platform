@@ -148,6 +148,7 @@ function* walkSingle(node: Node): Iterable<NodeWithParents> {
     case 'Import':
     case 'Intrinsic':
     case 'AttributeLambdaSugar':
+    case "TypeAlias":
       yield { node, mode: 'visit' };
       break;
     default:

@@ -1,0 +1,1 @@
+myNumber (alias of number)

@@ -399,6 +399,9 @@ export class Compiler {
         }
         return;
       }
+      case "TypeAlias":
+        // Type aliases are not compiled, they are only used for type checking
+        return;
       case 'Export':
       case 'Switch':
       case 'Comment':

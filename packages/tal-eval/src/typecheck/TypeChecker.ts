@@ -2,6 +2,7 @@ import { Node, TypeNode } from 'tal-parser';
 import { AnyForNever } from '../core';
 import {
   Type,
+  typeAliased,
   typeAny,
   TypeAny,
   typeArray,
@@ -77,12 +78,12 @@ export class TypeChecker {
         const valueType = node.value
           ? this.check(node.value)
           : node.type
-          ? mapTypeAst((e) => this.defError(node, e), node.type)
+          ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type)
           : typeNull();
 
         if (node.type) {
           const assignementResult = typeIsAssignableTo(
-            mapTypeAst((e) => this.defError(node, e), node.type),
+            mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type),
             valueType
           );
           if (!assignementResult.result) {
@@ -394,7 +395,7 @@ export class TypeChecker {
         const parametersType = node.parameters.map((parameter) => ({
           name: parameter.name,
           type: parameter.type
-            ? mapTypeAst((e) => this.defError(node, e), parameter.type)
+            ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, parameter.type)
             : typeAny(),
         }));
         parametersType.forEach((parameter) => {
@@ -409,7 +410,7 @@ export class TypeChecker {
 
         if (declaredReturnType) {
           const isAssignable = typeIsAssignableTo(
-            mapTypeAst((e) => this.defError(node, e), declaredReturnType),
+            mapTypeAst((e) => this.defError(node, e), this.symbolTable, declaredReturnType),
             computedReturnType
           );
           if (!isAssignable.result) {
@@ -429,7 +430,7 @@ export class TypeChecker {
               type: a.type,
             })),
             declaredReturnType
-              ? mapTypeAst((e) => this.defError(node, e), declaredReturnType)
+              ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, declaredReturnType)
               : computedReturnType
           )
         );
@@ -521,6 +522,13 @@ export class TypeChecker {
         // TODO: Check args compatibility
 
         return this.defType(node, funType.returnType);
+      }
+      case 'TypeAlias': {
+        this.symbolTable.declareTypeAlias(
+          node.name,
+          mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type)
+        );
+        return this.defType(node, typeNull());
       }
       case 'Export':
       case 'Switch':
@@ -669,6 +677,16 @@ const AssignableResult_TRUE: AssignableResult = {
 };
 
 function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
+  // Resolve aliased types
+  // I would have use a while loop to resolve all aliases, but typescript
+  // does not narrow the type of a parameter when reassigned.
+  if (type1.kind == 'aliased') {
+    return typeIsAssignableTo(type1.type, type2);
+  }
+  if (type2.kind == 'aliased') {
+    return typeIsAssignableTo(type1, type2.type);
+  }
+
   // Any is assignable to anything and anything is assignable to any
   if (isAny(type1) || isAny(type2)) {
     return AssignableResult_TRUE;
@@ -822,7 +840,7 @@ function assignmentFailureText(isAssignable: AssignableResult): string {
     : 'Unknown reason';
 }
 
-function mapTypeAst(defError: (err: string) => void, typeAst: TypeNode): Type {
+function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAst: TypeNode): Type {
   switch (typeAst.kind) {
     case 'named':
       switch (typeAst.name) {
@@ -841,32 +859,36 @@ function mapTypeAst(defError: (err: string) => void, typeAst: TypeNode): Type {
         case 'kinded-record':
           return typeKindedRecord();
       }
-      defError('Unknown named type: ' + typeAst.name);
+      const aliasedType = symtab.getTypeAlias(typeAst.name);
+      if (aliasedType) {
+        return typeAliased(typeAst.name, aliasedType);
+      }
+      defError(`Unknown type alias: ${typeAst.name}`);
       return typeAny();
     case 'kinded-record':
       return typeKindedRecord();
     case 'union':
-      return typeUnion(...typeAst.types.map((a) => mapTypeAst(defError, a)));
+      return typeUnion(...typeAst.types.map((a) => mapTypeAst(defError, symtab, a)));
     case 'array':
-      return typeArray(mapTypeAst(defError, typeAst.item));
+      return typeArray(mapTypeAst(defError, symtab, typeAst.item));
     case 'record':
       return typeRecord(
         Object.fromEntries(
           Object.entries(typeAst.fields).map(([key, value]) => [
             key,
-            mapTypeAst(defError, value),
+            mapTypeAst(defError, symtab, value),
           ])
         )
       );
     case 'nested':
-      return mapTypeAst(defError, typeAst.type);
+      return mapTypeAst(defError, symtab, typeAst.type);
     case 'function':
       return typeFunction(
         typeAst.parameters.map((p) => ({
           name: p.name,
-          type: mapTypeAst(defError, p.type),
+          type: mapTypeAst(defError, symtab, p.type),
         })),
-        mapTypeAst(defError, typeAst.returnType)
+        mapTypeAst(defError, symtab, typeAst.returnType)
       );
   }
 }

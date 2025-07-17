@@ -145,8 +145,19 @@ class Stringifier {
         return this.stringifyComment(obj);
       case 'AttributeLambdaSugar':
         return '.' + obj.key;
-      default:
+      case 'TypeAlias':
+        return 'type ' + obj.name + ' = ' + this.stringifyType(obj.type);
+      case 'Intrinsic':
+      case 'SwitchBranch':
+      case 'KindedRecordEntry':
+      case 'RecordEntry':
+      case 'PositionalArgument':
+      case 'NamedArgument':
         throw new Error('Failed to stringify kind: ' + obj.kind);
+      default:
+        const _: never = obj;
+        _;
+        throw new Error('Failed to stringify kind: ' + (obj as any).kind);
     }
   }
 

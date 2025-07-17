@@ -44,5 +44,11 @@ export function typeToString(type: Type): string {
         ') => ' +
         typeToString(type.returnType)
       );
+    case 'aliased':
+      return `${type.name} (alias of ${typeToString(type.type)})`;
+    default:
+      const _: never = type;
+      _;
+      throw new Error(`Unknown type kind: ${(type as any).kind}`);
   }
 }

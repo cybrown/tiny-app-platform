@@ -265,6 +265,12 @@ export type ExportNode = NodeMetadata & {
   node: Node;
 };
 
+export type TypeAliasNode = NodeMetadata & {
+  kind: 'TypeAlias';
+  name: string;
+  type: TypeNode;
+};
+
 export type IntrinsicNode = NodeMetadata & {
   kind: 'Intrinsic';
   op: 'ForceRender';
@@ -304,6 +310,7 @@ export type NodeByKind = {
   PositionalArgument: PositionalArgumentNode;
   NamedArgument: NamedArgumentNode;
   AttributeLambdaSugar: AttributeLambdaSugarNode;
+  TypeAlias: TypeAliasNode;
 };
 
 export type Node = NodeByKind[keyof NodeByKind];

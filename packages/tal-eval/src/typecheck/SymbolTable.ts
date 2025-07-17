@@ -5,9 +5,13 @@ export type SymbolDeclaration = {
   mutable: boolean;
 };
 
+type SymbolTableContent = Record<string, SymbolDeclaration>;
+type TypeAliasSymbolTableContent = Record<string, Type>;
+
 export class SymbolTable {
-  private symbols: Record<string, SymbolDeclaration> = {};
-  private stack: Record<string, SymbolDeclaration>[] = [this.symbols];
+  private symbols: SymbolTableContent = {};
+  private typeAliasSymbols: TypeAliasSymbolTableContent = {};
+  private stack: [SymbolTableContent, TypeAliasSymbolTableContent][] = [[this.symbols, this.typeAliasSymbols]];
 
   public declare(name: string, type: Type, mutable: boolean): boolean {
     if (Object.hasOwn(this.symbols, name)) {
@@ -17,10 +21,27 @@ export class SymbolTable {
     return true;
   }
 
+  public declareTypeAlias(name: string, type: Type): boolean {
+    if (Object.hasOwn(this.symbols, name)) {
+      return false;
+    }
+    this.typeAliasSymbols[name] = type;
+    return true;
+  }
+
   public get(name: string): SymbolDeclaration | null {
     for (let ctx of this.stack) {
-      if (Object.hasOwn(ctx, name)) {
-        return ctx[name];
+      if (Object.hasOwn(ctx[0], name)) {
+        return ctx[0][name];
+      }
+    }
+    return null;
+  }
+
+  public getTypeAlias(name: string): Type | null {
+    for (let ctx of this.stack) {
+      if (Object.hasOwn(ctx[1], name)) {
+        return ctx[1][name];
       }
     }
     return null;
@@ -28,7 +49,8 @@ export class SymbolTable {
 
   public push(): void {
     this.symbols = {};
-    this.stack.unshift(this.symbols);
+    this.typeAliasSymbols = {};
+    this.stack.unshift([this.symbols, this.typeAliasSymbols]);
   }
 
   public pop(): void {
@@ -36,6 +58,7 @@ export class SymbolTable {
       throw new Error('Symbol table underflow');
     }
     this.stack.shift();
-    this.symbols = this.stack[0];
+    this.symbols = this.stack[0][0];
+    this.typeAliasSymbols = this.stack[0][1];
   }
 }

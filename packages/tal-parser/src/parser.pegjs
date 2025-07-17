@@ -192,6 +192,7 @@ NodeLevel1
     / Switch
     / Try
     / Import
+    / TypeAlias
     / Assignement
     / LocalDeclaration
     / NamedFunction
@@ -206,6 +207,12 @@ NodeLevel1
     / Nested
     / Comment
     / AttributeLambdaSugar
+
+TypeAlias
+    = 'type' __ name:Identifier _ '=' _ type:Type
+        {
+            return { location: buildLocation(), kind: "TypeAlias", name, type };
+        }
 
 AttributeLambdaSugar
     = '.' _ key:Identifier

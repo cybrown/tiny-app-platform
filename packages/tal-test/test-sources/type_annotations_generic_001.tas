@@ -1,0 +1,24 @@
+// Is generic, but do not use type param
+fun myGenericFunc0<T>(param: number): number {
+    1
+}
+
+// Is generic with many generic parameters, but do not use type param
+fun myGenericFunc1<T, U, V>(param: number): number {
+    2
+}
+
+// Use type param in parameter
+fun myGenericFunc2<T>(param: T): number {
+    3
+}
+
+// Use type param in return type
+fun myGenericFunc3<T>(param: number): T {
+    null
+}
+
+// Use type param in parameter and return type
+fun myGenericFunc4<T>(param: T): T {
+    null
+}

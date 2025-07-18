@@ -11,6 +11,7 @@ import {
   typeBytes,
   typeFunction,
   TypeFunction,
+  typeGenericPlaceholder,
   typeKindedRecord,
   typeNull,
   typeNumber,
@@ -78,12 +79,20 @@ export class TypeChecker {
         const valueType = node.value
           ? this.check(node.value)
           : node.type
-          ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type)
+          ? mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              node.type
+            )
           : typeNull();
 
         if (node.type) {
           const assignementResult = typeIsAssignableTo(
-            mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type),
+            mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              node.type
+            ),
             valueType
           );
           if (!assignementResult.result) {
@@ -392,10 +401,24 @@ export class TypeChecker {
       case 'Function': {
         // TODO: When parameter type is missing, infer from expected type (eg: for lambdas)
         this.symbolTable.push();
+
+        if (node.genericParameters) {
+          for (const genericParameter of node.genericParameters) {
+            this.symbolTable.declareTypeAlias(
+              genericParameter.name,
+              typeGenericPlaceholder(genericParameter.name)
+            );
+          }
+        }
+
         const parametersType = node.parameters.map((parameter) => ({
           name: parameter.name,
           type: parameter.type
-            ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, parameter.type)
+            ? mapTypeAst(
+                (e) => this.defError(node, e),
+                this.symbolTable,
+                parameter.type
+              )
             : typeAny(),
         }));
         parametersType.forEach((parameter) => {
@@ -410,7 +433,11 @@ export class TypeChecker {
 
         if (declaredReturnType) {
           const isAssignable = typeIsAssignableTo(
-            mapTypeAst((e) => this.defError(node, e), this.symbolTable, declaredReturnType),
+            mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              declaredReturnType
+            ),
             computedReturnType
           );
           if (!isAssignable.result) {
@@ -429,8 +456,17 @@ export class TypeChecker {
               name: a.name,
               type: a.type,
             })),
+            node.genericParameters
+              ? node.genericParameters.map((p) =>
+                  typeGenericPlaceholder(p.name)
+                )
+              : [],
             declaredReturnType
-              ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, declaredReturnType)
+              ? mapTypeAst(
+                  (e) => this.defError(node, e),
+                  this.symbolTable,
+                  declaredReturnType
+                )
               : computedReturnType
           )
         );
@@ -840,7 +876,11 @@ function assignmentFailureText(isAssignable: AssignableResult): string {
     : 'Unknown reason';
 }
 
-function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAst: TypeNode): Type {
+function mapTypeAst(
+  defError: (err: string) => void,
+  symtab: SymbolTable,
+  typeAst: TypeNode
+): Type {
   switch (typeAst.kind) {
     case 'named':
       switch (typeAst.name) {
@@ -863,12 +903,16 @@ function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAs
       if (aliasedType) {
         return typeAliased(typeAst.name, aliasedType);
       }
+      console.log(typeAst)
+      console.log((symtab as any).stack)
       defError(`Unknown type alias: ${typeAst.name}`);
       return typeAny();
     case 'kinded-record':
       return typeKindedRecord();
     case 'union':
-      return typeUnion(...typeAst.types.map((a) => mapTypeAst(defError, symtab, a)));
+      return typeUnion(
+        ...typeAst.types.map((a) => mapTypeAst(defError, symtab, a))
+      );
     case 'array':
       return typeArray(mapTypeAst(defError, symtab, typeAst.item));
     case 'record':
@@ -888,6 +932,7 @@ function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAs
           name: p.name,
           type: mapTypeAst(defError, symtab, p.type),
         })),
+        [], // TODO: Update this when generic parameters are supported for type expressions
         mapTypeAst(defError, symtab, typeAst.returnType)
       );
   }

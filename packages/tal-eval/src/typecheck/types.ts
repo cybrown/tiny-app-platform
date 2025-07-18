@@ -41,6 +41,11 @@ export type TypeRecord = {
   fields: Record<string, Type>;
 };
 
+export type TypeGenericPlaceholder = {
+  kind: 'generic-placeholder';
+  name: string;
+};
+
 export type TypeParameter = {
   name: string;
   type: Type;
@@ -49,6 +54,7 @@ export type TypeParameter = {
 export type TypeFunction = {
   kind: 'function';
   parameters: TypeParameter[];
+  genericParameters: TypeGenericPlaceholder[];
   returnType: Type;
 };
 
@@ -117,11 +123,13 @@ export function typeArray(itemType: Type): TypeArray {
 
 export function typeFunction(
   parametersType: TypeParameter[],
+  genericParameters: TypeGenericPlaceholder[],
   returnType: Type
 ): TypeFunction {
   return {
     kind: 'function',
     parameters: parametersType,
+    genericParameters: genericParameters,
     returnType: returnType,
   };
 }
@@ -148,6 +156,13 @@ export function typeRecord(fields: Record<string, Type>): TypeRecord {
   };
 }
 
+export function typeGenericPlaceholder(name: string): TypeGenericPlaceholder {
+  return {
+    kind: 'generic-placeholder',
+    name,
+  };
+}
+
 export type Type =
   | TypeNumber
   | TypeString
@@ -160,4 +175,5 @@ export type Type =
   | TypeRecord
   | TypeFunction
   | TypeBytes
-  | TypeAliased;
+  | TypeAliased
+  | TypeGenericPlaceholder;

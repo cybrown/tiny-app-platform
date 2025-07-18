@@ -41,11 +41,17 @@ export function typeToString(type: Type): string {
         type.parameters
           .map((p) => p.name + ': ' + typeToString(p.type))
           .join(', ') +
-        ') => ' +
+        ')' +
+        (type.genericParameters.length
+          ? `<${type.genericParameters.map((p) => p.name).join(', ')}>`
+          : '') +
+        ' => ' +
         typeToString(type.returnType)
       );
     case 'aliased':
       return `${type.name} (alias of ${typeToString(type.type)})`;
+    case 'generic-placeholder':
+      return type.name;
     default:
       const _: never = type;
       _;

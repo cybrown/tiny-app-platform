@@ -227,11 +227,16 @@ export type ArrayNode = NodeMetadata & {
   value: Node[];
 };
 
+export type GenericParameterNode = NodeMetadata & {
+  name: string;
+};
+
 export type FunctionNode = NodeMetadata & {
   kind: 'Function';
   name?: string;
   parameters: { name: string; type: TypeNode }[];
   returnType?: TypeNode;
+  genericParameters?: GenericParameterNode[];
   body: Node;
 };
 

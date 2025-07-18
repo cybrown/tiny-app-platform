@@ -296,8 +296,27 @@ SimpleType
         { return { kind: "named", name }; }
 
 NamedFunction
-    = 'fun' __ name:Identifier _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node
-        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters, returnType: returnType ? returnType[2] : undefined } }; }
+    = 'fun' __ name:Identifier _ genericParameters:GenericParameterList? _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node
+        {
+            return {
+                location: buildLocation(),
+                kind: "DeclareLocal",
+                mutable: false,
+                name,
+                value: {
+                    location: buildLocation(),
+                    kind: "Function",
+                    body,
+                    parameters,
+                    returnType: returnType ? returnType[2] : undefined,
+                    ...(genericParameters ? { genericParameters } : {}),
+                }
+            };
+        }
+
+GenericParameterList
+    = '<' _ parameters:(Identifier _ (',' _)?)* '>'
+        { return parameters.map(parameter => ({ location: buildLocation(), name: parameter[0] })); }
 
 ParameterList
     = '(' _ parameters:(Identifier _ (':' _ Type)? _ (',' _)?)* ')'

@@ -634,13 +634,13 @@ export class VM {
       case 'INTRINSIC_EQUAL': {
         const operand2 = this.stack.pop();
         const operand1 = this.stack.pop();
-        this.stack.push(operand1 === operand2);
+        this.stack.push((operand1 ?? null) === (operand2 ?? null));
         break;
       }
       case 'INTRINSIC_NOT_EQUAL': {
         const operand2 = this.stack.pop();
         const operand1 = this.stack.pop();
-        this.stack.push(operand1 !== operand2);
+        this.stack.push((operand1 ?? null) !== (operand2 ?? null));
         break;
       }
       case 'INTRINSIC_NEGATE': {

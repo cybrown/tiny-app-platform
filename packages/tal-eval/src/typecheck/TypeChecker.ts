@@ -11,6 +11,9 @@ import {
   typeBytes,
   typeFunction,
   TypeFunction,
+  TypeGenericPlaceholder,
+  typeGenericPlaceholder,
+  typeGenericPlaceholderLateInit,
   typeKindedRecord,
   typeNull,
   typeNumber,
@@ -78,13 +81,22 @@ export class TypeChecker {
         const valueType = node.value
           ? this.check(node.value)
           : node.type
-          ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type)
+          ? mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              node.type
+            )
           : typeNull();
 
         if (node.type) {
           const assignementResult = typeIsAssignableTo(
-            mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type),
-            valueType
+            mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              node.type
+            ),
+            valueType,
+            this.symbolTable
           );
           if (!assignementResult.result) {
             this.defError(
@@ -123,7 +135,7 @@ export class TypeChecker {
             case '+':
               return this.defType(
                 node,
-                mergeTypes(node, typeNumber(), typeString())
+                mergeTypes(node, typeNumber(), typeString(), this.symbolTable)
               );
             case '-':
             case '*':
@@ -215,7 +227,10 @@ export class TypeChecker {
         const trueType = this.check(node.ifTrue);
         const falseType = node.ifFalse ? this.check(node.ifFalse) : typeNull();
 
-        return this.defType(node, mergeTypes(node, trueType, falseType));
+        return this.defType(
+          node,
+          mergeTypes(node, trueType, falseType, this.symbolTable)
+        );
       }
       case 'Local': {
         const type = this.symbolTable.get(node.name);
@@ -245,7 +260,11 @@ export class TypeChecker {
           this.defError(node, 'Assignement of non mutable local');
         }
 
-        const isAssignable = typeIsAssignableTo(type.type, valueType);
+        const isAssignable = typeIsAssignableTo(
+          type.type,
+          valueType,
+          this.symbolTable
+        );
         if (!isAssignable.result) {
           this.defError(
             node,
@@ -261,7 +280,10 @@ export class TypeChecker {
           ? this.check(node.catchNode)
           : typeNull();
 
-        return this.defType(node, mergeTypes(node, tryType, catchType));
+        return this.defType(
+          node,
+          mergeTypes(node, tryType, catchType, this.symbolTable)
+        );
       }
       case 'Intrinsic': {
         switch (node.op) {
@@ -319,7 +341,7 @@ export class TypeChecker {
             ? typeNull()
             : node.value
                 .map((value) => this.check(value))
-                .reduce((a, b) => mergeTypes(node, a, b));
+                .reduce((a, b) => mergeTypes(node, a, b, this.symbolTable));
         return this.defType(node, typeArray(arrayItemType));
       }
       case 'Index': {
@@ -392,10 +414,24 @@ export class TypeChecker {
       case 'Function': {
         // TODO: When parameter type is missing, infer from expected type (eg: for lambdas)
         this.symbolTable.push();
+
+        if (node.genericParameters) {
+          for (const genericParameter of node.genericParameters) {
+            this.symbolTable.declareTypeAlias(
+              genericParameter.name,
+              typeGenericPlaceholder(genericParameter.name)
+            );
+          }
+        }
+
         const parametersType = node.parameters.map((parameter) => ({
           name: parameter.name,
           type: parameter.type
-            ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, parameter.type)
+            ? mapTypeAst(
+                (e) => this.defError(node, e),
+                this.symbolTable,
+                parameter.type
+              )
             : typeAny(),
         }));
         parametersType.forEach((parameter) => {
@@ -405,13 +441,17 @@ export class TypeChecker {
         // TODO: Check parameter type
 
         const computedReturnType = this.check(node.body);
-        this.symbolTable.pop();
         const declaredReturnType = node.returnType;
 
         if (declaredReturnType) {
           const isAssignable = typeIsAssignableTo(
-            mapTypeAst((e) => this.defError(node, e), this.symbolTable, declaredReturnType),
-            computedReturnType
+            mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              declaredReturnType
+            ),
+            computedReturnType,
+            this.symbolTable
           );
           if (!isAssignable.result) {
             this.defError(
@@ -422,31 +462,81 @@ export class TypeChecker {
           }
         }
 
-        return this.defType(
+        const result = this.defType(
           node,
           typeFunction(
             parametersType.map((a) => ({
               name: a.name,
               type: a.type,
             })),
+            node.genericParameters
+              ? node.genericParameters.map((p) =>
+                  typeGenericPlaceholder(p.name)
+                )
+              : [],
             declaredReturnType
-              ? mapTypeAst((e) => this.defError(node, e), this.symbolTable, declaredReturnType)
+              ? mapTypeAst(
+                  (e) => this.defError(node, e),
+                  this.symbolTable,
+                  declaredReturnType
+                )
               : computedReturnType
           )
         );
+
+        this.symbolTable.pop();
+
+        return result;
       }
       case 'Call': {
-        const funType = this.check(node.value);
+        const funTypeWithGenerics = this.check(node.value);
 
-        if (!isAssignableToFunction(funType)) {
+        if (!isAssignableToFunction(funTypeWithGenerics)) {
           this.defError(node, 'Expression is not of type function');
           return this.defType(node, typeAny());
         }
 
-        if (!isFunction(funType)) {
+        if (!isFunction(funTypeWithGenerics)) {
           // Type any
           return this.defType(node, typeAny());
         }
+
+        this.symbolTable.push();
+
+        // TODO: Handle positional type parameter without a name
+
+        const genArgs = Object.fromEntries(
+          funTypeWithGenerics.genericParameters.map(
+            (typeGenericPlaceholder) => [
+              typeGenericPlaceholder.name,
+              (node.typeArgs ?? {})[typeGenericPlaceholder.name]
+                ? mapTypeAst(
+                    (e) => this.defError(node, e),
+                    this.symbolTable,
+                    (node.typeArgs ?? {})[typeGenericPlaceholder.name]
+                  )
+                : typeGenericPlaceholderLateInit(typeGenericPlaceholder.name),
+            ]
+          )
+        );
+
+        const allGenericParams = new Set(
+          funTypeWithGenerics.genericParameters.map((a) => a.name)
+        );
+        for (const typeParameterName of Object.keys(node.typeArgs ?? {})) {
+          if (!allGenericParams.has(typeParameterName)) {
+            this.defError(node, 'Unknown type parameter: ' + typeParameterName);
+          }
+        }
+
+        for (const a of Object.entries(genArgs)) {
+          this.symbolTable.declareTypeAlias(a[0], a[1]);
+        }
+
+        const funType = instantiateGenericFunction(
+          funTypeWithGenerics,
+          genArgs
+        );
 
         const paramsByName = new Map<string, Type>();
 
@@ -459,6 +549,7 @@ export class TypeChecker {
         for (let arg of node.args) {
           if (remainingParams.length == 0) {
             this.defError(node, `Too many arguments for function call`);
+            this.symbolTable.pop();
             return this.defType(node, typeAny());
           }
           if (arg.kind == 'NamedArgument') {
@@ -468,12 +559,14 @@ export class TypeChecker {
                 node,
                 `Unknown parameter name: ${arg.name} in function call`
               );
+              this.symbolTable.pop();
               return this.defType(node, typeAny());
             }
 
             const isAssignable = typeIsAssignableTo(
               paramsByName.get(arg.name) ?? typeAny(),
-              this.check(arg.value)
+              this.check(arg.value),
+              this.symbolTable
             );
             if (!isAssignable.result) {
               this.defError(
@@ -490,13 +583,15 @@ export class TypeChecker {
           if (arg.kind == 'PositionalArgument') {
             if (remainingParams.length == 0) {
               this.defError(node, `Too many arguments for function call`);
+              this.symbolTable.pop();
               return this.defType(node, typeAny());
             }
             const currentParamName = remainingParams.shift()!; // Ok to ! because we checked length above
 
             const isAssignable = typeIsAssignableTo(
               paramsByName.get(currentParamName) ?? typeAny(),
-              this.check(arg.value)
+              this.check(arg.value),
+              this.symbolTable
             );
             if (!isAssignable.result) {
               this.defError(
@@ -521,7 +616,17 @@ export class TypeChecker {
 
         // TODO: Check args compatibility
 
-        return this.defType(node, funType.returnType);
+        // Consider substitution returns the same type when a function type is substituted
+        const funType2 = substituteLateInit(
+          funType,
+          this.symbolTable
+        ) as TypeFunction;
+
+        const result = this.defType(node, funType2.returnType);
+
+        this.symbolTable.pop();
+
+        return result;
       }
       case 'TypeAlias': {
         this.symbolTable.declareTypeAlias(
@@ -616,6 +721,10 @@ function isFunction(type: Type): type is TypeFunction {
   return type.kind == 'function';
 }
 
+function isGenericPlaceholder(type: Type): type is TypeGenericPlaceholder {
+  return type.kind == 'generic-placeholder';
+}
+
 let BINARY_OPERATOR_BOOLEAN = ['==', '!='];
 
 let BINARY_OPERATOR_NUMBER = [
@@ -639,7 +748,12 @@ let BINARY_OPERATOR_NULL = ['==', '!='];
 /**
  * Merge two types and return the most compatible type or an union type
  */
-function mergeTypes(node: Node, type1: Type, type2: Type): Type {
+function mergeTypes(
+  node: Node,
+  type1: Type,
+  type2: Type,
+  symbolTable: SymbolTable
+): Type {
   /**
    * Rules to merge types:
    * If one type is compatible with another but not the other way, return the most compatible type
@@ -648,10 +762,10 @@ function mergeTypes(node: Node, type1: Type, type2: Type): Type {
   if (isAny(type1) || isAny(type2)) {
     return typeAny();
   }
-  if (typeIsAssignableTo(type1, type2).result) {
+  if (typeIsAssignableTo(type1, type2, symbolTable).result) {
     return type1;
   }
-  if (typeIsAssignableTo(type2, type1).result) {
+  if (typeIsAssignableTo(type2, type1, symbolTable).result) {
     return type2;
   }
   if (isUnion(type1)) {
@@ -676,16 +790,43 @@ const AssignableResult_TRUE: AssignableResult = {
   result: true,
 };
 
-function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
+function typeIsAssignableTo(
+  type1: Type,
+  type2: Type,
+  symbolTable: SymbolTable
+): AssignableResult {
   // Resolve aliased types
   // I would have use a while loop to resolve all aliases, but typescript
   // does not narrow the type of a parameter when reassigned.
   if (type1.kind == 'aliased') {
-    return typeIsAssignableTo(type1.type, type2);
+    return typeIsAssignableTo(type1.type, type2, symbolTable);
   }
   if (type2.kind == 'aliased') {
-    return typeIsAssignableTo(type1, type2.type);
+    return typeIsAssignableTo(type1, type2.type, symbolTable);
   }
+
+  /*
+  if (type1.kind == 'generic-placeholder') {
+    const foundType = symbolTable.getTypeAlias(type1.name);
+    if (!foundType) {
+      return {
+        result: false,
+        reasons: [`Generic placeholder <${type1.name}> not found`],
+      };
+    }
+    return typeIsAssignableTo(foundType, type2, symbolTable);
+  }
+  if (type2.kind == 'generic-placeholder') {
+    const foundType = symbolTable.getTypeAlias(type2.name);
+    if (!foundType) {
+      return {
+        result: false,
+        reasons: [`Generic placeholder <${type2.name}> not found`],
+      };
+    }
+    return typeIsAssignableTo(type1, foundType, symbolTable);
+  }
+  */
 
   // Any is assignable to anything and anything is assignable to any
   if (isAny(type1) || isAny(type2)) {
@@ -695,7 +836,7 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
   // All types of 2 must be assignable to at least one type of 1
   if (isUnion(type1) && isUnion(type2)) {
     for (let typeOf2 of type2.types) {
-      const assignmentResult = typeIsAssignableTo(type1, typeOf2);
+      const assignmentResult = typeIsAssignableTo(type1, typeOf2, symbolTable);
       if (!assignmentResult.result) {
         return assignmentResult;
       }
@@ -706,7 +847,7 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
   // 2 must be assignable to at least one type of 1
   if (isUnion(type1)) {
     for (let type of type1.types) {
-      if (typeIsAssignableTo(type, type2).result) {
+      if (typeIsAssignableTo(type, type2, symbolTable).result) {
         return AssignableResult_TRUE;
       }
     }
@@ -758,7 +899,11 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
       }
       const fieldType1 = type1.fields[key];
       const fieldType2 = type2.fields[key] ?? typeNull();
-      const assignResult = typeIsAssignableTo(fieldType1, fieldType2);
+      const assignResult = typeIsAssignableTo(
+        fieldType1,
+        fieldType2,
+        symbolTable
+      );
       if (!assignResult.result) {
         return {
           result: false,
@@ -790,7 +935,7 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
     // If both are arrays, check item types
     const itemType1 = type1.item;
     const itemType2 = type2.item;
-    const assignResult = typeIsAssignableTo(itemType1, itemType2);
+    const assignResult = typeIsAssignableTo(itemType1, itemType2, symbolTable);
     if (!assignResult.result) {
       return {
         result: false,
@@ -805,6 +950,48 @@ function typeIsAssignableTo(type1: Type, type2: Type): AssignableResult {
     }
     return AssignableResult_TRUE;
   }
+
+  const type1IsGenericPlaceholder = isGenericPlaceholder(type1);
+  const type2IsGenericPlaceholder = isGenericPlaceholder(type2);
+  if (type1IsGenericPlaceholder != type2IsGenericPlaceholder) {
+    // TODO: When generic boundaries are implented, generic and non generics may be assignable
+    return {
+      result: false,
+      reasons: [
+        `Type ${typeToString(type2)} is not assignable to ${typeToString(
+          type1
+        )}`,
+      ],
+    };
+  }
+  if (type1IsGenericPlaceholder && type2IsGenericPlaceholder) {
+    if (type1.name == type2.name) {
+      // TODO: Be carefull with nested generic definition, they might use the same name !
+      return {
+        result: true,
+      };
+    }
+    // TODO: When generic boundaries are implemented, different generics may be assignable
+    return {
+      result: false,
+      reasons: [
+        `Type ${typeToString(type2)} is not assignable to ${typeToString(
+          type1
+        )}`,
+      ],
+    };
+  }
+
+  // TODO: Handle functions properly
+
+  if (type1.kind == 'generic-placeholder-late-init') {
+    symbolTable.declareLateInit(type1.name, type2);
+    return {
+      result: true,
+    };
+  }
+
+  // TODO: Handle late init types when on the assignee side
 
   // For non union types other than any, their kinds must be the same
   return type1.kind == type2.kind
@@ -840,7 +1027,11 @@ function assignmentFailureText(isAssignable: AssignableResult): string {
     : 'Unknown reason';
 }
 
-function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAst: TypeNode): Type {
+function mapTypeAst(
+  defError: (err: string) => void,
+  symtab: SymbolTable,
+  typeAst: TypeNode
+): Type {
   switch (typeAst.kind) {
     case 'named':
       switch (typeAst.name) {
@@ -868,7 +1059,9 @@ function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAs
     case 'kinded-record':
       return typeKindedRecord();
     case 'union':
-      return typeUnion(...typeAst.types.map((a) => mapTypeAst(defError, symtab, a)));
+      return typeUnion(
+        ...typeAst.types.map((a) => mapTypeAst(defError, symtab, a))
+      );
     case 'array':
       return typeArray(mapTypeAst(defError, symtab, typeAst.item));
     case 'record':
@@ -888,7 +1081,164 @@ function mapTypeAst(defError: (err: string) => void, symtab: SymbolTable, typeAs
           name: p.name,
           type: mapTypeAst(defError, symtab, p.type),
         })),
+        [], // TODO: Update this when generic parameters are supported for type expressions
         mapTypeAst(defError, symtab, typeAst.returnType)
       );
+    default:
+      const _: never = typeAst;
+      _;
+      throw new Error(
+        'Unknown type ast kind: ' + (typeAst as AnyForNever).kind
+      );
+  }
+}
+
+function instantiateGenericFunction(
+  funType: TypeFunction,
+  definitions: Record<string, Type>
+): TypeFunction {
+  const { genericParameters, ...result } = funType;
+  // Consider substitute will always return a function when passed a function
+  return substituteGenericPlaceholders(
+    { ...result, genericParameters: [] },
+    definitions
+  ) as TypeFunction;
+}
+
+function substituteGenericPlaceholders(
+  type: Type,
+  definitions: Record<string, Type>
+): Type {
+  switch (type.kind) {
+    case 'array':
+      return typeArray(substituteGenericPlaceholders(type.item, definitions));
+    case 'generic-placeholder': {
+      // TODO: Make definition hold late references for missing types
+      // TODO: Define late reference to desired type the first time encountered
+      const result = definitions[type.name];
+      if (!result) {
+        throw new Error(
+          `Generic placeholder with name <${type.name}> is not defined`
+        );
+      }
+      return result;
+    }
+    case 'union':
+      return typeUnion(
+        ...type.types.map((type) =>
+          substituteGenericPlaceholders(type, definitions)
+        )
+      );
+    case 'record':
+      return typeRecord(
+        Object.fromEntries(
+          Object.entries(type.fields).map((t) => [
+            t[0],
+            substituteGenericPlaceholders(t[1], definitions),
+          ])
+        )
+      );
+    case 'function': {
+      const subGenericTypes = new Set(
+        type.genericParameters.map((g) => g.name)
+      );
+      return typeFunction(
+        type.parameters.map((p) =>
+          subGenericTypes.has(p.name)
+            ? p
+            : {
+                name: p.name,
+                type: substituteGenericPlaceholders(p.type, definitions),
+              }
+        ),
+        type.genericParameters,
+        substituteGenericPlaceholders(type.returnType, definitions)
+      );
+    }
+    case 'aliased':
+      // TODO: Handle type alias generic parameters when available
+      if (type.type.kind == 'generic-placeholder') {
+        return substituteGenericPlaceholders(type.type, definitions);
+      }
+      return typeAliased(
+        type.name,
+        substituteGenericPlaceholders(type.type, definitions)
+      );
+    case 'generic-placeholder-late-init':
+    case 'any':
+    case 'number':
+    case 'null':
+    case 'boolean':
+    case 'string':
+    case 'bytes':
+    case 'kinded-record':
+      return type;
+    default:
+      const _: never = type;
+      _;
+      throw new Error('Unknown type kind: ' + (type as AnyForNever).kind);
+  }
+}
+
+function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
+  switch (type.kind) {
+    case 'array':
+      return typeArray(substituteLateInit(type.item, symbolTable));
+    case 'generic-placeholder-late-init': {
+      const result = symbolTable.getTypeAlias(type.name);
+      if (!result) {
+        throw new Error(`Late init with name <${type.name}> is not defined`);
+      }
+      return result;
+    }
+    case 'union':
+      return typeUnion(
+        ...type.types.map((type) => substituteLateInit(type, symbolTable))
+      );
+    case 'record':
+      return typeRecord(
+        Object.fromEntries(
+          Object.entries(type.fields).map((t) => [
+            t[0],
+            substituteLateInit(t[1], symbolTable),
+          ])
+        )
+      );
+    case 'function': {
+      const subGenericTypes = new Set(
+        type.genericParameters.map((g) => g.name)
+      );
+      return typeFunction(
+        type.parameters.map((p) =>
+          subGenericTypes.has(p.name)
+            ? p
+            : {
+                name: p.name,
+                type: substituteLateInit(p.type, symbolTable),
+              }
+        ),
+        type.genericParameters,
+        substituteLateInit(type.returnType, symbolTable)
+      );
+    }
+    case 'aliased':
+      if (type.type.kind == 'generic-placeholder-late-init') {
+        return substituteLateInit(type.type, symbolTable);
+      }
+      return typeAliased(type.name, substituteLateInit(type.type, symbolTable));
+    case 'generic-placeholder':
+      throw new Error('Unknown placeholder: ' + type.name);
+    case 'any':
+    case 'number':
+    case 'null':
+    case 'boolean':
+    case 'string':
+    case 'bytes':
+    case 'kinded-record':
+      return type;
+    default:
+      const _: never = type;
+      _;
+      throw new Error('Unknown type kind: ' + (type as AnyForNever).kind);
   }
 }

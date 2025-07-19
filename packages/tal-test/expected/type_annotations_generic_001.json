@@ -1,0 +1,308 @@
+[
+  {
+    "kind": "Comment",
+    "text": " Is generic, but do not use type param\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc0",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            1
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "number"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "number"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Is generic with many generic parameters, but do not use type param\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc1",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            2
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "number"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "number"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          },
+          {
+            "name": "U"
+          },
+          {
+            "name": "V"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Use type param in parameter\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc2",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            3
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "number"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Use type param in return type\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc3",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            null
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "number"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "T"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Use type param in return type\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc4",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "Local",
+              "name": "param"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "number"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "T"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Use type param in parameter and return type\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc5",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            null
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "T"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Use type param in parameter and return type\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc6",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "Local",
+              "name": "param"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "T"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Use type param in parameter and return type\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "myGenericFunc7",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "Local",
+              "name": "param"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "param",
+            "type": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "U"
+        },
+        "genericParameters": [
+          {
+            "name": "T"
+          },
+          {
+            "name": "U"
+          }
+        ]
+      }
+    }
+  }
+]

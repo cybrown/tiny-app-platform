@@ -1,0 +1,209 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "a",
+            "type": {
+              "kind": "named",
+              "name": "any"
+            }
+          },
+          {
+            "kind": "Local",
+            "name": "a"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "mapper",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "in",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "U"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "named",
+          "name": "U"
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "filter",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "a",
+            "type": {
+              "kind": "named",
+              "name": "any"
+            }
+          },
+          {
+            "kind": "Local",
+            "name": "a"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "predicate",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "in",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "boolean"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "named",
+          "name": "T"
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "reduce",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "a",
+            "type": {
+              "kind": "named",
+              "name": "any"
+            }
+          },
+          {
+            "kind": "Local",
+            "name": "a"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "reducer",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "in",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "boolean"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "T"
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        }
+      ]
+    }
+  }
+]

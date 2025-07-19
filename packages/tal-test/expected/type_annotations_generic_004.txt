@@ -1,0 +1,2 @@
+(5:1) Unknown type parameter: A
+{value: number}

@@ -1,0 +1,93 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "box",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Record",
+            "entries": [
+              {
+                "kind": "RecordEntry",
+                "key": "value",
+                "value": {
+                  "kind": "Local",
+                  "name": "item"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "item",
+          "type": {
+            "kind": "named",
+            "name": "T"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "record",
+        "fields": {
+          "value": {
+            "kind": "named",
+            "name": "T"
+          }
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 42
+      }
+    ],
+    "typeArgs": {
+      "T": {
+        "kind": "named",
+        "name": "number"
+      },
+      "A": {
+        "kind": "named",
+        "name": "string"
+      }
+    },
+    "value": {
+      "kind": "Local",
+      "name": "box"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 42
+      }
+    ],
+    "typeArgs": {
+      "T": {
+        "kind": "named",
+        "name": "number"
+      }
+    },
+    "value": {
+      "kind": "Local",
+      "name": "box"
+    }
+  }
+]

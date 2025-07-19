@@ -1,0 +1,157 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "number_to_string",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          "str"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "num",
+          "type": {
+            "kind": "named",
+            "name": "number"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "string"
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "a",
+            "type": {
+              "kind": "named",
+              "name": "any"
+            }
+          },
+          {
+            "kind": "Local",
+            "name": "a"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "mapper",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "in",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "U"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "named",
+          "name": "U"
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "finalArray",
+    "value": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": {
+            "kind": "Array",
+            "value": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": {
+            "kind": "Function",
+            "body": {
+              "kind": "Call",
+              "args": [
+                {
+                  "kind": "PositionalArgument",
+                  "value": {
+                    "kind": "Local",
+                    "name": "num"
+                  }
+                }
+              ],
+              "value": {
+                "kind": "Local",
+                "name": "number_to_string"
+              }
+            },
+            "parameters": [
+              {
+                "name": "num"
+              }
+            ]
+          }
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "map"
+      }
+    }
+  },
+  {
+    "kind": "Local",
+    "name": "finalArray"
+  }
+]

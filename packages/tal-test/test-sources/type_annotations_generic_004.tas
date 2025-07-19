@@ -1,0 +1,6 @@
+fun box<T>(item: T): {value: T} {
+    {value: item}
+}
+
+box<T: number, A: string>(42)
+box<T: number>(42)

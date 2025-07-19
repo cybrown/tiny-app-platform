@@ -158,9 +158,17 @@ NodeLevel2Right
 	= DottedNodeTail
     / _SameLine '[' _ index:Node _ ']'
     	{ return { location: buildLocation(), kind: 'Index', index }; }
-    / _SameLine "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
+    / _SameLine typeArgs:TypeArgumentList? _SameLine "(" _ values:(FunctionArgument _ ','? _)* ")" isLambda:((_ '=>') ?)
         & { return !isLambda; }
-        { return { location: buildLocation(), kind: "Call", args: values.map(a => a[0]) }; }
+        { return { location: buildLocation(), kind: "Call", args: values.map(a => a[0]), typeArgs: typeArgs ?? undefined }; }
+
+TypeArgumentList
+    = "<" args:(TypeArgument _ ","? _ )* ">"
+        { return Object.fromEntries(args.map(arg => arg[0])); }
+
+TypeArgument
+    = name:Identifier _ ":" _ type:Type
+        { return [name, type]; }
 
 FunctionArgument
     = NamedArgument
@@ -296,8 +304,27 @@ SimpleType
         { return { kind: "named", name }; }
 
 NamedFunction
-    = 'fun' __ name:Identifier _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node
-        { return { location: buildLocation(), kind: "DeclareLocal", mutable: false, name, value: { location: buildLocation(), kind: "Function", body: body, parameters, returnType: returnType ? returnType[2] : undefined } }; }
+    = 'fun' __ name:Identifier _ genericParameters:GenericParameterList? _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node
+        {
+            return {
+                location: buildLocation(),
+                kind: "DeclareLocal",
+                mutable: false,
+                name,
+                value: {
+                    location: buildLocation(),
+                    kind: "Function",
+                    body,
+                    parameters,
+                    returnType: returnType ? returnType[2] : undefined,
+                    ...(genericParameters ? { genericParameters } : {}),
+                }
+            };
+        }
+
+GenericParameterList
+    = '<' _ parameters:(Identifier _ (',' _)?)* '>'
+        { return parameters.map(parameter => ({ location: buildLocation(), name: parameter[0] })); }
 
 ParameterList
     = '(' _ parameters:(Identifier _ (':' _ Type)? _ (',' _)?)* ')'

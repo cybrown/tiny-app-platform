@@ -1,0 +1,74 @@
+<program>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <literal />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <literal />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <literal />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <literal />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <local />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <literal />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <local />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <local />
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+</program>

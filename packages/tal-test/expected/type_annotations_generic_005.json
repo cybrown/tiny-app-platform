@@ -1,0 +1,90 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "pair",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Record",
+            "entries": [
+              {
+                "kind": "RecordEntry",
+                "key": "a",
+                "value": {
+                  "kind": "Local",
+                  "name": "item1"
+                }
+              },
+              {
+                "kind": "RecordEntry",
+                "key": "b",
+                "value": {
+                  "kind": "Local",
+                  "name": "item2"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "item1",
+          "type": {
+            "kind": "named",
+            "name": "T"
+          }
+        },
+        {
+          "name": "item2",
+          "type": {
+            "kind": "named",
+            "name": "U"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "record",
+        "fields": {
+          "a": {
+            "kind": "named",
+            "name": "T"
+          },
+          "b": {
+            "kind": "named",
+            "name": "U"
+          }
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "ok"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": 4
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "pair"
+    }
+  }
+]

@@ -1,0 +1,12 @@
+fun number_to_string(num: number): string {
+    "str"
+}
+
+fun map<T, U>(arr: array<T>, mapper: (in: T) => U): array<U> {
+    let a: any
+    a
+}
+
+let finalArray = map([1, 2, 3], num => number_to_string(num))
+
+finalArray

@@ -11,7 +11,9 @@ type TypeAliasSymbolTableContent = Record<string, Type>;
 export class SymbolTable {
   private symbols: SymbolTableContent = {};
   private typeAliasSymbols: TypeAliasSymbolTableContent = {};
-  private stack: [SymbolTableContent, TypeAliasSymbolTableContent][] = [[this.symbols, this.typeAliasSymbols]];
+  private stack: [SymbolTableContent, TypeAliasSymbolTableContent][] = [
+    [this.symbols, this.typeAliasSymbols],
+  ];
 
   public declare(name: string, type: Type, mutable: boolean): boolean {
     if (Object.hasOwn(this.symbols, name)) {
@@ -27,6 +29,16 @@ export class SymbolTable {
     }
     this.typeAliasSymbols[name] = type;
     return true;
+  }
+
+  public declareLateInit(name: string, type: Type): boolean {
+    for (const s of this.stack) {
+      if (Object.hasOwn(s[1], name)) {
+        s[1][name] = type;
+        return true;
+      }
+    }
+    return false;
   }
 
   public get(name: string): SymbolDeclaration | null {

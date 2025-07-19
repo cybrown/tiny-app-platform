@@ -1,0 +1,23 @@
+// Is generic, but do not use type param
+fun myGenericFunc0(param: number): number { 1 }
+
+// Is generic with many generic parameters, but do not use type param
+fun myGenericFunc1(param: number): number { 2 }
+
+// Use type param in parameter
+fun myGenericFunc2(param: T): number { 3 }
+
+// Use type param in return type
+fun myGenericFunc3(param: number): T { null }
+
+// Use type param in return type
+fun myGenericFunc4(param: number): T { param }
+
+// Use type param in parameter and return type
+fun myGenericFunc5(param: T): T { null }
+
+// Use type param in parameter and return type
+fun myGenericFunc6(param: T): T { param }
+
+// Use type param in parameter and return type
+fun myGenericFunc7(param: T): U { param }

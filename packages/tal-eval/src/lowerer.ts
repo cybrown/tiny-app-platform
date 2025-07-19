@@ -403,7 +403,7 @@ class Lowerer {
           },
         };
       }
-      case "TypeAlias": {
+      case 'TypeAlias': {
         return node;
       }
       case 'KindedRecordEntry':

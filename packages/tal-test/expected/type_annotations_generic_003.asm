@@ -31,12 +31,13 @@ map_1(arr, mapper)
     Pop               inBlock: false
     Local             a
     MakeArrayForBlock count: 2
-func_2(num)
+func_2(in)
   entry:
-    Local             num
-    Literal           1
-    MakeArray
     Literal           0
+    MakeArray
+    Literal           "num"
+    Local             in
+    Literal           1
     MakeRecord
     Local             number_to_string
     Call

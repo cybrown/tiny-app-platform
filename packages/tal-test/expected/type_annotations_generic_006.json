@@ -1,0 +1,108 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Call",
+            "args": [
+              {
+                "kind": "PositionalArgument",
+                "value": {
+                  "kind": "Index",
+                  "index": 0,
+                  "value": {
+                    "kind": "Local",
+                    "name": "arr"
+                  }
+                }
+              }
+            ],
+            "value": {
+              "kind": "Local",
+              "name": "b"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "arg",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "U"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "U"
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Array",
+          "value": [
+            "hello"
+          ]
+        }
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Function",
+          "body": 3,
+          "parameters": [
+            {
+              "name": "arg"
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "map"
+    }
+  }
+]

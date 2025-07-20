@@ -124,10 +124,11 @@
               "kind": "Call",
               "args": [
                 {
-                  "kind": "PositionalArgument",
+                  "kind": "NamedArgument",
+                  "name": "num",
                   "value": {
                     "kind": "Local",
-                    "name": "num"
+                    "name": "in"
                   }
                 }
               ],
@@ -138,7 +139,7 @@
             },
             "parameters": [
               {
-                "name": "num"
+                "name": "in"
               }
             ]
           }

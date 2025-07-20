@@ -1,1 +1,1 @@
-array<late-init(U)>
+array<string>

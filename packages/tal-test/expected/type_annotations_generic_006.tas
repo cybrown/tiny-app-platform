@@ -1,0 +1,6 @@
+fun map(arr: array<T>, b: (arg: T) => U): U { b(arr[0]) }
+
+map(
+  ["hello"]
+  arg => 3
+)

@@ -505,9 +505,9 @@ export class TypeChecker {
 
         // TODO: Handle positional type parameter without a name
 
-        const genArgs = Object.fromEntries(
-          funTypeWithGenerics.genericParameters.map(
-            (typeGenericPlaceholder) => [
+        const genArgs = funTypeWithGenerics.genericParameters.map(
+          (typeGenericPlaceholder) =>
+            [
               typeGenericPlaceholder.name,
               (node.typeArgs ?? {})[typeGenericPlaceholder.name]
                 ? mapTypeAst(
@@ -516,10 +516,8 @@ export class TypeChecker {
                     (node.typeArgs ?? {})[typeGenericPlaceholder.name]
                   )
                 : typeGenericPlaceholderLateInit(typeGenericPlaceholder.name),
-            ]
-          )
+            ] as const
         );
-
         const allGenericParams = new Set(
           funTypeWithGenerics.genericParameters.map((a) => a.name)
         );
@@ -529,13 +527,14 @@ export class TypeChecker {
           }
         }
 
-        for (const a of Object.entries(genArgs)) {
+        for (const a of genArgs) {
           this.symbolTable.declareTypeAlias(a[0], a[1]);
         }
 
         const funType = instantiateGenericFunction(
           funTypeWithGenerics,
-          genArgs
+          (e) => this.defError(node, e),
+          this.symbolTable
         );
 
         const paramsByName = new Map<string, Type>();
@@ -982,7 +981,70 @@ function typeIsAssignableTo(
     };
   }
 
-  // TODO: Handle functions properly
+  // TODO: Handle variance here when implemented
+  const type1IsFunction = isFunction(type1);
+  const type2IsFunction = isFunction(type2);
+  if (type1IsFunction != type2IsFunction) {
+    return {
+      result: false,
+      reasons: [
+        `Type ${typeToString(type2)} is not assignable to ${typeToString(
+          type1
+        )}`,
+      ],
+    };
+  }
+  if (type1IsFunction && type2IsFunction) {
+    const result = typeIsAssignableTo(
+      type1.returnType,
+      type2.returnType,
+      symbolTable
+    );
+    if (!result.result) {
+      return {
+        result: false,
+        reasons: [
+          `Return type of ${typeToString(
+            type2
+          )} is not assignable to ${typeToString(type1)}: ${result.reasons.join(
+            ', '
+          )}`,
+        ],
+      };
+    }
+
+    const type2ParamsByName = Object.fromEntries(
+      type2.parameters.map((a) => [a.name, a.type])
+    );
+
+    for (const param of type1.parameters) {
+      if (!Object.hasOwn(type2ParamsByName, param.name)) {
+        return {
+          result: false,
+          reasons: [
+            `Missing parameter ${param.name} from ${typeToString(type2)}`,
+          ],
+        };
+      }
+      const result = typeIsAssignableTo(
+        param.type,
+        type2ParamsByName[param.name],
+        symbolTable
+      );
+      if (!result.result) {
+        return {
+          result: false,
+          reasons: [
+            `Parameter ${param.name} from ${typeToString(
+              type2
+            )} is not assignable to ${typeToString(
+              param.type
+            )}: ${result.reasons.join(', ')}`,
+          ],
+        };
+      }
+    }
+  }
 
   if (type1.kind == 'generic-placeholder-late-init') {
     symbolTable.declareLateInit(type1.name, type2);
@@ -1095,38 +1157,42 @@ function mapTypeAst(
 
 function instantiateGenericFunction(
   funType: TypeFunction,
-  definitions: Record<string, Type>
+  defError: (e: string) => void,
+  symbolTable: SymbolTable
 ): TypeFunction {
   const { genericParameters, ...result } = funType;
   // Consider substitute will always return a function when passed a function
   return substituteGenericPlaceholders(
     { ...result, genericParameters: [] },
-    definitions
+    defError,
+    symbolTable
   ) as TypeFunction;
 }
 
 function substituteGenericPlaceholders(
   type: Type,
-  definitions: Record<string, Type>
+  defError: (e: string) => void,
+  symbolTable: SymbolTable
 ): Type {
   switch (type.kind) {
     case 'array':
-      return typeArray(substituteGenericPlaceholders(type.item, definitions));
+      return typeArray(
+        substituteGenericPlaceholders(type.item, defError, symbolTable)
+      );
     case 'generic-placeholder': {
       // TODO: Make definition hold late references for missing types
       // TODO: Define late reference to desired type the first time encountered
-      const result = definitions[type.name];
+      const result = symbolTable.getTypeAlias(type.name);
       if (!result) {
-        throw new Error(
-          `Generic placeholder with name <${type.name}> is not defined`
-        );
+        defError(`Generic placeholder with name <${type.name}> is not defined`);
+        return typeAny();
       }
       return result;
     }
     case 'union':
       return typeUnion(
         ...type.types.map((type) =>
-          substituteGenericPlaceholders(type, definitions)
+          substituteGenericPlaceholders(type, defError, symbolTable)
         )
       );
     case 'record':
@@ -1134,7 +1200,7 @@ function substituteGenericPlaceholders(
         Object.fromEntries(
           Object.entries(type.fields).map((t) => [
             t[0],
-            substituteGenericPlaceholders(t[1], definitions),
+            substituteGenericPlaceholders(t[1], defError, symbolTable),
           ])
         )
       );
@@ -1148,21 +1214,25 @@ function substituteGenericPlaceholders(
             ? p
             : {
                 name: p.name,
-                type: substituteGenericPlaceholders(p.type, definitions),
+                type: substituteGenericPlaceholders(
+                  p.type,
+                  defError,
+                  symbolTable
+                ),
               }
         ),
         type.genericParameters,
-        substituteGenericPlaceholders(type.returnType, definitions)
+        substituteGenericPlaceholders(type.returnType, defError, symbolTable)
       );
     }
     case 'aliased':
       // TODO: Handle type alias generic parameters when available
       if (type.type.kind == 'generic-placeholder') {
-        return substituteGenericPlaceholders(type.type, definitions);
+        return substituteGenericPlaceholders(type.type, defError, symbolTable);
       }
       return typeAliased(
         type.name,
-        substituteGenericPlaceholders(type.type, definitions)
+        substituteGenericPlaceholders(type.type, defError, symbolTable)
       );
     case 'generic-placeholder-late-init':
     case 'any':
@@ -1205,9 +1275,8 @@ function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
         )
       );
     case 'function': {
-      const subGenericTypes = new Set(
-        type.genericParameters.map((g) => g.name)
-      );
+      const subGenericTypes = new Set();
+      type.genericParameters.map((g) => g.name);
       return typeFunction(
         type.parameters.map((p) =>
           subGenericTypes.has(p.name)
@@ -1226,8 +1295,13 @@ function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
         return substituteLateInit(type.type, symbolTable);
       }
       return typeAliased(type.name, substituteLateInit(type.type, symbolTable));
-    case 'generic-placeholder':
-      throw new Error('Unknown placeholder: ' + type.name);
+    case 'generic-placeholder': {
+      const result = symbolTable.getTypeAlias(type.name);
+      if (!result) {
+        throw new Error(`Late init with name <${type.name}> is not defined`);
+      }
+      return result;
+    }
     case 'any':
     case 'number':
     case 'null':

@@ -7,6 +7,6 @@ fun map<T, U>(arr: array<T>, mapper: (in: T) => U): array<U> {
     a
 }
 
-let finalArray = map([1, 2, 3], num => number_to_string(num))
+let finalArray = map([1, 2, 3], in => number_to_string(num: in))
 
 finalArray

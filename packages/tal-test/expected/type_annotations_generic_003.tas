@@ -7,7 +7,7 @@ fun map(arr: array<T>, mapper: (in: T) => U): array<U> {
 
 let finalArray = map(
   [1, 2, 3]
-  num => number_to_string(num)
+  in => number_to_string(num: in)
 )
 
 finalArray

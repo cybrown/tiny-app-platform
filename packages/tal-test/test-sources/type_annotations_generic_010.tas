@@ -1,0 +1,9 @@
+fun map<T, U>(value: T, mapper: (item: T) => U): U {
+    mapper(value)
+}
+
+fun number_to_string(num: number): string {
+    ""
+}
+
+let values = map(value:  2, mapper: (item) => "Plus 1: " + number_to_string(item + 1))

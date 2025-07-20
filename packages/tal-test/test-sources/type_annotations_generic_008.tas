@@ -1,0 +1,5 @@
+fun run(n: number, f: (value: number) => boolean): boolean {
+    f(value: n)
+}
+
+run(8, value => value + "a" == "toto")

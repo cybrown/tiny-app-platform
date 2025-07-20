@@ -2,6 +2,7 @@ export {
   RuntimeContext,
   defineFunction,
   defineFunction2,
+  defineFunction3,
   WidgetDocumentation,
   SourceFetcher,
   FetchedSource,

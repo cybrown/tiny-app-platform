@@ -1,4 +1,16 @@
-import { defineFunction } from 'tal-eval';
+import {
+  defineFunction,
+  defineFunction2,
+  defineFunction3,
+  typeAny,
+  typeArray,
+  typeBoolean,
+  typeFunction,
+  typeGenericPlaceholder,
+  typeNull,
+  typeNumber,
+  typeUnion,
+} from 'tal-eval';
 
 export const array_group = defineFunction(
   'array_group',
@@ -292,9 +304,27 @@ export const array_take = defineFunction(
   }
 );
 
-export const array_filter = defineFunction(
+export const array_filter = defineFunction3(
   'array_filter',
   [{ name: 'array' }, { name: 'predicate' }],
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'mapper',
+        type: typeFunction(
+          [
+            { name: 'item', type: typeGenericPlaceholder('T') },
+            { name: 'index', type: typeNumber() },
+          ],
+          [],
+          typeBoolean()
+        ),
+      },
+    ],
+    [{ kind: 'generic-placeholder', name: 'T' }],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (ctx, { array, predicate }) => {
     return (array as any[]).filter((it, index) =>
       ctx.callFunction(predicate, [it, index])
@@ -352,9 +382,30 @@ export const array_find_index = defineFunction(
   }
 );
 
-export const array_map = defineFunction(
+export const array_map = defineFunction3(
   'array_map',
   [{ name: 'array' }, { name: 'mapper' }],
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'mapper',
+        type: typeFunction(
+          [
+            { name: 'item', type: typeGenericPlaceholder('T') },
+            { name: 'index', type: typeNumber() },
+          ],
+          [],
+          typeGenericPlaceholder('U')
+        ),
+      },
+    ],
+    [
+      { kind: 'generic-placeholder', name: 'T' },
+      { kind: 'generic-placeholder', name: 'U' },
+    ],
+    typeArray(typeGenericPlaceholder('U'))
+  ),
   (ctx, { array, mapper }) => {
     return (array as any[]).map((it, index) =>
       ctx.callFunction(mapper, [it, index])

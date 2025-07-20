@@ -357,14 +357,7 @@ const ErrorReport = ({
       })
       .map((a) => a as [string, RegisterableFunction<string>])
       .forEach((local) => {
-        result.declareSymbol(local[0], {
-          kind: "function",
-          parameters: local[1].parameters.map((p) => ({
-            name: p.name,
-            type: p.type ?? typeAny(),
-          })),
-          returnType: local[1].returnType ?? typeAny(),
-        });
+        result.declareSymbol(local[0], local[1].type);
       });
 
     return result;

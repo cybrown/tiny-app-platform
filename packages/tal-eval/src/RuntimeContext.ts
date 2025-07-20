@@ -1,7 +1,7 @@
 import React from 'react';
 import { Closure, Program } from './core';
 import { run, runAsync } from './interpreter';
-import { Type, typeAny } from './typecheck';
+import { Type, typeAny, typeFunction, TypeFunction } from './typecheck';
 
 class GetLocalError extends Error {
   constructor(localName: string) {
@@ -487,7 +487,6 @@ export type LogItem<T> = {
 
 type ParameterDeclaration<T extends string> = {
   name: T;
-  type?: Type; // TODO: Make this required later
   onlyNamed?: boolean; // TODO: Make type system aware of only named parameters
 };
 
@@ -519,7 +518,7 @@ export function defineFunction<T extends string>(
 ) {
   return defineFunction2(
     name,
-    parameters.map((p) => ({ ...p, type: p.type ?? typeAny() })),
+    parameters.map((p) => ({ ...p, type: typeAny() })),
     typeAny(),
     synchronousImplementation,
     asynchronousImplementation,
@@ -552,7 +551,59 @@ export function defineFunction2<T extends string>(
       prev[cur.name] = cur;
       return prev;
     }, {} as RegisterableFunction<T>['parametersByName']),
-    returnType,
+    type: typeFunction(
+      parameters.map((p) => ({ name: p.name, type: p.type })),
+      [],
+      returnType
+    ),
+  };
+  if (synchronousImplementation) {
+    result.call = (ctx, namedArguments, positionalArguments) => {
+      return synchronousImplementation(
+        ctx,
+        namedArguments,
+        positionalArguments ?? []
+      );
+    };
+  }
+  if (asynchronousImplementation) {
+    result.callAsync = (ctx, namedArguments, positionalArguments) => {
+      return asynchronousImplementation(
+        ctx,
+        namedArguments,
+        positionalArguments ?? []
+      );
+    };
+  }
+  return result;
+}
+
+export function defineFunction3<T extends string>(
+  name: string,
+  parameters: ParameterDeclaration<T>[],
+  type: TypeFunction,
+  synchronousImplementation?: (
+    ctx: RuntimeContext,
+    namedArguments: { [key in T]: any },
+    positionalArguments: any[]
+  ) => any,
+  asynchronousImplementation?: (
+    ctx: RuntimeContext,
+    namedArguments: { [key in T]: any },
+    positionalArguments: any[]
+  ) => any,
+  documentation?: FunctionDocumentation<T>
+) {
+  // TODO: Define one parameter as the pipe entry point
+  const result: RegisterableFunction<T> = {
+    name,
+    documentation,
+    parameters,
+    parametersByName: parameters.reduce((prev, cur) => {
+      prev[cur.name] = cur;
+      return prev;
+    }, {} as RegisterableFunction<T>['parametersByName']),
+    type,
   };
   if (synchronousImplementation) {
     result.call = (ctx, namedArguments, positionalArguments) => {
@@ -580,7 +631,7 @@ export type RegisterableFunction<T extends string> = {
   documentation?: FunctionDocumentation<T>;
   parameters: ParameterDeclaration<T>[];
   parametersByName: Record<T, ParameterDeclaration<T>>;
-  returnType?: Type;
+  type: Type;
   call?: (
     ctx: RuntimeContext,
     namedArguments: { [key in T]: any },

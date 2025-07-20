@@ -69,6 +69,12 @@ export class SymbolTable {
     if (this.stack.length <= 1) {
       throw new Error('Symbol table underflow');
     }
+    // TODO: Check if there are late init types in current tables and return an error ?
+    for (const [name, type] of Object.entries(this.typeAliasSymbols)) {
+      if (type.kind == 'generic-placeholder-late-init') {
+        console.log('Late init not init detected', name);
+      }
+    }
     this.stack.shift();
     this.symbols = this.stack[0][0];
     this.typeAliasSymbols = this.stack[0][1];

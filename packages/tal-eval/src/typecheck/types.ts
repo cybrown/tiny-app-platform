@@ -76,6 +76,7 @@ export function typeNull(): TypeNull {
 }
 
 export function typeAny(): TypeAny {
+  debugger;
   return {
     kind: 'any',
   };

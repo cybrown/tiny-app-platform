@@ -13,6 +13,7 @@ import {
   TypeFunction,
   TypeGenericPlaceholder,
   typeGenericPlaceholder,
+  TypeGenericPlaceholderLateInit,
   typeGenericPlaceholderLateInit,
   typeKindedRecord,
   typeNull,
@@ -60,7 +61,20 @@ export class TypeChecker {
     this.symbolTable.pop();
   }
 
+  private nextExpectedFunctionType?: TypeFunction;
+  private nextExpectedFunctionTypeIsDefined = 0;
+
   check(node: Node): Type {
+    // Reset stack count for expected function type
+    // When nextExpectedFunctionType is set, the isDefined value is set to 1
+    // When it is already 1, we set it to 2 and remove the nextExpectedFunctionType
+    if (this.nextExpectedFunctionTypeIsDefined == 1) {
+      this.nextExpectedFunctionTypeIsDefined = 2;
+    } else if (this.nextExpectedFunctionTypeIsDefined == 2) {
+      this.nextExpectedFunctionType = undefined;
+      this.nextExpectedFunctionTypeIsDefined = 0;
+    }
+
     switch (node.kind) {
       case 'Literal':
         if (node.value == null) {
@@ -147,7 +161,10 @@ export class TypeChecker {
           return this.defType(node, typeAny());
         }
 
-        if (isAssignableToBoolean(left) && isAssignableToBoolean(right)) {
+        if (
+          isAssignableToBoolean(left, this.symbolTable) &&
+          isAssignableToBoolean(right, this.symbolTable)
+        ) {
           if (!BINARY_OPERATOR_BOOLEAN.includes(node.operator)) {
             this.defError(
               node,
@@ -157,7 +174,10 @@ export class TypeChecker {
           return this.defType(node, typeBoolean());
         }
 
-        if (isAssignableToNumber(left) && isAssignableToNumber(right)) {
+        if (
+          isAssignableToNumber(left, this.symbolTable) &&
+          isAssignableToNumber(right, this.symbolTable)
+        ) {
           if (!BINARY_OPERATOR_NUMBER.includes(node.operator)) {
             this.defError(
               node,
@@ -172,7 +192,10 @@ export class TypeChecker {
           );
         }
 
-        if (isAssignableToString(left) && isAssignableToString(right)) {
+        if (
+          isAssignableToString(left, this.symbolTable) &&
+          isAssignableToString(right, this.symbolTable)
+        ) {
           if (!BINARY_OPERATOR_STRING.includes(node.operator)) {
             this.defError(
               node,
@@ -185,7 +208,15 @@ export class TypeChecker {
           );
         }
 
-        if (isAssignableToNull(left) && isAssignableToNull(right)) {
+        const typeIsAssignableToNullLeft = isAssignableToNull(
+          left,
+          this.symbolTable
+        );
+        const typeIsAssignableToNullRight = isAssignableToNull(
+          right,
+          this.symbolTable
+        );
+        if (typeIsAssignableToNullLeft && typeIsAssignableToNullRight) {
           if (!BINARY_OPERATOR_NULL.includes(node.operator)) {
             this.defError(
               node,
@@ -195,9 +226,17 @@ export class TypeChecker {
           return this.defType(node, typeBoolean());
         }
 
+        console.log(
+          this.symbolTable.getTypeAlias(
+            (left as TypeGenericPlaceholderLateInit).name
+          )
+        );
+
         this.defError(
           node,
-          `Incompatible types for binary operator ${node.operator}`
+          `Incompatible types for binary operator ${typeToString(left)} ${
+            node.operator
+          } ${typeToString(right)}`
         );
         return this.defType(node, typeAny());
       }
@@ -217,8 +256,8 @@ export class TypeChecker {
         const conditionType = this.check(node.condition);
         if (
           !(
-            isAssignableToBoolean(conditionType) ||
-            isAssignableToNull(conditionType)
+            isAssignableToBoolean(conditionType, this.symbolTable) ||
+            isAssignableToNull(conditionType, this.symbolTable)
           )
         ) {
           this.defError(node, 'If condition must be of type boolean or null');
@@ -295,7 +334,7 @@ export class TypeChecker {
       }
       case 'While': {
         const conditionType = this.check(node.condition);
-        if (!isAssignableToBoolean(conditionType)) {
+        if (!isAssignableToBoolean(conditionType, this.symbolTable)) {
           this.defError(node, 'If condition must be of type boolean');
         }
 
@@ -304,7 +343,7 @@ export class TypeChecker {
       case 'UnaryOperator': {
         const operand = this.check(node.operand);
 
-        if (isAssignableToBoolean(operand)) {
+        if (isAssignableToBoolean(operand, this.symbolTable)) {
           if (!['!'].includes(node.operator)) {
             this.defError(
               node,
@@ -314,7 +353,7 @@ export class TypeChecker {
           return this.defType(node, typeBoolean());
         }
 
-        if (isAssignableToNumber(operand)) {
+        if (isAssignableToNumber(operand, this.symbolTable)) {
           if (!['+', '-'].includes(node.operator)) {
             this.defError(
               node,
@@ -353,7 +392,7 @@ export class TypeChecker {
           return this.defType(node, typeAny());
         }
 
-        if (!isAssignableToNumber(indexType)) {
+        if (!isAssignableToNumber(indexType, this.symbolTable)) {
           this.defError(node, 'Arrays are only indexable by number');
           return this.defType(node, typeAny());
         }
@@ -412,7 +451,12 @@ export class TypeChecker {
         return this.defType(node, typeKindedRecord());
       }
       case 'Function': {
-        // TODO: When parameter type is missing, infer from expected type (eg: for lambdas)
+        const expectedParameters = Object.fromEntries(
+          this.nextExpectedFunctionType?.parameters?.map(
+            (p) => [p.name, p.type] as const
+          ) ?? []
+        );
+
         this.symbolTable.push();
 
         if (node.genericParameters) {
@@ -432,7 +476,7 @@ export class TypeChecker {
                 this.symbolTable,
                 parameter.type
               )
-            : typeAny(),
+            : expectedParameters[parameter.name] ?? typeAny(),
         }));
         parametersType.forEach((parameter) => {
           this.symbolTable.declare(parameter.name, parameter.type, true);
@@ -562,11 +606,20 @@ export class TypeChecker {
               return this.defType(node, typeAny());
             }
 
+            const expectedParameterType =
+              paramsByName.get(arg.name) ?? typeAny();
+            this.nextExpectedFunctionType = isFunction(expectedParameterType)
+              ? expectedParameterType
+              : undefined;
+            this.nextExpectedFunctionTypeIsDefined = 1;
+
             const isAssignable = typeIsAssignableTo(
-              paramsByName.get(arg.name) ?? typeAny(),
+              expectedParameterType,
               this.check(arg.value),
               this.symbolTable
             );
+            this.nextExpectedFunctionType = undefined;
+            this.nextExpectedFunctionTypeIsDefined = 0;
             if (!isAssignable.result) {
               this.defError(
                 node,
@@ -586,12 +639,19 @@ export class TypeChecker {
               return this.defType(node, typeAny());
             }
             const currentParamName = remainingParams.shift()!; // Ok to ! because we checked length above
-
+            const expectedParameterType =
+              paramsByName.get(currentParamName) ?? typeAny();
+            this.nextExpectedFunctionType = isFunction(expectedParameterType)
+              ? expectedParameterType
+              : undefined;
+            this.nextExpectedFunctionTypeIsDefined = 1;
             const isAssignable = typeIsAssignableTo(
-              paramsByName.get(currentParamName) ?? typeAny(),
+              expectedParameterType,
               this.check(arg.value),
               this.symbolTable
             );
+            this.nextExpectedFunctionType = undefined;
+            this.nextExpectedFunctionTypeIsDefined = 0;
             if (!isAssignable.result) {
               this.defError(
                 node,
@@ -672,31 +732,40 @@ export function typeCheck(
   return [typeChecker, lastType, typeChecker.errors];
 }
 
-function isAssignableToBoolean(type: Type): boolean {
-  return type.kind == 'boolean' || type.kind == 'any';
+function isAssignableToBoolean(type: Type, symbolTable: SymbolTable): boolean {
+  return typeIsAssignableTo(typeBoolean(), type, symbolTable).result;
 }
 
-function isAssignableToNumber(type: Type): boolean {
-  return type.kind == 'number' || type.kind == 'any';
+function isAssignableToNumber(type: Type, symbolTable: SymbolTable): boolean {
+  return typeIsAssignableTo(typeNumber(), type, symbolTable).result;
 }
 
-function isAssignableToString(type: Type): boolean {
-  return type.kind == 'string' || type.kind == 'any';
+function isAssignableToString(type: Type, symbolTable: SymbolTable): boolean {
+  return typeIsAssignableTo(typeString(), type, symbolTable).result;
 }
 
-function isAssignableToNull(type: Type): boolean {
-  return type.kind == 'null' || type.kind == 'any';
+function isAssignableToNull(type: Type, symbolTable: SymbolTable): boolean {
+  return typeIsAssignableTo(typeNull(), type, symbolTable).result;
 }
 
 function isAssignableToArray(type: Type): boolean {
+  if (type.kind == 'aliased') {
+    return isAssignableToArray(type.type);
+  }
   return type.kind == 'array' || type.kind == 'any';
 }
 
 function isAssignableToRecord(type: Type): boolean {
+  if (type.kind == 'aliased') {
+    return isAssignableToRecord(type.type);
+  }
   return type.kind == 'record' || type.kind == 'any';
 }
 
 function isAssignableToFunction(type: Type): boolean {
+  if (type.kind == 'aliased') {
+    return isAssignableToFunction(type.type);
+  }
   return type.kind == 'function' || type.kind == 'any';
 }
 
@@ -1013,22 +1082,27 @@ function typeIsAssignableTo(
       };
     }
 
-    const type2ParamsByName = Object.fromEntries(
-      type2.parameters.map((a) => [a.name, a.type])
+    const type1ParamsByName = Object.fromEntries(
+      type1.parameters.map((a) => [a.name, a.type])
     );
 
-    for (const param of type1.parameters) {
-      if (!Object.hasOwn(type2ParamsByName, param.name)) {
+    for (const param of type2.parameters) {
+      if (
+        !Object.hasOwn(type1ParamsByName, param.name) &&
+        !isNullable(param.type)
+      ) {
         return {
           result: false,
           reasons: [
-            `Missing parameter ${param.name} from ${typeToString(type2)}`,
+            `Missing non nullable parameter ${param.name} from ${typeToString(
+              type1
+            )}`,
           ],
         };
       }
       const result = typeIsAssignableTo(
+        type1ParamsByName[param.name] ?? typeNull(),
         param.type,
-        type2ParamsByName[param.name],
         symbolTable
       );
       if (!result.result) {

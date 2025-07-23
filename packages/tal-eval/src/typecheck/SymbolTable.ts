@@ -87,18 +87,19 @@ export class SymbolTable {
     this.stack.unshift([this.symbols, this.typeAliasSymbols]);
   }
 
-  public pop(): void {
+  public pop(): string[] {
+    const result: string[] = [];
     if (this.stack.length <= 1) {
       throw new Error('Symbol table underflow');
     }
-    // TODO: Return an error to not interupt type check
     for (const [name, type] of Object.entries(this.typeAliasSymbols)) {
       if (type.kind == 'generic-placeholder-late-init') {
-        throw new Error('Late init not init detected', this.typeAliasSymbols);
+        result.push(name);
       }
     }
     this.stack.shift();
     this.symbols = this.stack[0][0];
     this.typeAliasSymbols = this.stack[0][1];
+    return result;
   }
 }

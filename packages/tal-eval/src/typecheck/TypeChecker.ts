@@ -674,7 +674,13 @@ export class TypeChecker {
 
         const result = this.defType(node, funType2.returnType);
 
-        this.symbolTable.pop();
+        const unknownGenericAliases = this.symbolTable.pop();
+        for (const unknownGenAlias of unknownGenericAliases) {
+          this.defError(
+            node,
+            'Failed to infer generic parameter: ' + unknownGenAlias
+          );
+        }
 
         return result;
       }

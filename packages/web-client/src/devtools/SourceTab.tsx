@@ -387,10 +387,9 @@ const ErrorReport = ({
         setErrors([]);
       }
       setInitError(null);
+      typeChecker.popSymbolTable();
     } catch (err) {
       setInitError(err);
-    } finally {
-      typeChecker.popSymbolTable();
     }
   }, [source, typeChecker]);
 
@@ -399,7 +398,14 @@ const ErrorReport = ({
       {initError ? (
         <View layout="flex-column">
           <Text text="Error while initializing error checking:" />
-          <pre>{JSON.stringify(initError, null, 2)}</pre>
+          <pre>
+            {initError &&
+            typeof initError == "object" &&
+            "stack" in initError &&
+            typeof initError.stack == "string"
+              ? initError.stack
+              : "Unknown error"}
+          </pre>
         </View>
       ) : errors.length ? (
         <View layout="flex-column">

@@ -1,5 +1,8 @@
 Add humanize formater (SI decimal scale, SI binary scale, file size, time relative, duration, ...)
 
+## Stdlib
+ [ ] Add an option to regexp_find (and _global) to return the first capture group instead (maybe --capture ?)
+
 ## Type Checking
 
 ### General
@@ -12,9 +15,10 @@ Add humanize formater (SI decimal scale, SI binary scale, file size, time relati
             Wait for generics ?
 
 ### Generics
- [ ] (A) Investigate how to model function like array_map
+ [x] (A) Investigate how to model function like array_map
  [ ] (A) Refactor array and dict types to use generics
             Depends on generics to be implemented
+ [ ] (S) Allow positional type arguments #bug
 
 ### Kinded objects
  [ ] (S) Type check kinded object attributes

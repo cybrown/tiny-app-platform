@@ -13,6 +13,11 @@ Add humanize formater (SI decimal scale, SI binary scale, file size, time relati
  [ ] (A) Add a dict type
             Like a record, but can have many keys and all values are the same type.
             Wait for generics ?
+ [ ] (S) Allow use function inside another function before definition
+            Exemple: A calls B, then B is defined
+ [ ] (A) Allow assign more addressable values than local variables
+            Assign array index, record field
+            Assign dict when available
 
 ### Generics
  [x] (A) Investigate how to model function like array_map

@@ -1,0 +1,9 @@
+fun string_to_number(str: string): number {
+    3
+}
+
+fun array_map<T, U>(arr: array<T>, b: (arg: T) => U): array<U> {
+    [b(arr[0])]
+}
+
+array_map(["hello"], (arg) => string_to_number(arg))

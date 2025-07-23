@@ -1,0 +1,6 @@
+fun run<T, U>(n: T, f: (value: T) => U): U {
+    f(value: n)
+}
+
+run("8", value => value + "a" == "toto")
+run(8, value => value + "a" == "toto")

@@ -1,0 +1,158 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "string_to_number",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          3
+        ]
+      },
+      "parameters": [
+        {
+          "name": "str",
+          "type": {
+            "kind": "named",
+            "name": "string"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "number"
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "array_map",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Array",
+            "value": [
+              {
+                "kind": "Call",
+                "args": [
+                  {
+                    "kind": "PositionalArgument",
+                    "value": {
+                      "kind": "Index",
+                      "index": 0,
+                      "value": {
+                        "kind": "Local",
+                        "name": "arr"
+                      }
+                    }
+                  }
+                ],
+                "value": {
+                  "kind": "Local",
+                  "name": "b"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "b",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "arg",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "U"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "named",
+          "name": "U"
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Array",
+          "value": [
+            "hello"
+          ]
+        }
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Function",
+          "body": {
+            "kind": "Call",
+            "args": [
+              {
+                "kind": "PositionalArgument",
+                "value": {
+                  "kind": "Local",
+                  "name": "arg"
+                }
+              }
+            ],
+            "value": {
+              "kind": "Local",
+              "name": "string_to_number"
+            }
+          },
+          "parameters": [
+            {
+              "name": "arg"
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "array_map"
+    }
+  }
+]

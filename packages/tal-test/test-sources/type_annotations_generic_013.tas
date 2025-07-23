@@ -1,0 +1,9 @@
+fun map<T, U>(value: array<T>, mapper: (item: T) => U): array<U> {
+    [mapper(value[0])]
+}
+
+fun number_to_string(num: number): string {
+    ""
+}
+
+map<T: any, U: any>(value: [8, true], mapper: (item) => "Plus 1: " + number_to_string(item + 1))

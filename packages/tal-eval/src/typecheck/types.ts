@@ -49,6 +49,7 @@ export type TypeGenericPlaceholder = {
 export type TypeGenericPlaceholderLateInit = {
   kind: 'generic-placeholder-late-init';
   name: string;
+  type?: Type;
 };
 
 export type TypeParameter = {
@@ -59,7 +60,7 @@ export type TypeParameter = {
 export type TypeFunction = {
   kind: 'function';
   parameters: TypeParameter[];
-  genericParameters: TypeGenericPlaceholder[];
+  genericParameters: string[];
   returnType: Type;
 };
 
@@ -128,7 +129,7 @@ export function typeArray(itemType: Type): TypeArray {
 
 export function typeFunction(
   parametersType: TypeParameter[],
-  genericParameters: TypeGenericPlaceholder[],
+  genericParameters: string[],
   returnType: Type
 ): TypeFunction {
   return {

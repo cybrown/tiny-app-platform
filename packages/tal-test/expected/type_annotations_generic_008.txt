@@ -1,0 +1,2 @@
+(6:17) Incompatible types for binary operator number + string
+boolean

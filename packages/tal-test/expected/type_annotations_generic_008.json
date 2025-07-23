@@ -1,0 +1,148 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "run",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Call",
+            "args": [
+              {
+                "kind": "NamedArgument",
+                "name": "value",
+                "value": {
+                  "kind": "Local",
+                  "name": "n"
+                }
+              }
+            ],
+            "value": {
+              "kind": "Local",
+              "name": "f"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "n",
+          "type": {
+            "kind": "named",
+            "name": "T"
+          }
+        },
+        {
+          "name": "f",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "U"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "U"
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": "8"
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Function",
+          "body": {
+            "kind": "BinaryOperator",
+            "operator": "==",
+            "right": "toto",
+            "left": {
+              "kind": "BinaryOperator",
+              "operator": "+",
+              "right": "a",
+              "left": {
+                "kind": "Local",
+                "name": "value"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "value"
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "run"
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 8
+      },
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Function",
+          "body": {
+            "kind": "BinaryOperator",
+            "operator": "==",
+            "right": "toto",
+            "left": {
+              "kind": "BinaryOperator",
+              "operator": "+",
+              "right": "a",
+              "left": {
+                "kind": "Local",
+                "name": "value"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "value"
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "run"
+    }
+  }
+]

@@ -43,7 +43,7 @@ export function typeToString(type: Type): string {
           .join(', ') +
         ')' +
         (type.genericParameters.length
-          ? `<${type.genericParameters.map((p) => p.name).join(', ')}>`
+          ? `<${type.genericParameters.join(', ')}>`
           : '') +
         ' => ' +
         typeToString(type.returnType)
@@ -53,6 +53,10 @@ export function typeToString(type: Type): string {
     case 'generic-placeholder':
       return type.name;
     case 'generic-placeholder-late-init':
+      if (type.type) {
+        // In case late init type has been inferred
+        return typeToString(type.type);
+      }
       return 'late-init(' + type.name + ')';
     default:
       const _: never = type;

@@ -1,4 +1,12 @@
-import { defineFunction } from 'tal-eval';
+import {
+  defineFunction,
+  defineFunction3,
+  typeArray,
+  typeBoolean,
+  typeFunction,
+  typeGenericPlaceholder,
+  typeNumber,
+} from 'tal-eval';
 
 export const array_group = defineFunction(
   'array_group',
@@ -292,9 +300,27 @@ export const array_take = defineFunction(
   }
 );
 
-export const array_filter = defineFunction(
+export const array_filter = defineFunction3(
   'array_filter',
   [{ name: 'array' }, { name: 'predicate' }],
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'mapper',
+        type: typeFunction(
+          [
+            { name: 'item', type: typeGenericPlaceholder('T') },
+            { name: 'index', type: typeNumber() },
+          ],
+          [],
+          typeBoolean()
+        ),
+      },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (ctx, { array, predicate }) => {
     return (array as any[]).filter((it, index) =>
       ctx.callFunction(predicate, [it, index])
@@ -352,9 +378,27 @@ export const array_find_index = defineFunction(
   }
 );
 
-export const array_map = defineFunction(
+export const array_map = defineFunction3(
   'array_map',
   [{ name: 'array' }, { name: 'mapper' }],
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'mapper',
+        type: typeFunction(
+          [
+            { name: 'item', type: typeGenericPlaceholder('T') },
+            { name: 'index', type: typeNumber() },
+          ],
+          [],
+          typeGenericPlaceholder('U')
+        ),
+      },
+    ],
+    ['T', 'U'],
+    typeArray(typeGenericPlaceholder('U'))
+  ),
   (ctx, { array, mapper }) => {
     return (array as any[]).map((it, index) =>
       ctx.callFunction(mapper, [it, index])

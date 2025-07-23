@@ -1,0 +1,110 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "run",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Call",
+            "args": [
+              {
+                "kind": "NamedArgument",
+                "name": "value",
+                "value": {
+                  "kind": "Local",
+                  "name": "n"
+                }
+              },
+              {
+                "kind": "NamedArgument",
+                "name": "index",
+                "value": 0
+              }
+            ],
+            "value": {
+              "kind": "Local",
+              "name": "f"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "n",
+          "type": {
+            "kind": "named",
+            "name": "T"
+          }
+        },
+        {
+          "name": "f",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              },
+              {
+                "name": "index",
+                "type": {
+                  "kind": "named",
+                  "name": "number"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "boolean"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "boolean"
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " Parameter index is not defined, but should not be an error\r",
+    "node": {
+      "kind": "Call",
+      "args": [
+        {
+          "kind": "PositionalArgument",
+          "value": 8
+        },
+        {
+          "kind": "PositionalArgument",
+          "value": {
+            "kind": "Function",
+            "body": true,
+            "parameters": [
+              {
+                "name": "value"
+              }
+            ]
+          }
+        }
+      ],
+      "value": {
+        "kind": "Local",
+        "name": "run"
+      }
+    }
+  }
+]

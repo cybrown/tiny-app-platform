@@ -2,7 +2,6 @@ import {
   lower,
   RegisterableFunction,
   RuntimeContext,
-  typeAny,
   TypeChecker,
 } from "tal-eval";
 import { Editor, EditorApi } from "./Editor";
@@ -340,6 +339,8 @@ const ErrorReport = ({
 }) => {
   const [errors, setErrors] = useState<string[]>([]);
 
+  const [initError, setInitError] = useState<unknown>();
+
   const typeChecker = useMemo(() => {
     const result = new TypeChecker();
     // TODO: Use info from the context to declare symbols
@@ -357,18 +358,11 @@ const ErrorReport = ({
       })
       .map((a) => a as [string, RegisterableFunction<string>])
       .forEach((local) => {
-        result.declareSymbol(local[0], {
-          kind: "function",
-          parameters: local[1].parameters.map((p) => ({
-            name: p.name,
-            type: p.type ?? typeAny(),
-          })),
-          returnType: local[1].returnType ?? typeAny(),
-        });
+        result.declareSymbol(local[0], local[1].type);
       });
 
     return result;
-  }, []);
+  }, [ctx]);
 
   useEffect(() => {
     if (!source) return;
@@ -392,7 +386,9 @@ const ErrorReport = ({
       } else {
         setErrors([]);
       }
+      setInitError(null);
     } catch (err) {
+      setInitError(err);
     } finally {
       typeChecker.popSymbolTable();
     }
@@ -400,7 +396,12 @@ const ErrorReport = ({
 
   return (
     <View>
-      {errors.length ? (
+      {initError ? (
+        <View layout="flex-column">
+          <Text text="Error while initializing error checking:" />
+          <pre>{JSON.stringify(initError, null, 2)}</pre>
+        </View>
+      ) : errors.length ? (
         <View layout="flex-column">
           {errors.map((error, index) => (
             <View key={index} padding={0.5}>

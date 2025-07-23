@@ -6,9 +6,9 @@
 (101:34) Unknown symbol: array_append
 (113:36) Unknown symbol: array_append
 (128:34) Unknown symbol: array_filter
-(131:11) Incompatible types for binary operator !=
+(131:11) Incompatible types for binary operator string != null
 (135:16) Unknown symbol: string_format
-(148:11) Incompatible types for binary operator !=
+(148:11) Incompatible types for binary operator string != null
 (152:16) Unknown symbol: string_format
 (175:17) Unknown symbol: string_format
 (207:18) Unknown symbol: array_map

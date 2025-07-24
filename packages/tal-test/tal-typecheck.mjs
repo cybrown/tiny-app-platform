@@ -21,16 +21,16 @@ const typeChecker = new TypeChecker();
 let type;
 
 if (Array.isArray(expressions)) {
-  for (let e of expressions) {
-    type = typeChecker.check(e);
-  }
+  type = typeChecker.checkArray(expressions);
 } else {
   type = typeChecker.check(expressions);
 }
 
 if (typeChecker.errors) {
   for (let error of typeChecker.errors) {
-    process.stdout.write(`(${error[0].location?.start.line}:${error[0].location?.start.column}) `);
+    process.stdout.write(
+      `(${error[0].location?.start.line}:${error[0].location?.start.column}) `
+    );
     process.stdout.write(error[1]);
     process.stdout.write("\n");
   }

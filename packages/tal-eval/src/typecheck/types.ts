@@ -52,6 +52,11 @@ export type TypeGenericPlaceholderLateInit = {
   type?: Type;
 };
 
+export type TypeResolved = {
+  kind: 'unresolved';
+  type?: Type;
+};
+
 export type TypeParameter = {
   name: string;
   type: Type;
@@ -178,6 +183,12 @@ export function typeGenericPlaceholderLateInit(
   };
 }
 
+export function typeUnresolved(): TypeResolved {
+  return {
+    kind: 'unresolved',
+  };
+}
+
 export type Type =
   | TypeNumber
   | TypeString
@@ -192,4 +203,5 @@ export type Type =
   | TypeBytes
   | TypeAliased
   | TypeGenericPlaceholder
-  | TypeGenericPlaceholderLateInit;
+  | TypeGenericPlaceholderLateInit
+  | TypeResolved;

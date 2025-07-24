@@ -3,6 +3,7 @@ import { Type } from './types';
 export type SymbolDeclaration = {
   type: Type;
   mutable: boolean;
+  allowRedeclaration: boolean;
 };
 
 type SymbolTableContent = Record<string, SymbolDeclaration>;
@@ -29,11 +30,20 @@ export class SymbolTable {
     [this.symbols, this.typeAliasSymbols],
   ];
 
-  public declare(name: string, type: Type, mutable: boolean): boolean {
-    if (Object.hasOwn(this.symbols, name)) {
+  public declare(
+    name: string,
+    type: Type,
+    mutable: boolean,
+    allowRedeclaration?: boolean
+  ): boolean {
+    if (Object.hasOwn(this.symbols, name) && !this.symbols[name].allowRedeclaration) {
       return false;
     }
-    this.symbols[name] = { type, mutable };
+    this.symbols[name] = {
+      type,
+      mutable,
+      allowRedeclaration: !!allowRedeclaration,
+    };
     return true;
   }
 

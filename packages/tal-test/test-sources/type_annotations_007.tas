@@ -1,0 +1,10 @@
+fun a(value: number) {
+    // function b is not yet defined, but this should work
+    b() + value
+}
+
+fun b() {
+    3
+}
+
+a(1)

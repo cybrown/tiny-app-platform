@@ -1,0 +1,72 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "Comment",
+            "text": " function b is not yet defined, but this should work\r",
+            "node": {
+              "kind": "BinaryOperator",
+              "operator": "+",
+              "right": {
+                "kind": "Local",
+                "name": "value"
+              },
+              "left": {
+                "kind": "Call",
+                "args": [],
+                "value": {
+                  "kind": "Local",
+                  "name": "b"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "number"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "b",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          3
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 1
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "a"
+    }
+  }
+]

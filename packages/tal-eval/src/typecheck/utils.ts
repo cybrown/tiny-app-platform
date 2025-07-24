@@ -58,6 +58,12 @@ export function typeToString(type: Type): string {
         return typeToString(type.type);
       }
       return 'late-init(' + type.name + ')';
+    case 'unresolved':
+      if (type.type) {
+        // In case unresolved type has been inferred
+        return typeToString(type.type);
+      }
+      return 'unresolved';
     default:
       const _: never = type;
       _;

@@ -1,0 +1,27 @@
+<program>
+  <declarelocal>
+    <function>
+      <block>
+        <comment>
+          <binaryoperator>
+            <call>
+              <local />
+            </call>
+            <local />
+          </binaryoperator>
+        </comment>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <literal />
+      </block>
+    </function>
+  </declarelocal>
+  <call>
+    <local />
+    <literal />
+  </call>
+</program>

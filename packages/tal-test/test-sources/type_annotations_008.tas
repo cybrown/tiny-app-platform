@@ -1,0 +1,11 @@
+fun fact(value: number): number {
+    if (value == 0) {
+        0
+    } else if (value == 1) {
+        1
+    } else {
+        value * fact(value - 1)
+    }
+}
+
+fact(5)

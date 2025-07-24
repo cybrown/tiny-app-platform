@@ -1,0 +1,111 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "fact",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "If",
+            "condition": {
+              "kind": "BinaryOperator",
+              "operator": "==",
+              "right": 0,
+              "left": {
+                "kind": "Local",
+                "name": "value"
+              }
+            },
+            "ifTrue": {
+              "kind": "Block",
+              "children": [
+                0
+              ]
+            },
+            "ifFalse": {
+              "kind": "If",
+              "condition": {
+                "kind": "BinaryOperator",
+                "operator": "==",
+                "right": 1,
+                "left": {
+                  "kind": "Local",
+                  "name": "value"
+                }
+              },
+              "ifTrue": {
+                "kind": "Block",
+                "children": [
+                  1
+                ]
+              },
+              "ifFalse": {
+                "kind": "Block",
+                "children": [
+                  {
+                    "kind": "BinaryOperator",
+                    "operator": "*",
+                    "right": {
+                      "kind": "Call",
+                      "args": [
+                        {
+                          "kind": "PositionalArgument",
+                          "value": {
+                            "kind": "BinaryOperator",
+                            "operator": "-",
+                            "right": 1,
+                            "left": {
+                              "kind": "Local",
+                              "name": "value"
+                            }
+                          }
+                        }
+                      ],
+                      "value": {
+                        "kind": "Local",
+                        "name": "fact"
+                      }
+                    },
+                    "left": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "number"
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "number"
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": 5
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "fact"
+    }
+  }
+]

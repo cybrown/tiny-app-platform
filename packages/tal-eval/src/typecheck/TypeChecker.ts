@@ -22,6 +22,7 @@ import {
   typeString,
   TypeUnion,
   typeUnion,
+  typeUnresolved,
 } from './types';
 import { SymbolTable } from './SymbolTable';
 import { typeToString } from './utils';
@@ -62,6 +63,15 @@ export class TypeChecker {
 
   private nextExpectedFunctionType?: TypeFunction;
   private nextExpectedFunctionTypeIsDefined = 0;
+
+  checkArray(nodes: Node[]): Type {
+    this.predeclareFunctions(nodes);
+    let lastType: Type = typeNull();
+    for (const node of nodes) {
+      lastType = this.check(node);
+    }
+    return lastType;
+  }
 
   check(node: Node): Type {
     // Reset stack count for expected function type
@@ -235,15 +245,13 @@ export class TypeChecker {
       }
       case 'Block': {
         this.symbolTable.push();
-        if (node.children.length == 0) {
-          return this.defType(node, typeNull());
-        }
-        let lastType: Type;
+        this.predeclareFunctions(node.children);
+        let lastType: Type = typeNull();
         for (const child of node.children) {
           lastType = this.check(child);
         }
         this.symbolTable.pop();
-        return this.defType(node, lastType!);
+        return this.defType(node, lastType);
       }
       case 'If': {
         const conditionType = this.check(node.condition);
@@ -475,8 +483,6 @@ export class TypeChecker {
           this.symbolTable.declare(parameter.name, parameter.type, true);
         });
 
-        // TODO: Check parameter type
-
         const computedReturnType = this.check(node.body);
         const declaredReturnType = node.returnType;
 
@@ -499,6 +505,24 @@ export class TypeChecker {
           }
         }
 
+        const predeclaredFunctionType = this.types.get(node);
+
+        const realReturnType = declaredReturnType
+          ? mapTypeAst(
+              (e) => this.defError(node, e),
+              this.symbolTable,
+              declaredReturnType
+            )
+          : computedReturnType;
+
+        if (
+          predeclaredFunctionType &&
+          predeclaredFunctionType.kind == 'function' &&
+          predeclaredFunctionType.returnType.kind == 'unresolved'
+        ) {
+          predeclaredFunctionType.returnType.type = realReturnType;
+        }
+
         const result = this.defType(
           node,
           typeFunction(
@@ -511,13 +535,7 @@ export class TypeChecker {
                   (genericParameterNode) => genericParameterNode.name
                 )
               : [],
-            declaredReturnType
-              ? mapTypeAst(
-                  (e) => this.defError(node, e),
-                  this.symbolTable,
-                  declaredReturnType
-                )
-              : computedReturnType
+            realReturnType
           )
         );
 
@@ -711,6 +729,56 @@ export class TypeChecker {
       }
     }
   }
+
+  private predeclareFunctions(nodes: Node[]) {
+    for (const node of nodes) {
+      if (
+        node.kind == 'DeclareLocal' &&
+        !node.mutable &&
+        node.value &&
+        node.value.kind == 'Function'
+      ) {
+        this.symbolTable.push();
+        if (node.value.genericParameters) {
+          for (const genericParameter of node.value.genericParameters) {
+            this.symbolTable.declareTypeAlias(
+              genericParameter.name,
+              typeGenericPlaceholder(genericParameter.name)
+            );
+          }
+        }
+        const t = this.defType(
+          node.value,
+          typeFunction(
+            node.value.parameters.map((a) => ({
+              name: a.name,
+              type: a.type
+                ? mapTypeAst(
+                    (e) => this.defError(node.value!, e),
+                    this.symbolTable,
+                    a.type
+                  )
+                : typeAny(),
+            })),
+            node.value.genericParameters
+              ? node.value.genericParameters.map(
+                  (genericParameterNode) => genericParameterNode.name
+                )
+              : [],
+            node.value.returnType
+              ? mapTypeAst(
+                  (e) => this.defError(node, e),
+                  this.symbolTable,
+                  node.value.returnType
+                )
+              : typeUnresolved() // TODO: Replace by late init return type
+          )
+        );
+        this.symbolTable.pop();
+        this.symbolTable.declare(node.name, t, false, true);
+      }
+    }
+  }
 }
 
 export function typeCheck(
@@ -860,6 +928,19 @@ function typeIsAssignableTo(
   type2: Type,
   symbolTable: SymbolTable
 ): AssignableResult {
+  if (type1.kind == 'unresolved') {
+    return {
+      result: false,
+      reasons: [`Type ${typeToString(type1)} is unresolved.`],
+    };
+  }
+  if (type2.kind == 'unresolved') {
+    return {
+      result: false,
+      reasons: [`Type ${typeToString(type2)} is unresolved.`],
+    };
+  }
+
   // Resolve aliased types
   // I would have use a while loop to resolve all aliases, but typescript
   // does not narrow the type of a parameter when reassigned.
@@ -1305,6 +1386,7 @@ function substituteGenericPlaceholders(
     case 'string':
     case 'bytes':
     case 'kinded-record':
+    case 'unresolved':
       return type;
     default:
       const _: never = type;
@@ -1371,6 +1453,7 @@ function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
     case 'string':
     case 'bytes':
     case 'kinded-record':
+    case 'unresolved':
       return type;
     default:
       const _: never = type;

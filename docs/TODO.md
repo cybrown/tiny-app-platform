@@ -44,6 +44,8 @@ Add humanize formater (SI decimal scale, SI binary scale, file size, time relati
  [ ] ( ) `never` type, use this type in blocks to determinate of the next expressions are ever executed
             Allows for dead code detection
             Use it to type check return and throw expressions as never
+ [ ] ( ) `opaque`type that takes a name as parameter to represent resources used by native functions
+            such as cheerio. The name would be used to prevent each
 
 ### Functions
  [ ] ( ) Make type system aware of only named parameters

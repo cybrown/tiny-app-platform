@@ -231,7 +231,11 @@ class Stringifier {
       argList = '(';
       this.incrementDepth();
       for (let parameter of func.parameters) {
-        argList += '\n' + this.depthSpace() + parameter.name;
+        argList +=
+          '\n' +
+          this.depthSpace() +
+          parameter.name +
+          this.stringifyTypeAnnotation(parameter.type);
       }
       this.decrementDepth();
       argList += '\n' + this.depthSpace() + ') ';

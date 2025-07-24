@@ -1,0 +1,31 @@
+<program>
+  <declarelocal>
+  </declarelocal>
+  <declarelocal>
+  </declarelocal>
+  <declarelocal>
+  </declarelocal>
+  <declarelocal>
+    <literal />
+  </declarelocal>
+  <if>
+    <local />
+    <record>
+    </record>
+  </if>
+  <if>
+    <local />
+    <record>
+    </record>
+  </if>
+  <if>
+    <local />
+    <record>
+    </record>
+  </if>
+  <if>
+    <local />
+    <record>
+    </record>
+  </if>
+</program>

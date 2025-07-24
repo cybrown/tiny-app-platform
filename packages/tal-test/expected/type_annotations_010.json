@@ -1,0 +1,75 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "localNull"
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "numberOrNull",
+    "type": {
+      "kind": "named",
+      "name": "number"
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "boolOrNull",
+    "type": {
+      "kind": "named",
+      "name": "boolean"
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "localNumber",
+    "value": 3
+  },
+  {
+    "kind": "If",
+    "condition": {
+      "kind": "Local",
+      "name": "localNull"
+    },
+    "ifTrue": {
+      "kind": "Record",
+      "entries": []
+    }
+  },
+  {
+    "kind": "If",
+    "condition": {
+      "kind": "Local",
+      "name": "numberOrNull"
+    },
+    "ifTrue": {
+      "kind": "Record",
+      "entries": []
+    }
+  },
+  {
+    "kind": "If",
+    "condition": {
+      "kind": "Local",
+      "name": "boolOrNull"
+    },
+    "ifTrue": {
+      "kind": "Record",
+      "entries": []
+    }
+  },
+  {
+    "kind": "If",
+    "condition": {
+      "kind": "Local",
+      "name": "localNumber"
+    },
+    "ifTrue": {
+      "kind": "Record",
+      "entries": []
+    }
+  }
+]

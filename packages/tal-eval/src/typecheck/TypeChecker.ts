@@ -265,8 +265,8 @@ export class TypeChecker {
         const conditionType = this.check(node.condition);
         if (
           !(
-            isAssignableToBoolean(conditionType, this.symbolTable) ||
-            isAssignableToNull(conditionType, this.symbolTable)
+            isBooleanAssignableTo(conditionType, this.symbolTable) ||
+            isNullAssignableTo(conditionType, this.symbolTable)
           )
         ) {
           this.defError(node, 'If condition must be of type boolean or null');
@@ -809,6 +809,10 @@ function isAssignableToBoolean(type: Type, symbolTable: SymbolTable): boolean {
   return typeIsAssignableTo(typeBoolean(), type, symbolTable).result;
 }
 
+function isBooleanAssignableTo(type: Type, symbolTable: SymbolTable): boolean {
+  return typeIsAssignableTo(type, typeBoolean(), symbolTable).result;
+}
+
 function isAssignableToNumber(type: Type, symbolTable: SymbolTable): boolean {
   return typeIsAssignableTo(typeNumber(), type, symbolTable).result;
 }
@@ -819,6 +823,10 @@ function isAssignableToString(type: Type, symbolTable: SymbolTable): boolean {
 
 function isAssignableToNull(type: Type, symbolTable: SymbolTable): boolean {
   return typeIsAssignableTo(typeNull(), type, symbolTable).result;
+}
+
+function isNullAssignableTo(type: Type, symbolTable: SymbolTable): boolean {
+  return typeIsAssignableTo(type, typeNull(), symbolTable).result;
 }
 
 function isAssignableToArray(type: Type): boolean {
@@ -1008,9 +1016,9 @@ function typeIsAssignableTo(
       reasons: [
         `Type ${typeToString(
           type2
-        )} is not assignable to any of the union types ${type1.types
+        )} is not assignable to any types in this union: ${type1.types
           .map((t) => typeToString(t))
-          .join(', ')}`,
+          .join(' | ')}`,
       ],
     };
   }

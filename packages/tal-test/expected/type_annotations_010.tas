@@ -1,0 +1,9 @@
+var localNull
+var numberOrNull: number
+var boolOrNull: boolean
+var localNumber = 3
+
+if (localNull) {}
+if (numberOrNull) {}
+if (boolOrNull) {}
+if (localNumber) {}

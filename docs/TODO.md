@@ -1,7 +1,14 @@
-Add humanize formater (SI decimal scale, SI binary scale, file size, time relative, duration, ...)
+# Todo list
 
 ## Stdlib
- [ ] Add an option to regexp_find (and _global) to return the first capture group instead (maybe --capture ?)
+ [ ] ( ) Add an option to regexp_find (and _global) to return the first capture group instead (maybe --capture ?)
+ [ ] ( ) Add humanize formater (SI decimal scale, SI binary scale, file size, time relative, duration, ...)
+
+## Editor
+
+ [ ] ( ) Show type errors directly in editor
+ [ ] ( ) Show type of symbol under mouse pointer
+ [ ] ( ) Autocomplete expression at current cursor position
 
 ## Type Checking
 

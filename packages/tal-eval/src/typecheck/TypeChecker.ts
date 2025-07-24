@@ -101,17 +101,25 @@ export class TypeChecker {
         this._errors.push([node, 'Unsupported literal']);
         return this.defType(node, typeAny());
       case 'DeclareLocal':
-        const valueType = node.value
-          ? this.check(node.value)
-          : node.type
-          ? mapTypeAst(
-              (e) => this.defError(node, e),
-              this.symbolTable,
-              node.type
-            )
-          : typeNull();
+        let localType: Type;
+        let valueType = node.value ? this.check(node.value) : null;
 
         if (node.type) {
+          localType = mapTypeAst(
+            (e) => this.defError(node, e),
+            this.symbolTable,
+            node.type
+          );
+          if (node.mutable && !node.value) {
+            localType = typeUnion(localType, typeNull());
+          }
+        } else if (valueType) {
+          localType = valueType;
+        } else {
+          localType = typeNull();
+        }
+
+        if (node.type && valueType) {
           const assignementResult = typeIsAssignableTo(
             mapTypeAst(
               (e) => this.defError(node, e),
@@ -127,7 +135,7 @@ export class TypeChecker {
               `Declared type ${
                 node.type.kind
               } is not compatible with value type ${
-                valueType.kind
+                localType.kind
               }: ${assignmentFailureText(assignementResult)}`
             );
           }
@@ -135,7 +143,7 @@ export class TypeChecker {
 
         const symbolIsDeclared = this.symbolTable.declare(
           node.name,
-          valueType,
+          localType,
           node.mutable
         );
         if (!symbolIsDeclared) {

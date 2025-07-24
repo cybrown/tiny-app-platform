@@ -1,0 +1,1 @@
+{a: number | null, b: number, c: number}

@@ -3,7 +3,7 @@
 # Dummy script to run a command with a specific input file.
 # This is useful for testing purposes.
 
-for index in $(seq 7 8 | xargs -n 1 printf "%03d ");
+for index in $(seq 9 9 | xargs -n 1 printf "%03d ");
 do
   echo $index
   node ./tal-typecheck.mjs < "test-sources/type_annotations_$index.tas"

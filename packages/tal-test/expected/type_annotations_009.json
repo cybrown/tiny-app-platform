@@ -1,0 +1,56 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "a",
+    "type": {
+      "kind": "named",
+      "name": "number"
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "b",
+    "type": {
+      "kind": "named",
+      "name": "number"
+    },
+    "value": 3
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "c",
+    "value": 3
+  },
+  {
+    "kind": "Record",
+    "entries": [
+      {
+        "kind": "RecordEntry",
+        "key": "a",
+        "value": {
+          "kind": "Local",
+          "name": "a"
+        }
+      },
+      {
+        "kind": "RecordEntry",
+        "key": "b",
+        "value": {
+          "kind": "Local",
+          "name": "b"
+        }
+      },
+      {
+        "kind": "RecordEntry",
+        "key": "c",
+        "value": {
+          "kind": "Local",
+          "name": "c"
+        }
+      }
+    ]
+  }
+]

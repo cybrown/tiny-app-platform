@@ -1,0 +1,11 @@
+fun map<T, U>(arr: array<T>, mapper: (in: T) => U): array<U> {
+    let a: any
+    a
+}
+
+fun filter<T>(arr: array<T>, predicate: (in: T) => boolean): array<T> {
+    let a: any
+    a
+}
+
+[1, 2, 3] | map(in => in + 1) | filter(in => in > 2)

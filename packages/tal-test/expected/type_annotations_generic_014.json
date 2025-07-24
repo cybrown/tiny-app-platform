@@ -1,0 +1,214 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "a",
+            "type": {
+              "kind": "named",
+              "name": "any"
+            }
+          },
+          {
+            "kind": "Local",
+            "name": "a"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "mapper",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "in",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "U"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "named",
+          "name": "U"
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        },
+        {
+          "name": "U"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "filter",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "a",
+            "type": {
+              "kind": "named",
+              "name": "any"
+            }
+          },
+          {
+            "kind": "Local",
+            "name": "a"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "arr",
+          "type": {
+            "kind": "array",
+            "item": {
+              "kind": "named",
+              "name": "T"
+            }
+          }
+        },
+        {
+          "name": "predicate",
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": "in",
+                "type": {
+                  "kind": "named",
+                  "name": "T"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "boolean"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "array",
+        "item": {
+          "kind": "named",
+          "name": "T"
+        }
+      },
+      "genericParameters": [
+        {
+          "name": "T"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Pipe",
+    "first": {
+      "kind": "Array",
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "values": [
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "PositionalArgument",
+            "value": {
+              "kind": "Function",
+              "body": {
+                "kind": "BinaryOperator",
+                "operator": "+",
+                "right": 1,
+                "left": {
+                  "kind": "Local",
+                  "name": "in"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "in"
+                }
+              ]
+            }
+          }
+        ],
+        "value": {
+          "kind": "Local",
+          "name": "map"
+        }
+      },
+      {
+        "kind": "Call",
+        "args": [
+          {
+            "kind": "PositionalArgument",
+            "value": {
+              "kind": "Function",
+              "body": {
+                "kind": "BinaryOperator",
+                "operator": ">",
+                "right": 2,
+                "left": {
+                  "kind": "Local",
+                  "name": "in"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "in"
+                }
+              ]
+            }
+          }
+        ],
+        "value": {
+          "kind": "Local",
+          "name": "filter"
+        }
+      }
+    ]
+  }
+]

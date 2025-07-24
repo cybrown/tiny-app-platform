@@ -1,3 +1,3 @@
-(1:1) Implicit parameter type for a
-(1:1) Implicit parameter type for b
+(1:1) Implicit parameter a, expected parameters: unknown parameter list
+(1:1) Implicit parameter b, expected parameters: unknown parameter list
 (a: any, b: any) => number | string

@@ -3,8 +3,8 @@
 (14:1) Unknown parameter name: c in function call
 (15:1) Unknown parameter name: c in function call
 (16:1) Unknown parameter name: c in function call
-(21:6) Implicit parameter type for a
-(21:6) Implicit parameter type for b
-(22:6) Implicit parameter type for a
-(22:6) Implicit parameter type for b
+(21:6) Implicit parameter a, expected parameters: unknown parameter list
+(21:6) Implicit parameter b, expected parameters: unknown parameter list
+(22:6) Implicit parameter a, expected parameters: unknown parameter list
+(22:6) Implicit parameter b, expected parameters: unknown parameter list
 {a: any, b: any}

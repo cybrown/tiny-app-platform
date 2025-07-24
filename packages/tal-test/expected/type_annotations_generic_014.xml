@@ -1,0 +1,45 @@
+<program>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+        </declarelocal>
+        <local />
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+        </declarelocal>
+        <local />
+      </block>
+    </function>
+  </declarelocal>
+  <pipe>
+    <array>
+      <literal />
+      <literal />
+      <literal />
+    </array>
+    <call>
+      <local />
+      <function>
+        <binaryoperator>
+          <local />
+          <literal />
+        </binaryoperator>
+      </function>
+    </call>
+    <call>
+      <local />
+      <function>
+        <binaryoperator>
+          <local />
+          <literal />
+        </binaryoperator>
+      </function>
+    </call>
+  </pipe>
+</program>

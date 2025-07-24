@@ -491,7 +491,16 @@ export class TypeChecker {
                       parameter.type
                     )
                   : expectedParameters[parameter.name] ??
-                    this.typeAnyImplicitParameter(node, parameter.name),
+                    (this.defError(
+                      node,
+                      `Implicit parameter ${
+                        parameter.name
+                      }, expected parameters: ${
+                        Object.keys(expectedParameters).join(', ') ||
+                        'unknown parameter list'
+                      }`
+                    ),
+                    typeAnyAfterError()),
               }));
         parametersType.forEach((parameter) => {
           this.symbolTable.declare(parameter.name, parameter.type, true);

@@ -11,8 +11,8 @@
 (148:11) Incompatible types for binary operator string != null
 (152:16) Unknown symbol: string_format
 (175:17) Unknown symbol: string_format
-(197:30) Implicit parameter type for row
-(202:30) Implicit parameter type for row
+(197:30) Implicit parameter row, expected parameters: unknown parameter list
+(202:30) Implicit parameter row, expected parameters: unknown parameter list
 (207:18) Unknown symbol: array_map
 (236:41) Unknown symbol: json_parse
 () => kinded-record

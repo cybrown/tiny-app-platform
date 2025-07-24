@@ -1,3 +1,7 @@
+(1:1) Implicit parameter type for a
 (1:12) Unknown symbol: b
+(2:1) Implicit parameter type for a
 (2:10) Unknown symbol: b
+(3:1) Implicit parameter type for a
+(3:6) Implicit parameter type for b
 (a: any) => (b: any) => number | string

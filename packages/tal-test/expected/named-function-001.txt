@@ -1,1 +1,3 @@
+(1:1) Implicit parameter type for a
+(1:1) Implicit parameter type for b
 null

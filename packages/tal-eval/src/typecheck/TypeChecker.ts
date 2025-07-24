@@ -99,7 +99,7 @@ export class TypeChecker {
           return this.defType(node, typeBoolean());
         }
         this._errors.push([node, 'Unsupported literal']);
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyAfterError());
       case 'DeclareLocal':
         let localType: Type;
         let valueType = node.value ? this.check(node.value) : null;
@@ -175,7 +175,7 @@ export class TypeChecker {
               return this.defType(node, typeNumber());
           }
           this.defError(node, `Binary perator ${node.operator} unknown`);
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
 
         if (
@@ -249,7 +249,7 @@ export class TypeChecker {
             node.operator
           } ${typeToString(right)}`
         );
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyAfterError());
       }
       case 'Block': {
         this.symbolTable.push();
@@ -284,7 +284,7 @@ export class TypeChecker {
         const type = this.symbolTable.get(node.name);
         if (type == null) {
           this.defError(node, 'Unknown symbol: ' + node.name);
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
         return this.defType(node, type.type);
       }
@@ -295,13 +295,13 @@ export class TypeChecker {
             node,
             'Only local variables are supported for Assignements'
           );
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
         const valueType = this.check(node.value);
         const type = this.symbolTable.get(node.address.name);
         if (!type) {
           this.defError(node, 'Unknown symbol: ' + node.address.name);
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
 
         if (!type.mutable) {
@@ -339,7 +339,7 @@ export class TypeChecker {
             return typeNull();
         }
         this.defError(node, 'Unknown intrinsic: ' + node.op);
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyAfterError());
       }
       case 'While': {
         const conditionType = this.check(node.condition);
@@ -376,11 +376,11 @@ export class TypeChecker {
           node,
           `Incompatible types for unary operator ${node.operator}`
         );
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyAfterError());
       }
       case 'Import': {
         // TODO: Handle import nodes
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyImport());
       }
       case 'Array': {
         // TODO: Handle
@@ -398,12 +398,12 @@ export class TypeChecker {
 
         if (!isAssignableToArray(valueType)) {
           this.defError(node, 'Invalid type for index');
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
 
         if (!isAssignableToNumber(indexType, this.symbolTable)) {
           this.defError(node, 'Arrays are only indexable by number');
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
 
         if (isArray(valueType)) {
@@ -411,27 +411,27 @@ export class TypeChecker {
         }
 
         // In case we index an any value
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyBecauseOfAny());
       }
       case 'Attribute': {
         const valueType = this.check(node.value);
 
         if (!isAssignableToRecord(valueType)) {
           this.defError(node, 'Invalid type for attribute');
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
 
         if (isRecord(valueType)) {
           const type = valueType.fields[node.key];
           if (!type) {
             this.defError(node, 'Key not found on record: ' + node.key);
-            return this.defType(node, typeAny());
+            return this.defType(node, typeAnyAfterError());
           }
           return this.defType(node, type);
         }
 
         // In case we get an attribute of an any value
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyBecauseOfAny());
       }
       case 'Record': {
         return this.defType(
@@ -477,16 +477,22 @@ export class TypeChecker {
           }
         }
 
-        const parametersType = node.parameters.map((parameter) => ({
-          name: parameter.name,
-          type: parameter.type
-            ? mapTypeAst(
-                (e) => this.defError(node, e),
-                this.symbolTable,
-                parameter.type
-              )
-            : expectedParameters[parameter.name] ?? typeAny(),
-        }));
+        const predeclaredFunctionType = this.types.get(node);
+
+        const parametersType =
+          predeclaredFunctionType && predeclaredFunctionType.kind === 'function'
+            ? predeclaredFunctionType.parameters
+            : node.parameters.map((parameter) => ({
+                name: parameter.name,
+                type: parameter.type
+                  ? mapTypeAst(
+                      (e) => this.defError(node, e),
+                      this.symbolTable,
+                      parameter.type
+                    )
+                  : expectedParameters[parameter.name] ??
+                    this.typeAnyImplicitParameter(node, parameter.name),
+              }));
         parametersType.forEach((parameter) => {
           this.symbolTable.declare(parameter.name, parameter.type, true);
         });
@@ -512,8 +518,6 @@ export class TypeChecker {
             );
           }
         }
-
-        const predeclaredFunctionType = this.types.get(node);
 
         const realReturnType = declaredReturnType
           ? mapTypeAst(
@@ -556,12 +560,12 @@ export class TypeChecker {
 
         if (!isAssignableToFunction(funTypeWithGenerics)) {
           this.defError(node, 'Expression is not of type function');
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyAfterError());
         }
 
         if (!isFunction(funTypeWithGenerics)) {
           // Type any
-          return this.defType(node, typeAny());
+          return this.defType(node, typeAnyBecauseOfAny());
         }
 
         this.symbolTable.push();
@@ -610,7 +614,7 @@ export class TypeChecker {
           if (remainingParams.length == 0) {
             this.defError(node, `Too many arguments for function call`);
             this.symbolTable.pop();
-            return this.defType(node, typeAny());
+            return this.defType(node, typeAnyAfterError());
           }
           if (arg.kind == 'NamedArgument') {
             remainingParams = remainingParams.filter((p) => p != arg.name);
@@ -620,11 +624,12 @@ export class TypeChecker {
                 `Unknown parameter name: ${arg.name} in function call`
               );
               this.symbolTable.pop();
-              return this.defType(node, typeAny());
+              return this.defType(node, typeAnyAfterError());
             }
 
             const expectedParameterType =
-              paramsByName.get(arg.name) ?? typeAny();
+              paramsByName.get(arg.name) ??
+              this.typeAnyImplicitParameter(node, arg.name);
             this.nextExpectedFunctionType = isFunction(expectedParameterType)
               ? expectedParameterType
               : undefined;
@@ -653,11 +658,12 @@ export class TypeChecker {
             if (remainingParams.length == 0) {
               this.defError(node, `Too many arguments for function call`);
               this.symbolTable.pop();
-              return this.defType(node, typeAny());
+              return this.defType(node, typeAnyAfterError());
             }
             const currentParamName = remainingParams.shift()!; // Ok to ! because we checked length above
             const expectedParameterType =
-              paramsByName.get(currentParamName) ?? typeAny();
+              paramsByName.get(currentParamName) ??
+              this.typeAnyImplicitParameter(node, currentParamName);
             this.nextExpectedFunctionType = isFunction(expectedParameterType)
               ? expectedParameterType
               : undefined;
@@ -733,7 +739,7 @@ export class TypeChecker {
         const _: never = node;
         _;
         this.defError(node, 'Unreachable case: ' + (node as AnyForNever).kind);
-        return this.defType(node, typeAny());
+        return this.defType(node, typeAnyAfterError());
       }
     }
   }
@@ -766,7 +772,7 @@ export class TypeChecker {
                     this.symbolTable,
                     a.type
                   )
-                : typeAny(),
+                : this.typeAnyImplicitParameter(node, a.name),
             })),
             node.value.genericParameters
               ? node.value.genericParameters.map(
@@ -786,6 +792,11 @@ export class TypeChecker {
         this.symbolTable.declare(node.name, t, false, true);
       }
     }
+  }
+
+  private typeAnyImplicitParameter(node: Node, name: string): TypeAny {
+    this.defError(node, 'Implicit parameter type for ' + name);
+    return typeAny();
   }
 }
 
@@ -904,7 +915,7 @@ function mergeTypes(type1: Type, type2: Type, symbolTable: SymbolTable): Type {
    * If types are not compatible, return union type
    */
   if (isAny(type1) || isAny(type2)) {
-    return typeAny();
+    return typeAnyBecauseOfAny();
   }
   if (typeIsAssignableTo(type1, type2, symbolTable).result) {
     return type1;
@@ -1255,7 +1266,7 @@ function mapTypeAst(
     case 'named':
       switch (typeAst.name) {
         case 'any':
-          return typeAny();
+          return typeAnyExplicit();
         case 'null':
           return typeNull();
         case 'number':
@@ -1274,7 +1285,7 @@ function mapTypeAst(
         return typeAliased(typeAst.name, aliasedType);
       }
       defError(`Unknown type alias: ${typeAst.name}`);
-      return typeAny();
+      return typeAnyAfterError();
     case 'kinded-record':
       return typeKindedRecord();
     case 'union':
@@ -1342,7 +1353,7 @@ function substituteGenericPlaceholders(
       const result = symbolTable.getTypeAlias(type.name);
       if (!result) {
         defError(`Generic placeholder with name <${type.name}> is not defined`);
-        return typeAny();
+        return typeAnyAfterError();
       }
       return result;
     }
@@ -1471,4 +1482,20 @@ function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
       _;
       throw new Error('Unknown type kind: ' + (type as AnyForNever).kind);
   }
+}
+
+function typeAnyAfterError(): TypeAny {
+  return typeAny();
+}
+
+function typeAnyExplicit(): TypeAny {
+  return typeAny();
+}
+
+function typeAnyBecauseOfAny(): TypeAny {
+  return typeAny();
+}
+
+function typeAnyImport(): TypeAny {
+  return typeAny();
 }

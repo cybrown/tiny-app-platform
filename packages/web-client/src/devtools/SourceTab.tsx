@@ -2,6 +2,7 @@ import {
   lower,
   RegisterableFunction,
   RuntimeContext,
+  typeBoolean,
   TypeChecker,
 } from "tal-eval";
 import { Editor, EditorApi } from "./Editor";
@@ -360,6 +361,8 @@ const ErrorReport = ({
       .forEach((local) => {
         result.declareSymbol(local[0], local[1].type);
       });
+
+    result.declareSymbol("debug", typeBoolean());
 
     return result;
   }, [ctx]);

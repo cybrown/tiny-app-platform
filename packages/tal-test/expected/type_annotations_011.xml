@@ -1,0 +1,10 @@
+<program>
+  <declarelocal>
+    <array>
+    </array>
+  </declarelocal>
+  <binaryoperator>
+    <literal />
+    <local />
+  </binaryoperator>
+</program>

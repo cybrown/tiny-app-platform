@@ -1,0 +1,36 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "type": {
+      "kind": "union",
+      "types": [
+        {
+          "kind": "named",
+          "name": "null"
+        },
+        {
+          "kind": "array",
+          "item": {
+            "kind": "named",
+            "name": "any"
+          }
+        }
+      ]
+    },
+    "value": {
+      "kind": "Array",
+      "value": []
+    }
+  },
+  {
+    "kind": "BinaryOperator",
+    "operator": "!=",
+    "right": {
+      "kind": "Local",
+      "name": "a"
+    },
+    "left": null
+  }
+]

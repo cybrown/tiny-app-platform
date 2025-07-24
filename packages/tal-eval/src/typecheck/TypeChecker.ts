@@ -225,11 +225,11 @@ export class TypeChecker {
           );
         }
 
-        const typeIsAssignableToNullLeft = isAssignableToNull(
+        const typeIsAssignableToNullLeft = isNullAssignableTo(
           left,
           this.symbolTable
         );
-        const typeIsAssignableToNullRight = isAssignableToNull(
+        const typeIsAssignableToNullRight = isNullAssignableTo(
           right,
           this.symbolTable
         );

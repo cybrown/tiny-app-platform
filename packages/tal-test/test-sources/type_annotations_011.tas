@@ -1,0 +1,3 @@
+let a: null | array<any> = []
+
+null != a

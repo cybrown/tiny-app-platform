@@ -111,7 +111,7 @@ export class TypeChecker {
             node.type
           );
           if (node.mutable && !node.value) {
-            localType = typeUnion(localType, typeNull());
+            localType = mergeTypes(localType, typeNull(), this.symbolTable);
           }
         } else if (valueType) {
           localType = valueType;
@@ -166,7 +166,7 @@ export class TypeChecker {
             case '+':
               return this.defType(
                 node,
-                mergeTypes(node, typeNumber(), typeString(), this.symbolTable)
+                mergeTypes(typeNumber(), typeString(), this.symbolTable)
               );
             case '-':
             case '*':
@@ -277,7 +277,7 @@ export class TypeChecker {
 
         return this.defType(
           node,
-          mergeTypes(node, trueType, falseType, this.symbolTable)
+          mergeTypes(trueType, falseType, this.symbolTable)
         );
       }
       case 'Local': {
@@ -330,7 +330,7 @@ export class TypeChecker {
 
         return this.defType(
           node,
-          mergeTypes(node, tryType, catchType, this.symbolTable)
+          mergeTypes(tryType, catchType, this.symbolTable)
         );
       }
       case 'Intrinsic': {
@@ -389,7 +389,7 @@ export class TypeChecker {
             ? typeNull()
             : node.value
                 .map((value) => this.check(value))
-                .reduce((a, b) => mergeTypes(node, a, b, this.symbolTable));
+                .reduce((a, b) => mergeTypes(a, b, this.symbolTable));
         return this.defType(node, typeArray(arrayItemType));
       }
       case 'Index': {
@@ -889,12 +889,7 @@ let BINARY_OPERATOR_NULL = ['==', '!='];
 /**
  * Merge two types and return the most compatible type or an union type
  */
-function mergeTypes(
-  node: Node,
-  type1: Type,
-  type2: Type,
-  symbolTable: SymbolTable
-): Type {
+function mergeTypes(type1: Type, type2: Type, symbolTable: SymbolTable): Type {
   /**
    * Rules to merge types:
    * If one type is compatible with another but not the other way, return the most compatible type

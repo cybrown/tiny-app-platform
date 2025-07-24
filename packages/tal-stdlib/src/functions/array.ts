@@ -5,12 +5,16 @@ import {
   typeBoolean,
   typeFunction,
   typeGenericPlaceholder,
+  typeNull,
   typeNumber,
+  typeString,
+  typeUnion,
 } from 'tal-eval';
 
 export const array_group = defineFunction(
   'array_group',
   [{ name: 'array' }, { name: 'key_extractor' }, { name: 'value_extractor' }],
+  // TODO: To type when dict are available
   (ctx, { array, key_extractor, value_extractor }) => {
     const result: { [key: string]: any } = {};
     (array as any[]).forEach((it) => {
@@ -47,6 +51,7 @@ export const array_to_record = defineFunction(
     { name: 'value_extractor' },
     { name: 'accumulator' },
   ],
+  // TODO: To type when dict are available, and rename to array_to_dict
   (ctx, { array, key_extractor, value_extractor, accumulator }) => {
     const result: { [key: string]: any } = {};
     if (accumulator) {
@@ -90,9 +95,20 @@ export const array_to_record = defineFunction(
   }
 );
 
-export const array_append = defineFunction(
+export const array_append = defineFunction3(
   'array_append',
   [{ name: 'array' }, { name: 'value' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'value', type: typeGenericPlaceholder('T') },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array, value }) => {
     return [...array, value];
   },
@@ -105,9 +121,20 @@ export const array_append = defineFunction(
   }
 );
 
-export const array_concat = defineFunction(
+export const array_concat = defineFunction3(
   'array_concat',
   [{ name: 'array' }, { name: 'other' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'other', type: typeArray(typeGenericPlaceholder('T')) },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array, other }) => {
     return [...array, ...other];
   },
@@ -122,9 +149,20 @@ export const array_concat = defineFunction(
   }
 );
 
-export const array_contains = defineFunction(
+export const array_contains = defineFunction3(
   'array_contains',
   [{ name: 'array' }, { name: 'value' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'value', type: typeGenericPlaceholder('T') },
+    ],
+    ['T'],
+    typeBoolean()
+  ),
   (ctx, { array, value }) => {
     return (array as any[]).includes(value);
   },
@@ -139,9 +177,19 @@ export const array_contains = defineFunction(
   }
 );
 
-export const array_length = defineFunction(
+export const array_length = defineFunction3(
   'array_length',
   [{ name: 'array' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+    ],
+    ['T'],
+    typeNumber()
+  ),
   (_ctx, { array }) => {
     return array.length;
   },
@@ -155,9 +203,19 @@ export const array_length = defineFunction(
   }
 );
 
-export const array_unique = defineFunction(
+export const array_unique = defineFunction3(
   'array_unique',
   [{ name: 'array' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array }) => {
     return [...new Set(array as unknown[])];
   },
@@ -171,9 +229,20 @@ export const array_unique = defineFunction(
   }
 );
 
-export const array_remove = defineFunction(
+export const array_remove = defineFunction3(
   'array_remove',
   [{ name: 'array' }, { name: 'index' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'index', type: typeNumber() },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array, index }) => {
     return (array as unknown[]).filter((_value, i) => index !== i);
   },
@@ -188,9 +257,21 @@ export const array_remove = defineFunction(
   }
 );
 
-export const array_range = defineFunction(
+export const array_range = defineFunction3(
   'array_range',
   [{ name: 'from' }, { name: 'to' }, { name: 'step' }],
+  typeFunction(
+    [
+      {
+        name: 'from',
+        type: typeUnion(typeNumber(), typeNull()),
+      },
+      { name: 'to', type: typeNumber() },
+      { name: 'step', type: typeUnion(typeNumber(), typeNull()) },
+    ],
+    [],
+    typeArray(typeNumber())
+  ),
   (_ctx, { from, to, step }) => {
     const pFrom = from ?? 0;
     const pStep = step ?? 1;
@@ -212,9 +293,20 @@ export const array_range = defineFunction(
   }
 );
 
-export const array_get = defineFunction(
+export const array_get = defineFunction3(
   'array_get',
   [{ name: 'array' }, { name: 'index' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'index', type: typeNumber() },
+    ],
+    ['T'],
+    typeUnion(typeGenericPlaceholder('T'), typeNull())
+  ),
   (_ctx, { array, index }) => {
     return array[index];
   },
@@ -229,9 +321,21 @@ export const array_get = defineFunction(
   }
 );
 
-export const array_set = defineFunction(
+export const array_set = defineFunction3(
   'array_set',
   [{ name: 'array' }, { name: 'index' }, { name: 'value' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'index', type: typeNumber() },
+      { name: 'value', type: typeGenericPlaceholder('T') },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (ctx, { array, index, value }) => {
     array[index] = value;
     ctx.forceRefresh();
@@ -249,9 +353,20 @@ export const array_set = defineFunction(
   }
 );
 
-export const array_join = defineFunction(
+export const array_join = defineFunction3(
   'array_join',
   [{ name: 'array' }, { name: 'separator' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'separator', type: typeString() },
+    ],
+    ['T'],
+    typeString()
+  ),
   (_ctx, { array, separator }) => {
     return array.join(separator);
   },
@@ -266,9 +381,20 @@ export const array_join = defineFunction(
   }
 );
 
-export const array_skip = defineFunction(
+export const array_skip = defineFunction3(
   'array_skip',
   [{ name: 'array' }, { name: 'offset' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'offset', type: typeNumber() },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array, offset }) => {
     return array.slice(offset);
   },
@@ -283,9 +409,20 @@ export const array_skip = defineFunction(
   }
 );
 
-export const array_take = defineFunction(
+export const array_take = defineFunction3(
   'array_take',
   [{ name: 'array' }, { name: 'take' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      { name: 'take', type: typeNumber() },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array, take }) => {
     return array.slice(0, take);
   },
@@ -337,9 +474,36 @@ export const array_filter = defineFunction3(
   }
 );
 
-export const array_find = defineFunction(
+export const array_find = defineFunction3(
   'array_find',
   [{ name: 'array' }, { name: 'predicate' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      {
+        name: 'predicate',
+        type: typeFunction(
+          [
+            {
+              name: 'item',
+              type: typeGenericPlaceholder('T'),
+            },
+            {
+              name: 'index',
+              type: typeNumber(),
+            },
+          ],
+          [],
+          typeBoolean()
+        ),
+      },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (ctx, { array, predicate }) => {
     return (
       (array as any[]).find((it, index) =>
@@ -358,9 +522,36 @@ export const array_find = defineFunction(
   }
 );
 
-export const array_find_index = defineFunction(
+export const array_find_index = defineFunction3(
   'array_find_index',
   [{ name: 'array' }, { name: 'predicate' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      {
+        name: 'predicate',
+        type: typeFunction(
+          [
+            {
+              name: 'item',
+              type: typeGenericPlaceholder('T'),
+            },
+            {
+              name: 'index',
+              type: typeNumber(),
+            },
+          ],
+          [],
+          typeBoolean()
+        ),
+      },
+    ],
+    ['T'],
+    typeUnion(typeGenericPlaceholder('T'), typeNull())
+  ),
   (ctx, { array, predicate }) => {
     const foundIndex = (array as any[]).findIndex((it, index) =>
       ctx.callFunction(predicate, [it, index])
@@ -422,9 +613,27 @@ export const array_map = defineFunction3(
   }
 );
 
-export const array_map_parallel = defineFunction(
+export const array_map_parallel = defineFunction3(
   'array_map_parallel',
   [{ name: 'array' }, { name: 'mapper' }],
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'mapper',
+        type: typeFunction(
+          [
+            { name: 'item', type: typeGenericPlaceholder('T') },
+            { name: 'index', type: typeNumber() },
+          ],
+          [],
+          typeGenericPlaceholder('U')
+        ),
+      },
+    ],
+    ['T', 'U'],
+    typeArray(typeGenericPlaceholder('U'))
+  ),
   undefined,
   async (ctx, { array, mapper }) => {
     return Promise.all(
@@ -444,9 +653,30 @@ export const array_map_parallel = defineFunction(
   }
 );
 
-export const array_flat_map = defineFunction(
+export const array_flat_map = defineFunction3(
   'array_flat_map',
   [{ name: 'array' }, { name: 'mapper' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      {
+        name: 'mapper',
+        type: typeFunction(
+          [
+            { name: 'item', type: typeGenericPlaceholder('T') },
+            { name: 'index', type: typeNumber() },
+          ],
+          [],
+          typeArray(typeGenericPlaceholder('U'))
+        ),
+      },
+    ],
+    ['T', 'U'],
+    typeArray(typeGenericPlaceholder('U'))
+  ),
   (ctx, { array, mapper }) => {
     return (array as any[]).flatMap((it, index) =>
       ctx.callFunction(mapper, [it, index])
@@ -471,9 +701,30 @@ export const array_flat_map = defineFunction(
   }
 );
 
-export const array_sort = defineFunction(
+export const array_sort = defineFunction3(
   'array_sort',
   [{ name: 'array' }, { name: 'comparator' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      {
+        name: 'comparator',
+        type: typeFunction(
+          [
+            { name: 'a', type: typeGenericPlaceholder('T') },
+            { name: 'b', type: typeGenericPlaceholder('T') },
+          ],
+          [],
+          typeNumber()
+        ),
+      },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (ctx, { array, comparator }) => {
     return (array as any[])
       .slice()
@@ -490,9 +741,19 @@ export const array_sort = defineFunction(
   }
 );
 
-export const array_reverse = defineFunction(
+export const array_reverse = defineFunction3(
   'array_reverse',
   [{ name: 'array' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+    ],
+    ['T'],
+    typeArray(typeGenericPlaceholder('T'))
+  ),
   (_ctx, { array }) => {
     return (array as any[]).slice().reverse();
   },
@@ -506,9 +767,30 @@ export const array_reverse = defineFunction(
   }
 );
 
-export const array_reduce = defineFunction(
+export const array_reduce = defineFunction3(
   'array_reduce',
   [{ name: 'array' }, { name: 'reducer' }],
+  typeFunction(
+    [
+      {
+        name: 'array',
+        type: typeArray(typeGenericPlaceholder('T')),
+      },
+      {
+        name: 'reducer',
+        type: typeFunction(
+          [
+            { name: 'previous', type: typeGenericPlaceholder('U') },
+            { name: 'current', type: typeGenericPlaceholder('T') },
+          ],
+          [],
+          typeGenericPlaceholder('U')
+        ),
+      },
+    ],
+    ['T', 'U'],
+    typeGenericPlaceholder('U')
+  ),
   (ctx, { array, reducer }) => {
     return (array as any[]).reduce((previous, current) => {
       return ctx.callFunction(reducer, [previous, current]);

@@ -9,6 +9,7 @@
  [ ] ( ) Show type errors directly in editor
  [ ] ( ) Show type of symbol under mouse pointer
  [ ] ( ) Autocomplete expression at current cursor position
+ [ ] ( ) Avoid close editor when pressing Escape to close code mirror search box
 
 ## Type Checking
 

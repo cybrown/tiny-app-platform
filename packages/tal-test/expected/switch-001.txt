@@ -1,4 +1,12 @@
 (1:9) Unknown symbol: state
+(2:15) Unknown symbol: List
+(2:15) Kind of record must be a function
 (1:9) Unknown symbol: state
+(8:17) Unknown symbol: Editor
+(8:17) Kind of record must be a function
 (1:9) Unknown symbol: state
+(9:18) Unknown symbol: Contact
+(9:18) Kind of record must be a function
+(10:10) Unknown symbol: NotFound
+(10:10) Kind of record must be a function
 () => kinded-record

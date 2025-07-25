@@ -2,17 +2,79 @@
 (12:18) Unknown symbol: http_request
 (20:80) Unknown symbol: string_trim
 (30:28) Unknown symbol: bytes_to_string
+(33:1) Unknown symbol: Column
+(33:1) Kind of record must be a function
+(34:3) Unknown symbol: Row
+(34:3) Kind of record must be a function
+(35:5) Unknown symbol: Box
+(35:5) Kind of record must be a function
+(38:7) Unknown symbol: Select
+(38:7) Kind of record must be a function
+(54:5) Unknown symbol: Box
+(54:5) Kind of record must be a function
+(57:7) Unknown symbol: InputText
+(57:7) Kind of record must be a function
 (66:3) Unknown symbol: array_map
+(100:3) Unknown symbol: Button
+(100:3) Kind of record must be a function
 (101:34) Unknown symbol: array_append
+(111:3) Unknown symbol: Button
+(111:3) Kind of record must be a function
 (113:36) Unknown symbol: array_append
+(116:3) Unknown symbol: InputText
+(116:3) Kind of record must be a function
+(122:3) Unknown symbol: Button
+(122:3) Kind of record must be a function
 (128:34) Unknown symbol: array_filter
 (131:11) Incompatible types for binary operator string != null
+(132:9) Unknown symbol: Text
+(132:9) Kind of record must be a function
 (135:16) Unknown symbol: string_format
 (148:11) Incompatible types for binary operator string != null
+(149:9) Unknown symbol: Text
+(149:9) Kind of record must be a function
 (152:16) Unknown symbol: string_format
+(172:5) Unknown symbol: Column
+(172:5) Kind of record must be a function
+(173:7) Unknown symbol: Row
+(173:7) Kind of record must be a function
+(174:9) Unknown symbol: Text
+(174:9) Kind of record must be a function
 (175:17) Unknown symbol: string_format
+(182:7) Unknown symbol: Row
+(182:7) Kind of record must be a function
+(183:9) Unknown symbol: Text
+(183:9) Kind of record must be a function
+(184:9) Unknown symbol: Switch
+(184:9) Kind of record must be a function
+(188:9) Unknown symbol: Column
+(188:9) Kind of record must be a function
+(191:11) Unknown symbol: Text
+(191:11) Kind of record must be a function
+(193:11) Unknown symbol: Table
+(193:11) Kind of record must be a function
 (197:30) Implicit parameter row, expected parameters: unknown parameter list
+(197:39) Unknown symbol: Text
+(197:39) Kind of record must be a function
 (202:30) Implicit parameter row, expected parameters: unknown parameter list
+(202:39) Unknown symbol: Text
+(202:39) Kind of record must be a function
 (207:18) Unknown symbol: array_map
+(212:7) Unknown symbol: Row
+(212:7) Kind of record must be a function
+(213:9) Unknown symbol: Text
+(213:9) Kind of record must be a function
+(215:9) Unknown symbol: Select
+(215:9) Kind of record must be a function
+(227:9) Unknown symbol: Text
+(227:9) Kind of record must be a function
+(228:9) Unknown symbol: Switch
+(228:9) Kind of record must be a function
+(231:7) Unknown symbol: Box
+(231:7) Kind of record must be a function
+(235:11) Unknown symbol: Debug
+(235:11) Kind of record must be a function
 (236:41) Unknown symbol: json_parse
+(240:11) Unknown symbol: Snippet
+(240:11) Kind of record must be a function
 () => kinded-record

@@ -1,0 +1,1766 @@
+<program>
+  <comment>
+    <declarelocal>
+      <function>
+        <block>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+        </block>
+      </function>
+    </declarelocal>
+  </comment>
+  <declarelocal>
+    <function>
+      <block>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <call>
+                  <local />
+                  <literal />
+                </call>
+              </function>
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <call>
+                  <local />
+                  <literal />
+                </call>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <call>
+                  <local />
+                  <literal />
+                </call>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <array>
+                  <literal />
+                  <literal />
+                  <literal />
+                </array>
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <call>
+                <local />
+                <local />
+              </call>
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <array>
+            <literal />
+            <literal />
+            <record>
+              <recordentry>
+                <literal />
+              </recordentry>
+              <recordentry>
+                <literal />
+              </recordentry>
+            </record>
+          </array>
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <binaryoperator>
+                <literal />
+                <local />
+              </binaryoperator>
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <pipe>
+              <local />
+              <call>
+                <local />
+                <function>
+                  <kindedrecord>
+                    <local />
+                    <kindedrecordentry>
+                      <local />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <local />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <local />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <if>
+                        <binaryoperator>
+                          <call>
+                            <local />
+                            <local />
+                          </call>
+                          <literal />
+                        </binaryoperator>
+                        <block>
+                          <attribute>
+                            <local />
+                          </attribute>
+                        </block>
+                        <block>
+                          <local />
+                        </block>
+                      </if>
+                    </kindedrecordentry>
+                  </kindedrecord>
+                </function>
+              </call>
+            </pipe>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <pipe>
+              <local />
+              <call>
+                <local />
+                <function>
+                  <kindedrecord>
+                    <local />
+                    <kindedrecordentry>
+                      <local />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <local />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <local />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <literal />
+                    </kindedrecordentry>
+                    <kindedrecordentry>
+                      <if>
+                        <binaryoperator>
+                          <call>
+                            <local />
+                            <local />
+                          </call>
+                          <literal />
+                        </binaryoperator>
+                        <block>
+                          <attribute>
+                            <local />
+                          </attribute>
+                        </block>
+                        <block>
+                          <local />
+                        </block>
+                      </if>
+                    </kindedrecordentry>
+                  </kindedrecord>
+                </function>
+              </call>
+            </pipe>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <array>
+            <record>
+              <recordentry>
+                <literal />
+              </recordentry>
+              <recordentry>
+                <literal />
+              </recordentry>
+            </record>
+            <record>
+              <recordentry>
+                <literal />
+              </recordentry>
+              <recordentry>
+                <literal />
+              </recordentry>
+            </record>
+            <record>
+              <recordentry>
+                <literal />
+              </recordentry>
+              <recordentry>
+                <literal />
+              </recordentry>
+            </record>
+            <record>
+              <recordentry>
+                <literal />
+              </recordentry>
+              <recordentry>
+                <literal />
+              </recordentry>
+              <recordentry>
+                <literal />
+              </recordentry>
+            </record>
+          </array>
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <function>
+                <attribute>
+                  <local />
+                </attribute>
+              </function>
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <array>
+                <record>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                  <recordentry>
+                    <function>
+                      <kindedrecord>
+                        <local />
+                        <kindedrecordentry>
+                          <attribute>
+                            <local />
+                          </attribute>
+                        </kindedrecordentry>
+                      </kindedrecord>
+                    </function>
+                  </recordentry>
+                  <recordentry>
+                    <local />
+                  </recordentry>
+                </record>
+                <record>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                  <recordentry>
+                    <function>
+                      <kindedrecord>
+                        <local />
+                        <kindedrecordentry>
+                          <attribute>
+                            <local />
+                          </attribute>
+                        </kindedrecordentry>
+                      </kindedrecord>
+                    </function>
+                  </recordentry>
+                </record>
+              </array>
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <array>
+                <literal />
+                <record>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                  <recordentry>
+                    <function>
+                      <kindedrecord>
+                        <local />
+                        <kindedrecordentry>
+                          <binaryoperator>
+                            <attribute>
+                              <local />
+                            </attribute>
+                            <literal />
+                          </binaryoperator>
+                        </kindedrecordentry>
+                      </kindedrecord>
+                    </function>
+                  </recordentry>
+                </record>
+              </array>
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <array>
+                <record>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                </record>
+                <record>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                  <recordentry>
+                    <literal />
+                  </recordentry>
+                </record>
+              </array>
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <if>
+                <local />
+                <block>
+                  <kindedrecord>
+                    <local />
+                    <pipe>
+                      <kindedrecord>
+                        <local />
+                      </kindedrecord>
+                      <call>
+                        <local />
+                        <literal />
+                      </call>
+                    </pipe>
+                    <kindedrecord>
+                      <local />
+                      <kindedrecordentry>
+                        <literal />
+                      </kindedrecordentry>
+                      <kindedrecordentry>
+                        <literal />
+                      </kindedrecordentry>
+                    </kindedrecord>
+                  </kindedrecord>
+                </block>
+                <block>
+                  <literal />
+                </block>
+              </if>
+            </kindedrecordentry>
+          </kindedrecord>
+          <switch>
+            <local />
+            <literal />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <literal />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </switch>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <literal />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <function>
+                  <assign>
+                    <local />
+                    <call>
+                      <local />
+                      <local />
+                    </call>
+                  </assign>
+                </function>
+              </kindedrecordentry>
+            </kindedrecord>
+            <literal />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <function>
+                  <assign>
+                    <local />
+                    <call>
+                      <local />
+                      <local />
+                    </call>
+                  </assign>
+                </function>
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <local />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <declarelocal>
+        </declarelocal>
+        <declarelocal>
+        </declarelocal>
+        <declarelocal>
+        </declarelocal>
+        <declarelocal>
+          <literal />
+        </declarelocal>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+            <kindedrecord>
+              <local />
+              <kindedrecordentry>
+                <local />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+              <kindedrecordentry>
+                <literal />
+              </kindedrecordentry>
+            </kindedrecord>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <block>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                </block>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <block>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                </block>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <block>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                </block>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <block>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                  <assign>
+                    <local />
+                    <literal />
+                  </assign>
+                </block>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+          <if>
+            <local />
+            <block>
+              <kindedrecord>
+                <local />
+                <kindedrecord>
+                  <local />
+                  <kindedrecordentry>
+                    <literal />
+                  </kindedrecordentry>
+                </kindedrecord>
+                <kindedrecord>
+                  <local />
+                  <kindedrecordentry>
+                    <literal />
+                  </kindedrecordentry>
+                </kindedrecord>
+                <kindedrecordentry>
+                  <local />
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <local />
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <literal />
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <function>
+                    <assign>
+                      <local />
+                      <literal />
+                    </assign>
+                  </function>
+                </kindedrecordentry>
+                <kindedrecordentry>
+                  <local />
+                </kindedrecordentry>
+              </kindedrecord>
+            </block>
+          </if>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <function>
+                <call>
+                  <local />
+                </call>
+              </function>
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <declarelocal>
+    <function>
+      <block>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+          <kindedrecord>
+            <local />
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+            <kindedrecordentry>
+              <literal />
+            </kindedrecordentry>
+          </kindedrecord>
+        </kindedrecord>
+      </block>
+    </function>
+  </declarelocal>
+  <kindedrecord>
+    <local />
+    <kindedrecord>
+      <local />
+      <kindedrecordentry>
+        <literal />
+      </kindedrecordentry>
+    </kindedrecord>
+    <declarelocal>
+      <literal />
+    </declarelocal>
+    <declarelocal>
+      <array>
+        <literal />
+        <literal />
+        <literal />
+        <literal />
+        <literal />
+        <literal />
+        <literal />
+        <literal />
+      </array>
+    </declarelocal>
+    <kindedrecord>
+      <local />
+      <kindedrecord>
+        <local />
+        <kindedrecord>
+          <local />
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecordentry>
+            <local />
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <function>
+              <block>
+                <assign>
+                  <local />
+                  <local />
+                </assign>
+                <call>
+                  <local />
+                  <literal />
+                  <local />
+                </call>
+              </block>
+            </function>
+          </kindedrecordentry>
+          <kindedrecordentry>
+            <local />
+          </kindedrecordentry>
+        </kindedrecord>
+      </kindedrecord>
+      <kindedrecord>
+        <local />
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecord>
+          <local />
+          <kindedrecord>
+            <local />
+          </kindedrecord>
+          <kindedrecordentry>
+            <literal />
+          </kindedrecordentry>
+        </kindedrecord>
+        <kindedrecordentry>
+          <literal />
+        </kindedrecordentry>
+      </kindedrecord>
+    </kindedrecord>
+    <kindedrecordentry>
+      <literal />
+    </kindedrecordentry>
+  </kindedrecord>
+</program>

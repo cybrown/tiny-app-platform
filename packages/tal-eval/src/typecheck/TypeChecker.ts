@@ -449,17 +449,22 @@ export class TypeChecker {
           this.check(node.kindOfRecord)
         );
 
-        if (!isAssignableToFunction(kindType2)) {
+        if (kindType2.kind == 'any' || kindType2.kind != 'function') {
           this.defError(node, 'Kind of record must be a function');
-        }
 
-        if (kindType2.kind == 'any') {
-          return this.defType(node, typeAnyBecauseOfAny());
-        }
-
-        if (kindType2.kind != 'function') {
-          this.defError(node, 'Kind of record must be a function');
-          return typeAnyAfterError();
+          // Even if the callee is not a kinded object, we can still check the props
+          // and the children
+          for (const entry of node.entries) {
+            if (Array.isArray(entry.value)) {
+              this.checkArray(entry.value);
+            } else {
+              this.check(entry.value);
+            }
+          }
+          for (const child of node.children) {
+            this.check(child);
+          }
+          return typeKindedRecord();
         }
 
         this.symbolTable.push();
@@ -478,7 +483,11 @@ export class TypeChecker {
           this.symbolTable
         );
 
-        const expectedKeys = new Set(kindType.parameters.filter(p => !isNullable(p.type)).map((p) => p.name));
+        const expectedKeys = new Set(
+          kindType.parameters
+            .filter((p) => !isNullable(p.type))
+            .map((p) => p.name)
+        );
 
         for (let child of node.children) {
           this.check(child);
@@ -540,10 +549,7 @@ export class TypeChecker {
         }
 
         for (const expectedKey of expectedKeys) {
-          this.defError(
-            node,
-            `Missing non nullable prop: ${expectedKey}`
-          );
+          this.defError(node, `Missing non nullable prop: ${expectedKey}`);
         }
 
         this.symbolTable.pop();

@@ -1,0 +1,4397 @@
+[
+  {
+    "kind": "Comment",
+    "text": "set_system_property(\"theme\", \"toy-box\")",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "Title",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Block",
+          "children": [
+            {
+              "kind": "KindedRecord",
+              "kindOfRecord": {
+                "kind": "Local",
+                "name": "Text"
+              },
+              "children": [],
+              "entries": [
+                {
+                  "kind": "KindedRecordEntry",
+                  "key": "text",
+                  "value": {
+                    "kind": "Local",
+                    "name": "text"
+                  }
+                },
+                {
+                  "kind": "KindedRecordEntry",
+                  "key": "align",
+                  "value": "center"
+                },
+                {
+                  "kind": "KindedRecordEntry",
+                  "key": "weight",
+                  "value": "light"
+                },
+                {
+                  "kind": "KindedRecordEntry",
+                  "key": "size",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "text",
+            "type": {
+              "kind": "named",
+              "name": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryText",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Text"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Simple text"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Underline"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "line",
+                    "value": "under"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Overline"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "line",
+                    "value": "over"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Strike through"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "line",
+                    "value": "through"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "A little bigger"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": 1.1
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "And bold"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": 1.1
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "weight",
+                    "value": "bold"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Bigger and light"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": 1.5
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "weight",
+                    "value": "light"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "With a different color"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": 1.5
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "weight",
+                    "value": "light"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "color",
+                    "value": "teal"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Centered !"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": 1.5
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "weight",
+                    "value": "light"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "color",
+                    "value": "teal"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "align",
+                    "value": "center"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "copy",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Preformated !"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "preformatted",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Text"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "text",
+                        "value": "Preformated inside Row !"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "preformatted",
+                        "value": true
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryInputText",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value",
+            "value": ""
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "InputText"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "With placeholder"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "multiline",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "With placeholder"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "InputText"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "multiline",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": true
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryCheckbox",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value",
+            "value": false
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "CheckBox Switch"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "CheckBox"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "primary"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Switch"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "primary"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "CheckBox"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "disabled",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "primary disabled"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Switch"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "disabled",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "primary disabled"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "CheckBox"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "secondary",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "secondary"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Switch"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "secondary",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "secondary"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "CheckBox"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "disabled",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "secondary",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "secondary disabled"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Switch"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "disabled",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "secondary",
+                        "value": true
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "secondary disabled"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryButton",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "disabled",
+            "value": false
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Button"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Switch"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "Disabled"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Click me"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Confirm"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "confirm",
+                    "value": "Are you sure ?"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Call",
+                        "args": [
+                          {
+                            "kind": "PositionalArgument",
+                            "value": "Confirmed !"
+                          }
+                        ],
+                        "value": {
+                          "kind": "Local",
+                          "name": "log"
+                        }
+                      },
+                      "parameters": []
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Secondary"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "secondary",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Outline"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "outline",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Outline Secondary"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "secondary",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "outline",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Link"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "link",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Call",
+                        "args": [
+                          {
+                            "kind": "PositionalArgument",
+                            "value": "link click"
+                          }
+                        ],
+                        "value": {
+                          "kind": "Local",
+                          "name": "log"
+                        }
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Link Secondary"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "secondary",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "link",
+                    "value": true
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Call",
+                        "args": [
+                          {
+                            "kind": "PositionalArgument",
+                            "value": "link click secondary"
+                          }
+                        ],
+                        "value": {
+                          "kind": "Local",
+                          "name": "log"
+                        }
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryLink",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value",
+            "value": false
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Link"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Link"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "url",
+                    "value": "https://www.example.com"
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryPager",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "currentPage",
+            "value": 1
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "showPrevNext",
+            "value": true
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "disabled",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "size",
+            "value": "2"
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Pager"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Switch"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "showPrevNext"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "showPrevNext"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Switch"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "disabled"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Select"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "options",
+                        "value": {
+                          "kind": "Array",
+                          "value": [
+                            "2",
+                            "3",
+                            "4"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Text"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "text",
+                        "value": "size"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Pager"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "max",
+                    "value": 100
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "perPage",
+                    "value": 10
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "currentPage"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "showPrevNext",
+                    "value": {
+                      "kind": "Local",
+                      "name": "showPrevNext"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": {
+                      "kind": "Call",
+                      "args": [
+                        {
+                          "kind": "PositionalArgument",
+                          "value": {
+                            "kind": "Local",
+                            "name": "size"
+                          }
+                        }
+                      ],
+                      "value": {
+                        "kind": "Local",
+                        "name": "string_to_number"
+                      }
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GallerySelect",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "values",
+            "value": {
+              "kind": "Array",
+              "value": [
+                "Red",
+                "Green",
+                {
+                  "kind": "Record",
+                  "entries": [
+                    {
+                      "kind": "RecordEntry",
+                      "key": "value",
+                      "value": "#00F"
+                    },
+                    {
+                      "kind": "RecordEntry",
+                      "key": "label",
+                      "value": "Blue"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value",
+            "value": "Red"
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value2"
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "disabled",
+            "value": false
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Select Radio"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Switch"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "Disabled"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Select"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Local",
+                      "name": "values"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "Color"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Select"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Local",
+                      "name": "values"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "Color"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": {
+                      "kind": "BinaryOperator",
+                      "operator": "+",
+                      "right": {
+                        "kind": "Local",
+                        "name": "value"
+                      },
+                      "left": "Selected: "
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Select"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Local",
+                      "name": "values"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "Color"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Select"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Local",
+                      "name": "values"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "placeholder",
+                    "value": "Color"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value2"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "disabled",
+                    "value": {
+                      "kind": "Local",
+                      "name": "disabled"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "Pipe",
+                    "first": {
+                      "kind": "Local",
+                      "name": "values"
+                    },
+                    "values": [
+                      {
+                        "kind": "Call",
+                        "args": [
+                          {
+                            "kind": "PositionalArgument",
+                            "value": {
+                              "kind": "Function",
+                              "body": {
+                                "kind": "KindedRecord",
+                                "kindOfRecord": {
+                                  "kind": "Local",
+                                  "name": "Radio"
+                                },
+                                "children": [],
+                                "entries": [
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "option",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "option"
+                                    }
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "bindTo",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "value"
+                                    }
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "disabled",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "disabled"
+                                    }
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "label",
+                                    "value": {
+                                      "kind": "If",
+                                      "condition": {
+                                        "kind": "BinaryOperator",
+                                        "operator": "==",
+                                        "right": "record",
+                                        "left": {
+                                          "kind": "Call",
+                                          "args": [
+                                            {
+                                              "kind": "PositionalArgument",
+                                              "value": {
+                                                "kind": "Local",
+                                                "name": "option"
+                                              }
+                                            }
+                                          ],
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "typeof"
+                                          }
+                                        }
+                                      },
+                                      "ifTrue": {
+                                        "kind": "Block",
+                                        "children": [
+                                          {
+                                            "kind": "Attribute",
+                                            "key": "label",
+                                            "value": {
+                                              "kind": "Local",
+                                              "name": "option"
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "ifFalse": {
+                                        "kind": "Block",
+                                        "children": [
+                                          {
+                                            "kind": "Local",
+                                            "name": "option"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              },
+                              "parameters": [
+                                {
+                                  "name": "option"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "value": {
+                          "kind": "Local",
+                          "name": "array_map"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "Pipe",
+                    "first": {
+                      "kind": "Local",
+                      "name": "values"
+                    },
+                    "values": [
+                      {
+                        "kind": "Call",
+                        "args": [
+                          {
+                            "kind": "PositionalArgument",
+                            "value": {
+                              "kind": "Function",
+                              "body": {
+                                "kind": "KindedRecord",
+                                "kindOfRecord": {
+                                  "kind": "Local",
+                                  "name": "Radio"
+                                },
+                                "children": [],
+                                "entries": [
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "option",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "option"
+                                    }
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "bindTo",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "value"
+                                    }
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "disabled",
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "disabled"
+                                    }
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "secondary",
+                                    "value": true
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "label",
+                                    "value": {
+                                      "kind": "If",
+                                      "condition": {
+                                        "kind": "BinaryOperator",
+                                        "operator": "==",
+                                        "right": "record",
+                                        "left": {
+                                          "kind": "Call",
+                                          "args": [
+                                            {
+                                              "kind": "PositionalArgument",
+                                              "value": {
+                                                "kind": "Local",
+                                                "name": "option"
+                                              }
+                                            }
+                                          ],
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "typeof"
+                                          }
+                                        }
+                                      },
+                                      "ifTrue": {
+                                        "kind": "Block",
+                                        "children": [
+                                          {
+                                            "kind": "Attribute",
+                                            "key": "label",
+                                            "value": {
+                                              "kind": "Local",
+                                              "name": "option"
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "ifFalse": {
+                                        "kind": "Block",
+                                        "children": [
+                                          {
+                                            "kind": "Local",
+                                            "name": "option"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                ]
+                              },
+                              "parameters": [
+                                {
+                                  "name": "option"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "value": {
+                          "kind": "Local",
+                          "name": "array_map"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryTable",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "useRemaining",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "noHeader",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "striped",
+            "value": true
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "noHighlight",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "bordered",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": false,
+            "name": "data",
+            "value": {
+              "kind": "Array",
+              "value": [
+                {
+                  "kind": "Record",
+                  "entries": [
+                    {
+                      "kind": "RecordEntry",
+                      "key": "name",
+                      "value": "Toto"
+                    },
+                    {
+                      "kind": "RecordEntry",
+                      "key": "age",
+                      "value": "32"
+                    }
+                  ]
+                },
+                {
+                  "kind": "Record",
+                  "entries": [
+                    {
+                      "kind": "RecordEntry",
+                      "key": "name",
+                      "value": "Tata"
+                    },
+                    {
+                      "kind": "RecordEntry",
+                      "key": "age",
+                      "value": "40"
+                    }
+                  ]
+                },
+                {
+                  "kind": "Record",
+                  "entries": [
+                    {
+                      "kind": "RecordEntry",
+                      "key": "name",
+                      "value": "Titi"
+                    },
+                    {
+                      "kind": "RecordEntry",
+                      "key": "age",
+                      "value": "13"
+                    }
+                  ]
+                },
+                {
+                  "kind": "Record",
+                  "entries": [
+                    {
+                      "kind": "RecordEntry",
+                      "key": "name",
+                      "value": "Tutu"
+                    },
+                    {
+                      "kind": "RecordEntry",
+                      "key": "age",
+                      "value": "132"
+                    },
+                    {
+                      "kind": "RecordEntry",
+                      "key": "secret",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Table"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "CheckBox"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "useRemaining"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "Name column must use remaining space"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "CheckBox"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHeader"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "No header"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "CheckBox"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "striped"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "Striped"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "CheckBox"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHighlight"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "No Highlight"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "CheckBox"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "bordered"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "Bordered"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Table"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "_key",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Attribute",
+                        "key": "name",
+                        "value": {
+                          "kind": "Local",
+                          "name": "row"
+                        }
+                      },
+                      "parameters": [
+                        {
+                          "name": "row"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "noHeader",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHeader"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "striped",
+                    "value": {
+                      "kind": "Local",
+                      "name": "striped"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "noHighlight",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHighlight"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bordered",
+                    "value": {
+                      "kind": "Local",
+                      "name": "bordered"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "columns",
+                    "value": {
+                      "kind": "Array",
+                      "value": [
+                        {
+                          "kind": "Record",
+                          "entries": [
+                            {
+                              "kind": "RecordEntry",
+                              "key": "description",
+                              "value": "Name"
+                            },
+                            {
+                              "kind": "RecordEntry",
+                              "key": "display",
+                              "value": {
+                                "kind": "Function",
+                                "body": {
+                                  "kind": "KindedRecord",
+                                  "kindOfRecord": {
+                                    "kind": "Local",
+                                    "name": "Text"
+                                  },
+                                  "children": [],
+                                  "entries": [
+                                    {
+                                      "kind": "KindedRecordEntry",
+                                      "key": "text",
+                                      "value": {
+                                        "kind": "Attribute",
+                                        "key": "name",
+                                        "value": {
+                                          "kind": "Local",
+                                          "name": "row"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "parameters": [
+                                  {
+                                    "name": "row"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "RecordEntry",
+                              "key": "useRemaining",
+                              "value": {
+                                "kind": "Local",
+                                "name": "useRemaining"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "Record",
+                          "entries": [
+                            {
+                              "kind": "RecordEntry",
+                              "key": "description",
+                              "value": "Age"
+                            },
+                            {
+                              "kind": "RecordEntry",
+                              "key": "display",
+                              "value": {
+                                "kind": "Function",
+                                "body": {
+                                  "kind": "KindedRecord",
+                                  "kindOfRecord": {
+                                    "kind": "Local",
+                                    "name": "Text"
+                                  },
+                                  "children": [],
+                                  "entries": [
+                                    {
+                                      "kind": "KindedRecordEntry",
+                                      "key": "text",
+                                      "value": {
+                                        "kind": "Attribute",
+                                        "key": "age",
+                                        "value": {
+                                          "kind": "Local",
+                                          "name": "row"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "parameters": [
+                                  {
+                                    "name": "row"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "values",
+                    "value": {
+                      "kind": "Local",
+                      "name": "data"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Table"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "values",
+                    "value": {
+                      "kind": "Local",
+                      "name": "data"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "noHeader",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHeader"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "noHighlight",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHighlight"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bordered",
+                    "value": {
+                      "kind": "Local",
+                      "name": "bordered"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "striped",
+                    "value": {
+                      "kind": "Local",
+                      "name": "striped"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Table"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "noHeader",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHeader"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "noHighlight",
+                    "value": {
+                      "kind": "Local",
+                      "name": "noHighlight"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "striped",
+                    "value": {
+                      "kind": "Local",
+                      "name": "striped"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bordered",
+                    "value": {
+                      "kind": "Local",
+                      "name": "bordered"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "columns",
+                    "value": {
+                      "kind": "Array",
+                      "value": [
+                        "name",
+                        {
+                          "kind": "Record",
+                          "entries": [
+                            {
+                              "kind": "RecordEntry",
+                              "key": "description",
+                              "value": "Age"
+                            },
+                            {
+                              "kind": "RecordEntry",
+                              "key": "display",
+                              "value": {
+                                "kind": "Function",
+                                "body": {
+                                  "kind": "KindedRecord",
+                                  "kindOfRecord": {
+                                    "kind": "Local",
+                                    "name": "Text"
+                                  },
+                                  "children": [],
+                                  "entries": [
+                                    {
+                                      "kind": "KindedRecordEntry",
+                                      "key": "text",
+                                      "value": {
+                                        "kind": "BinaryOperator",
+                                        "operator": "+",
+                                        "right": " years old",
+                                        "left": {
+                                          "kind": "Attribute",
+                                          "key": "age",
+                                          "value": {
+                                            "kind": "Local",
+                                            "name": "row"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                "parameters": [
+                                  {
+                                    "name": "row"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "values",
+                    "value": {
+                      "kind": "Local",
+                      "name": "data"
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryTabs",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "currentTab",
+            "value": "first"
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "hasAfter",
+            "value": false
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Tabs"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Switch"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "hasAfter"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "label",
+                    "value": "Has after"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Tabs"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "bindTo",
+                    "value": {
+                      "kind": "Local",
+                      "name": "currentTab"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Array",
+                      "value": [
+                        {
+                          "kind": "Record",
+                          "entries": [
+                            {
+                              "kind": "RecordEntry",
+                              "key": "label",
+                              "value": "First tab"
+                            },
+                            {
+                              "kind": "RecordEntry",
+                              "key": "value",
+                              "value": "first"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "Record",
+                          "entries": [
+                            {
+                              "kind": "RecordEntry",
+                              "key": "label",
+                              "value": "Second tab"
+                            },
+                            {
+                              "kind": "RecordEntry",
+                              "key": "value",
+                              "value": "second"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "after",
+                    "value": {
+                      "kind": "If",
+                      "condition": {
+                        "kind": "Local",
+                        "name": "hasAfter"
+                      },
+                      "ifTrue": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "KindedRecord",
+                            "kindOfRecord": {
+                              "kind": "Local",
+                              "name": "Row"
+                            },
+                            "children": [
+                              {
+                                "kind": "Pipe",
+                                "first": {
+                                  "kind": "KindedRecord",
+                                  "kindOfRecord": {
+                                    "kind": "Local",
+                                    "name": "View"
+                                  },
+                                  "children": [],
+                                  "entries": []
+                                },
+                                "values": [
+                                  {
+                                    "kind": "Call",
+                                    "args": [
+                                      {
+                                        "kind": "PositionalArgument",
+                                        "value": 1
+                                      }
+                                    ],
+                                    "value": {
+                                      "kind": "Local",
+                                      "name": "flex"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "KindedRecord",
+                                "kindOfRecord": {
+                                  "kind": "Local",
+                                  "name": "Button"
+                                },
+                                "children": [],
+                                "entries": [
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "text",
+                                    "value": "After"
+                                  },
+                                  {
+                                    "kind": "KindedRecordEntry",
+                                    "key": "outline",
+                                    "value": true
+                                  }
+                                ]
+                              }
+                            ],
+                            "entries": []
+                          }
+                        ]
+                      },
+                      "ifFalse": {
+                        "kind": "Block",
+                        "children": [
+                          null
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "Switch",
+                "value": {
+                  "kind": "Local",
+                  "name": "currentTab"
+                },
+                "branches": [
+                  {
+                    "kind": "SwitchBranch",
+                    "comparator": "first",
+                    "value": {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": "First tab"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "SwitchBranch",
+                    "comparator": "second",
+                    "value": {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Text"
+                      },
+                      "children": [],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "text",
+                          "value": "Second tab"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "defaultBranch": null
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryLoader",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "value",
+            "value": 4
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "max",
+            "value": 10
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "primary",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "secondary",
+            "value": false
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "size",
+            "value": "md"
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Loader"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Switch"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "Primary"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "primary"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Switch"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "Secondary"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "secondary"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Radio"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "sm"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "option",
+                        "value": "sm"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Radio"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "md"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "option",
+                        "value": "md"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Radio"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "lg"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "option",
+                        "value": "lg"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Loader"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "primary",
+                    "value": {
+                      "kind": "Local",
+                      "name": "primary"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "secondary",
+                    "value": {
+                      "kind": "Local",
+                      "name": "secondary"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": {
+                      "kind": "Local",
+                      "name": "size"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  "Value:",
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "InputText"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "value",
+                        "value": {
+                          "kind": "Local",
+                          "name": "value"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "onChange",
+                        "value": {
+                          "kind": "Function",
+                          "body": {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "value"
+                            },
+                            "value": {
+                              "kind": "Call",
+                              "args": [
+                                {
+                                  "kind": "PositionalArgument",
+                                  "value": {
+                                    "kind": "Local",
+                                    "name": "newValue"
+                                  }
+                                }
+                              ],
+                              "value": {
+                                "kind": "Local",
+                                "name": "string_to_number"
+                              }
+                            }
+                          },
+                          "parameters": [
+                            {
+                              "name": "newValue"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "Max:",
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "InputText"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "value",
+                        "value": {
+                          "kind": "Local",
+                          "name": "max"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "onChange",
+                        "value": {
+                          "kind": "Function",
+                          "body": {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "max"
+                            },
+                            "value": {
+                              "kind": "Call",
+                              "args": [
+                                {
+                                  "kind": "PositionalArgument",
+                                  "value": {
+                                    "kind": "Local",
+                                    "name": "newValue"
+                                  }
+                                }
+                              ],
+                              "value": {
+                                "kind": "Local",
+                                "name": "string_to_number"
+                              }
+                            }
+                          },
+                          "parameters": [
+                            {
+                              "name": "newValue"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Loader"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "primary",
+                    "value": {
+                      "kind": "Local",
+                      "name": "primary"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "secondary",
+                    "value": {
+                      "kind": "Local",
+                      "name": "secondary"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "size",
+                    "value": {
+                      "kind": "Local",
+                      "name": "size"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "max",
+                    "value": {
+                      "kind": "Local",
+                      "name": "max"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "value",
+                    "value": {
+                      "kind": "Local",
+                      "name": "value"
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryOverlay",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "showOverlay"
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "position"
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "modal"
+          },
+          {
+            "kind": "DeclareLocal",
+            "mutable": true,
+            "name": "size",
+            "value": "m"
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Overlay"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Row"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Text"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "text",
+                        "value": "Size"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Radio"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "option",
+                        "value": "m"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "m"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Radio"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "option",
+                        "value": "l"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "l"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "Radio"
+                    },
+                    "children": [],
+                    "entries": [
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "bindTo",
+                        "value": {
+                          "kind": "Local",
+                          "name": "size"
+                        }
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "option",
+                        "value": "xl"
+                      },
+                      {
+                        "kind": "KindedRecordEntry",
+                        "key": "label",
+                        "value": "xl"
+                      }
+                    ]
+                  }
+                ],
+                "entries": []
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Show Dialog"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "position"
+                            },
+                            "value": "center"
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "modal"
+                            },
+                            "value": false
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "showOverlay"
+                            },
+                            "value": true
+                          }
+                        ]
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Show Modal"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "position"
+                            },
+                            "value": "center"
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "modal"
+                            },
+                            "value": true
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "showOverlay"
+                            },
+                            "value": true
+                          }
+                        ]
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Show Drawer Left"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "position"
+                            },
+                            "value": "left"
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "modal"
+                            },
+                            "value": true
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "showOverlay"
+                            },
+                            "value": true
+                          }
+                        ]
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Show Drawer Bottom"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "position"
+                            },
+                            "value": "bottom"
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "modal"
+                            },
+                            "value": true
+                          },
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "showOverlay"
+                            },
+                            "value": true
+                          }
+                        ]
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "If",
+                "condition": {
+                  "kind": "Local",
+                  "name": "showOverlay"
+                },
+                "ifTrue": {
+                  "kind": "Block",
+                  "children": [
+                    {
+                      "kind": "KindedRecord",
+                      "kindOfRecord": {
+                        "kind": "Local",
+                        "name": "Overlay"
+                      },
+                      "children": [
+                        {
+                          "kind": "KindedRecord",
+                          "kindOfRecord": {
+                            "kind": "Local",
+                            "name": "Text"
+                          },
+                          "children": [],
+                          "entries": [
+                            {
+                              "kind": "KindedRecordEntry",
+                              "key": "text",
+                              "value": "Overlay content"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "KindedRecord",
+                          "kindOfRecord": {
+                            "kind": "Local",
+                            "name": "Text"
+                          },
+                          "children": [],
+                          "entries": [
+                            {
+                              "kind": "KindedRecordEntry",
+                              "key": "text",
+                              "value": "Press on the backdrop to close it"
+                            }
+                          ]
+                        }
+                      ],
+                      "entries": [
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "position",
+                          "value": {
+                            "kind": "Local",
+                            "name": "position"
+                          }
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "modal",
+                          "value": {
+                            "kind": "Local",
+                            "name": "modal"
+                          }
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "title",
+                          "value": "Title here"
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "onClose",
+                          "value": {
+                            "kind": "Function",
+                            "body": {
+                              "kind": "Assign",
+                              "address": {
+                                "kind": "Local",
+                                "name": "showOverlay"
+                              },
+                              "value": false
+                            },
+                            "parameters": []
+                          }
+                        },
+                        {
+                          "kind": "KindedRecordEntry",
+                          "key": "size",
+                          "value": {
+                            "kind": "Local",
+                            "name": "size"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GalleryErrorHandling",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Error handling"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Button"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Trigger error"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onClick",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Call",
+                        "args": [],
+                        "value": {
+                          "kind": "Local",
+                          "name": "unknown_function"
+                        }
+                      },
+                      "parameters": []
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "GallerySnippet",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Column"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Title"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Snippet"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Snippet"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "language",
+                    "value": "javascript"
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "console.log('Hello, World !')"
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  {
+    "kind": "KindedRecord",
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "Column"
+    },
+    "children": [
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Debug"
+        },
+        "children": [],
+        "entries": [
+          {
+            "kind": "KindedRecordEntry",
+            "key": "value",
+            "value": "Debug enabled !"
+          }
+        ]
+      },
+      {
+        "kind": "DeclareLocal",
+        "mutable": true,
+        "name": "currentTheme",
+        "value": "toy-box"
+      },
+      {
+        "kind": "DeclareLocal",
+        "mutable": false,
+        "name": "themes",
+        "value": {
+          "kind": "Array",
+          "value": [
+            "html",
+            "toy-box",
+            "twbs",
+            "twbs-dark",
+            "nes-css",
+            "dark-orange",
+            "98",
+            "mozaic-lm"
+          ]
+        }
+      },
+      {
+        "kind": "KindedRecord",
+        "kindOfRecord": {
+          "kind": "Local",
+          "name": "Column"
+        },
+        "children": [
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Row"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Text"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "text",
+                    "value": "Change theme: "
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "Select"
+                },
+                "children": [],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "value",
+                    "value": {
+                      "kind": "Local",
+                      "name": "currentTheme"
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "onChange",
+                    "value": {
+                      "kind": "Function",
+                      "body": {
+                        "kind": "Block",
+                        "children": [
+                          {
+                            "kind": "Assign",
+                            "address": {
+                              "kind": "Local",
+                              "name": "currentTheme"
+                            },
+                            "value": {
+                              "kind": "Local",
+                              "name": "newVal"
+                            }
+                          },
+                          {
+                            "kind": "Call",
+                            "args": [
+                              {
+                                "kind": "PositionalArgument",
+                                "value": "theme"
+                              },
+                              {
+                                "kind": "PositionalArgument",
+                                "value": {
+                                  "kind": "Local",
+                                  "name": "newVal"
+                                }
+                              }
+                            ],
+                            "value": {
+                              "kind": "Local",
+                              "name": "set_system_property"
+                            }
+                          }
+                        ]
+                      },
+                      "parameters": [
+                        {
+                          "name": "newVal"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "options",
+                    "value": {
+                      "kind": "Local",
+                      "name": "themes"
+                    }
+                  }
+                ]
+              }
+            ],
+            "entries": []
+          },
+          {
+            "kind": "KindedRecord",
+            "kindOfRecord": {
+              "kind": "Local",
+              "name": "Row"
+            },
+            "children": [
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryInputText"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryText"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryCheckbox"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryButton"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryLink"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryPager"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryErrorHandling"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GallerySelect"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryTable"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryTabs"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryLoader"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GalleryOverlay"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              },
+              {
+                "kind": "KindedRecord",
+                "kindOfRecord": {
+                  "kind": "Local",
+                  "name": "View"
+                },
+                "children": [
+                  {
+                    "kind": "KindedRecord",
+                    "kindOfRecord": {
+                      "kind": "Local",
+                      "name": "GallerySnippet"
+                    },
+                    "children": [],
+                    "entries": []
+                  }
+                ],
+                "entries": [
+                  {
+                    "kind": "KindedRecordEntry",
+                    "key": "width",
+                    "value": "360px"
+                  }
+                ]
+              }
+            ],
+            "entries": [
+              {
+                "kind": "KindedRecordEntry",
+                "key": "wrap",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "entries": []
+      }
+    ],
+    "entries": [
+      {
+        "kind": "KindedRecordEntry",
+        "key": "padding",
+        "value": 0.5
+      }
+    ]
+  }
+]

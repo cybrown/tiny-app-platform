@@ -48,7 +48,10 @@ export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {
   },
   type: typeFunction(
     [
-      { name: "confirm", type: typeUnion(typeNull(), typeString()) },
+      {
+        name: "confirm",
+        type: typeUnion(typeNull(), typeString(), typeBoolean()),
+      },
       { name: "disabled", type: typeUnion(typeNull(), typeBoolean()) },
       {
         name: "onClick",

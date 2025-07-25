@@ -1,4 +1,17 @@
-import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Closure,
+  RuntimeContext,
+  typeAny,
+  typeArray,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeRecord,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import { useCallback } from "react";
 import RenderExpression from "../runtime/RenderExpression";
 import SemanticTabs, { TabOptions } from "./semantic/Tabs";
@@ -43,4 +56,29 @@ export const TabsDocumentation: WidgetDocumentation<TabsProps> = {
     options: "Tabs to display: {value: string, label: string}[]",
     after: "Widget to show in the free space after the tabs",
   },
+  type: typeFunction(
+    [
+      { name: "value", type: typeString() },
+      {
+        name: "onChange",
+        type: typeFunction(
+          [{ name: "value", type: typeNumber() }],
+          [],
+          typeAny()
+        ),
+      },
+      {
+        name: "options",
+        type: typeArray(
+          typeRecord({ value: typeString(), label: typeString() })
+        ),
+      },
+      {
+        name: "after",
+        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+      },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

@@ -1,4 +1,19 @@
-import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Closure,
+  RuntimeContext,
+  typeAny,
+  typeArray,
+  typeBoolean,
+  typeFunction,
+  typeGenericPlaceholder,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeRecord,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import styles from "./Table.module.css";
 import Debug from "./Debug";
@@ -181,4 +196,52 @@ export const TableDocumentation: WidgetDocumentation<TableProps> = {
     noHighlight: "Do not highlight rows on hover",
     _key: "A function to compute a key from a value",
   },
+  type: typeFunction(
+    [
+      {
+        name: "values",
+        type: typeArray(typeGenericPlaceholder("T")),
+      },
+      {
+        name: "columns",
+        type: typeUnion(
+          typeNull(),
+          typeArray(
+            typeRecord({
+              description: typeString(),
+              display: typeFunction(
+                [{ name: "row", type: typeGenericPlaceholder("T") }],
+                [],
+                typeAny()
+              ),
+              sort: typeUnion(
+                typeNull(),
+                typeFunction(
+                  [{ name: "row", type: typeGenericPlaceholder("T") }],
+                  [],
+                  typeAny()
+                )
+              ),
+              width: typeUnion(typeNull(), typeNumber()),
+              useRemaining: typeUnion(typeNull(), typeBoolean()),
+            })
+          )
+        ),
+      },
+      { name: "bordered", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "striped", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "noHeader", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "noHighlight", type: typeUnion(typeNull(), typeBoolean()) },
+      {
+        name: "_key",
+        type: typeFunction(
+          [{ name: "row", type: typeGenericPlaceholder("T") }],
+          [],
+          typeAny()
+        ),
+      },
+    ],
+    ["T"],
+    typeKindedRecord()
+  ),
 };

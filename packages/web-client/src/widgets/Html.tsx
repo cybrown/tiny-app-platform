@@ -1,5 +1,15 @@
 import React, { useEffect, useRef } from "react";
-import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Closure,
+  RuntimeContext,
+  typeAny,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 
 type HtmlProps = {
   ctx: RuntimeContext;
@@ -30,4 +40,28 @@ export const HtmlDocumentation: WidgetDocumentation<HtmlProps> = {
     root: "Root element to use, div by default",
     onCreated: "Function to call when DOM node is created",
   },
+  type: typeFunction(
+    [
+      { name: "html", type: typeString() },
+      { name: "root", type: typeUnion(typeNull(), typeString()) },
+      {
+        name: "onCreated",
+        type: typeUnion(
+          typeNull(),
+          typeFunction(
+            [
+              {
+                name: "element",
+                type: typeAny() /* TODO: Use opaque type when available for dom node */,
+              },
+            ],
+            [],
+            typeAny()
+          )
+        ),
+      },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

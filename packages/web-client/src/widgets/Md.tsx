@@ -1,5 +1,11 @@
 import Markdown, { ReactRenderer } from "marked-react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  typeFunction,
+  typeKindedRecord,
+  typeString,
+  WidgetDocumentation,
+} from "tal-eval";
 import Snippet from "./Snippet";
 import { Text } from "../theme";
 
@@ -62,4 +68,9 @@ export const MdDocumentation: WidgetDocumentation<MdProps> = {
   props: {
     doc: "Raw markdown document",
   },
+  type: typeFunction(
+    [{ name: "doc", type: typeString() }],
+    [],
+    typeKindedRecord()
+  ),
 };

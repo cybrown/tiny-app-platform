@@ -1,7 +1,22 @@
 import { useCallback } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
 import {
+  RuntimeContext,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeRecord,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
+import {
+  InputProps,
+  InputPropsDocs,
+  inputPropsParameters,
+} from "./internal/inputProps";
+import {
+  inputLabelParameters,
   InputLabelProps,
   InputLabelPropsDocs,
 } from "./internal/inputLabelProps";
@@ -35,4 +50,20 @@ export const RadioDocumentation: WidgetDocumentation<RadioProps> = {
       "Value to set when this radio is checked, string | {value: string, label: string}",
     secondary: "Give the secondary style",
   },
+  type: typeFunction(
+    [
+      ...inputPropsParameters(typeString()),
+      ...inputLabelParameters(),
+      {
+        name: "option",
+        type: typeUnion(
+          typeRecord({ value: typeString(), label: typeString() }),
+          typeString()
+        ),
+      },
+      { name: "secondary", type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

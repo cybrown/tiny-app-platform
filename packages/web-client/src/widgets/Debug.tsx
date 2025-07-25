@@ -1,5 +1,15 @@
 import { useCallback, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import { NodeLocation, FunctionNode } from "tal-parser";
 import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
 import styles from "./Debug.module.css";
@@ -300,4 +310,14 @@ export const DebugDocumentation: WidgetDocumentation<DebugProps> = {
     extend: "Number of levels to extends by default",
     widget: "Render short info for widgets, default false",
   },
+  type: typeFunction(
+    [
+      { name: "value", type: typeAny() },
+      { name: "force", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "extend", type: typeUnion(typeNull(), typeNumber()) },
+      { name: "widget", type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

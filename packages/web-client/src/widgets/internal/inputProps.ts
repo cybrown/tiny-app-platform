@@ -1,4 +1,13 @@
-import { Closure } from "tal-eval";
+import {
+  Closure,
+  Type,
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  TypeFunction,
+  typeNull,
+  typeUnion,
+} from "tal-eval";
 
 export type InputProps<T> = {
   disabled?: boolean;
@@ -17,3 +26,19 @@ export const InputPropsDocs = {
   onChange: "Function to execute when the value changes",
   value: "Value to assign",
 };
+
+export function inputPropsParameters(
+  inputType: Type
+): TypeFunction["parameters"] {
+  return [
+    { name: "disabled", type: typeUnion(typeNull(), typeBoolean()) },
+    {
+      name: "onChange",
+      type: typeUnion(
+        typeNull(),
+        typeFunction([{ name: "newValue", type: inputType }], [], typeAny())
+      ),
+    },
+    { name: "value", type: typeUnion(typeNull(), inputType) },
+  ];
+}

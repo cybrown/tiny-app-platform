@@ -1,4 +1,12 @@
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import styles from "./Image.module.css";
 
 type ImageProps = {
@@ -34,4 +42,12 @@ export const ImageDocumentation: WidgetDocumentation<ImageProps> = {
     url: "URL to the image",
     size: "Image size: fit: Allow the image to use its container size, use inside a sized Box to control the image size, original: keep original image size",
   },
+  type: typeFunction(
+    [
+      { name: "url", type: typeString() },
+      { name: "size", type: typeUnion(typeNull(), typeString()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

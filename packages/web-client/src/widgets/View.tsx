@@ -1,4 +1,16 @@
-import { Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Opcode,
+  RuntimeContext,
+  typeString,
+  typeAny,
+  WidgetDocumentation,
+  TypeFunction,
+  typeBoolean,
+  typeNull,
+  typeNumber,
+  typeUnion,
+  typeFunction,
+} from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import { View as ThemedView } from "../theme";
 import { metadataGet } from "tal-eval";
@@ -38,6 +50,16 @@ export default function View({ ctx, children, ...d }: ViewProps) {
   );
 }
 
+export const viewPropTypes: TypeFunction["parameters"] = [
+  { name: "backgroundColor", type: typeUnion(typeNull(), typeString()) },
+  { name: "gap", type: typeUnion(typeNull(), typeNumber()) },
+  { name: "padding", type: typeUnion(typeNull(), typeNumber()) },
+  { name: "wrap", type: typeUnion(typeNull(), typeBoolean()) },
+  { name: "scroll", type: typeUnion(typeNull(), typeBoolean()) },
+  { name: "height", type: typeUnion(typeNull(), typeString(), typeNumber()) },
+  { name: "width", type: typeUnion(typeNull(), typeString(), typeNumber()) },
+];
+
 export const ViewDocumentation: WidgetDocumentation<ViewProps> = {
   description: "A View to contain and layout multiple widgets",
   props: {
@@ -51,4 +73,12 @@ export const ViewDocumentation: WidgetDocumentation<ViewProps> = {
     height: "Height, standard unit as a number or a CSS string",
     width: "Width, standard unit as a number or a CSS string",
   },
+  type: typeFunction(
+    [
+      ...viewPropTypes,
+      { name: "layout", type: typeUnion(typeNull(), typeString()) },
+    ],
+    [],
+    typeAny()
+  ),
 };

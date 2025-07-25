@@ -1,5 +1,14 @@
-import { WidgetDocumentation } from "tal-eval";
-import { TextDocumentation } from "./Text";
+import {
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
+import { textPropTypes, TextDocumentation } from "./Text";
 import { LinkProps, Link as ThemedLink } from "../theme";
 
 export default function Link(props: LinkProps) {
@@ -23,4 +32,19 @@ export const LinkDocumentation: WidgetDocumentation<LinkProps> = {
     disabled: "Do not allow the user to interact with this widget",
     secondary: "Give the secondary style",
   },
+  type: typeFunction(
+    [
+      ...textPropTypes,
+      { name: "text", type: typeUnion(typeNull(), typeString()) },
+      { name: "url", type: typeUnion(typeNull(), typeString()) },
+      {
+        name: "onClick",
+        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+      },
+      { name: "disabled", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "secondary", type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

@@ -1,6 +1,21 @@
 import { useCallback } from "react";
-import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  Closure,
+  RuntimeContext,
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
+import {
+  InputProps,
+  InputPropsDocs,
+  inputPropsParameters,
+} from "./internal/inputProps";
 import SemanticInputText from "./semantic/InputText";
 
 type InputTextProps = {
@@ -48,4 +63,18 @@ export const InputTextDocumentation: WidgetDocumentation<InputTextProps> = {
     placeholder: "Message to show when the widget is empty",
     ...InputPropsDocs,
   },
+  type: typeFunction(
+    [
+      { name: "multiline", type: typeUnion(typeNull(), typeBoolean()) },
+      {
+        name: "onSubmit",
+        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+      },
+      { name: "type", type: typeUnion(typeNull(), typeString()) },
+      { name: "placeholder", type: typeUnion(typeNull(), typeString()) },
+      ...inputPropsParameters(typeString()),
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

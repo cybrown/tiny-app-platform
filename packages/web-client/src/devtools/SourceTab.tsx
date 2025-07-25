@@ -362,6 +362,10 @@ const ErrorReport = ({
         result.declareSymbol(local[0], local[1].type);
       });
 
+    for (const widget of Object.entries(ctx.listWidgets())) {
+      result.declareSymbol(widget[0], widget[1].type);
+    }
+
     result.declareSymbol("debug", typeBoolean());
 
     return result;
@@ -397,7 +401,7 @@ const ErrorReport = ({
   }, [source, typeChecker]);
 
   return (
-    <View>
+    <View padding={0.5}>
       {initError ? (
         <View layout="flex-column">
           <Text text="Error while initializing error checking:" />
@@ -412,10 +416,9 @@ const ErrorReport = ({
         </View>
       ) : errors.length ? (
         <View layout="flex-column">
+          <Text text={`${errors.length} errors found`} color="red" />
           {errors.map((error, index) => (
-            <View key={index} padding={0.5}>
-              <Text text={error} />
-            </View>
+            <Text key={index} text={error} />
           ))}
         </View>
       ) : (

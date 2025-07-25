@@ -1,4 +1,15 @@
-import { Closure, Opcode, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Closure,
+  Opcode,
+  RuntimeContext,
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import { WindowFrame as ThemedWindowFrame } from "../theme";
 import { metadataGet } from "tal-eval";
@@ -61,4 +72,15 @@ export const WindowFrameDocumentation: WidgetDocumentation<WindowFrameProps> = {
     onClose: "Handler to call when close button is pressed",
     drag: "Make window draggable on Electron",
   },
+  type: typeFunction(
+    [
+      {
+        name: "onClose",
+        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+      },
+      { name: "drag", type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

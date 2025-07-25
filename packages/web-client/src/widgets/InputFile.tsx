@@ -1,6 +1,16 @@
 import { useCallback } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  RuntimeContext,
+  typeFunction,
+  typeKindedRecord,
+  typeString,
+  WidgetDocumentation,
+} from "tal-eval";
+import {
+  InputProps,
+  InputPropsDocs,
+  inputPropsParameters,
+} from "./internal/inputProps";
 import SemanticInputFile from "./semantic/InputFile";
 
 type InputFileProps = {
@@ -33,4 +43,12 @@ export const InputFileDocumentation: WidgetDocumentation<InputFileProps> = {
     placeholder: "Message to show when the widget is empty",
     ...InputPropsDocs,
   },
+  type: typeFunction(
+    [
+      { name: "placeholder", type: typeString() },
+      ...inputPropsParameters(typeString()),
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

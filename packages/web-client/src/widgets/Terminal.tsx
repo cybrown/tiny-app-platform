@@ -1,4 +1,16 @@
-import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Closure,
+  RuntimeContext,
+  typeAny,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeRecord,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import { Terminal as XTermTerminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { useEffect, useMemo, useRef } from "react";
@@ -140,4 +152,37 @@ export const TerminalDocumentation: WidgetDocumentation<TerminalProps> = {
       "A process object created by process_run_pty, exclusive with ssh, stream, onData and onResize",
     ssh: "An SSH connection object created by ssh_exec, exclusive with process, stream, onData and onResize",
   },
+  type: typeFunction(
+    [
+      { name: "stream", type: typeAny() }, // TODO: Fix typeAny when opaque types are implemented for stream
+      { name: "rows", type: typeUnion(typeNull(), typeNumber()) },
+      {
+        name: "onData",
+        type: typeUnion(
+          typeNull(),
+          typeFunction([{ name: "data", type: typeString() }], [], typeAny())
+        ),
+      },
+      {
+        name: "onResize",
+        type: typeUnion(
+          typeNull(),
+          typeFunction(
+            [
+              {
+                name: "size",
+                type: typeRecord({ cols: typeNumber(), rows: typeNumber() }),
+              },
+            ],
+            [],
+            typeAny()
+          )
+        ),
+      },
+      { name: "process", type: typeAny() }, // TODO: Fix typeAny when opaque types are implemented for process
+      { name: "ssh", type: typeAny() }, // TODO: Fix typeAny when opaque types are implemented for ssh connection
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

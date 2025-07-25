@@ -1,4 +1,14 @@
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import { LoaderSize, Loader as ThemedLoader } from "../theme";
 
 type LoaderProps = {
@@ -37,4 +47,15 @@ export const LoaderDocumentation: WidgetDocumentation<LoaderProps> = {
     max: "Maximum value, optional",
     value: "Current value, optional",
   },
+  type: typeFunction(
+    [
+      { name: "primary", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "secondary", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "size", type: typeUnion(typeNull(), typeString()) },
+      { name: "max", type: typeUnion(typeNull(), typeNumber()) },
+      { name: "value", type: typeUnion(typeNull(), typeNumber()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

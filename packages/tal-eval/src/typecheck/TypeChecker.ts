@@ -444,19 +444,109 @@ export class TypeChecker {
         );
       }
       case 'KindedRecord': {
-        // TODO: Check each attribute is compatible
+        const kindType2 = this.expandAliasAndGenerics(
+          node,
+          this.check(node.kindOfRecord)
+        );
+
+        if (!isAssignableToFunction(kindType2)) {
+          this.defError(node, 'Kind of record must be a function');
+        }
+
+        if (kindType2.kind == 'any') {
+          return this.defType(node, typeAnyBecauseOfAny());
+        }
+
+        if (kindType2.kind != 'function') {
+          this.defError(node, 'Kind of record must be a function');
+          return typeAnyAfterError();
+        }
+
+        this.symbolTable.push();
+        if (kindType2.genericParameters) {
+          for (const genericParameter of kindType2.genericParameters) {
+            this.symbolTable.declareTypeAlias(
+              genericParameter,
+              typeGenericPlaceholderLateInit(genericParameter)
+            );
+          }
+        }
+
+        const kindType = instantiateGenericFunction(
+          kindType2,
+          (e) => this.defError(node, e),
+          this.symbolTable
+        );
+
+        const expectedKeys = new Set(kindType.parameters.filter(p => !isNullable(p.type)).map((p) => p.name));
+
         for (let child of node.children) {
           this.check(child);
         }
         for (let entry of node.entries) {
+          expectedKeys.delete(entry.key);
           if (Array.isArray(entry.value)) {
+            // TODO: Why do we have an array here?
             for (let entryChild of entry.value) {
               this.check(entryChild);
             }
           } else {
-            this.check(entry.value);
+            const expectedEntryType = kindType.parameters.find(
+              (p) => p.name == entry.key
+            )?.type;
+
+            if (!expectedEntryType) {
+              this.defError(
+                node,
+                `Unknown entry key: ${entry.key} in kinded record`
+              );
+              this.symbolTable.pop();
+              return typeAnyAfterError();
+            }
+
+            this.nextExpectedFunctionType = isFunction(expectedEntryType)
+              ? expectedEntryType
+              : undefined;
+            if (this.nextExpectedFunctionType) {
+              this.nextExpectedFunctionTypeIsDefined = 1;
+            }
+
+            const entryType = this.check(entry.value);
+
+            this.nextExpectedFunctionType = undefined;
+            this.nextExpectedFunctionTypeIsDefined = 0;
+
+            const assignmentResult = typeIsAssignableTo(
+              expectedEntryType,
+              entryType,
+              this.symbolTable
+            );
+
+            if (
+              !typeIsAssignableTo(
+                expectedEntryType,
+                entryType,
+                this.symbolTable
+              ).result
+            ) {
+              this.defError(
+                node,
+                `Entry ${entry.key} is not assignable: ${assignmentFailureText(
+                  assignmentResult
+                )}`
+              );
+            }
           }
         }
+
+        for (const expectedKey of expectedKeys) {
+          this.defError(
+            node,
+            `Missing non nullable prop: ${expectedKey}`
+          );
+        }
+
+        this.symbolTable.pop();
         return this.defType(node, typeKindedRecord());
       }
       case 'Function': {
@@ -751,6 +841,18 @@ export class TypeChecker {
         return this.defType(node, typeAnyAfterError());
       }
     }
+  }
+
+  private expandAliasAndGenerics(node: Node, type: Type): Type {
+    if (type.kind == 'aliased') {
+      return this.expandAliasAndGenerics(node, type.type);
+    }
+
+    if (type.kind == 'generic-placeholder-late-init' && type.type) {
+      return this.expandAliasAndGenerics(node, type.type);
+    }
+
+    return type;
   }
 
   private predeclareFunctions(nodes: Node[]) {

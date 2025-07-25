@@ -19,6 +19,7 @@ export type WidgetDocumentation<T> = {
   props: {
     [K in Exclude<keyof T, 'ctx'>]: string;
   };
+  type: TypeFunction
 };
 
 export interface FetchedSource {

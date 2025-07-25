@@ -1,5 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
-import { WidgetDocumentation } from "tal-eval";
+import {
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import styles from "./Snippet.module.css";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
@@ -132,4 +140,14 @@ export const SnippetDocumentation: WidgetDocumentation<SnippetProps> = {
     noMaxHeight: "Allow the widget to occupy all the vertical space it needs",
     text: "Snippet content to show",
   },
+  type: typeFunction(
+    [
+      { name: "format", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "language", type: typeUnion(typeNull(), typeString()) },
+      { name: "noMaxHeight", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "text", type: typeString() },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

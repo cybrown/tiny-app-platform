@@ -1,6 +1,20 @@
 import { useCallback } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  RuntimeContext,
+  typeArray,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeRecord,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
+import {
+  InputProps,
+  InputPropsDocs,
+  inputPropsParameters,
+} from "./internal/inputProps";
 import SemanticSelect from "./semantic/Select";
 
 type SelectProps = {
@@ -29,4 +43,21 @@ export const SelectDocumentation: WidgetDocumentation<SelectProps> = {
     placeholder: "Message to show when the widget is empty",
     ...InputPropsDocs,
   },
+  type: typeFunction(
+    [
+      {
+        name: "options",
+        type: typeArray(
+          typeUnion(
+            typeRecord({ value: typeString(), label: typeString() }),
+            typeString()
+          )
+        ),
+      },
+      { name: "placeholder", type: typeUnion(typeNull(), typeString()) },
+      ...inputPropsParameters(typeString()),
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

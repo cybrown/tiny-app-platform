@@ -1,5 +1,16 @@
 import { useCallback } from "react";
-import { Closure, RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  Closure,
+  RuntimeContext,
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import SemanticButton from "./semantic/Button";
 
 type ButtonProps = {
@@ -35,4 +46,21 @@ export const ButtonDocumentation: WidgetDocumentation<ButtonProps> = {
     shortcut:
       "Keyboard shortcut, only one character without modifier is supported",
   },
+  type: typeFunction(
+    [
+      { name: "confirm", type: typeUnion(typeNull(), typeString()) },
+      { name: "disabled", type: typeUnion(typeNull(), typeBoolean()) },
+      {
+        name: "onClick",
+        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+      },
+      { name: "secondary", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "text", type: typeString() },
+      { name: "outline", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "link", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "shortcut", type: typeUnion(typeNull(), typeString()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

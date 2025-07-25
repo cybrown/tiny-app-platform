@@ -1,0 +1,645 @@
+//set_system_property("theme", "toy-box")
+fun Title(text: string) {
+  Text {
+    text:   text
+    align:  "center"
+    weight: "light"
+    size:   2
+  }
+}
+
+fun GalleryText() {
+  Column {
+    Title { text: "Text" }
+
+    Text { text: "Simple text" }
+    Text { text: "Underline", line: "under" }
+    Text { text: "Overline", line: "over" }
+    Text {
+      text: "Strike through"
+      line: "through"
+    }
+
+    Text { text: "A little bigger", size: 1.1 }
+
+    Text {
+      text:   "And bold"
+      size:   1.1
+      weight: "bold"
+    }
+
+    Text {
+      text:   "Bigger and light"
+      size:   1.5
+      weight: "light"
+    }
+
+    Text {
+      text:   "With a different color"
+      size:   1.5
+      weight: "light"
+      color:  "teal"
+    }
+
+    Text {
+      text:   "Centered !"
+      size:   1.5
+      weight: "light"
+      color:  "teal"
+      align:  "center"
+      copy:   true
+    }
+
+    Text {
+      text:         "Preformated !"
+      preformatted: true
+    }
+
+    Row {
+      Text {
+        text:         "Preformated inside Row !"
+        preformatted: true
+      }
+    }
+  }
+}
+
+fun GalleryInputText() {
+  var value = ""
+
+  Column {
+    Title { text: "InputText" }
+
+    InputText { bindTo: value }
+
+    InputText {
+      bindTo:      value
+      placeholder: "With placeholder"
+    }
+
+    InputText { bindTo: value, multiline: true }
+
+    InputText { bindTo: value, disabled: true }
+
+    InputText {
+      bindTo:      value
+      placeholder: "With placeholder"
+      disabled:    true
+    }
+
+    InputText {
+      bindTo:    value
+      multiline: true
+      disabled:  true
+    }
+
+  }
+}
+
+fun GalleryCheckbox() {
+  var value = false
+
+  Column {
+    Title { text: "CheckBox Switch" }
+    Row {
+      CheckBox { bindTo: value, label: "primary" }
+      Switch { bindTo: value, label: "primary" }
+    }
+    Row {
+      CheckBox {
+        bindTo:   value
+        disabled: true
+        label:    "primary disabled"
+      }
+      Switch {
+        bindTo:   value
+        disabled: true
+        label:    "primary disabled"
+      }
+    }
+    Row {
+      CheckBox {
+        bindTo:    value
+        secondary: true
+        label:     "secondary"
+      }
+      Switch {
+        bindTo:    value
+        secondary: true
+        label:     "secondary"
+      }
+    }
+    Row {
+      CheckBox {
+        bindTo:    value
+        disabled:  true
+        secondary: true
+        label:     "secondary disabled"
+      }
+      Switch {
+        bindTo:    value
+        disabled:  true
+        secondary: true
+        label:     "secondary disabled"
+      }
+    }
+  }
+}
+
+fun GalleryButton() {
+  var value = false
+  var disabled = false
+
+  Column {
+    Title { text: "Button" }
+
+    Switch { bindTo: disabled, label: "Disabled" }
+
+    Button { text: "Click me", disabled: disabled }
+
+    Button {
+      text:     "Confirm"
+      confirm:  "Are you sure ?"
+      onClick:  () => log("Confirmed !")
+      disabled: disabled
+    }
+
+    Button {
+      text:      "Secondary"
+      secondary: true
+      disabled:  disabled
+    }
+
+    Button {
+      text:     "Outline"
+      outline:  true
+      disabled: disabled
+    }
+
+    Button {
+      text:      "Outline Secondary"
+      secondary: true
+      outline:   true
+      disabled:  disabled
+    }
+
+    Button {
+      text:     "Link"
+      link:     true
+      disabled: disabled
+      onClick:  () => log("link click")
+    }
+
+    Button {
+      text:      "Link Secondary"
+      secondary: true
+      link:      true
+      disabled:  disabled
+      onClick:   () => log("link click secondary")
+    }
+  }
+}
+
+fun GalleryLink() {
+  var value = false
+
+  Column {
+    Title { text: "Link" }
+    Link { url: "https://www.example.com" }
+  }
+}
+
+fun GalleryPager() {
+  var currentPage = 1
+  var showPrevNext = true
+  var disabled = false
+  var size = "2"
+
+  Column {
+    Title { text: "Pager" }
+
+    Switch {
+      bindTo: showPrevNext
+      label:  "showPrevNext"
+    }
+
+    Switch { bindTo: disabled, label: "disabled" }
+
+    Row {
+      Select {
+        bindTo:  size
+        options: ["2", "3", "4"]
+      }
+      Text { text: "size" }
+    }
+
+    Pager {
+      max:          100
+      perPage:      10
+      bindTo:       currentPage
+      showPrevNext: showPrevNext
+      size:         string_to_number(size)
+      disabled:     disabled
+    }
+  }
+}
+
+fun GallerySelect() {
+  var values = ["Red", "Green", {value: "#00F", label: "Blue"}]
+  var value = "Red"
+  var value2
+  var disabled = false
+
+  Column {
+    Title { text: "Select Radio" }
+
+    Switch { bindTo: disabled, label: "Disabled" }
+
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value
+      disabled:    disabled
+    }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value
+      disabled:    disabled
+    }
+    Text { text: "Selected: " + value }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value
+    }
+    Select {
+      options:     values
+      placeholder: "Color"
+      bindTo:      value2
+      disabled:    disabled
+    }
+
+    Row {
+      values
+         | array_map(option => Radio {
+            option:   option
+            bindTo:   value
+            disabled: disabled
+            label:    if (typeof(option) == "record") {
+              option.label
+            } else {
+              option
+            }
+          })
+    }
+
+    Row {
+      values
+         | array_map(option => Radio {
+            option:    option
+            bindTo:    value
+            disabled:  disabled
+            secondary: true
+            label:     if (typeof(option) == "record") {
+              option.label
+            } else {
+              option
+            }
+          })
+    }
+  }
+}
+
+fun GalleryTable() {
+  var useRemaining = false
+  var noHeader = false
+  var striped = true
+  var noHighlight = false
+  var bordered = false
+
+  let data = [
+    {name: "Toto", age: "32"}
+    {name: "Tata", age: "40"}
+    {name: "Titi", age: "13"}
+    {name: "Tutu", age: "132", secret: true}
+  ]
+
+  Column {
+    Title { text: "Table" }
+
+    CheckBox {
+      bindTo: useRemaining
+      label:  "Name column must use remaining space"
+    }
+
+    CheckBox { bindTo: noHeader, label: "No header" }
+
+    CheckBox { bindTo: striped, label: "Striped" }
+
+    CheckBox {
+      bindTo: noHighlight
+      label:  "No Highlight"
+    }
+
+    CheckBox { bindTo: bordered, label: "Bordered" }
+
+    Table {
+      _key:        row => row.name
+      noHeader:    noHeader
+      striped:     striped
+      noHighlight: noHighlight
+      bordered:    bordered
+      columns:     [
+        {
+          description:  "Name"
+          display:      row => Text { text: row.name }
+          useRemaining: useRemaining
+        }
+        {description: "Age", display: row => Text { text: row.age }}
+      ]
+      values:      data
+    }
+
+    Table {
+      values:      data
+      noHeader:    noHeader
+      noHighlight: noHighlight
+      bordered:    bordered
+      striped:     striped
+    }
+
+    Table {
+      noHeader:    noHeader
+      noHighlight: noHighlight
+      striped:     striped
+      bordered:    bordered
+      columns:     [
+        "name"
+        {
+          description: "Age"
+          display:     row => Text { text: row.age + " years old" }
+        }
+      ]
+      values:      data
+    }
+  }
+}
+
+fun GalleryTabs() {
+  var currentTab = "first"
+  var hasAfter = false
+
+  Column {
+    Title { text: "Tabs" }
+
+    Switch { bindTo: hasAfter, label: "Has after" }
+
+    Tabs {
+      bindTo:  currentTab
+      options: [
+        {label: "First tab", value: "first"}
+        {label: "Second tab", value: "second"}
+      ]
+      after:   if (hasAfter) {
+        Row {
+          View {} | flex(1)
+          Button { text: "After", outline: true }
+        }
+      } else {
+        null
+      }
+    }
+
+    switch (currentTab) {
+      "first"  => Text { text: "First tab" }
+      "second" => Text { text: "Second tab" }
+    }
+  }
+}
+
+fun GalleryLoader() {
+  var value = 4
+  var max = 10
+  var primary = false
+  var secondary = false
+  var size = "md"
+
+  Column {
+    Title { text: "Loader" }
+
+    Row {
+      Switch { label: "Primary", bindTo: primary }
+
+      Switch {
+        label:  "Secondary"
+        bindTo: secondary
+      }
+    }
+
+    Row {
+      Radio {
+        label:  "sm"
+        bindTo: size
+        option: "sm"
+      }
+      Radio {
+        label:  "md"
+        bindTo: size
+        option: "md"
+      }
+      Radio {
+        label:  "lg"
+        bindTo: size
+        option: "lg"
+      }
+    }
+
+    Loader {
+      primary:   primary
+      secondary: secondary
+      size:      size
+    }
+
+    Row {
+      "Value:"
+
+      InputText {
+        value:    value
+        onChange: newValue => set value = string_to_number(newValue)
+      }
+
+      "Max:"
+
+      InputText {
+        value:    max
+        onChange: newValue => set max = string_to_number(newValue)
+      }
+    }
+
+    Loader {
+      primary:   primary
+      secondary: secondary
+      size:      size
+      max:       max
+      value:     value
+    }
+  }
+}
+
+fun GalleryOverlay() {
+  var showOverlay
+  var position
+  var modal
+  var size = "m"
+
+  Column {
+    Title { text: "Overlay" }
+
+    Row {
+      Text { text: "Size" }
+      Radio {
+        bindTo: size
+        option: "m"
+        label:  "m"
+      }
+      Radio {
+        bindTo: size
+        option: "l"
+        label:  "l"
+      }
+      Radio {
+        bindTo: size
+        option: "xl"
+        label:  "xl"
+      }
+    }
+
+    Button {
+      text:    "Show Dialog"
+      onClick: () => {
+        set position = "center"
+        set modal = false
+        set showOverlay = true
+      }
+    }
+
+    Button {
+      text:    "Show Modal"
+      onClick: () => {
+        set position = "center"
+        set modal = true
+        set showOverlay = true
+      }
+    }
+
+    Button {
+      text:    "Show Drawer Left"
+      onClick: () => {
+        set position = "left"
+        set modal = true
+        set showOverlay = true
+      }
+    }
+
+    Button {
+      text:    "Show Drawer Bottom"
+      onClick: () => {
+        set position = "bottom"
+        set modal = true
+        set showOverlay = true
+      }
+    }
+
+    if (showOverlay) {
+      Overlay {
+        position: position
+        modal:    modal
+        title:    "Title here"
+        onClose:  () => set showOverlay = false
+        size:     size
+
+        Text { text: "Overlay content" }
+        Text {
+          text: "Press on the backdrop to close it"
+        }
+      }
+    }
+  }
+}
+
+fun GalleryErrorHandling() {
+  Column {
+    Title { text: "Error handling" }
+
+    Button {
+      text:    "Trigger error"
+      onClick: () => unknown_function()
+    }
+  }
+}
+
+fun GallerySnippet() {
+  Column {
+    Title { text: "Snippet" }
+
+    Snippet {
+      language: "javascript"
+      text:     "console.log('Hello, World !')"
+    }
+  }
+}
+
+Column {
+  padding: 0.5
+
+  Debug { value: "Debug enabled !" }
+
+  var currentTheme = "toy-box"
+  let themes = [
+    "html"
+    "toy-box"
+    "twbs"
+    "twbs-dark"
+    "nes-css"
+    "dark-orange"
+    "98"
+    "mozaic-lm"
+  ]
+
+  Column {
+    Row {
+      Text { text: "Change theme: " }
+      Select {
+        value:    currentTheme
+        onChange: newVal => {
+          set currentTheme = newVal
+          set_system_property("theme", newVal)
+        }
+        options:  themes
+      }
+    }
+
+    Row {
+      wrap: true
+
+      View { width: "360px", GalleryInputText {} }
+      View { width: "360px", GalleryText {} }
+      View { width: "360px", GalleryCheckbox {} }
+      View { width: "360px", GalleryButton {} }
+      View { width: "360px", GalleryLink {} }
+      View { width: "360px", GalleryPager {} }
+      View {
+        width: "360px"
+
+        GalleryErrorHandling {}
+      }
+      View { width: "360px", GallerySelect {} }
+      View { width: "360px", GalleryTable {} }
+      View { width: "360px", GalleryTabs {} }
+      View { width: "360px", GalleryLoader {} }
+      View { width: "360px", GalleryOverlay {} }
+      View { width: "360px", GallerySnippet {} }
+    }
+  }
+}

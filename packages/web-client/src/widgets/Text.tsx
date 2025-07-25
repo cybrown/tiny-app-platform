@@ -1,5 +1,16 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  typeBoolean,
+  TypeFunction,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeString,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import styles from "./Text.module.css";
 import { Button, Text as ThemedText } from "../theme";
 import Popover from "./internal/Popover";
@@ -99,11 +110,25 @@ export default function Text({
   );
 }
 
+export const textPropTypes: TypeFunction["parameters"] = [
+  { name: "copy", type: typeUnion(typeNull(), typeBoolean()) },
+  { name: "preformatted", type: typeUnion(typeNull(), typeBoolean()) },
+  { name: "size", type: typeUnion(typeNull(), typeString(), typeNumber()) },
+  { name: "align", type: typeUnion(typeNull(), typeString()) },
+  {
+    name: "weight",
+    type: typeUnion(typeNull(), typeString(), typeNumber()),
+  },
+  { name: "wrap", type: typeUnion(typeNull(), typeBoolean()) },
+  { name: "color", type: typeUnion(typeNull(), typeString()) },
+  { name: "ellipsis", type: typeUnion(typeNull(), typeBoolean()) },
+  { name: "line", type: typeUnion(typeNull(), typeString()) },
+];
+
 export const TextDocumentation: WidgetDocumentation<TextProps> = {
   description: "Show a line of text",
   props: {
-    copy:
-      "Show a button to copy the content, default true when preformatted is true",
+    copy: "Show a button to copy the content, default true when preformatted is true",
     preformatted: "Show text with a monospace font and keep whitespaces",
     text: "Text to display",
     size: "Size in proportion of base size",
@@ -114,4 +139,9 @@ export const TextDocumentation: WidgetDocumentation<TextProps> = {
     ellipsis: "Truncate the text with an ellipsis if it is too long",
     line: "Add line decoration: under | over | through",
   },
+  type: typeFunction(
+    [...textPropTypes, { name: "text", type: typeString() }],
+    [],
+    typeKindedRecord()
+  ),
 };

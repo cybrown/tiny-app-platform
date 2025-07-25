@@ -1,6 +1,19 @@
-import { RuntimeContext, WidgetDocumentation } from "tal-eval";
+import {
+  RuntimeContext,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeNumber,
+  typeUnion,
+  WidgetDocumentation,
+} from "tal-eval";
 import { useCallback } from "react";
-import { InputProps, InputPropsDocs } from "./internal/inputProps";
+import {
+  InputProps,
+  InputPropsDocs,
+  inputPropsParameters,
+} from "./internal/inputProps";
 import SemanticPager from "./semantic/Pager";
 
 type PagerProps = {
@@ -32,4 +45,15 @@ export const PagerDocumentation: WidgetDocumentation<PagerProps> = {
     size: "Number of pages to show before and after current",
     ...InputPropsDocs,
   },
+  type: typeFunction(
+    [
+      { name: "max", type: typeNumber() },
+      { name: "perPage", type: typeNumber() },
+      { name: "showPrevNext", type: typeUnion(typeBoolean(), typeNumber()) },
+      { name: "size", type: typeUnion(typeNull(), typeNumber()) },
+      ...inputPropsParameters(typeNumber()),
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

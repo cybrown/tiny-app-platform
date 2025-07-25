@@ -1,5 +1,5 @@
-import { WidgetDocumentation } from "tal-eval";
-import View, { ViewDocumentation, ViewProps } from "./View";
+import { typeFunction, typeKindedRecord, WidgetDocumentation } from "tal-eval";
+import View, { ViewDocumentation, ViewProps, viewPropTypes } from "./View";
 
 type RowProps = Omit<ViewProps, "layout">;
 
@@ -19,4 +19,5 @@ export const RowDocumentation: WidgetDocumentation<RowProps> = {
   description:
     "Show content in a horizontal layout, scrolls by default if it does not wrap",
   props: propsDocumentation,
+  type: typeFunction(viewPropTypes, [], typeKindedRecord()),
 };

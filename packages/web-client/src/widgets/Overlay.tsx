@@ -4,6 +4,13 @@ import {
   RuntimeContext,
   WidgetDocumentation,
   metadataGet,
+  typeAny,
+  typeBoolean,
+  typeFunction,
+  typeKindedRecord,
+  typeNull,
+  typeString,
+  typeUnion,
 } from "tal-eval";
 import RenderExpression from "../runtime/RenderExpression";
 import React, { useCallback } from "react";
@@ -83,4 +90,19 @@ export const OverlayDocumentation: WidgetDocumentation<OverlayProps> = {
     title: "Title to display",
     noFrame: "Hide window frame",
   },
+  type: typeFunction(
+    [
+      {
+        name: "onClose",
+        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+      },
+      { name: "position", type: typeUnion(typeNull(), typeString()) },
+      { name: "modal", type: typeUnion(typeNull(), typeBoolean()) },
+      { name: "size", type: typeUnion(typeNull(), typeString()) },
+      { name: "title", type: typeUnion(typeNull(), typeString()) },
+      { name: "noFrame", type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeKindedRecord()
+  ),
 };

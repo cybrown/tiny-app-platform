@@ -10,4 +10,5 @@
 
 .Body {
   overflow: auto;
+  flex-grow: 1;
 }

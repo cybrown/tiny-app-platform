@@ -6,6 +6,7 @@ import { keymap } from "@codemirror/view";
 import { indentWithTab, undo, redo } from "@codemirror/commands";
 import styles from "./Editor.module.css";
 import "./Editor.css";
+import { EditorApi } from "./EditorApi";
 
 export type EditorCommand = {
   kind: "ReplaceSelection";
@@ -13,30 +14,6 @@ export type EditorCommand = {
   from: number;
   to: number;
 };
-
-export interface EditorApi {
-  // Misc features
-  undo(): void;
-  redo(): void;
-
-  // Read features
-  getSource(): string;
-  // Depreciate this method and use getSelectionRanges instead
-  getCusorPositions():
-    | { offset: number; line: number; column: number; isRange: boolean }[]
-    | null;
-  getSelectionRanges(): {
-    from: number;
-    to: number;
-  }[];
-
-  // Write features
-  replaceSelection(text: string): void;
-  replaceAll(text: string): void;
-  replaceAtRange(text: string, from: number, to: number): void;
-  setSelectionRange(from: number, to: number): void;
-  transaction(commands: EditorCommand[]): void;
-}
 
 export function Editor({
   hidden,
@@ -122,25 +99,21 @@ export function Editor({
           ]),
         });
       },
-      transaction(commands) {
+      replaceMultipleAtRange(replacement) {
         if (!editor) return;
 
         const cmCommands: TransactionSpec[] = [];
 
-        for (const command of commands) {
-          switch (command.kind) {
-            case "ReplaceSelection":
-              cmCommands.push(
-                editor.state.update({
-                  changes: {
-                    from: command.from,
-                    to: command.to,
-                    insert: command.text,
-                  },
-                })
-              );
-              break;
-          }
+        for (const command of replacement) {
+          cmCommands.push(
+            editor.state.update({
+              changes: {
+                from: command.from,
+                to: command.to,
+                insert: command.text,
+              },
+            })
+          );
         }
 
         editor.dispatch(...cmCommands);

@@ -5,4 +5,10 @@
 
 .Body {
   overflow: auto;
+  flex-grow: 1;
+  display: flex;
+}
+
+.Body > :global(.window-body) {
+  flex-grow: 1;
 }

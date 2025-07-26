@@ -5,7 +5,9 @@ import {
   typeBoolean,
   TypeChecker,
 } from "tal-eval";
-import { Editor, EditorApi } from "./Editor";
+import { Editor as EditorMonaco } from "./EditorMonaco";
+import { Editor } from "./Editor";
+import { EditorApi } from "./EditorApi";
 import ToolBar from "./Toolbar";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
@@ -13,6 +15,9 @@ import { Button, Text, View, WindowFrame } from "../theme";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { walk, parse } from "tal-parser";
 import { secretCreate } from "tal-stdlib";
+
+const keepCodeMirror =
+  new URL(location.href).searchParams.get("editor") == "legacy";
 
 type SourceTabProps = {
   ctx: RuntimeContext;
@@ -175,15 +180,13 @@ export default function SourceTab({
 
     if (currentSelection.from === currentSelection.to) return;
 
-    editorApiRef.current?.transaction([
+    editorApiRef.current?.replaceMultipleAtRange([
       {
-        kind: "ReplaceSelection",
         from: currentSelection.to,
         to: currentSelection.to,
         text: close,
       },
       {
-        kind: "ReplaceSelection",
         from: currentSelection.from,
         to: currentSelection.from,
         text: open,
@@ -282,11 +285,19 @@ export default function SourceTab({
           onShowTypeCheck={onShowTypeCheckHandler}
         />
       ) : null}
-      <Editor
-        setEditorApi={setEditorApiHandler}
-        onSave={onApplyAndFormatWithSourceHandler}
-        hidden={hidden}
-      />
+      {!keepCodeMirror ? (
+        <EditorMonaco
+          setEditorApi={setEditorApiHandler}
+          onSave={onApplyAndFormatWithSourceHandler}
+          hidden={hidden}
+        />
+      ) : (
+        <Editor
+          setEditorApi={setEditorApiHandler}
+          onSave={onApplyAndFormatWithSourceHandler}
+          hidden={hidden}
+        />
+      )}
       {!hidden && showDocumentation ? (
         <LowLevelOverlay
           size="l"
@@ -353,7 +364,6 @@ const ErrorReport = ({
           Array.isArray(local) &&
           local.length > 1 &&
           local[1] &&
-          (local[1] as any) &&
           (local[1] as any).parameters
         );
       })

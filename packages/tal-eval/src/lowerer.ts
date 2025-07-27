@@ -249,11 +249,13 @@ class Lowerer {
         ) {
           bindToEntries.push({
             kind: 'KindedRecordEntry',
+            location: bindToEntry.location,
             key: 'value',
             value: bindToEntry.value,
           });
           bindToEntries.push({
             kind: 'KindedRecordEntry',
+            location: bindToEntry.location,
             key: 'onChange',
             value: {
               kind: 'Function',
@@ -262,24 +264,32 @@ class Lowerer {
                   name: {
                     kind: 'Identifier',
                     name: 'newValue',
-                    location: node.location,
+                    location: bindToEntry.location,
                   },
-                  type: { kind: 'named', name: 'any' },
+                  type: {
+                    location: bindToEntry.location,
+                    kind: 'named',
+                    name: 'any',
+                  },
                 },
               ],
               body: {
                 kind: 'Block',
+                location: bindToEntry.location,
                 children: [
                   {
                     kind: 'Assign',
+                    location: bindToEntry.location,
                     address: bindToEntry.value,
                     value: {
                       kind: 'Local',
+                      location: bindToEntry.location,
                       name: 'newValue',
                     },
                   },
                   {
                     kind: 'Intrinsic',
+                    location: bindToEntry.location,
                     op: 'ForceRender',
                   },
                 ],

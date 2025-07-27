@@ -89,9 +89,7 @@ const ErrorReport = ({
     try {
       const expressions = lower(parse(source, "any"));
 
-      for (const expression of expressions) {
-        typeChecker.check(expression);
-      }
+      typeChecker.checkArray(expressions);
       if (typeChecker.errors.length) {
         setErrors(
           typeChecker.errors.map(

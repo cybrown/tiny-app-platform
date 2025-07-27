@@ -12,6 +12,7 @@
  [ ] ( ) Avoid close editor when pressing Escape to close code mirror search box
  [ ] ( ) Have a search feature with monaco editor
  [ ] ( ) Go to symbol definition with Ctrl + click in editor
+ [ ] ( ) Remove or rework type error list
 
 ## Type Checking
 

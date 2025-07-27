@@ -5,7 +5,22 @@ import {
   typeNumber,
   typeUnion,
   typeString,
+  defineFunction3,
+  typeFunction,
 } from 'tal-eval';
+
+export const number_is_nan = defineFunction3(
+  'number_is_nan',
+  [
+    {
+      name: 'number',
+    },
+  ],
+  typeFunction([{ name: 'number', type: typeNumber() }], [], typeBoolean()),
+  (_ctx, { number }) => {
+    return Number.isNaN(number);
+  }
+);
 
 export const number_to_string = defineFunction2(
   'number_to_string',

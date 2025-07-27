@@ -59,6 +59,7 @@ import {
   number_trunc,
   number_random,
   number_randint,
+  number_is_nan,
 } from './functions/number';
 import {
   record_delete,
@@ -238,6 +239,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(number_trunc);
   ctx.registerFunction(number_random);
   ctx.registerFunction(number_randint);
+  ctx.registerFunction(number_is_nan);
   ctx.registerFunction(record_entries);
   ctx.registerFunction(record_from_entries);
   ctx.registerFunction(record_get);

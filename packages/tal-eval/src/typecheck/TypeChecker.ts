@@ -290,30 +290,22 @@ export class TypeChecker {
         return this.defType(node, type.type);
       }
       case 'Assign': {
-        // TODO: Handle other kind of adressable values
-        if (node.address.kind != 'Local') {
-          this.defError(
-            node.address,
-            'Only local variables are supported for Assignements'
-          );
-          return this.defType(node, typeAnyAfterError());
-        }
+        const addressType = this.check(node.address);
         const valueType = this.check(node.value);
-        const type = this.symbolTable.get(node.address.name);
-        if (!type) {
-          this.defError(node, 'Unknown symbol: ' + node.address.name);
-          return this.defType(node, typeAnyAfterError());
-        }
 
-        if (!type.mutable) {
-          this.defError(node, 'Assignement of non mutable local');
+        if (node.address.kind == 'Local') {
+          const localType = this.symbolTable.get(node.address.name);
+          if (localType && !localType.mutable) {
+            this.defError(node.address, 'Assignement of non mutable local');
+          }
         }
 
         const isAssignable = typeIsAssignableTo(
-          type.type,
+          addressType,
           valueType,
           this.symbolTable
         );
+
         if (!isAssignable.result) {
           this.defError(
             node.value,
@@ -321,7 +313,7 @@ export class TypeChecker {
               isAssignable.reasons.join(', ')
           );
         }
-        return type.type;
+        return addressType;
       }
       case 'Try': {
         const tryType = this.check(node.node);

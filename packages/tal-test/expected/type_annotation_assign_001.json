@@ -1,0 +1,86 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "toto",
+    "value": {
+      "kind": "Array",
+      "value": [
+        {
+          "kind": "Record",
+          "entries": [
+            {
+              "kind": "RecordEntry",
+              "key": "a",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "index",
+    "value": 0
+  },
+  {
+    "kind": "Comment",
+    "text": " OK",
+    "node": {
+      "kind": "Assign",
+      "address": {
+        "kind": "Attribute",
+        "key": "a",
+        "value": {
+          "kind": "Index",
+          "index": {
+            "kind": "Local",
+            "name": "index"
+          },
+          "value": {
+            "kind": "Local",
+            "name": "toto"
+          }
+        }
+      },
+      "value": 42
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO",
+    "node": {
+      "kind": "Assign",
+      "address": {
+        "kind": "Attribute",
+        "key": "a",
+        "value": {
+          "kind": "Index",
+          "index": "index",
+          "value": {
+            "kind": "Local",
+            "name": "toto"
+          }
+        }
+      },
+      "value": 42
+    }
+  },
+  {
+    "kind": "Attribute",
+    "key": "a",
+    "value": {
+      "kind": "Index",
+      "index": {
+        "kind": "Local",
+        "name": "index"
+      },
+      "value": {
+        "kind": "Local",
+        "name": "toto"
+      }
+    }
+  }
+]

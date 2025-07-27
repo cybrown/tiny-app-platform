@@ -1,0 +1,2 @@
+(8:10) Arrays are only indexable by number
+number

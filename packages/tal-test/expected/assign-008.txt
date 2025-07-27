@@ -1,2 +1,2 @@
-(3:5) Only local variables are supported for Assignements
+(3:19) Type of expression is not compatible during assignment: Type string is not assignable to null
 null

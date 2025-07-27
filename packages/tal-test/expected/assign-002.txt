@@ -1,2 +1,2 @@
-(1:5) Only local variables are supported for Assignements
+(1:5) Unknown symbol: toto
 any

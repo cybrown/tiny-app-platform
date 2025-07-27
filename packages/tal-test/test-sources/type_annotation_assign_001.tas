@@ -1,0 +1,10 @@
+let toto = [{a: 3}]
+let index = 0
+
+// OK
+set toto[index].a = 42
+
+// KO
+set toto["index"].a = 42
+
+toto[index].a

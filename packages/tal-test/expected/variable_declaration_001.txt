@@ -1,10 +1,10 @@
-(2:1) Unknown symbol: b
+(2:5) Unknown symbol: b
 (5:1) Unknown symbol: b
 (7:1) Symbol already declared: a
-(8:1) Unknown symbol: b
+(8:5) Unknown symbol: b
 (9:1) Symbol already declared: c
 (11:1) Unknown symbol: b
-(13:1) Assignement of non mutable local
-(14:1) Unknown symbol: b
+(13:5) Assignement of non mutable local
+(14:5) Unknown symbol: b
 (17:1) Unknown symbol: b
 string

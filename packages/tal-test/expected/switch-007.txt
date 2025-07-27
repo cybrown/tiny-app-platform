@@ -1,2 +1,2 @@
-(1:1) Implicit parameter type for letter
+(1:20) Implicit parameter type for letter
 number | null

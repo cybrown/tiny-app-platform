@@ -258,7 +258,14 @@ class Lowerer {
             value: {
               kind: 'Function',
               parameters: [
-                { name: 'newValue', type: { kind: 'named', name: 'any' } },
+                {
+                  name: {
+                    kind: 'Identifier',
+                    name: 'newValue',
+                    location: node.location,
+                  },
+                  type: { kind: 'named', name: 'any' },
+                },
               ],
               body: {
                 kind: 'Block',
@@ -291,16 +298,15 @@ class Lowerer {
             entries: [
               ...node.entries
                 .filter(({ key }) => key != 'bindTo')
-                .map(({ key, value }) => {
-                  if (!value || Array.isArray(value)) {
+                .map((entry) => {
+                  if (!entry.value || Array.isArray(entry.value)) {
                     throw new Error(
                       'Unreachable: props other than children must not be an array'
                     );
                   }
                   return {
-                    kind: 'KindedRecordEntry' as const,
-                    key,
-                    value: this.lowerSingle(value),
+                    ...entry,
+                    value: this.lowerSingle(entry.value),
                   };
                 }),
               ...bindToEntries,
@@ -391,7 +397,10 @@ class Lowerer {
           ...node,
           kind: 'Function',
           parameters: [
-            { name: '$$arg$$', type: { kind: 'named', name: 'any' } },
+            {
+              name: { kind: 'Identifier', name: '$$arg$$' },
+              type: { kind: 'named', name: 'any' },
+            },
           ],
           body: {
             kind: 'Attribute',
@@ -411,6 +420,7 @@ class Lowerer {
       case 'NamedArgument':
       case 'PositionalArgument':
       case 'SwitchBranch':
+      case 'Identifier':
         throw new Error(
           'Unreachable, node kind not expected here: ' + node.kind
         );

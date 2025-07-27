@@ -8,7 +8,8 @@ export default function ToolBar({
   onUndo,
   onExtendSelection,
   onWrapSelection,
-  onShowTypeCheck
+  onShowTypeCheck,
+  onCheckTypeErrors,
 }: {
   onUndo(): void;
   onRedo(): void;
@@ -18,6 +19,7 @@ export default function ToolBar({
   onExtendSelection(): void;
   onWrapSelection(): void;
   onShowTypeCheck(): void;
+  onCheckTypeErrors(): void;
 }) {
   return (
     <View layout="flex-row">
@@ -29,6 +31,7 @@ export default function ToolBar({
       <Button outline onClick={onWrapSelection} text="🌯" />
       <Button outline onClick={onShowDocumentation} text="📘" />
       <Button outline onClick={onShowTypeCheck} text="🔍" />
+      <Button outline onClick={onCheckTypeErrors} text="⚙️" />
     </View>
   );
 }

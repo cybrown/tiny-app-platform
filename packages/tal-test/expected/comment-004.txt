@@ -1,4 +1,4 @@
-(24:1) Implicit parameter type for a
-(24:1) Implicit parameter type for b
+(24:9) Implicit parameter type for a
+(24:12) Implicit parameter type for b
 (2:1) Unknown symbol: print
 null

@@ -25,7 +25,10 @@
       },
       "parameters": [
         {
-          "name": "arr",
+          "name": {
+            "kind": "Identifier",
+            "name": "arr"
+          },
           "type": {
             "kind": "array",
             "item": {
@@ -35,12 +38,18 @@
           }
         },
         {
-          "name": "mapper",
+          "name": {
+            "kind": "Identifier",
+            "name": "mapper"
+          },
           "type": {
             "kind": "function",
             "parameters": [
               {
-                "name": "in",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "in"
+                },
                 "type": {
                   "kind": "named",
                   "name": "T"
@@ -97,7 +106,10 @@
       },
       "parameters": [
         {
-          "name": "arr",
+          "name": {
+            "kind": "Identifier",
+            "name": "arr"
+          },
           "type": {
             "kind": "array",
             "item": {
@@ -107,12 +119,18 @@
           }
         },
         {
-          "name": "predicate",
+          "name": {
+            "kind": "Identifier",
+            "name": "predicate"
+          },
           "type": {
             "kind": "function",
             "parameters": [
               {
-                "name": "in",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "in"
+                },
                 "type": {
                   "kind": "named",
                   "name": "T"
@@ -169,7 +187,10 @@
               },
               "parameters": [
                 {
-                  "name": "in"
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "in"
+                  }
                 }
               ]
             }
@@ -198,7 +219,10 @@
               },
               "parameters": [
                 {
-                  "name": "in"
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "in"
+                  }
                 }
               ]
             }

@@ -32,7 +32,10 @@
       },
       "parameters": [
         {
-          "name": "arr",
+          "name": {
+            "kind": "Identifier",
+            "name": "arr"
+          },
           "type": {
             "kind": "array",
             "item": {
@@ -42,12 +45,18 @@
           }
         },
         {
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "type": {
             "kind": "function",
             "parameters": [
               {
-                "name": "arg",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "arg"
+                },
                 "type": {
                   "kind": "named",
                   "name": "T"
@@ -94,7 +103,10 @@
           "body": 3,
           "parameters": [
             {
-              "name": "arg"
+              "name": {
+                "kind": "Identifier",
+                "name": "arg"
+              }
             }
           ]
         }

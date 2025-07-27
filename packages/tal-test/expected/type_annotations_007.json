@@ -32,7 +32,10 @@
       },
       "parameters": [
         {
-          "name": "value",
+          "name": {
+            "kind": "Identifier",
+            "name": "value"
+          },
           "type": {
             "kind": "named",
             "name": "number"

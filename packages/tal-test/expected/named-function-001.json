@@ -19,10 +19,16 @@
       },
       "parameters": [
         {
-          "name": "a"
+          "name": {
+            "kind": "Identifier",
+            "name": "a"
+          }
         },
         {
-          "name": "b"
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          }
         }
       ]
     }

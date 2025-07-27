@@ -13,7 +13,10 @@
       },
       "parameters": [
         {
-          "name": "str",
+          "name": {
+            "kind": "Identifier",
+            "name": "str"
+          },
           "type": {
             "kind": "named",
             "name": "string"
@@ -64,7 +67,10 @@
       },
       "parameters": [
         {
-          "name": "arr",
+          "name": {
+            "kind": "Identifier",
+            "name": "arr"
+          },
           "type": {
             "kind": "array",
             "item": {
@@ -74,12 +80,18 @@
           }
         },
         {
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "type": {
             "kind": "function",
             "parameters": [
               {
-                "name": "arg",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "arg"
+                },
                 "type": {
                   "kind": "named",
                   "name": "T"
@@ -144,7 +156,10 @@
           },
           "parameters": [
             {
-              "name": "arg"
+              "name": {
+                "kind": "Identifier",
+                "name": "arg"
+              }
             }
           ]
         }

@@ -20,7 +20,10 @@
       },
       "parameters": [
         {
-          "name": "value"
+          "name": {
+            "kind": "Identifier",
+            "name": "value"
+          }
         }
       ]
     }

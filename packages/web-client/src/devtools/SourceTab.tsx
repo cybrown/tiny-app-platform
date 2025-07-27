@@ -11,10 +11,13 @@ import { EditorApi } from "./EditorApi";
 import ToolBar from "./Toolbar";
 import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
-import { Button, Text, View, WindowFrame } from "../theme";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { walk, parse } from "tal-parser";
+import { Button, View, WindowFrame } from "../theme";
+import { useCallback, useRef, useState } from "react";
+import { walk, parse, Node } from "tal-parser";
 import { secretCreate } from "tal-stdlib";
+import ErrorReportOverlay from "./ErrorReportOverlay";
+import { useErrorReportOverlayController } from "./ErrorReportOverlaySupport";
+import { AnyTmp } from "../util";
 
 const keepCodeMirror =
   new URL(location.href).searchParams.get("editor") == "legacy";
@@ -61,7 +64,7 @@ export default function SourceTab({
 
   const toggleShowDocumentationHandler = useCallback(
     () => setShowDocumentation((showDocumentation) => !showDocumentation),
-    [showDocumentation]
+    []
   );
 
   const onUndoHandler = useCallback(() => {
@@ -207,18 +210,6 @@ export default function SourceTab({
     []
   );
 
-  const [typeCheckVisible, setTypeCheckVisible] = useState(false);
-
-  const onShowTypeCheckHandler = useCallback(
-    () => setTypeCheckVisible(true),
-    []
-  );
-
-  const onHideTypeCheckHandler = useCallback(
-    () => setTypeCheckVisible(false),
-    []
-  );
-
   const onHideWrapSelectionOverlay = useCallback(
     () => setWrapSelectionOverlayVisible(false),
     []
@@ -254,25 +245,63 @@ export default function SourceTab({
     onHideWrapSelectionOverlay();
   }, [onConvertToSecret, onHideWrapSelectionOverlay]);
 
+  const errorReportOverlayCtrl = useErrorReportOverlayController();
+
+  const [typeErrors, setTypeErrors] = useState<[Node, string][]>([]);
+
+  const handleCheckTypeErrors = useCallback(() => {
+    const typeChecker = new TypeChecker();
+    ctx
+      .listLocals()
+      .filter((local) => {
+        return (
+          Array.isArray(local) &&
+          local.length > 1 &&
+          local[1] &&
+          (local[1] as AnyTmp).parameters
+        );
+      })
+      .map((a) => a as [string, RegisterableFunction<string>])
+      .forEach((local) => {
+        typeChecker.declareSymbol(local[0], local[1].type);
+      });
+
+    for (const widget of Object.entries(ctx.listWidgets())) {
+      typeChecker.declareSymbol(widget[0], widget[1].type);
+    }
+
+    typeChecker.declareSymbol("debug", typeBoolean());
+
+    typeChecker.pushSymbolTable();
+    typeChecker.clearErrors();
+
+    try {
+      const expressions = lower(
+        parse(editorApiRef.current?.getSource() ?? "", "any")
+      );
+
+      typeChecker.checkArray(expressions);
+      if (typeChecker.errors.length) {
+        setTypeErrors(typeChecker.errors);
+      } else {
+        setTypeErrors([]);
+      }
+      //setInitError(null);
+      typeChecker.popSymbolTable();
+    } catch {
+      //setInitError(err);
+    }
+  }, [ctx]);
+
   return (
     <>
-      {typeCheckVisible ? (
-        <LowLevelOverlay
-          size="m"
-          position="bottom"
-          onClose={onHideTypeCheckHandler}
-          modal
-        >
-          <WindowFrame
-            title="Errors"
-            position="bottom"
-            onClose={onHideTypeCheckHandler}
-            modal
-          >
-            <ErrorReport ctx={ctx} source={editorApiRef.current?.getSource()} />
-          </WindowFrame>
-        </LowLevelOverlay>
-      ) : null}
+      {editorApiRef.current && (
+        <ErrorReportOverlay
+          ctx={ctx}
+          editorApi={editorApiRef.current}
+          ctrl={errorReportOverlayCtrl}
+        />
+      )}
       {!hidden ? (
         <ToolBar
           onFormat={onFormatHandler}
@@ -282,7 +311,8 @@ export default function SourceTab({
           onRedo={onRedoHandler}
           onExtendSelection={onExtendSelection}
           onWrapSelection={onShowWrapSelectionOverlay}
-          onShowTypeCheck={onShowTypeCheckHandler}
+          onShowTypeCheck={errorReportOverlayCtrl.open}
+          onCheckTypeErrors={handleCheckTypeErrors}
         />
       ) : null}
       {!keepCodeMirror ? (
@@ -290,6 +320,7 @@ export default function SourceTab({
           setEditorApi={setEditorApiHandler}
           onSave={onApplyAndFormatWithSourceHandler}
           hidden={hidden}
+          typeErrors={typeErrors}
         />
       ) : (
         <Editor
@@ -341,99 +372,3 @@ export default function SourceTab({
     </>
   );
 }
-
-const ErrorReport = ({
-  ctx,
-  source,
-}: {
-  ctx: RuntimeContext;
-  source?: string;
-}) => {
-  const [errors, setErrors] = useState<string[]>([]);
-
-  const [initError, setInitError] = useState<unknown>();
-
-  const typeChecker = useMemo(() => {
-    const result = new TypeChecker();
-    // TODO: Use info from the context to declare symbols
-
-    ctx
-      .listLocals()
-      .filter((local) => {
-        return (
-          Array.isArray(local) &&
-          local.length > 1 &&
-          local[1] &&
-          (local[1] as any).parameters
-        );
-      })
-      .map((a) => a as [string, RegisterableFunction<string>])
-      .forEach((local) => {
-        result.declareSymbol(local[0], local[1].type);
-      });
-
-    for (const widget of Object.entries(ctx.listWidgets())) {
-      result.declareSymbol(widget[0], widget[1].type);
-    }
-
-    result.declareSymbol("debug", typeBoolean());
-
-    return result;
-  }, [ctx]);
-
-  useEffect(() => {
-    if (!source) return;
-
-    typeChecker.pushSymbolTable();
-    typeChecker.clearErrors();
-
-    try {
-      const expressions = lower(parse(source, "any"));
-
-      for (const expression of expressions) {
-        typeChecker.check(expression);
-      }
-      if (typeChecker.errors.length) {
-        setErrors(
-          typeChecker.errors.map(
-            (e) =>
-              `(${e[0]?.location?.start.line}:${e[0]?.location?.start.column}) ${e[1]}`
-          )
-        );
-      } else {
-        setErrors([]);
-      }
-      setInitError(null);
-      typeChecker.popSymbolTable();
-    } catch (err) {
-      setInitError(err);
-    }
-  }, [source, typeChecker]);
-
-  return (
-    <View padding={0.5}>
-      {initError ? (
-        <View layout="flex-column">
-          <Text text="Error while initializing error checking:" />
-          <pre>
-            {initError &&
-            typeof initError == "object" &&
-            "stack" in initError &&
-            typeof initError.stack == "string"
-              ? initError.stack
-              : "Unknown error"}
-          </pre>
-        </View>
-      ) : errors.length ? (
-        <View layout="flex-column">
-          <Text text={`${errors.length} errors found`} color="red" />
-          {errors.map((error, index) => (
-            <Text key={index} text={error} />
-          ))}
-        </View>
-      ) : (
-        <Text text="No errors found" />
-      )}
-    </View>
-  );
-};

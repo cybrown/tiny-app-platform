@@ -1,4 +1,4 @@
-(1:1) Implicit parameter a, expected parameters: unknown parameter list
+(1:2) Implicit parameter a, expected parameters: unknown parameter list
 (1:12) Unknown symbol: b
 (2:1) Implicit parameter a, expected parameters: unknown parameter list
 (2:10) Unknown symbol: b

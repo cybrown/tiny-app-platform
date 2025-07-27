@@ -8,14 +8,20 @@
       "body": null,
       "parameters": [
         {
-          "name": "a",
+          "name": {
+            "kind": "Identifier",
+            "name": "a"
+          },
           "type": {
             "kind": "named",
             "name": "number"
           }
         },
         {
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "type": {
             "kind": "union",
             "types": [

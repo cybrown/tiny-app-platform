@@ -1,4 +1,4 @@
-(3:8) Implicit parameter type for text
+(3:14) Implicit parameter type for text
 (4:3) Unknown symbol: Text
 (4:3) Kind of record must be a function
 {TOKEN: string, t: (text: any) => () => kinded-record, funcAsValue: () => null}

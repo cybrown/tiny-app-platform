@@ -34,26 +34,38 @@
       },
       "parameters": [
         {
-          "name": "n",
+          "name": {
+            "kind": "Identifier",
+            "name": "n"
+          },
           "type": {
             "kind": "named",
             "name": "T"
           }
         },
         {
-          "name": "f",
+          "name": {
+            "kind": "Identifier",
+            "name": "f"
+          },
           "type": {
             "kind": "function",
             "parameters": [
               {
-                "name": "value",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "value"
+                },
                 "type": {
                   "kind": "named",
                   "name": "T"
                 }
               },
               {
-                "name": "index",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "index"
+                },
                 "type": {
                   "kind": "named",
                   "name": "number"
@@ -95,7 +107,10 @@
             "body": true,
             "parameters": [
               {
-                "name": "value"
+                "name": {
+                  "kind": "Identifier",
+                  "name": "value"
+                }
               }
             ]
           }

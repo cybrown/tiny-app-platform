@@ -1,9 +1,10 @@
 import { useRef, useState, useMemo, useEffect } from "react";
 import styles from "./Editor.module.css";
 import "./Editor.css";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import * as monaco from "monaco-editor";
 import { EditorApi } from "./EditorApi";
 import { useTheme } from "../theme";
+import { Node } from "tal-parser";
 
 // TODO: Custom themes for each theme ?
 // TODO: IN PROGRESS Syntax coloring: https://microsoft.github.io/monaco-editor/monarch.html
@@ -12,8 +13,10 @@ export function Editor({
   hidden,
   setEditorApi,
   onSave,
+  typeErrors,
 }: {
   hidden?: boolean;
+  typeErrors: [Node, string][];
   setEditorApi(api: EditorApi): void;
   onSave(source: string): void;
 }) {
@@ -44,11 +47,14 @@ export function Editor({
         ]);
       },
       replaceAll(text) {
-        editor?.setValue(text);
-        // TODO: Not implemented
+        if (!editor) return;
+        const selections = editor.getSelections();
+        editor.setValue(text);
+        if (selections) {
+          editor.setSelections(selections);
+        }
       },
       replaceAtRange(newText: string, start: number, end: number) {
-        // TODO: Not implemented
         if (!editor) return;
         const model = editor.getModel();
         if (!model) return;
@@ -245,6 +251,9 @@ export function Editor({
           value: "",
           automaticLayout: true,
           language: "tiny-app-language",
+          hover: {
+            enabled: true,
+          },
         });
 
         monaco.editor.addEditorAction({
@@ -259,11 +268,34 @@ export function Editor({
         return editor;
       });
     }
-  }, [editor, theme]);
+  }, [editor, theme, typeErrors]);
 
   useEffect(() => {
     setEditorApi(editorApi);
   }, [editorApi, setEditorApi]);
+
+  useEffect(() => {
+    if (!editor) return;
+    const model = editor.getModel();
+    if (!model) return;
+
+    monaco.editor.setModelMarkers(
+      editor.getModel()!,
+      "api",
+
+      typeErrors.map(([node, error]) => {
+        return {
+          startLineNumber: node.location?.start.line ?? 0,
+          endLineNumber: node.location?.end.line ?? 0,
+          startColumn: node.location?.start.column ?? 0,
+          endColumn: node.location?.end.column ?? 0,
+          message: error,
+          severity: monaco.MarkerSeverity.Error,
+          source: "check",
+        };
+      })
+    );
+  }, [editor, typeErrors]);
 
   return (
     <div

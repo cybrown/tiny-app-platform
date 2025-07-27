@@ -1,6 +1,7 @@
 import {
   defineFunction,
   defineFunction3,
+  typeAny,
   typeArray,
   typeBoolean,
   typeFunction,
@@ -184,10 +185,10 @@ export const array_length = defineFunction3(
     [
       {
         name: 'array',
-        type: typeArray(typeGenericPlaceholder('T')),
+        type: typeArray(typeAny()),
       },
     ],
-    ['T'],
+    [],
     typeNumber()
   ),
   (_ctx, { array }) => {

@@ -48,7 +48,10 @@
         },
         "parameters": [
           {
-            "name": "text",
+            "name": {
+              "kind": "Identifier",
+              "name": "text"
+            },
             "type": {
               "kind": "named",
               "name": "string"
@@ -1861,7 +1864,10 @@
                               },
                               "parameters": [
                                 {
-                                  "name": "option"
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": "option"
+                                  }
                                 }
                               ]
                             }
@@ -1989,7 +1995,10 @@
                               },
                               "parameters": [
                                 {
-                                  "name": "option"
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": "option"
+                                  }
                                 }
                               ]
                             }
@@ -2287,7 +2296,10 @@
                       },
                       "parameters": [
                         {
-                          "name": "row"
+                          "name": {
+                            "kind": "Identifier",
+                            "name": "row"
+                          }
                         }
                       ]
                     }
@@ -2367,7 +2379,10 @@
                                 },
                                 "parameters": [
                                   {
-                                    "name": "row"
+                                    "name": {
+                                      "kind": "Identifier",
+                                      "name": "row"
+                                    }
                                   }
                                 ]
                               }
@@ -2419,7 +2434,10 @@
                                 },
                                 "parameters": [
                                   {
-                                    "name": "row"
+                                    "name": {
+                                      "kind": "Identifier",
+                                      "name": "row"
+                                    }
                                   }
                                 ]
                               }
@@ -2578,7 +2596,10 @@
                                 },
                                 "parameters": [
                                   {
-                                    "name": "row"
+                                    "name": {
+                                      "kind": "Identifier",
+                                      "name": "row"
+                                    }
                                   }
                                 ]
                               }
@@ -3163,7 +3184,10 @@
                           },
                           "parameters": [
                             {
-                              "name": "newValue"
+                              "name": {
+                                "kind": "Identifier",
+                                "name": "newValue"
+                              }
                             }
                           ]
                         }
@@ -3217,7 +3241,10 @@
                           },
                           "parameters": [
                             {
-                              "name": "newValue"
+                              "name": {
+                                "kind": "Identifier",
+                                "name": "newValue"
+                              }
                             }
                           ]
                         }
@@ -4023,7 +4050,10 @@
                       },
                       "parameters": [
                         {
-                          "name": "newVal"
+                          "name": {
+                            "kind": "Identifier",
+                            "name": "newVal"
+                          }
                         }
                       ]
                     }

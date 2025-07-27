@@ -16,7 +16,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "number"
@@ -52,7 +55,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "number"
@@ -94,7 +100,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "T"
@@ -130,7 +139,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "number"
@@ -169,7 +181,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "number"
@@ -205,7 +220,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "T"
@@ -244,7 +262,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "T"
@@ -283,7 +304,10 @@
         },
         "parameters": [
           {
-            "name": "param",
+            "name": {
+              "kind": "Identifier",
+              "name": "param"
+            },
             "type": {
               "kind": "named",
               "name": "T"

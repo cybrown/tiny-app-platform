@@ -292,7 +292,7 @@ export class TypeChecker {
         // TODO: Handle other kind of adressable values
         if (node.address.kind != 'Local') {
           this.defError(
-            node,
+            node.address,
             'Only local variables are supported for Assignements'
           );
           return this.defType(node, typeAnyAfterError());
@@ -315,7 +315,7 @@ export class TypeChecker {
         );
         if (!isAssignable.result) {
           this.defError(
-            node,
+            node.value,
             'Type of expression is not compatible during assignment: ' +
               isAssignable.reasons.join(', ')
           );
@@ -397,12 +397,12 @@ export class TypeChecker {
         const valueType = this.check(node.value);
 
         if (!isAssignableToArray(valueType)) {
-          this.defError(node, 'Invalid type for index');
+          this.defError(node.value, 'Invalid type for index');
           return this.defType(node, typeAnyAfterError());
         }
 
         if (!isAssignableToNumber(indexType, this.symbolTable)) {
-          this.defError(node, 'Arrays are only indexable by number');
+          this.defError(node.index, 'Arrays are only indexable by number');
           return this.defType(node, typeAnyAfterError());
         }
 
@@ -417,7 +417,7 @@ export class TypeChecker {
         const valueType = this.check(node.value);
 
         if (!isAssignableToRecord(valueType)) {
-          this.defError(node, 'Invalid type for attribute');
+          this.defError(node.value, 'Invalid type for attribute');
           return this.defType(node, typeAnyAfterError());
         }
 
@@ -539,7 +539,7 @@ export class TypeChecker {
               ).result
             ) {
               this.defError(
-                node,
+                entry,
                 `Entry ${entry.key} is not assignable: ${assignmentFailureText(
                   assignmentResult
                 )}`
@@ -579,18 +579,18 @@ export class TypeChecker {
           predeclaredFunctionType && predeclaredFunctionType.kind === 'function'
             ? predeclaredFunctionType.parameters
             : node.parameters.map((parameter) => ({
-                name: parameter.name,
+                name: parameter.name.name,
                 type: parameter.type
                   ? mapTypeAst(
                       (e) => this.defError(node, e),
                       this.symbolTable,
                       parameter.type
                     )
-                  : expectedParameters[parameter.name] ??
+                  : expectedParameters[parameter.name.name] ??
                     (this.defError(
-                      node,
+                      parameter.name,
                       `Implicit parameter ${
-                        parameter.name
+                        parameter.name.name
                       }, expected parameters: ${
                         Object.keys(expectedParameters).join(', ') ||
                         'unknown parameter list'
@@ -734,7 +734,7 @@ export class TypeChecker {
 
             const expectedParameterType =
               paramsByName.get(arg.name) ??
-              this.typeAnyImplicitParameter(node, arg.name);
+              this.typeAnyImplicitParameter(arg, arg.name);
             this.nextExpectedFunctionType = isFunction(expectedParameterType)
               ? expectedParameterType
               : undefined;
@@ -768,7 +768,7 @@ export class TypeChecker {
             const currentParamName = remainingParams.shift()!; // Ok to ! because we checked length above
             const expectedParameterType =
               paramsByName.get(currentParamName) ??
-              this.typeAnyImplicitParameter(node, currentParamName);
+              this.typeAnyImplicitParameter(arg, currentParamName);
             this.nextExpectedFunctionType = isFunction(expectedParameterType)
               ? expectedParameterType
               : undefined;
@@ -839,6 +839,7 @@ export class TypeChecker {
       case 'RecordEntry':
       case 'SwitchBranch':
       case 'AttributeLambdaSugar':
+      case 'Identifier':
         throw new Error('Unreachable node kind: ' + node.kind);
       default: {
         const _: never = node;
@@ -882,14 +883,14 @@ export class TypeChecker {
           node.value,
           typeFunction(
             node.value.parameters.map((a) => ({
-              name: a.name,
+              name: a.name.name,
               type: a.type
                 ? mapTypeAst(
                     (e) => this.defError(node.value!, e),
                     this.symbolTable,
                     a.type
                   )
-                : this.typeAnyImplicitParameter(node, a.name),
+                : this.typeAnyImplicitParameter(a.name, a.name.name),
             })),
             node.value.genericParameters
               ? node.value.genericParameters.map(
@@ -1425,7 +1426,7 @@ function mapTypeAst(
     case 'function':
       return typeFunction(
         typeAst.parameters.map((p) => ({
-          name: p.name,
+          name: p.name.name,
           type: mapTypeAst(defError, symtab, p.type),
         })),
         [], // TODO: Update this when generic parameters are supported for type expressions

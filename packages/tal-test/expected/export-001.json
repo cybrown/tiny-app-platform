@@ -41,7 +41,10 @@
         },
         "parameters": [
           {
-            "name": "text"
+            "name": {
+              "kind": "Identifier",
+              "name": "text"
+            }
           }
         ]
       }

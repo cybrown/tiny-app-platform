@@ -25,7 +25,10 @@
       },
       "parameters": [
         {
-          "name": "item",
+          "name": {
+            "kind": "Identifier",
+            "name": "item"
+          },
           "type": {
             "kind": "named",
             "name": "T"

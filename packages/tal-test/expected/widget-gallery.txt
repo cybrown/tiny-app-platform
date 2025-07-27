@@ -213,27 +213,27 @@
 (511:7) Kind of record must be a function
 (518:5) Unknown symbol: Button
 (518:5) Kind of record must be a function
-(521:9) Type of expression is not compatible during assignment: Type string is not assignable to null
-(522:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
-(523:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(521:24) Type of expression is not compatible during assignment: Type string is not assignable to null
+(522:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(523:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (527:5) Unknown symbol: Button
 (527:5) Kind of record must be a function
-(530:9) Type of expression is not compatible during assignment: Type string is not assignable to null
-(531:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
-(532:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(530:24) Type of expression is not compatible during assignment: Type string is not assignable to null
+(531:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(532:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (536:5) Unknown symbol: Button
 (536:5) Kind of record must be a function
-(539:9) Type of expression is not compatible during assignment: Type string is not assignable to null
-(540:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
-(541:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(539:24) Type of expression is not compatible during assignment: Type string is not assignable to null
+(540:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(541:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (545:5) Unknown symbol: Button
 (545:5) Kind of record must be a function
-(548:9) Type of expression is not compatible during assignment: Type string is not assignable to null
-(549:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
-(550:9) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(548:24) Type of expression is not compatible during assignment: Type string is not assignable to null
+(549:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(550:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (555:7) Unknown symbol: Overlay
 (555:7) Kind of record must be a function
-(559:25) Type of expression is not compatible during assignment: Type boolean is not assignable to null
+(559:43) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (562:9) Unknown symbol: Text
 (562:9) Kind of record must be a function
 (563:9) Unknown symbol: Text

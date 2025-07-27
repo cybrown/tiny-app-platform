@@ -53,10 +53,10 @@
 (191:11) Kind of record must be a function
 (193:11) Unknown symbol: Table
 (193:11) Kind of record must be a function
-(197:30) Implicit parameter row, expected parameters: unknown parameter list
+(197:31) Implicit parameter row, expected parameters: unknown parameter list
 (197:39) Unknown symbol: Text
 (197:39) Kind of record must be a function
-(202:30) Implicit parameter row, expected parameters: unknown parameter list
+(202:31) Implicit parameter row, expected parameters: unknown parameter list
 (202:39) Unknown symbol: Text
 (202:39) Kind of record must be a function
 (207:18) Unknown symbol: array_map

@@ -28,7 +28,7 @@ export type TypeNested = NodeMetadata & {
 };
 
 export type TypeParameter = NodeMetadata & {
-  name: string;
+  name: IdentifierNode;
   type: TypeNode;
 };
 
@@ -232,10 +232,15 @@ export type GenericParameterNode = NodeMetadata & {
   name: string;
 };
 
+export type IdentifierNode = NodeMetadata & {
+  kind: 'Identifier';
+  name: string;
+};
+
 export type FunctionNode = NodeMetadata & {
   kind: 'Function';
   name?: string;
-  parameters: { name: string; type: TypeNode }[];
+  parameters: { name: IdentifierNode; type: TypeNode }[];
   returnType?: TypeNode;
   genericParameters?: GenericParameterNode[];
   body: Node;
@@ -317,6 +322,7 @@ export type NodeByKind = {
   NamedArgument: NamedArgumentNode;
   AttributeLambdaSugar: AttributeLambdaSugarNode;
   TypeAlias: TypeAliasNode;
+  Identifier: IdentifierNode;
 };
 
 export type Node = NodeByKind[keyof NodeByKind];

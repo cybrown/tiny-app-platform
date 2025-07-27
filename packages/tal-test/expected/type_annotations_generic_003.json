@@ -13,7 +13,10 @@
       },
       "parameters": [
         {
-          "name": "num",
+          "name": {
+            "kind": "Identifier",
+            "name": "num"
+          },
           "type": {
             "kind": "named",
             "name": "number"
@@ -52,7 +55,10 @@
       },
       "parameters": [
         {
-          "name": "arr",
+          "name": {
+            "kind": "Identifier",
+            "name": "arr"
+          },
           "type": {
             "kind": "array",
             "item": {
@@ -62,12 +68,18 @@
           }
         },
         {
-          "name": "mapper",
+          "name": {
+            "kind": "Identifier",
+            "name": "mapper"
+          },
           "type": {
             "kind": "function",
             "parameters": [
               {
-                "name": "in",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "in"
+                },
                 "type": {
                   "kind": "named",
                   "name": "T"
@@ -139,7 +151,10 @@
             },
             "parameters": [
               {
-                "name": "in"
+                "name": {
+                  "kind": "Identifier",
+                  "name": "in"
+                }
               }
             ]
           }

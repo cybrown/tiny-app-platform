@@ -15,7 +15,10 @@
     },
     "parameters": [
       {
-        "name": "a"
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        }
       }
     ]
   },
@@ -35,7 +38,10 @@
     },
     "parameters": [
       {
-        "name": "a"
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        }
       }
     ]
   },
@@ -57,13 +63,19 @@
       },
       "parameters": [
         {
-          "name": "b"
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          }
         }
       ]
     },
     "parameters": [
       {
-        "name": "a"
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        }
       }
     ]
   }

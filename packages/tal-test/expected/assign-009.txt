@@ -1,2 +1,2 @@
-(3:1) Only local variables are supported for Assignements
+(3:5) Only local variables are supported for Assignements
 null

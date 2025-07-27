@@ -327,14 +327,18 @@ GenericParameterList
         { return parameters.map(parameter => ({ location: buildLocation(), name: parameter[0] })); }
 
 ParameterList
-    = '(' _ parameters:(Identifier _ (':' _ Type)? _ (',' _)?)* ')'
+    = '(' _ parameters:(IdentifierNode _ (':' _ Type)? _ (',' _)?)* ')'
         { return parameters.map(parameter => ({name: parameter[0], type: (parameter[2] ?? [])[2]})); }
 
 Function
     = parameters:ParameterList _ '=>' _ body:Node
         { return { location: buildLocation(), kind: "Function", body: body, parameters }; }
-    / parameter:(Identifier) _ '=>' _ body:Node
+    / parameter:(IdentifierNode) _ '=>' _ body:Node
         { return { location: buildLocation(), kind: "Function", body: body, parameters: [{name: parameter}] }; }
+
+IdentifierNode
+    = name:Identifier
+        { return { location: buildLocation(), kind: "Identifier", name }; }
 
 KindedRecord
     = kind:DottedNode _SameLine "{" _ values:((KindedRecordEntry / Node) _ ','? _)* "}"

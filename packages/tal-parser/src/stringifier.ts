@@ -147,6 +147,8 @@ class Stringifier {
         return '.' + obj.key;
       case 'TypeAlias':
         return 'type ' + obj.name + ' = ' + this.stringifyType(obj.type);
+      case 'Identifier':
+        return obj.name;
       case 'Intrinsic':
       case 'SwitchBranch':
       case 'KindedRecordEntry':
@@ -222,7 +224,9 @@ class Stringifier {
     let argList =
       '(' +
       func.parameters
-        .map((p) => p.name + this.stringifyTypeAnnotation(p.type))
+        .map(
+          (p) => this.stringify(p.name) + this.stringifyTypeAnnotation(p.type)
+        )
         .join(', ') +
       ')' +
       this.stringifyTypeAnnotation(func.returnType) +
@@ -234,7 +238,7 @@ class Stringifier {
         argList +=
           '\n' +
           this.depthSpace() +
-          parameter.name +
+          this.stringify(parameter.name) +
           this.stringifyTypeAnnotation(parameter.type);
       }
       this.decrementDepth();
@@ -271,7 +275,9 @@ class Stringifier {
         return (
           '(' +
           obj.parameters
-            .map((param) => param.name + ': ' + this.stringifyType(param.type))
+            .map(
+              (param) => param.name.name + ': ' + this.stringifyType(param.type)
+            )
             .join(', ') +
           ') => ' +
           this.stringifyType(obj.returnType)
@@ -338,12 +344,14 @@ class Stringifier {
     if (obj.parameters.length === 0) {
       result += '()';
     } else if (obj.parameters.length === 1 && obj.parameters[0].type == null) {
-      result += obj.parameters[0].name;
+      result += this.stringify(obj.parameters[0].name);
     } else {
       result +=
         '(' +
         (obj.parameters ?? [])
-          .map((p) => p.name + this.stringifyTypeAnnotation(p.type))
+          .map(
+            (p) => this.stringify(p.name) + this.stringifyTypeAnnotation(p.type)
+          )
           .join(', ') +
         ')';
     }

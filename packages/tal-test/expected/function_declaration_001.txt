@@ -1,2 +1,2 @@
-(1:1) Implicit parameter type for x
+(1:10) Implicit parameter type for x
 number

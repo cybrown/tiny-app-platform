@@ -54,14 +54,20 @@
       "kind": "function",
       "parameters": [
         {
-          "name": "a",
+          "name": {
+            "kind": "Identifier",
+            "name": "a"
+          },
           "type": {
             "kind": "named",
             "name": "string"
           }
         },
         {
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "type": {
             "kind": "named",
             "name": "string"

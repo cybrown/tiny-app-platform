@@ -399,7 +399,7 @@ export class Compiler {
         }
         return;
       }
-      case "TypeAlias":
+      case 'TypeAlias':
         // Type aliases are not compiled, they are only used for type checking
         return;
       case 'Export':
@@ -413,6 +413,7 @@ export class Compiler {
       case 'RecordEntry':
       case 'SwitchBranch':
       case 'AttributeLambdaSugar':
+      case 'Identifier':
         throw new Error('Unreachable node kind: ' + node.kind);
       default: {
         const _: never = node;
@@ -477,7 +478,7 @@ export class Compiler {
       (this.functionIndexCounter++).toString(16);
     this.functions[name] = {
       parameters: functionNode.parameters.map((parameter) => ({
-        name: parameter.name,
+        name: parameter.name.name,
       })),
       body: { entry: [] },
     };

@@ -13,14 +13,20 @@
       },
       "parameters": [
         {
-          "name": "a",
+          "name": {
+            "kind": "Identifier",
+            "name": "a"
+          },
           "type": {
             "kind": "named",
             "name": "any"
           }
         },
         {
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "type": {
             "kind": "named",
             "name": "number"
@@ -38,14 +44,20 @@
     "body": 42,
     "parameters": [
       {
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "type": {
           "kind": "named",
           "name": "null"
         }
       },
       {
-        "name": "data",
+        "name": {
+          "kind": "Identifier",
+          "name": "data"
+        },
         "type": {
           "kind": "array",
           "item": {

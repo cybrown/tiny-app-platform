@@ -142,7 +142,10 @@
                               },
                               "parameters": [
                                 {
-                                  "name": "it"
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": "it"
+                                  }
                                 }
                               ]
                             }
@@ -655,10 +658,16 @@
               },
               "parameters": [
                 {
-                  "name": "it"
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "it"
+                  }
                 },
                 {
-                  "name": "index"
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "index"
+                  }
                 }
               ]
             }
@@ -880,7 +889,10 @@
                         },
                         "parameters": [
                           {
-                            "name": "it"
+                            "name": {
+                              "kind": "Identifier",
+                              "name": "it"
+                            }
                           }
                         ]
                       }
@@ -1032,7 +1044,10 @@
                                                       },
                                                       "parameters": [
                                                         {
-                                                          "name": "it"
+                                                          "name": {
+                                                            "kind": "Identifier",
+                                                            "name": "it"
+                                                          }
                                                         }
                                                       ]
                                                     }
@@ -1490,7 +1505,10 @@
                                             },
                                             "parameters": [
                                               {
-                                                "name": "row"
+                                                "name": {
+                                                  "kind": "Identifier",
+                                                  "name": "row"
+                                                }
                                               }
                                             ]
                                           }
@@ -1539,7 +1557,10 @@
                                             },
                                             "parameters": [
                                               {
-                                                "name": "row"
+                                                "name": {
+                                                  "kind": "Identifier",
+                                                  "name": "row"
+                                                }
                                               }
                                             ]
                                           }
@@ -1605,7 +1626,10 @@
                                             },
                                             "parameters": [
                                               {
-                                                "name": "it"
+                                                "name": {
+                                                  "kind": "Identifier",
+                                                  "name": "it"
+                                                }
                                               }
                                             ]
                                           }

@@ -23,7 +23,10 @@
       },
       "parameters": [
         {
-          "name": "letter"
+          "name": {
+            "kind": "Identifier",
+            "name": "letter"
+          }
         }
       ]
     }

@@ -301,7 +301,7 @@ export function Editor({
     <div
       ref={ref}
       className={`${styles.Editor} ${hidden ? styles.hidden : ""}`}
-      style={{ flexGrow: 1 }}
+      style={{ flexGrow: 1, overflow: "visible" }}
       id="editor"
     ></div>
   );

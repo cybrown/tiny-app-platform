@@ -6,11 +6,12 @@
 
 ## Editor
 
- [ ] ( ) Show type errors directly in editor
+ [x] ( ) Show type errors directly in editor
  [ ] ( ) Show type of symbol under mouse pointer
  [ ] ( ) Autocomplete expression at current cursor position
  [ ] ( ) Avoid close editor when pressing Escape to close code mirror search box
  [ ] ( ) Have a search feature with monaco editor
+ [ ] ( ) Go to symbol definition with Ctrl + click in editor
 
 ## Type Checking
 
@@ -19,12 +20,12 @@
  [x] (S) Investigate proper | syntax for unions
  [x] (S) Allow () in type expressions
  [x] (S) Allow parsing of any identifier as type name, instead of list. For non intrinsic type, it would be a type alias
- [ ] (A) Add a dict type
+ [x] (A) Add a dict type
             Like a record, but can have many keys and all values are the same type.
             Wait for generics ?
- [ ] (S) Allow use function inside another function before definition
+ [x] (S) Allow use function inside another function before definition
             Exemple: A calls B, then B is defined
- [ ] (A) Allow assign more addressable values than local variables
+ [x] (A) Allow assign more addressable values than local variables
             Assign array index, record field
             Assign dict when available
 
@@ -35,11 +36,12 @@
  [ ] (S) Allow positional type arguments #bug
 
 ### Kinded objects
- [ ] (S) Type check kinded object attributes
- [ ] (S) Type check kinded object children
+ [x] (S) Type check kinded object attributes
+ [x] (S) Type check kinded object children
             Allow multiple items if children is an array.
             Do not allow items if children is not defined.
- [ ] ( ) Type check kinded object value, must be a function or a predefined widget
+ [x] ( ) Type check kinded object value, must be a function or a predefined widget
+ [ ] ( ) Make sure predefined windgets can't be used as standard functions
 
 ### Type system fundamentals
  [x] (B) Type alias / Named types
@@ -59,6 +61,7 @@
 ### Functions
  [ ] ( ) Make type system aware of only named parameters
             Only named parameters should not be considered for positional parameters
+ [ ] ( ) Support varargs functions
 
 ### Modules
  [ ] ( ) Type import statements

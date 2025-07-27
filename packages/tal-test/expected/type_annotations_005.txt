@@ -1,2 +1,2 @@
-(5:1) Declared type array is not compatible with value type array: Item type string is not assignable to number: Type string is not assignable to number
+(5:1) Incompatible initial value: Item type string is not assignable to number: Type string is not assignable to number
 null

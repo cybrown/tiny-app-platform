@@ -100,9 +100,9 @@ ShellPositionalArgument
     	{ return { location: buildLocation(), kind: "PositionalArgument", value: node }; }
 
 ShellNamedArgument
-    = name:Identifier _SameLine ':' _SameLine value:LogicalOrOperator
+    = name:IdentifierNode _SameLine ':' _SameLine value:LogicalOrOperator
         { return { location: buildLocation(), kind: "NamedArgument", name, value }; }
-    / '-' value:('-'/'!') name:Identifier
+    / '-' value:('-'/'!') name:IdentifierNode
         {
             return {
                 location: buildLocation(),
@@ -179,9 +179,9 @@ PositionalArgument
     	{ return { location: buildLocation(), kind: "PositionalArgument", value: node }; }
 
 NamedArgument
-    = name:Identifier _ ':' _ value:Node
+    = name:IdentifierNode _ ':' _ value:Node
         { return { location: buildLocation(), kind: "NamedArgument", name, value }; }
-    / '-' value:('-'/'!') name:Identifier
+    / '-' value:('-'/'!') name:IdentifierNode
         {
             return {
                 location: buildLocation(),
@@ -293,6 +293,8 @@ Type
 SimpleType
     = "array" _ "<" _ item:Type _ ">"
         { return { kind: "array", item}; }
+    / "dict" _ "<" _ item:Type _ ">"
+        { return { kind: "dict", item}; }
     / "{" _ fields:(identifier:Identifier _ ":" _ type:Type (',' _)?)* _ "}"
         { return { kind: "record", fields: Object.fromEntries(fields.map(f => [f[0], f[4]]))}; }
     / "(" _ type:Type _ ")" isFunctionType:((_ '=>') ?)

@@ -76,7 +76,10 @@
         },
         {
           "kind": "NamedArgument",
-          "name": "c",
+          "name": {
+            "kind": "Identifier",
+            "name": "c"
+          },
           "value": 4
         }
       ],
@@ -98,7 +101,10 @@
         },
         {
           "kind": "NamedArgument",
-          "name": "c",
+          "name": {
+            "kind": "Identifier",
+            "name": "c"
+          },
           "value": 5
         },
         {
@@ -158,12 +164,18 @@
       "args": [
         {
           "kind": "NamedArgument",
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "value": null
         },
         {
           "kind": "NamedArgument",
-          "name": "a",
+          "name": {
+            "kind": "Identifier",
+            "name": "a"
+          },
           "value": 3
         }
       ],
@@ -181,7 +193,10 @@
       "args": [
         {
           "kind": "NamedArgument",
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "value": null
         },
         {
@@ -240,7 +255,10 @@
         },
         {
           "kind": "NamedArgument",
-          "name": "b",
+          "name": {
+            "kind": "Identifier",
+            "name": "b"
+          },
           "value": 16
         }
       ],

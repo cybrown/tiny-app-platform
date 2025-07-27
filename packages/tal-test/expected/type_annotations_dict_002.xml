@@ -1,0 +1,22 @@
+<program>
+  <declarelocal>
+    <record>
+      <recordentry>
+        <literal />
+      </recordentry>
+      <recordentry>
+        <literal />
+      </recordentry>
+      <recordentry>
+        <literal />
+      </recordentry>
+    </record>
+  </declarelocal>
+  <declarelocal>
+    <index>
+      <literal />
+      <local />
+    </index>
+  </declarelocal>
+  <local />
+</program>

@@ -1,0 +1,11 @@
+let a: dict<string> = {
+  a: "ok",
+  b: "ok2",
+  ce: 3
+}
+
+let b: dict<string> = {
+  a: "ok",
+  b: "ok2",
+  ce: "3"
+}

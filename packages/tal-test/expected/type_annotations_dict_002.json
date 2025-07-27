@@ -1,0 +1,51 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "b",
+    "type": {
+      "kind": "dict",
+      "item": {
+        "kind": "named",
+        "name": "string"
+      }
+    },
+    "value": {
+      "kind": "Record",
+      "entries": [
+        {
+          "kind": "RecordEntry",
+          "key": "a",
+          "value": "ok"
+        },
+        {
+          "kind": "RecordEntry",
+          "key": "b",
+          "value": "ok2"
+        },
+        {
+          "kind": "RecordEntry",
+          "key": "ce",
+          "value": "3"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "c",
+    "value": {
+      "kind": "Index",
+      "index": "ce",
+      "value": {
+        "kind": "Local",
+        "name": "b"
+      }
+    }
+  },
+  {
+    "kind": "Local",
+    "name": "c"
+  }
+]

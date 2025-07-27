@@ -137,7 +137,10 @@
               "args": [
                 {
                   "kind": "NamedArgument",
-                  "name": "num",
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "num"
+                  },
                   "value": {
                     "kind": "Local",
                     "name": "in"

@@ -17,6 +17,11 @@ export type TypeArrayNode = NodeMetadata & {
   item: TypeNode;
 };
 
+export type TypeDictNode = NodeMetadata & {
+  kind: 'dict';
+  item: TypeNode;
+};
+
 export type TypeRecordNode = NodeMetadata & {
   kind: 'record';
   fields: Record<string, TypeNode>;
@@ -43,6 +48,7 @@ export type TypeNode =
   | TypeKindedRecordNode
   | TypeUnionNode
   | TypeArrayNode
+  | TypeDictNode
   | TypeRecordNode
   | TypeFunctionNode
   | TypeNested;
@@ -146,7 +152,7 @@ export type PositionalArgumentNode = NodeMetadata & {
 
 export type NamedArgumentNode = NodeMetadata & {
   kind: 'NamedArgument';
-  name: string;
+  name: IdentifierNode;
   value: Node;
   short?: boolean;
 };

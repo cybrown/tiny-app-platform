@@ -36,6 +36,11 @@ export type TypeArray = {
   item: Type;
 };
 
+export type TypeDict = {
+  kind: 'dict';
+  item: Type;
+};
+
 export type TypeRecord = {
   kind: 'record';
   fields: Record<string, Type>;
@@ -132,6 +137,13 @@ export function typeArray(itemType: Type): TypeArray {
   };
 }
 
+export function typeDict(itemType: Type): TypeDict {
+  return {
+    kind: 'dict',
+    item: itemType,
+  };
+}
+
 export function typeFunction(
   parametersType: TypeParameter[],
   genericParameters: string[],
@@ -198,6 +210,7 @@ export type Type =
   | TypeAny
   | TypeUnion
   | TypeArray
+  | TypeDict
   | TypeRecord
   | TypeFunction
   | TypeBytes

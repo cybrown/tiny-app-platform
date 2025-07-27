@@ -282,8 +282,13 @@ class Stringifier {
           ') => ' +
           this.stringifyType(obj.returnType)
         );
+      case 'dict':
+        return `dict<${this.stringifyType(obj.item)}>`;
+      default:
+        const _: never = obj;
+        _;
+        throw new Error('Unknown kind to stringify: ' + (obj as any)?.kind);
     }
-    throw new Error('Unknown type to stringify');
   }
 
   stringifyNested(obj: NestedNode): string {
@@ -531,11 +536,11 @@ class Stringifier {
               return (
                 '-' +
                 (arg.short ? '-' : '!') +
-                this.stringifyRecordKey(arg.name)
+                this.stringifyRecordKey(this.stringify(arg.name))
               );
             }
             return (
-              this.stringifyRecordKey(arg.name) +
+              this.stringifyRecordKey(this.stringify(arg.name)) +
               ': ' +
               this.stringify(arg.value)
             );
@@ -557,11 +562,11 @@ class Stringifier {
               return (
                 '-' +
                 (arg.short ? '-' : '!') +
-                this.stringifyRecordKey(arg.name)
+                this.stringifyRecordKey(this.stringify(arg.name))
               );
             }
             return (
-              this.stringifyRecordKey(arg.name) +
+              this.stringifyRecordKey(this.stringify(arg.name)) +
               ': ' +
               this.stringify(arg.value)
             );
@@ -743,19 +748,19 @@ class Stringifier {
         if (entry.short != null) continue;
         longestEntry = Math.max(
           longestEntry,
-          this.stringifyRecordKey(entry.name).length
+          this.stringifyRecordKey(this.stringify(entry.name)).length
         );
       }
     }
     obj.args.forEach((arg) => {
       if (arg.kind === 'NamedArgument') {
-        const identifier = this.stringifyRecordKey(arg.name);
+        const identifier = this.stringifyRecordKey(this.stringify(arg.name));
         if (arg.short != null) {
           result +=
             this.depthSpace() +
             '-' +
             (arg.short ? '-' : '!') +
-            this.stringifyRecordKey(arg.name) +
+            this.stringifyRecordKey(this.stringify(arg.name)) +
             '\n';
         } else {
           result +=

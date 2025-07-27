@@ -33,7 +33,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "a"
       },
       {
@@ -63,12 +66,18 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "a"
       },
       {
         "kind": "NamedArgument",
-        "name": "arg2",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg2"
+        },
         "value": "b"
       },
       {
@@ -102,7 +111,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "arg2",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg2"
+        },
         "value": "c"
       },
       {
@@ -111,7 +123,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "e"
       }
     ],
@@ -138,7 +153,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "a"
       },
       {
@@ -147,7 +165,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "c"
       },
       {
@@ -156,7 +177,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "e"
       }
     ],

@@ -9,6 +9,7 @@ import {
   TypeArray,
   typeBoolean,
   typeBytes,
+  typeDict,
   typeFunction,
   TypeFunction,
   TypeGenericPlaceholder,
@@ -23,6 +24,7 @@ import {
   TypeUnion,
   typeUnion,
   typeUnresolved,
+  TypeDict,
 } from './types';
 import { SymbolTable } from './SymbolTable';
 import { typeToString } from './utils';
@@ -120,23 +122,22 @@ export class TypeChecker {
         }
 
         if (node.type && valueType) {
+          const declaredType = mapTypeAst(
+            (e) => this.defError(node, e),
+            this.symbolTable,
+            node.type
+          );
           const assignementResult = typeIsAssignableTo(
-            mapTypeAst(
-              (e) => this.defError(node, e),
-              this.symbolTable,
-              node.type
-            ),
+            declaredType,
             valueType,
             this.symbolTable
           );
           if (!assignementResult.result) {
             this.defError(
               node,
-              `Declared type ${
-                node.type.kind
-              } is not compatible with value type ${
-                localType.kind
-              }: ${assignmentFailureText(assignementResult)}`
+              `Incompatible initial value: ${assignmentFailureText(
+                assignementResult
+              )}`
             );
           }
         }
@@ -396,22 +397,29 @@ export class TypeChecker {
         const indexType = this.check(node.index);
         const valueType = this.check(node.value);
 
-        if (!isAssignableToArray(valueType)) {
-          this.defError(node.value, 'Invalid type for index');
-          return this.defType(node, typeAnyAfterError());
-        }
-
-        if (!isAssignableToNumber(indexType, this.symbolTable)) {
-          this.defError(node.index, 'Arrays are only indexable by number');
-          return this.defType(node, typeAnyAfterError());
-        }
-
         if (isArray(valueType)) {
+          if (!isAssignableToNumber(indexType, this.symbolTable)) {
+            this.defError(node.index, 'Arrays are only indexable by number');
+          }
           return this.defType(node, valueType.item);
         }
 
-        // In case we index an any value
-        return this.defType(node, typeAnyBecauseOfAny());
+        if (isDict(valueType)) {
+          if (!isAssignableToString(indexType, this.symbolTable)) {
+            this.defError(
+              node.index,
+              'Dictionaries are only indexable by string'
+            );
+          }
+          return this.defType(node, valueType.item);
+        }
+
+        if (valueType.kind == 'any') {
+          return this.defType(node, typeAnyBecauseOfAny());
+        }
+
+        this.defError(node.value, 'Invalid type for index');
+        return this.defType(node, typeAnyAfterError());
       }
       case 'Attribute': {
         const valueType = this.check(node.value);
@@ -717,24 +725,23 @@ export class TypeChecker {
 
         for (let arg of node.args) {
           if (remainingParams.length == 0) {
-            this.defError(node, `Too many arguments for function call`);
+            this.defError(arg, `Too many arguments for function call`);
             this.symbolTable.pop();
             return this.defType(node, typeAnyAfterError());
           }
           if (arg.kind == 'NamedArgument') {
-            remainingParams = remainingParams.filter((p) => p != arg.name);
-            if (!paramsByName.has(arg.name)) {
+            remainingParams = remainingParams.filter((p) => p != arg.name.name);
+            if (!paramsByName.has(arg.name.name)) {
               this.defError(
-                node,
-                `Unknown parameter name: ${arg.name} in function call`
+                arg.name,
+                `Unknown parameter name: ${arg.name.name} in function call`
               );
-              this.symbolTable.pop();
-              return this.defType(node, typeAnyAfterError());
+              continue;
             }
 
             const expectedParameterType =
-              paramsByName.get(arg.name) ??
-              this.typeAnyImplicitParameter(arg, arg.name);
+              paramsByName.get(arg.name.name) ??
+              this.typeAnyImplicitParameter(arg, arg.name.name);
             this.nextExpectedFunctionType = isFunction(expectedParameterType)
               ? expectedParameterType
               : undefined;
@@ -761,7 +768,7 @@ export class TypeChecker {
         for (let arg of node.args) {
           if (arg.kind == 'PositionalArgument') {
             if (remainingParams.length == 0) {
-              this.defError(node, `Too many arguments for function call`);
+              this.defError(arg, 'Too many arguments for function call');
               this.symbolTable.pop();
               return this.defType(node, typeAnyAfterError());
             }
@@ -991,6 +998,10 @@ function isArray(type: Type): type is TypeArray {
   return type.kind == 'array';
 }
 
+function isDict(type: Type): type is TypeDict {
+  return type.kind == 'dict';
+}
+
 function isRecord(type: Type): type is TypeRecord {
   return type.kind == 'record';
 }
@@ -1159,6 +1170,39 @@ function typeIsAssignableTo(
       reasons: [
         `Type ${type2.kind} is a union type and cannot be assigned to ${type1.kind}`,
       ],
+    };
+  }
+
+  if (type1.kind == 'dict') {
+    if (isDict(type2)) {
+      const result = typeIsAssignableTo(type1.item, type2.item, symbolTable);
+      if (result.result) {
+        return AssignableResult_TRUE;
+      }
+      return {
+        result: false,
+        reasons: ['Incompatible dict type: ' + result.reasons.join(', ')],
+      };
+    }
+    if (type2.kind == 'record') {
+      for (const entry of Object.entries(type2.fields)) {
+        const result = typeIsAssignableTo(type1.item, entry[1], symbolTable);
+        if (!result.result) {
+          return {
+            result: false,
+            reasons: [
+              `Not assignable to dict, because key ${entry[0]} is not assignable: ` +
+                result.reasons.join(', '),
+            ],
+          };
+        }
+      }
+      return AssignableResult_TRUE;
+    }
+
+    return {
+      result: false,
+      reasons: [`Type ${type2.kind} is not assignable to dict`],
     };
   }
 
@@ -1432,6 +1476,8 @@ function mapTypeAst(
         [], // TODO: Update this when generic parameters are supported for type expressions
         mapTypeAst(defError, symtab, typeAst.returnType)
       );
+    case 'dict':
+      return typeDict(mapTypeAst(defError, symtab, typeAst.item));
     default:
       const _: never = typeAst;
       _;
@@ -1518,6 +1564,10 @@ function substituteGenericPlaceholders(
         type.name,
         substituteGenericPlaceholders(type.type, defError, symbolTable)
       );
+    case 'dict':
+      return typeDict(
+        substituteGenericPlaceholders(type.item, defError, symbolTable)
+      );
     case 'generic-placeholder-late-init':
     case 'any':
     case 'number':
@@ -1586,6 +1636,8 @@ function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
       }
       return result;
     }
+    case 'dict':
+      return typeDict(substituteLateInit(type.item, symbolTable));
     case 'any':
     case 'number':
     case 'null':

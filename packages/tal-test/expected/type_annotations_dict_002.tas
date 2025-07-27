@@ -1,0 +1,5 @@
+let b: dict<string> = {a: "ok", b: "ok2", ce: "3"}
+
+let c = b["ce"]
+
+c

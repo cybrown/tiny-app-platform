@@ -4,12 +4,18 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "key",
+        "name": {
+          "kind": "Identifier",
+          "name": "key"
+        },
         "value": "title"
       },
       {
         "kind": "NamedArgument",
-        "name": "value",
+        "name": {
+          "kind": "Identifier",
+          "name": "value"
+        },
         "value": "HTTP Client demo"
       }
     ],
@@ -168,7 +174,10 @@
                 },
                 {
                   "kind": "NamedArgument",
-                  "name": "allowErrorStatusCode",
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "allowErrorStatusCode"
+                  },
                   "value": true
                 }
               ],

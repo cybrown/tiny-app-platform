@@ -9,13 +9,19 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "boolArgTrue",
+        "name": {
+          "kind": "Identifier",
+          "name": "boolArgTrue"
+        },
         "value": true,
         "short": true
       },
       {
         "kind": "NamedArgument",
-        "name": "boolArgFalse",
+        "name": {
+          "kind": "Identifier",
+          "name": "boolArgFalse"
+        },
         "value": false,
         "short": false
       }
@@ -31,7 +37,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "arg1",
+        "name": {
+          "kind": "Identifier",
+          "name": "arg1"
+        },
         "value": "a"
       },
       {
@@ -40,13 +49,19 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "boolArgTrue",
+        "name": {
+          "kind": "Identifier",
+          "name": "boolArgTrue"
+        },
         "value": true,
         "short": true
       },
       {
         "kind": "NamedArgument",
-        "name": "boolArgFalse",
+        "name": {
+          "kind": "Identifier",
+          "name": "boolArgFalse"
+        },
         "value": false,
         "short": false
       }
@@ -66,7 +81,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "boolArgFalse",
+        "name": {
+          "kind": "Identifier",
+          "name": "boolArgFalse"
+        },
         "value": false,
         "short": false
       }

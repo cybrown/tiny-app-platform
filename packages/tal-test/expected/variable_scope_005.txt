@@ -1,2 +1,2 @@
-(7:3) Too many arguments for function call
+(7:16) Too many arguments for function call
 any

@@ -76,12 +76,18 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": 5
       },
       {
         "kind": "NamedArgument",
-        "name": "b",
+        "name": {
+          "kind": "Identifier",
+          "name": "b"
+        },
         "value": 6
       }
     ],
@@ -95,12 +101,18 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "b",
+        "name": {
+          "kind": "Identifier",
+          "name": "b"
+        },
         "value": 7
       },
       {
         "kind": "NamedArgument",
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": 8
       }
     ],
@@ -114,7 +126,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": 3
       },
       {
@@ -132,7 +147,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "b",
+        "name": {
+          "kind": "Identifier",
+          "name": "b"
+        },
         "value": 5
       },
       {
@@ -154,7 +172,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": 8
       }
     ],
@@ -172,7 +193,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "b",
+        "name": {
+          "kind": "Identifier",
+          "name": "b"
+        },
         "value": 0
       }
     ],
@@ -199,7 +223,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": 2
       }
     ],
@@ -213,7 +240,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "b",
+        "name": {
+          "kind": "Identifier",
+          "name": "b"
+        },
         "value": 3
       }
     ],
@@ -227,7 +257,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "c",
+        "name": {
+          "kind": "Identifier",
+          "name": "c"
+        },
         "value": 4
       },
       {
@@ -245,12 +278,18 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "c",
+        "name": {
+          "kind": "Identifier",
+          "name": "c"
+        },
         "value": 5
       },
       {
         "kind": "NamedArgument",
-        "name": "a",
+        "name": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": 2
       }
     ],
@@ -264,12 +303,18 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "c",
+        "name": {
+          "kind": "Identifier",
+          "name": "c"
+        },
         "value": 6
       },
       {
         "kind": "NamedArgument",
-        "name": "b",
+        "name": {
+          "kind": "Identifier",
+          "name": "b"
+        },
         "value": 3
       }
     ],
@@ -287,7 +332,10 @@
         "args": [
           {
             "kind": "NamedArgument",
-            "name": "b",
+            "name": {
+              "kind": "Identifier",
+              "name": "b"
+            },
             "value": 2
           }
         ],
@@ -307,7 +355,10 @@
         "args": [
           {
             "kind": "NamedArgument",
-            "name": "a",
+            "name": {
+              "kind": "Identifier",
+              "name": "a"
+            },
             "value": 4
           }
         ],
@@ -351,7 +402,10 @@
         "args": [
           {
             "kind": "NamedArgument",
-            "name": "a",
+            "name": {
+              "kind": "Identifier",
+              "name": "a"
+            },
             "value": 3
           }
         ],
@@ -408,7 +462,10 @@
         "args": [
           {
             "kind": "NamedArgument",
-            "name": "b",
+            "name": {
+              "kind": "Identifier",
+              "name": "b"
+            },
             "value": 4
           }
         ],

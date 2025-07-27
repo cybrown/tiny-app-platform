@@ -64,6 +64,8 @@ export function typeToString(type: Type): string {
         return typeToString(type.type);
       }
       return 'unresolved';
+    case 'dict':
+      return `dict<${typeToString(type.item)}>`;
     default:
       const _: never = type;
       _;

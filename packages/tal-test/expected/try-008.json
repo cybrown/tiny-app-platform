@@ -16,7 +16,10 @@
               "args": [
                 {
                   "kind": "NamedArgument",
-                  "name": "arg",
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "arg"
+                  },
                   "value": {
                     "kind": "Local",
                     "name": "arg1"

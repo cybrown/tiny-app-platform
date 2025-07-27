@@ -127,7 +127,10 @@
     "args": [
       {
         "kind": "NamedArgument",
-        "name": "value",
+        "name": {
+          "kind": "Identifier",
+          "name": "value"
+        },
         "value": {
           "kind": "Array",
           "value": [
@@ -138,7 +141,10 @@
       },
       {
         "kind": "NamedArgument",
-        "name": "mapper",
+        "name": {
+          "kind": "Identifier",
+          "name": "mapper"
+        },
         "value": {
           "kind": "Function",
           "body": {

@@ -13,7 +13,10 @@
             "args": [
               {
                 "kind": "NamedArgument",
-                "name": "value",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "value"
+                },
                 "value": {
                   "kind": "Local",
                   "name": "n"
@@ -21,7 +24,10 @@
               },
               {
                 "kind": "NamedArgument",
-                "name": "index",
+                "name": {
+                  "kind": "Identifier",
+                  "name": "index"
+                },
                 "value": 0
               }
             ],

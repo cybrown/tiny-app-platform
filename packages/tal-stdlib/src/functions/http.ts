@@ -1,7 +1,20 @@
+import {
+  typeRecord,
+  typeDict,
+  typeString,
+  defineFunction3,
+  RuntimeContext,
+  typeBytes,
+  typeFunction,
+  typeNumber,
+  typeUnion,
+  typeNull,
+  typeArray,
+  typeBoolean,
+} from 'tal-eval';
 import { customRpc } from '../util/custom-rpc';
-import { defineFunction, RuntimeContext } from 'tal-eval';
 
-export const http_request = defineFunction(
+export const http_request = defineFunction3(
   'http_request',
   [
     { name: 'method' },
@@ -11,6 +24,25 @@ export const http_request = defineFunction(
     { name: 'allowErrorStatusCode' },
     { name: 'insecure' },
   ],
+  typeFunction(
+    [
+      { name: 'method', type: typeString() },
+      { name: 'url', type: typeString() },
+      { name: 'headers', type: typeUnion(typeNull(), typeArray(typeString())) },
+      { name: 'body', type: typeUnion(typeNull(), typeBytes(), typeString()) },
+      {
+        name: 'allowErrorStatusCode',
+        type: typeUnion(typeNull(), typeBoolean()),
+      },
+      { name: 'insecure', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeRecord({
+      status: typeNumber(),
+      headers: typeDict(typeString()),
+      body: typeBytes(),
+    })
+  ),
   undefined,
   http_request_impl,
   {
@@ -27,7 +59,7 @@ export const http_request = defineFunction(
   }
 );
 
-export const http = defineFunction(
+export const http = defineFunction3(
   'http',
   [
     { name: 'url' },
@@ -43,6 +75,31 @@ export const http = defineFunction(
     { name: 'patch', onlyNamed: true },
     { name: 'head', onlyNamed: true },
   ],
+  typeFunction(
+    [
+      { name: 'url', type: typeString() },
+      { name: 'body', type: typeUnion(typeNull(), typeString(), typeBytes()) },
+      { name: 'headers', type: typeUnion(typeNull(), typeArray(typeString())) },
+      {
+        name: 'allowErrorStatusCode',
+        type: typeUnion(typeNull(), typeBoolean()),
+      },
+      { name: 'insecure', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'method', type: typeUnion(typeNull(), typeString()) },
+      { name: 'get', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'post', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'put', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'delete', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'patch', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'head', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeRecord({
+      status: typeNumber(),
+      headers: typeDict(typeString()),
+      body: typeBytes(),
+    })
+  ),
   undefined,
   http_impl,
   {
@@ -66,7 +123,7 @@ export const http = defineFunction(
   }
 );
 
-export const http_request_form = defineFunction(
+export const http_request_form = defineFunction3(
   'http_request_form',
   [
     { name: 'method' },
@@ -76,6 +133,25 @@ export const http_request_form = defineFunction(
     { name: 'allowErrorStatusCode' },
     { name: 'insecure' },
   ],
+  typeFunction(
+    [
+      { name: 'method', type: typeUnion(typeNull(), typeString()) },
+      { name: 'url', type: typeString() },
+      { name: 'headers', type: typeUnion(typeNull(), typeArray(typeString())) },
+      { name: 'elements', type: typeDict(typeString()) },
+      {
+        name: 'allowErrorStatusCode',
+        type: typeUnion(typeNull(), typeBoolean()),
+      },
+      { name: 'insecure', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeRecord({
+      status: typeNumber(),
+      headers: typeDict(typeString()),
+      body: typeBytes(),
+    })
+  ),
   undefined,
   http_request_form_impl,
   {

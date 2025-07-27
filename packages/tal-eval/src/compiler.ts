@@ -150,7 +150,7 @@ export class Compiler {
         // Seperate positional and named arguments
         node.args.forEach((arg) => {
           if (arg.kind === 'NamedArgument') {
-            namedArgs.push([arg.name, arg.value]);
+            namedArgs.push([arg.name.name, arg.value]);
           } else if (arg.kind == 'PositionalArgument') {
             positionalArgs.push(arg.value);
           }

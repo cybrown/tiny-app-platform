@@ -12,7 +12,10 @@
     "kind": "Assign",
     "address": {
       "kind": "Attribute",
-      "key": "property",
+      "key": {
+        "kind": "Identifier",
+        "name": "property"
+      },
       "value": {
         "kind": "Local",
         "name": "toto"
@@ -22,7 +25,10 @@
   },
   {
     "kind": "Attribute",
-    "key": "property",
+    "key": {
+      "kind": "Identifier",
+      "name": "property"
+    },
     "value": {
       "kind": "Local",
       "name": "toto"

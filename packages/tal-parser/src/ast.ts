@@ -60,7 +60,7 @@ export type LocalNode = NodeMetadata & {
 
 export type AttributeNode = NodeMetadata & {
   kind: 'Attribute';
-  key: string;
+  key: IdentifierNode;
   value: Node;
 };
 
@@ -295,7 +295,7 @@ export type IntrinsicNode = NodeMetadata & {
 
 export type AttributeLambdaSugarNode = NodeMetadata & {
   kind: 'AttributeLambdaSugar';
-  key: string;
+  key: IdentifierNode;
 };
 
 export type NodeByKind = {

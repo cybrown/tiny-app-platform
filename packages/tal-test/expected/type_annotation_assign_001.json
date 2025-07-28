@@ -32,7 +32,10 @@
       "kind": "Assign",
       "address": {
         "kind": "Attribute",
-        "key": "a",
+        "key": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": {
           "kind": "Index",
           "index": {
@@ -55,7 +58,10 @@
       "kind": "Assign",
       "address": {
         "kind": "Attribute",
-        "key": "a",
+        "key": {
+          "kind": "Identifier",
+          "name": "a"
+        },
         "value": {
           "kind": "Index",
           "index": "index",
@@ -70,7 +76,10 @@
   },
   {
     "kind": "Attribute",
-    "key": "a",
+    "key": {
+      "kind": "Identifier",
+      "name": "a"
+    },
     "value": {
       "kind": "Index",
       "index": {

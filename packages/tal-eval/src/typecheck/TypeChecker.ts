@@ -410,21 +410,26 @@ export class TypeChecker {
           return this.defType(node, typeAnyBecauseOfAny());
         }
 
-        this.defError(node.value, 'Invalid type for index');
+        this.defError(node.value, 'Invalid type for index: ' + typeToString(valueType));
         return this.defType(node, typeAnyAfterError());
       }
       case 'Attribute': {
         const valueType = this.check(node.value);
 
         if (!isAssignableToRecord(valueType)) {
-          this.defError(node.value, 'Invalid type for attribute');
+          this.defError(node.value, 'Invalid type for attribute: ' + typeToString(valueType));
           return this.defType(node, typeAnyAfterError());
         }
 
         if (isRecord(valueType)) {
-          const type = valueType.fields[node.key];
+          const type = valueType.fields[node.key.name];
           if (!type) {
-            this.defError(node, 'Key not found on record: ' + node.key);
+            this.defError(
+              node.key,
+              `Key not found on record: ${
+                node.key.kind
+              }, expected one of [${Object.keys(valueType.fields).join(', ')}]`
+            );
             return this.defType(node, typeAnyAfterError());
           }
           return this.defType(node, type);
@@ -750,7 +755,7 @@ export class TypeChecker {
               this.defError(
                 node,
                 `Argument ${
-                  arg.name
+                  arg.name.name
                 } is not assignable: ${assignmentFailureText(isAssignable)}`
               );
             }

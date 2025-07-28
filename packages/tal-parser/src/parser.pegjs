@@ -223,7 +223,7 @@ TypeAlias
         }
 
 AttributeLambdaSugar
-    = '.' _ key:Identifier
+    = '.' _ key:IdentifierNode
         { return { location: buildLocation(), kind: "AttributeLambdaSugar", key }; }
 
 Comment
@@ -362,7 +362,7 @@ DottedNode
         { return tail.reduce((prev, cur) => ({ ...cur, value: prev }), first); }
 
 DottedNodeTail
-	= '.' _ key:Identifier
+	= '.' _ key:IdentifierNode
     	{ return { location: buildLocation(), kind: 'Attribute', key }; }
 
 KindedRecordEntry

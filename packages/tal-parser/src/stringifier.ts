@@ -130,7 +130,7 @@ class Stringifier {
           this.stringify(obj.value) + '[' + this.stringify(obj.index) + ']'
         );
       case 'Attribute':
-        return this.stringify(obj.value) + '.' + obj.key;
+        return this.stringify(obj.value) + '.' + this.stringify(obj.key);
       case 'Array':
         return this.stringifyArray(obj.value, false);
       case 'Record':
@@ -144,7 +144,7 @@ class Stringifier {
       case 'Comment':
         return this.stringifyComment(obj);
       case 'AttributeLambdaSugar':
-        return '.' + obj.key;
+        return '.' + this.stringify(obj.key);
       case 'TypeAlias':
         return 'type ' + obj.name + ' = ' + this.stringifyType(obj.type);
       case 'Identifier':

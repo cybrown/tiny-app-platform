@@ -13,7 +13,10 @@
     "args": [],
     "value": {
       "kind": "Attribute",
-      "key": "useExportedFunction",
+      "key": {
+        "kind": "Identifier",
+        "name": "useExportedFunction"
+      },
       "value": {
         "kind": "Local",
         "name": "toto"

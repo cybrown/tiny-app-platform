@@ -3,7 +3,10 @@
     "kind": "Assign",
     "address": {
       "kind": "Attribute",
-      "key": "property",
+      "key": {
+        "kind": "Identifier",
+        "name": "property"
+      },
       "value": {
         "kind": "Index",
         "index": {

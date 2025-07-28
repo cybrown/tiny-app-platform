@@ -33,7 +33,10 @@
       },
       "value": {
         "kind": "Attribute",
-        "key": "property",
+        "key": {
+          "kind": "Identifier",
+          "name": "property"
+        },
         "value": {
           "kind": "Local",
           "name": "toto"
@@ -47,7 +50,10 @@
     "index": 3,
     "value": {
       "kind": "Attribute",
-      "key": "property",
+      "key": {
+        "kind": "Identifier",
+        "name": "property"
+      },
       "value": {
         "kind": "Local",
         "name": "toto"

@@ -22,7 +22,10 @@
     ],
     "value": {
       "kind": "Attribute",
-      "key": "add",
+      "key": {
+        "kind": "Identifier",
+        "name": "add"
+      },
       "value": {
         "kind": "Local",
         "name": "mylib"

@@ -211,7 +211,10 @@
                               "index": "content-type",
                               "value": {
                                 "kind": "Attribute",
-                                "key": "headers",
+                                "key": {
+                                  "kind": "Identifier",
+                                  "name": "headers"
+                                },
                                 "value": {
                                   "kind": "Local",
                                   "name": "response"
@@ -337,7 +340,10 @@
                   "kind": "PositionalArgument",
                   "value": {
                     "kind": "Attribute",
-                    "key": "body",
+                    "key": {
+                      "kind": "Identifier",
+                      "name": "body"
+                    },
                     "value": {
                       "kind": "Local",
                       "name": "response"
@@ -1362,7 +1368,10 @@
                                       "key": "status",
                                       "value": {
                                         "kind": "Attribute",
-                                        "key": "status",
+                                        "key": {
+                                          "kind": "Identifier",
+                                          "name": "status"
+                                        },
                                         "value": {
                                           "kind": "Local",
                                           "name": "response"
@@ -1498,7 +1507,10 @@
                                                   "key": "text",
                                                   "value": {
                                                     "kind": "Attribute",
-                                                    "key": "key",
+                                                    "key": {
+                                                      "kind": "Identifier",
+                                                      "name": "key"
+                                                    },
                                                     "value": {
                                                       "kind": "Local",
                                                       "name": "row"
@@ -1550,7 +1562,10 @@
                                                   "key": "text",
                                                   "value": {
                                                     "kind": "Attribute",
-                                                    "key": "value",
+                                                    "key": {
+                                                      "kind": "Identifier",
+                                                      "name": "value"
+                                                    },
                                                     "value": {
                                                       "kind": "Local",
                                                       "name": "row"
@@ -1586,7 +1601,10 @@
                                   "kind": "Pipe",
                                   "first": {
                                     "kind": "Attribute",
-                                    "key": "headers",
+                                    "key": {
+                                      "kind": "Identifier",
+                                      "name": "headers"
+                                    },
                                     "value": {
                                       "kind": "Local",
                                       "name": "response"

@@ -111,7 +111,7 @@ export class Compiler {
             this.compile(node.address.value);
             this.compile(node.value);
             this.appendOpcode('SetAttribute', node.location, {
-              name: node.address.key,
+              name: node.address.key.name,
               forceRender: true,
             });
             break;
@@ -186,7 +186,7 @@ export class Compiler {
       case 'Attribute':
         this.compile(node.value);
         this.appendOpcode('Attribute', node.location, {
-          name: node.key,
+          name: node.key.name,
         });
         break;
       case 'Index':

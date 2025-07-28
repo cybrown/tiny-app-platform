@@ -3,7 +3,10 @@
     "kind": "Switch",
     "value": {
       "kind": "Attribute",
-      "key": "name",
+      "key": {
+        "kind": "Identifier",
+        "name": "name"
+      },
       "value": {
         "kind": "Local",
         "name": "state"

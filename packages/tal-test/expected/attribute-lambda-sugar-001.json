@@ -1,6 +1,9 @@
 [
   {
     "kind": "AttributeLambdaSugar",
-    "key": "toto"
+    "key": {
+      "kind": "Identifier",
+      "name": "toto"
+    }
   }
 ]

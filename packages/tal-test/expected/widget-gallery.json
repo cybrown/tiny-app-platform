@@ -1841,7 +1841,10 @@
                                         "children": [
                                           {
                                             "kind": "Attribute",
-                                            "key": "label",
+                                            "key": {
+                                              "kind": "Identifier",
+                                              "name": "label"
+                                            },
                                             "value": {
                                               "kind": "Local",
                                               "name": "option"
@@ -1972,7 +1975,10 @@
                                         "children": [
                                           {
                                             "kind": "Attribute",
-                                            "key": "label",
+                                            "key": {
+                                              "kind": "Identifier",
+                                              "name": "label"
+                                            },
                                             "value": {
                                               "kind": "Local",
                                               "name": "option"
@@ -2288,7 +2294,10 @@
                       "kind": "Function",
                       "body": {
                         "kind": "Attribute",
-                        "key": "name",
+                        "key": {
+                          "kind": "Identifier",
+                          "name": "name"
+                        },
                         "value": {
                           "kind": "Local",
                           "name": "row"
@@ -2368,7 +2377,10 @@
                                       "key": "text",
                                       "value": {
                                         "kind": "Attribute",
-                                        "key": "name",
+                                        "key": {
+                                          "kind": "Identifier",
+                                          "name": "name"
+                                        },
                                         "value": {
                                           "kind": "Local",
                                           "name": "row"
@@ -2423,7 +2435,10 @@
                                       "key": "text",
                                       "value": {
                                         "kind": "Attribute",
-                                        "key": "age",
+                                        "key": {
+                                          "kind": "Identifier",
+                                          "name": "age"
+                                        },
                                         "value": {
                                           "kind": "Local",
                                           "name": "row"
@@ -2584,7 +2599,10 @@
                                         "right": " years old",
                                         "left": {
                                           "kind": "Attribute",
-                                          "key": "age",
+                                          "key": {
+                                            "kind": "Identifier",
+                                            "name": "age"
+                                          },
                                           "value": {
                                             "kind": "Local",
                                             "name": "row"

@@ -1,5 +1,4 @@
 import {
-  defineFunction2,
   typeBoolean,
   typeNull,
   typeNumber,
@@ -22,27 +21,42 @@ export const number_is_nan = defineFunction3(
   }
 );
 
-export const number_to_string = defineFunction2(
+export const number_to_string = defineFunction3(
   'number_to_string',
   [
-    { name: 'number', type: typeNumber() },
+    { name: 'number' },
     {
       name: 'precision',
-      type: typeUnion(typeNull(), typeNumber()),
       onlyNamed: true,
     },
     {
       name: 'base',
-      type: typeUnion(typeNull(), typeNumber()),
       onlyNamed: true,
     },
     {
       name: 'code',
-      type: typeUnion(typeNull(), typeBoolean()),
       onlyNamed: true,
     },
   ],
-  typeString(),
+  typeFunction(
+    [
+      { name: 'number', type: typeNumber() },
+      {
+        name: 'precision',
+        type: typeUnion(typeNull(), typeNumber()),
+      },
+      {
+        name: 'base',
+        type: typeUnion(typeNull(), typeNumber()),
+      },
+      {
+        name: 'code',
+        type: typeUnion(typeNull(), typeBoolean()),
+      },
+    ],
+    [],
+    typeString()
+  ),
   (_ctx, { number, precision, base, code }) => {
     if (typeof number != 'number') {
       throw new Error('Only numbers are supported');
@@ -104,10 +118,10 @@ export const number_to_string = defineFunction2(
   }
 );
 
-export const number_ceil = defineFunction2(
+export const number_ceil = defineFunction3(
   'number_ceil',
-  [{ name: 'number', type: typeNumber() }],
-  typeNumber(),
+  [{ name: 'number' }],
+  typeFunction([{ name: 'number', type: typeNumber() }], [], typeNumber()),
   (_ctx, { number }) => Math.ceil(number),
   undefined,
   {
@@ -117,10 +131,10 @@ export const number_ceil = defineFunction2(
   }
 );
 
-export const number_floor = defineFunction2(
+export const number_floor = defineFunction3(
   'number_floor',
-  [{ name: 'number', type: typeNumber() }],
-  typeNumber(),
+  [{ name: 'number' }],
+  typeFunction([{ name: 'number', type: typeNumber() }], [], typeNumber()),
   (_ctx, { number }) => Math.floor(number),
   undefined,
   {
@@ -130,13 +144,17 @@ export const number_floor = defineFunction2(
   }
 );
 
-export const number_round = defineFunction2(
+export const number_round = defineFunction3(
   'number_round',
-  [
-    { name: 'number', type: typeNumber() },
-    { name: 'precision', type: typeUnion(typeNull(), typeNumber()) },
-  ],
-  typeNumber(),
+  [{ name: 'number' }, { name: 'precision' }],
+  typeFunction(
+    [
+      { name: 'number', type: typeNumber() },
+      { name: 'precision', type: typeUnion(typeNull(), typeNumber()) },
+    ],
+    [],
+    typeNumber()
+  ),
   (_ctx, { number, precision }) => {
     if (precision == null || precision === 0) {
       return Math.round(number);
@@ -155,10 +173,10 @@ export const number_round = defineFunction2(
   }
 );
 
-export const number_trunc = defineFunction2(
+export const number_trunc = defineFunction3(
   'number_trunc',
-  [{ name: 'number', type: typeNumber() }],
-  typeNumber(),
+  [{ name: 'number' }],
+  typeFunction([{ name: 'number', type: typeNumber() }], [], typeNumber()),
   (_ctx, { number }) => Math.trunc(number),
   undefined,
   {
@@ -168,10 +186,10 @@ export const number_trunc = defineFunction2(
   }
 );
 
-export const number_abs = defineFunction2(
+export const number_abs = defineFunction3(
   'number_abs',
-  [{ name: 'number', type: typeNumber() }],
-  typeNumber(),
+  [{ name: 'number' }],
+  typeFunction([{ name: 'number', type: typeNumber() }], [], typeNumber()),
   (_ctx, { number }) => Math.abs(number),
   undefined,
   {
@@ -181,10 +199,10 @@ export const number_abs = defineFunction2(
   }
 );
 
-export const number_sign = defineFunction2(
+export const number_sign = defineFunction3(
   'number_sign',
-  [{ name: 'number', type: typeNumber() }],
-  typeNumber(),
+  [{ name: 'number' }],
+  typeFunction([{ name: 'number', type: typeNumber() }], [], typeNumber()),
   (_ctx, { number }) => Math.sign(number),
   undefined,
   {
@@ -194,10 +212,10 @@ export const number_sign = defineFunction2(
   }
 );
 
-export const number_random = defineFunction2(
+export const number_random = defineFunction3(
   'number_random',
   [],
-  typeNumber(),
+  typeFunction([], [], typeNumber()),
   (_ctx) => Math.random(),
   undefined,
   {
@@ -207,13 +225,17 @@ export const number_random = defineFunction2(
   }
 );
 
-export const number_randint = defineFunction2(
+export const number_randint = defineFunction3(
   'number_randint',
-  [
-    { name: 'min', type: typeUnion(typeNull(), typeNumber()) },
-    { name: 'max', type: typeUnion(typeNull(), typeNumber()) },
-  ],
-  typeNumber(),
+  [{ name: 'min' }, { name: 'max' }],
+  typeFunction(
+    [
+      { name: 'min', type: typeUnion(typeNull(), typeNumber()) },
+      { name: 'max', type: typeUnion(typeNull(), typeNumber()) },
+    ],
+    [],
+    typeNumber()
+  ),
   (_ctx, { min, max }) => {
     const pMin = min ?? 0;
     const pMax = max ?? 100;

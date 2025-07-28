@@ -19,7 +19,7 @@ export type WidgetDocumentation<T> = {
   props: {
     [K in Exclude<keyof T, 'ctx'>]: string;
   };
-  type: TypeFunction
+  type: TypeFunction;
 };
 
 export interface FetchedSource {
@@ -517,66 +517,18 @@ export function defineFunction<T extends string>(
   ) => any,
   documentation?: FunctionDocumentation<T>
 ) {
-  return defineFunction2(
+  return defineFunction3(
     name,
-    parameters.map((p) => ({ ...p, type: typeAny() })),
-    typeAny(),
+    parameters,
+    typeFunction(
+      parameters.map((p) => ({ name: p.name, type: typeAny() })),
+      [],
+      typeAny()
+    ),
     synchronousImplementation,
     asynchronousImplementation,
     documentation
   );
-}
-
-export function defineFunction2<T extends string>(
-  name: string,
-  parameters: (ParameterDeclaration<T> & { type: Type })[],
-  returnType: Type,
-  synchronousImplementation?: (
-    ctx: RuntimeContext,
-    namedArguments: { [key in T]: any },
-    positionalArguments: any[]
-  ) => any,
-  asynchronousImplementation?: (
-    ctx: RuntimeContext,
-    namedArguments: { [key in T]: any },
-    positionalArguments: any[]
-  ) => any,
-  documentation?: FunctionDocumentation<T>
-) {
-  // TODO: Define one parameter as the pipe entry point
-  const result: RegisterableFunction<T> = {
-    name,
-    documentation,
-    parameters,
-    parametersByName: parameters.reduce((prev, cur) => {
-      prev[cur.name] = cur;
-      return prev;
-    }, {} as RegisterableFunction<T>['parametersByName']),
-    type: typeFunction(
-      parameters.map((p) => ({ name: p.name, type: p.type })),
-      [],
-      returnType
-    ),
-  };
-  if (synchronousImplementation) {
-    result.call = (ctx, namedArguments, positionalArguments) => {
-      return synchronousImplementation(
-        ctx,
-        namedArguments,
-        positionalArguments ?? []
-      );
-    };
-  }
-  if (asynchronousImplementation) {
-    result.callAsync = (ctx, namedArguments, positionalArguments) => {
-      return asynchronousImplementation(
-        ctx,
-        namedArguments,
-        positionalArguments ?? []
-      );
-    };
-  }
-  return result;
 }
 
 export function defineFunction3<T extends string>(

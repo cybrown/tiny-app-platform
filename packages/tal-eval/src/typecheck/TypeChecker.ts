@@ -31,7 +31,7 @@ import { typeToString } from './utils';
 
 export class TypeChecker {
   private types = new Map<Node, Type>();
-  private _errors: [Node, string][] = [];
+  private _errors: [Node | TypeNode, string][] = [];
   private symbolTable = new SymbolTable();
 
   public get errors() {
@@ -47,7 +47,7 @@ export class TypeChecker {
     return type;
   }
 
-  private defError(node: Node, error: string): void {
+  private defError(node: Node | TypeNode, error: string): void {
     this._errors.push([node, error]);
   }
 
@@ -107,8 +107,9 @@ export class TypeChecker {
         let valueType = node.value ? this.check(node.value) : null;
 
         if (node.type) {
+          const type = node.type;
           localType = mapTypeAst(
-            (e) => this.defError(node, e),
+            (n, e) => this.defError(n, e),
             this.symbolTable,
             node.type
           );
@@ -123,7 +124,7 @@ export class TypeChecker {
 
         if (node.type && valueType) {
           const declaredType = mapTypeAst(
-            (e) => this.defError(node, e),
+            (node, e) => this.defError(node, e),
             this.symbolTable,
             node.type
           );
@@ -410,14 +411,20 @@ export class TypeChecker {
           return this.defType(node, typeAnyBecauseOfAny());
         }
 
-        this.defError(node.value, 'Invalid type for index: ' + typeToString(valueType));
+        this.defError(
+          node.value,
+          'Invalid type for index: ' + typeToString(valueType)
+        );
         return this.defType(node, typeAnyAfterError());
       }
       case 'Attribute': {
         const valueType = this.check(node.value);
 
         if (!isAssignableToRecord(valueType)) {
-          this.defError(node.value, 'Invalid type for attribute: ' + typeToString(valueType));
+          this.defError(
+            node.value,
+            'Invalid type for attribute: ' + typeToString(valueType)
+          );
           return this.defType(node, typeAnyAfterError());
         }
 
@@ -587,7 +594,7 @@ export class TypeChecker {
                 name: parameter.name.name,
                 type: parameter.type
                   ? mapTypeAst(
-                      (e) => this.defError(node, e),
+                      (n, e) => this.defError(n, e),
                       this.symbolTable,
                       parameter.type
                     )
@@ -613,7 +620,7 @@ export class TypeChecker {
         if (declaredReturnType) {
           const isAssignable = typeIsAssignableTo(
             mapTypeAst(
-              (e) => this.defError(node, e),
+              (node, e) => this.defError(node, e),
               this.symbolTable,
               declaredReturnType
             ),
@@ -631,7 +638,7 @@ export class TypeChecker {
 
         const realReturnType = declaredReturnType
           ? mapTypeAst(
-              (e) => this.defError(node, e),
+              (node, e) => this.defError(node, e),
               this.symbolTable,
               declaredReturnType
             )
@@ -688,7 +695,7 @@ export class TypeChecker {
               typeGenericPlaceholder,
               (node.typeArgs ?? {})[typeGenericPlaceholder]
                 ? mapTypeAst(
-                    (e) => this.defError(node, e),
+                    (node, e) => this.defError(node, e),
                     this.symbolTable,
                     (node.typeArgs ?? {})[typeGenericPlaceholder]
                   )
@@ -753,7 +760,7 @@ export class TypeChecker {
             this.nextExpectedFunctionTypeIsDefined = 0;
             if (!isAssignable.result) {
               this.defError(
-                node,
+                arg.value,
                 `Argument ${
                   arg.name.name
                 } is not assignable: ${assignmentFailureText(isAssignable)}`
@@ -786,7 +793,7 @@ export class TypeChecker {
             this.nextExpectedFunctionTypeIsDefined = 0;
             if (!isAssignable.result) {
               this.defError(
-                node,
+                arg,
                 `Argument ${currentParamName} is not assignable: ${assignmentFailureText(
                   isAssignable
                 )}`
@@ -804,8 +811,6 @@ export class TypeChecker {
             );
           }
         }
-
-        // TODO: Check args compatibility
 
         // Consider substitution returns the same type when a function type is substituted
         const funType2 = substituteLateInit(
@@ -828,7 +833,11 @@ export class TypeChecker {
       case 'TypeAlias': {
         this.symbolTable.declareTypeAlias(
           node.name,
-          mapTypeAst((e) => this.defError(node, e), this.symbolTable, node.type)
+          mapTypeAst(
+            (node, e) => this.defError(node, e),
+            this.symbolTable,
+            node.type
+          )
         );
         return this.defType(node, typeNull());
       }
@@ -890,7 +899,7 @@ export class TypeChecker {
               name: a.name.name,
               type: a.type
                 ? mapTypeAst(
-                    (e) => this.defError(node.value!, e),
+                    (node, e) => this.defError(node, e),
                     this.symbolTable,
                     a.type
                   )
@@ -903,7 +912,7 @@ export class TypeChecker {
               : [],
             node.value.returnType
               ? mapTypeAst(
-                  (e) => this.defError(node, e),
+                  (node, e) => this.defError(node, e),
                   this.symbolTable,
                   node.value.returnType
                 )
@@ -924,7 +933,7 @@ export class TypeChecker {
 
 export function typeCheck(
   node: Node | Node[]
-): [TypeChecker, Type | null, [Node, string][]] {
+): [TypeChecker, Type | null, [Node | TypeNode, string][]] {
   const typeChecker = new TypeChecker();
   let lastType: Type | null = null;
 
@@ -1417,7 +1426,7 @@ function assignmentFailureText(isAssignable: AssignableResult): string {
 }
 
 function mapTypeAst(
-  defError: (err: string) => void,
+  defError: (node: Node | TypeNode, err: string) => void,
   symtab: SymbolTable,
   typeAst: TypeNode
 ): Type {
@@ -1443,7 +1452,7 @@ function mapTypeAst(
       if (aliasedType) {
         return typeAliased(typeAst.name, aliasedType);
       }
-      defError(`Unknown type alias: ${typeAst.name}`);
+      defError(typeAst, `Unknown type alias: ${typeAst.name}`);
       return typeAnyAfterError();
     case 'kinded-record':
       return typeKindedRecord();

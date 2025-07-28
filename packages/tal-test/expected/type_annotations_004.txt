@@ -1,6 +1,6 @@
 (7:18) Unknown parameter name: c in function call
 (10:15) Unknown parameter name: c in function call
-(25:1) Argument a is not assignable: Type string is not assignable to number
+(25:12) Argument a is not assignable: Type string is not assignable to number
 (28:1) Missing argument for parameter a
 (31:15) Too many arguments for function call
 any

@@ -292,18 +292,18 @@ Type
 
 SimpleType
     = "array" _ "<" _ item:Type _ ">"
-        { return { kind: "array", item}; }
+        { return { location: buildLocation(), kind: "array", item}; }
     / "dict" _ "<" _ item:Type _ ">"
-        { return { kind: "dict", item}; }
+        { return { location: buildLocation(), kind: "dict", item}; }
     / "{" _ fields:(identifier:Identifier _ ":" _ type:Type (',' _)?)* _ "}"
-        { return { kind: "record", fields: Object.fromEntries(fields.map(f => [f[0], f[4]]))}; }
+        { return { location: buildLocation(), kind: "record", fields: Object.fromEntries(fields.map(f => [f[0], f[4]]))}; }
     / "(" _ type:Type _ ")" isFunctionType:((_ '=>') ?)
         & { return !isFunctionType; }
-        { return { kind: "nested", type }; }
+        { return { location: buildLocation(), kind: "nested", type }; }
     / parameters:ParameterList _ "=>" _ returnType:Type
-        { return { kind: "function", parameters, returnType }; }
+        { return { location: buildLocation(), kind: "function", parameters, returnType }; }
     / name:Identifier
-        { return { kind: "named", name }; }
+        { return { location: buildLocation(), kind: "named", name }; }
 
 NamedFunction
     = 'fun' __ name:Identifier _ genericParameters:GenericParameterList? _ parameters:ParameterList _ returnType:(':' _ Type)? _ body:Node

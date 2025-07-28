@@ -63,9 +63,6 @@ export class TypeChecker {
     this.symbolTable.pop();
   }
 
-  private nextExpectedFunctionType?: TypeFunction;
-  private nextExpectedFunctionTypeIsDefined = 0;
-
   checkArray(nodes: Node[]): Type {
     this.predeclareFunctions(nodes);
     let lastType: Type = typeNull();
@@ -76,16 +73,6 @@ export class TypeChecker {
   }
 
   check(node: Node): Type {
-    // Reset stack count for expected function type
-    // When nextExpectedFunctionType is set, the isDefined value is set to 1
-    // When it is already 1, we set it to 2 and remove the nextExpectedFunctionType
-    if (this.nextExpectedFunctionTypeIsDefined == 1) {
-      this.nextExpectedFunctionTypeIsDefined = 2;
-    } else if (this.nextExpectedFunctionTypeIsDefined == 2) {
-      this.nextExpectedFunctionType = undefined;
-      this.nextExpectedFunctionTypeIsDefined = 0;
-    }
-
     switch (node.kind) {
       case 'Literal':
         if (node.value == null) {
@@ -135,7 +122,7 @@ export class TypeChecker {
           );
           if (!assignementResult.result) {
             this.defError(
-              node,
+              node.value!, // Using ! because valueType exists and it exists only if node.value exists
               `Incompatible initial value: ${assignmentFailureText(
                 assignementResult
               )}`
@@ -418,9 +405,15 @@ export class TypeChecker {
         return this.defType(node, typeAnyAfterError());
       }
       case 'Attribute': {
-        const valueType = this.check(node.value);
+        const valueTypeRaw = this.check(node.value);
+        const valueType = this.expandAliasAndGenerics(node.value, valueTypeRaw);
 
-        if (!isAssignableToRecord(valueType)) {
+        const isAssignableToRecordResult = typeIsAssignableTo(
+          typeRecord({}),
+          valueType,
+          this.symbolTable
+        );
+        if (!isAssignableToRecordResult.result) {
           this.defError(
             node.value,
             'Invalid type for attribute: ' + typeToString(valueType)
@@ -450,7 +443,27 @@ export class TypeChecker {
           node,
           typeRecord(
             Object.fromEntries(
-              node.entries.map((entry) => [entry.key, this.check(entry.value)])
+              node.entries.map((entry) => {
+                if (this.currentExpectedType) {
+                  if (this.currentExpectedType.kind == 'record') {
+                    this.pushExpectedType(
+                      this.currentExpectedType.fields[entry.key]
+                    );
+                  } else if (this.currentExpectedType.kind == 'union') {
+                    for (const t of this.currentExpectedType.types) {
+                      if (t.kind == 'record') {
+                        this.pushExpectedType(t);
+                        break;
+                      }
+                    }
+                  }
+                }
+
+                const valueType = this.check(entry.value);
+
+                this.popExpectedType();
+                return [entry.key, valueType];
+              })
             )
           )
         );
@@ -525,17 +538,11 @@ export class TypeChecker {
               return typeAnyAfterError();
             }
 
-            this.nextExpectedFunctionType = isFunction(expectedEntryType)
-              ? expectedEntryType
-              : undefined;
-            if (this.nextExpectedFunctionType) {
-              this.nextExpectedFunctionTypeIsDefined = 1;
-            }
+            this.pushExpectedType(expectedEntryType);
 
             const entryType = this.check(entry.value);
 
-            this.nextExpectedFunctionType = undefined;
-            this.nextExpectedFunctionTypeIsDefined = 0;
+            this.popExpectedType();
 
             const assignmentResult = typeIsAssignableTo(
               expectedEntryType,
@@ -568,11 +575,26 @@ export class TypeChecker {
         return this.defType(node, typeKindedRecord());
       }
       case 'Function': {
-        const expectedParameters = Object.fromEntries(
-          this.nextExpectedFunctionType?.parameters?.map(
-            (p) => [p.name, p.type] as const
-          ) ?? []
-        );
+        let expectedParameters: Record<string, Type> = {};
+
+        if (this.currentExpectedType) {
+          if (this.currentExpectedType.kind == 'function') {
+            expectedParameters = Object.fromEntries(
+              this.currentExpectedType.parameters.map(
+                (p) => [p.name, p.type] as const
+              ) ?? []
+            );
+          } else if (this.currentExpectedType.kind == 'union') {
+            for (const t of this.currentExpectedType.types) {
+              if (t.kind == 'function') {
+                expectedParameters = Object.fromEntries(
+                  t.parameters.map((p) => [p.name, p.type] as const) ?? []
+                );
+                break;
+              }
+            }
+          }
+        }
 
         this.symbolTable.push();
 
@@ -746,18 +768,14 @@ export class TypeChecker {
             const expectedParameterType =
               paramsByName.get(arg.name.name) ??
               this.typeAnyImplicitParameter(arg, arg.name.name);
-            this.nextExpectedFunctionType = isFunction(expectedParameterType)
-              ? expectedParameterType
-              : undefined;
-            this.nextExpectedFunctionTypeIsDefined = 1;
+            this.pushExpectedType(expectedParameterType);
 
             const isAssignable = typeIsAssignableTo(
               expectedParameterType,
               this.check(arg.value),
               this.symbolTable
             );
-            this.nextExpectedFunctionType = undefined;
-            this.nextExpectedFunctionTypeIsDefined = 0;
+            this.popExpectedType();
             if (!isAssignable.result) {
               this.defError(
                 arg.value,
@@ -780,17 +798,13 @@ export class TypeChecker {
             const expectedParameterType =
               paramsByName.get(currentParamName) ??
               this.typeAnyImplicitParameter(arg, currentParamName);
-            this.nextExpectedFunctionType = isFunction(expectedParameterType)
-              ? expectedParameterType
-              : undefined;
-            this.nextExpectedFunctionTypeIsDefined = 1;
+            this.pushExpectedType(expectedParameterType);
             const isAssignable = typeIsAssignableTo(
               expectedParameterType,
               this.check(arg.value),
               this.symbolTable
             );
-            this.nextExpectedFunctionType = undefined;
-            this.nextExpectedFunctionTypeIsDefined = 0;
+            this.popExpectedType();
             if (!isAssignable.result) {
               this.defError(
                 arg,
@@ -861,6 +875,20 @@ export class TypeChecker {
         return this.defType(node, typeAnyAfterError());
       }
     }
+  }
+
+  private expectedTypeStack: Type[] = [];
+
+  private pushExpectedType(type: Type) {
+    this.expectedTypeStack.push(type);
+  }
+
+  private popExpectedType() {
+    this.expectedTypeStack.pop();
+  }
+
+  private get currentExpectedType() {
+    return this.expectedTypeStack.at(-1);
   }
 
   private expandAliasAndGenerics(node: Node, type: Type): Type {
@@ -963,23 +991,15 @@ function isAssignableToString(type: Type, symbolTable: SymbolTable): boolean {
   return typeIsAssignableTo(typeString(), type, symbolTable).result;
 }
 
-function isAssignableToNull(type: Type, symbolTable: SymbolTable): boolean {
-  return typeIsAssignableTo(typeNull(), type, symbolTable).result;
-}
-
 function isNullAssignableTo(type: Type, symbolTable: SymbolTable): boolean {
   return typeIsAssignableTo(type, typeNull(), symbolTable).result;
 }
 
-function isAssignableToArray(type: Type): boolean {
-  if (type.kind == 'aliased') {
-    return isAssignableToArray(type.type);
-  }
-  return type.kind == 'array' || type.kind == 'any';
-}
-
 function isAssignableToRecord(type: Type): boolean {
   if (type.kind == 'aliased') {
+    return isAssignableToRecord(type.type);
+  }
+  if (type.kind == 'generic-placeholder-late-init' && type.type) {
     return isAssignableToRecord(type.type);
   }
   return type.kind == 'record' || type.kind == 'any';

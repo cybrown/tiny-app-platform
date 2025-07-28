@@ -18,7 +18,6 @@ import {
   array_skip,
   array_sort,
   array_take,
-  array_to_record,
   array_find,
   array_find_index,
   array_set,
@@ -197,7 +196,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(array_skip);
   ctx.registerFunction(array_sort);
   ctx.registerFunction(array_take);
-  ctx.registerFunction(array_to_record);
   ctx.registerFunction(bytes_to_string);
   ctx.registerFunction(bytes_from);
   ctx.registerFunction(cheerio_find);

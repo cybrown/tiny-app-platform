@@ -1,9 +1,9 @@
 import {
-  defineFunction,
   defineFunction3,
   typeAny,
   typeArray,
   typeBoolean,
+  typeDict,
   typeFunction,
   typeGenericPlaceholder,
   typeNull,
@@ -12,10 +12,35 @@ import {
   typeUnion,
 } from 'tal-eval';
 
-export const array_group = defineFunction(
+export const array_group = defineFunction3(
   'array_group',
   [{ name: 'array' }, { name: 'key_extractor' }, { name: 'value_extractor' }],
-  // TODO: To type when dict are available
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'key_extractor',
+        type: typeFunction(
+          [{ name: 'item', type: typeGenericPlaceholder('T') }],
+          [],
+          typeString()
+        ),
+      },
+      {
+        name: 'value_extractor',
+        type: typeUnion(
+          typeNull(),
+          typeFunction(
+            [{ name: 'item', type: typeGenericPlaceholder('T') }],
+            [],
+            typeGenericPlaceholder('Value')
+          )
+        ),
+      },
+    ],
+    ['T', 'Value'],
+    typeDict(typeArray(typeGenericPlaceholder('Value')))
+  ),
   (ctx, { array, key_extractor, value_extractor }) => {
     const result: { [key: string]: any } = {};
     (array as any[]).forEach((it) => {
@@ -38,58 +63,6 @@ export const array_group = defineFunction(
       key_extractor: 'A function to extract the key from an element',
       value_extractor:
         'A function to extract the value from an element, optional',
-    },
-    returns:
-      'A record with the keys extracted by key_extractor and the values extracted by value_extractor',
-  }
-);
-
-export const array_to_record = defineFunction(
-  'array_to_record',
-  [
-    { name: 'array' },
-    { name: 'key_extractor' },
-    { name: 'value_extractor' },
-    { name: 'accumulator' },
-  ],
-  // TODO: To type when dict are available, and rename to array_to_dict
-  (ctx, { array, key_extractor, value_extractor, accumulator }) => {
-    const result: { [key: string]: any } = {};
-    if (accumulator) {
-      (array as any[]).forEach((it) => {
-        const key = ctx.callFunction(key_extractor, [it]) as string;
-        const value = value_extractor
-          ? ctx.callFunction(value_extractor, [it])
-          : it;
-        if (result.hasOwnProperty(key)) {
-          result[key] = ctx.callFunction(accumulator, [result[key], value]);
-        } else {
-          result[key] = value;
-        }
-      });
-    } else {
-      (array as any[]).forEach((it) => {
-        const key = ctx.callFunction(key_extractor, [it]) as string;
-        if (result.hasOwnProperty(key)) {
-          throw new Error('Value already defined for key: ' + key);
-        }
-        const value = value_extractor
-          ? ctx.callFunction(value_extractor, [it])
-          : it;
-        result[key] = value;
-      });
-    }
-    return result;
-  },
-  undefined,
-  {
-    description: 'Converts an array to a record',
-    parameters: {
-      array: 'The array to convert',
-      key_extractor: 'A function to extract the key from an element',
-      value_extractor:
-        'A function to extract the value from an element, optional',
-      accumulator: 'A function to accumulate values for the same key, optional',
     },
     returns:
       'A record with the keys extracted by key_extractor and the values extracted by value_extractor',

@@ -1,0 +1,272 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          null
+        ]
+      },
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "arg"
+          },
+          "type": {
+            "kind": "function",
+            "parameters": [
+              {
+                "name": {
+                  "kind": "Identifier",
+                  "name": "val"
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "number"
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "null"
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "null"
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Function",
+          "body": null,
+          "parameters": [
+            {
+              "name": {
+                "kind": "Identifier",
+                "name": "val"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "map"
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map_deep",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          null
+        ]
+      },
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "arg"
+          },
+          "type": {
+            "kind": "record",
+            "fields": {
+              "a": {
+                "kind": "function",
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "val"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "number"
+                    }
+                  }
+                ],
+                "returnType": {
+                  "kind": "named",
+                  "name": "null"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "null"
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Record",
+          "entries": [
+            {
+              "kind": "RecordEntry",
+              "key": "a",
+              "value": {
+                "kind": "Function",
+                "body": null,
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "val"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "map_deep"
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "map_deep2",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Block",
+        "children": [
+          null
+        ]
+      },
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "arg"
+          },
+          "type": {
+            "kind": "record",
+            "fields": {
+              "a": {
+                "kind": "function",
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "val"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "number"
+                    }
+                  }
+                ],
+                "returnType": {
+                  "kind": "named",
+                  "name": "null"
+                }
+              },
+              "b": {
+                "kind": "function",
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "val2"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "string"
+                    }
+                  }
+                ],
+                "returnType": {
+                  "kind": "named",
+                  "name": "null"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "null"
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "PositionalArgument",
+        "value": {
+          "kind": "Record",
+          "entries": [
+            {
+              "kind": "RecordEntry",
+              "key": "a",
+              "value": {
+                "kind": "Function",
+                "body": null,
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "val"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "RecordEntry",
+              "key": "b",
+              "value": {
+                "kind": "Function",
+                "body": null,
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "val2"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "map_deep2"
+    }
+  }
+]

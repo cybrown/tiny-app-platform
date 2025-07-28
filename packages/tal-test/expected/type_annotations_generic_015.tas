@@ -1,0 +1,13 @@
+fun map(arg: (val: number) => null): null { null }
+
+map(val => null)
+
+fun map_deep(arg: {a: (val: number) => null}): null { null }
+
+map_deep({a: val => null})
+
+fun map_deep2(
+  arg: {a: (val: number) => null, b: (val2: string) => null}
+) { null }
+
+map_deep2({a: val => null, b: val2 => null})

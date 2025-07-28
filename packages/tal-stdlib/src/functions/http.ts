@@ -28,7 +28,10 @@ export const http_request = defineFunction3(
     [
       { name: 'method', type: typeString() },
       { name: 'url', type: typeString() },
-      { name: 'headers', type: typeUnion(typeNull(), typeArray(typeString())) },
+      {
+        name: 'headers',
+        type: typeUnion(typeNull(), typeArray(typeArray(typeString()))),
+      },
       { name: 'body', type: typeUnion(typeNull(), typeBytes(), typeString()) },
       {
         name: 'allowErrorStatusCode',
@@ -79,7 +82,10 @@ export const http = defineFunction3(
     [
       { name: 'url', type: typeString() },
       { name: 'body', type: typeUnion(typeNull(), typeString(), typeBytes()) },
-      { name: 'headers', type: typeUnion(typeNull(), typeArray(typeString())) },
+      {
+        name: 'headers',
+        type: typeUnion(typeNull(), typeArray(typeArray(typeString()))),
+      },
       {
         name: 'allowErrorStatusCode',
         type: typeUnion(typeNull(), typeBoolean()),
@@ -137,7 +143,10 @@ export const http_request_form = defineFunction3(
     [
       { name: 'method', type: typeUnion(typeNull(), typeString()) },
       { name: 'url', type: typeString() },
-      { name: 'headers', type: typeUnion(typeNull(), typeArray(typeString())) },
+      {
+        name: 'headers',
+        type: typeUnion(typeNull(), typeArray(typeArray(typeString()))),
+      },
       { name: 'elements', type: typeDict(typeString()) },
       {
         name: 'allowErrorStatusCode',

@@ -13,7 +13,7 @@ import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
 import Documentation from "./Documentation";
 import { Button, View, WindowFrame } from "../theme";
 import { useCallback, useRef, useState } from "react";
-import { walk, parse, Node } from "tal-parser";
+import { walk, parse, Node, TypeNode } from "tal-parser";
 import { secretCreate } from "tal-stdlib";
 import ErrorReportOverlay from "./ErrorReportOverlay";
 import { useErrorReportOverlayController } from "./ErrorReportOverlaySupport";
@@ -247,7 +247,7 @@ export default function SourceTab({
 
   const errorReportOverlayCtrl = useErrorReportOverlayController();
 
-  const [typeErrors, setTypeErrors] = useState<[Node, string][]>([]);
+  const [typeErrors, setTypeErrors] = useState<[Node | TypeNode, string][]>([]);
 
   const handleCheckTypeErrors = useCallback(() => {
     const typeChecker = new TypeChecker();

@@ -4,7 +4,7 @@ import "./Editor.css";
 import * as monaco from "monaco-editor";
 import { EditorApi } from "./EditorApi";
 import { useTheme } from "../theme";
-import { Node } from "tal-parser";
+import { Node, TypeNode } from "tal-parser";
 
 // TODO: Custom themes for each theme ?
 // TODO: IN PROGRESS Syntax coloring: https://microsoft.github.io/monaco-editor/monarch.html
@@ -16,7 +16,7 @@ export function Editor({
   typeErrors,
 }: {
   hidden?: boolean;
-  typeErrors: [Node, string][];
+  typeErrors: [Node | TypeNode, string][];
   setEditorApi(api: EditorApi): void;
   onSave(source: string): void;
 }) {

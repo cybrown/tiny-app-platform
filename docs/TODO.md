@@ -1,11 +1,13 @@
 # Todo list
 
+## Platform
+ [ ] ( ) On error popups, add a button to open editor and put cursor on the correct line
+
 ## Stdlib
  [ ] ( ) Add an option to regexp_find (and _global) to return the first capture group instead (maybe --capture ?)
  [ ] ( ) Add humanize formater (SI decimal scale, SI binary scale, file size, time relative, duration, ...)
 
 ## Editor
-
  [x] ( ) Show type errors directly in editor
  [ ] ( ) Show type of symbol under mouse pointer
  [ ] ( ) Autocomplete expression at current cursor position

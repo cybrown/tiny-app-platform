@@ -49,6 +49,9 @@
 
 ### Type system fundamentals
  [x] (B) Type alias / Named types
+ [ ] ( ) Intersection type
+            Only between records
+            Do not accept same field with different type yet
  [ ] ( ) Investigate recursive types
             Depends on type alias ?
  [ ] ( ) Investigate how to discriminate against union types.

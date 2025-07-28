@@ -13,6 +13,7 @@
  [ ] ( ) Have a search feature with monaco editor
  [ ] ( ) Go to symbol definition with Ctrl + click in editor
  [ ] ( ) Remove or rework type error list
+ [ ] ( ) Automatic typecheck
 
 ## Type Checking
 

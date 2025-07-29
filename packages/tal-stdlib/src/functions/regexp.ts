@@ -1,4 +1,11 @@
-import { defineFunction } from 'tal-eval';
+import {
+  defineFunction3,
+  typeArray,
+  typeBoolean,
+  typeFunction,
+  typeString,
+  typeUnion,
+} from 'tal-eval';
 
 let COMMON_PARAMETERS = {
   str: 'The string to search in',
@@ -7,7 +14,7 @@ let COMMON_PARAMETERS = {
   multiline: 'Whether to treat the string as multiline (default: false)',
 };
 
-export const regexp_find = defineFunction(
+export const regexp_find = defineFunction3(
   'regexp_find',
   [
     { name: 'str' },
@@ -15,6 +22,16 @@ export const regexp_find = defineFunction(
     { name: 'ignoreCase' },
     { name: 'multiline' },
   ],
+  typeFunction(
+    [
+      { name: 'str', type: typeString() },
+      { name: 'regexp', type: typeString() },
+      { name: 'ignoreCase', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'multiline', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeUnion(typeNull(), typeString())
+  ),
   (_ctx, { regexp, str, ignoreCase, multiline }) => {
     const r = buildRegExp(regexp, false, ignoreCase, multiline);
     const match = str.match(r);
@@ -29,7 +46,7 @@ export const regexp_find = defineFunction(
   }
 );
 
-export const regexp_find_global = defineFunction(
+export const regexp_find_global = defineFunction3(
   'regexp_find_global',
   [
     { name: 'str' },
@@ -37,6 +54,16 @@ export const regexp_find_global = defineFunction(
     { name: 'ignoreCase' },
     { name: 'multiline' },
   ],
+  typeFunction(
+    [
+      { name: 'str', type: typeString() },
+      { name: 'regexp', type: typeString() },
+      { name: 'ignoreCase', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'multiline', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeArray(typeString())
+  ),
   (_ctx, { regexp, str, ignoreCase, multiline }) => {
     const r = buildRegExp(regexp, true, ignoreCase, multiline);
     return [...(str.matchAll(r) ?? [])].map(getWholeMatch);
@@ -50,7 +77,7 @@ export const regexp_find_global = defineFunction(
   }
 );
 
-export const regexp_find_groups = defineFunction(
+export const regexp_find_groups = defineFunction3(
   'regexp_find_groups',
   [
     { name: 'str' },
@@ -58,6 +85,16 @@ export const regexp_find_groups = defineFunction(
     { name: 'ignoreCase' },
     { name: 'multiline' },
   ],
+  typeFunction(
+    [
+      { name: 'str', type: typeString() },
+      { name: 'regexp', type: typeString() },
+      { name: 'ignoreCase', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'multiline', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeUnion(typeNull(), typeArray(typeString()))
+  ),
   (_ctx, { regexp, str, ignoreCase, multiline }) => {
     const r = buildRegExp(regexp, false, ignoreCase, multiline);
     const match = str.match(r);
@@ -73,7 +110,7 @@ export const regexp_find_groups = defineFunction(
   }
 );
 
-export const regexp_find_groups_global = defineFunction(
+export const regexp_find_groups_global = defineFunction3(
   'regexp_find_groups_global',
   [
     { name: 'str' },
@@ -81,20 +118,31 @@ export const regexp_find_groups_global = defineFunction(
     { name: 'ignoreCase' },
     { name: 'multiline' },
   ],
+  typeFunction(
+    [
+      { name: 'str', type: typeString() },
+      { name: 'regexp', type: typeString() },
+      { name: 'ignoreCase', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'multiline', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeArray(typeArray(typeString()))
+  ),
   (_ctx, { regexp, str, ignoreCase, multiline }) => {
     const r = buildRegExp(regexp, true, ignoreCase, multiline);
     return [...(str.matchAll(r) ?? [])].map(getGroups);
   },
   undefined,
   {
-    description: 'Find all matches of a regular expression in a string and return their groups',
+    description:
+      'Find all matches of a regular expression in a string and return their groups',
     parameters: COMMON_PARAMETERS,
     returns:
       'An array of all matches with their groups of the regular expression in the string, or null if no match is found',
   }
 );
 
-export const regexp_test = defineFunction(
+export const regexp_test = defineFunction3(
   'regexp_test',
   [
     { name: 'str' },
@@ -102,6 +150,16 @@ export const regexp_test = defineFunction(
     { name: 'multiline' },
     { name: 'ignoreCase' },
   ],
+  typeFunction(
+    [
+      { name: 'str', type: typeString() },
+      { name: 'regexp', type: typeString() },
+      { name: 'ignoreCase', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'multiline', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeBoolean()
+  ),
   (_ctx, { regexp, str, ignoreCase, multiline }) => {
     const r = buildRegExp('^.*' + regexp + '.*$', false, ignoreCase, multiline);
     return r.test(str);
@@ -162,4 +220,7 @@ function buildRegExp(
     return result;
   }
   return REGEXP_CACHE.get(cacheKey)!;
+}
+function typeNull(): any {
+  throw new Error('Function not implemented.');
 }

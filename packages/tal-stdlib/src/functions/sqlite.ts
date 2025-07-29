@@ -1,4 +1,13 @@
-import { defineFunction } from 'tal-eval';
+import {
+  defineFunction3,
+  typeAny,
+  typeBoolean,
+  typeDict,
+  typeFunction,
+  typeNull,
+  typeString,
+  typeUnion,
+} from 'tal-eval';
 import { customRpc } from '../util/custom-rpc';
 
 export type SqliteLogItemData = {
@@ -10,7 +19,7 @@ export type SqliteLogItemData = {
   stage: 'pending' | 'fulfilled' | 'rejected';
 };
 
-export const sqlite_query = defineFunction(
+export const sqlite_query = defineFunction3(
   'sqlite_query',
   [
     { name: 'uri' },
@@ -18,6 +27,16 @@ export const sqlite_query = defineFunction(
     { name: 'params' },
     { name: 'forceResult' },
   ],
+  typeFunction(
+    [
+      { name: 'uri', type: typeString() },
+      { name: 'query', type: typeString() },
+      { name: 'params', type: typeUnion(typeNull(), typeDict(typeAny())) },
+      { name: 'forceResult', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeAny()
+  ),
   undefined,
   async (_ctx, value) => {
     const params = Array.isArray(value.params)

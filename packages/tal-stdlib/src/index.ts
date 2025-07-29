@@ -32,7 +32,6 @@ import {
   typeof$,
   watch,
   eval_js,
-  is_defined,
   set_system_property,
   copy,
   on_create,
@@ -220,7 +219,6 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(http_request_form);
   ctx.registerFunction(http_request);
   ctx.registerFunction(http);
-  ctx.registerFunction(is_defined);
   ctx.registerFunction(jmespath_search);
   ctx.registerFunction(json_parse);
   ctx.registerFunction(json_stringify);

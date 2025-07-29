@@ -1,10 +1,11 @@
-import { defineFunction } from 'tal-eval';
+import { defineFunction3, typeFunction, typeString } from 'tal-eval';
 import { decrypt, getKey, secretCreate } from '../util/secret';
 import { base64_to_bytes } from '../util/base64';
 
-export const secret = defineFunction(
+export const secret = defineFunction3(
   'secret',
   [{ name: 'data' }],
+  typeFunction([{ name: 'data', type: typeString() }], [], typeString()),
   undefined,
   async (ctx, { data }) => {
     const key = await getKey(ctx);
@@ -19,9 +20,10 @@ export const secret = defineFunction(
   }
 );
 
-export const secret_create = defineFunction(
+export const secret_create = defineFunction3(
   'secret_create',
   [{ name: 'data' }],
+  typeFunction([{ name: 'data', type: typeString() }], [], typeString()),
   undefined,
   async (ctx, { data }) => await secretCreate(ctx, data),
   {

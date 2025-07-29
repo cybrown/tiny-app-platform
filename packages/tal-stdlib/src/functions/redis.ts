@@ -1,7 +1,17 @@
 import { customRpc } from '../util/custom-rpc';
-import { defineFunction, RuntimeContext } from 'tal-eval';
+import {
+  defineFunction3,
+  RuntimeContext,
+  typeArray,
+  typeBoolean,
+  typeBytes,
+  typeFunction,
+  typeNull,
+  typeString,
+  typeUnion,
+} from 'tal-eval';
 
-export const redis = defineFunction(
+export const redis = defineFunction3(
   'redis',
   [
     { name: 'url' },
@@ -9,6 +19,16 @@ export const redis = defineFunction(
     { name: 'args' },
     { name: 'insecure' },
   ],
+  typeFunction(
+    [
+      { name: 'url', type: typeString() },
+      { name: 'command', type: typeString() },
+      { name: 'args', type: typeUnion(typeNull(), typeArray(typeString())) },
+      { name: 'insecure', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeBytes()
+  ),
   undefined,
   redis_impl,
   {

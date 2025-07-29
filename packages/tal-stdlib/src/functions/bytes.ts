@@ -1,9 +1,23 @@
-import { defineFunction } from 'tal-eval';
+import {
+  defineFunction,
+  defineFunction3,
+  typeBytes,
+  typeFunction,
+  typeString,
+} from 'tal-eval';
 import { bytes_to_string_impl } from '../util/bytes';
 
-export const bytes_to_string = defineFunction(
+export const bytes_to_string = defineFunction3(
   'bytes_to_string',
   [{ name: 'bytes' }, { name: 'encoding' }],
+  typeFunction(
+    [
+      { name: 'bytes', type: typeBytes() },
+      { name: 'encoding', type: typeString() },
+    ],
+    [],
+    typeString()
+  ),
   (ctx, { bytes, encoding }) => bytes_to_string_impl(bytes, encoding),
   undefined,
   {
@@ -19,6 +33,7 @@ export const bytes_to_string = defineFunction(
 export const bytes_from = defineFunction(
   'bytes_from',
   [],
+  // TODO: Type when varargs are supported for typechecking
   (ctx, {}, bytes) => {
     if (!Array.isArray(bytes)) {
       throw new Error('Array expected');

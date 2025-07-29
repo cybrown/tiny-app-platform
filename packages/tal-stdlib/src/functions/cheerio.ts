@@ -5,6 +5,7 @@ import { CheerioAPI } from 'cheerio';
 export const cheerio_load = defineFunction(
   'cheerio_load',
   [{ name: 'source' }],
+  // TODO: Type when opaque types are supported
   cheerio_load_impl,
   undefined,
   {
@@ -17,6 +18,7 @@ export const cheerio_load = defineFunction(
 export const cheerio_find = defineFunction(
   'cheerio_find',
   [{ name: 'doc' }, { name: 'selector' }],
+  // TODO: Type when opaque types are supported
   cheerio_find_impl,
   undefined,
   {

@@ -1,10 +1,28 @@
-import { RuntimeContext, defineFunction } from 'tal-eval';
+import {
+  RuntimeContext,
+  defineFunction,
+  defineFunction3,
+  typeAny,
+  typeBoolean,
+  typeDict,
+  typeFunction,
+  typeGenericPlaceholder,
+  typeNull,
+  typeNumber,
+  typeString,
+  typeUnion,
+} from 'tal-eval';
 import { Node } from 'tal-parser';
 import { customRpc } from '../util/custom-rpc';
 
-export const on_create = defineFunction(
+export const on_create = defineFunction3(
   'on_create',
   [{ name: 'handler' }],
+  typeFunction(
+    [{ name: 'handler', type: typeFunction([], [], typeAny()) }],
+    [],
+    typeNull()
+  ),
   (ctx, { handler }) => {
     try {
       const ctxForWidget = ctx.ctxForWidgetState;
@@ -37,9 +55,14 @@ export const on_create = defineFunction(
   }
 );
 
-export const on_destroy = defineFunction(
+export const on_destroy = defineFunction3(
   'on_destroy',
   [{ name: 'handler' }],
+  typeFunction(
+    [{ name: 'handler', type: typeFunction([], [], typeAny()) }],
+    [],
+    typeNull()
+  ),
   (ctx, { handler }) => {
     const ctxForWidget = ctx.ctxForWidgetState;
     if (!ctxForWidget) {
@@ -61,9 +84,37 @@ export const on_destroy = defineFunction(
 
 const watches = new WeakMap<RuntimeContext, Map<Node, unknown>>();
 
-export const watch = defineFunction(
+export const watch = defineFunction3(
   'watch',
   [{ name: 'expr' }, { name: 'action' }],
+  typeFunction(
+    [
+      { name: 'expr', type: typeFunction([], [], typeGenericPlaceholder('T')) },
+      {
+        name: 'action',
+        type: typeFunction(
+          [
+            {
+              name: 'oldValue',
+              type: typeUnion(typeNull(), typeGenericPlaceholder('T')),
+            },
+            {
+              name: 'newValue',
+              type: typeGenericPlaceholder('T'),
+            },
+            {
+              name: 'first',
+              type: typeBoolean(),
+            },
+          ],
+          [],
+          typeAny()
+        ),
+      },
+    ],
+    ['T'],
+    typeNull()
+  ),
   (ctx, { expr, action }) => {
     const ctxForWidget = ctx.ctxForWidgetState;
     if (!ctxForWidget) {
@@ -210,9 +261,14 @@ export const throw$ = defineFunction(
   }
 );
 
-export const log = defineFunction(
+export const log = defineFunction3(
   'log',
   [{ name: 'value' }],
+  typeFunction(
+    [{ name: 'value', type: typeGenericPlaceholder('T') }],
+    ['T'],
+    typeGenericPlaceholder('T')
+  ),
   (ctx, { value }, args) => {
     ctx.log('log', value);
     for (const arg of args) {
@@ -232,9 +288,10 @@ export const log = defineFunction(
   }
 );
 
-export const copy = defineFunction(
+export const copy = defineFunction3(
   'copy',
   [{ name: 'text' }],
+  typeFunction([{ name: 'text', type: typeString() }], [], typeString()),
   (_ctx, { text }) => {
     navigator.clipboard.writeText(text);
     return text;
@@ -249,9 +306,17 @@ export const copy = defineFunction(
   }
 );
 
-export const set_system_property = defineFunction(
+export const set_system_property = defineFunction3(
   'set_system_property',
   [{ name: 'key' }, { name: 'value' }],
+  typeFunction(
+    [
+      { name: 'key', type: typeString() },
+      { name: 'value', type: typeString() },
+    ],
+    [],
+    typeNull()
+  ),
   (_ctx, { key, value }) => {
     setSystemProperty(key, value);
     return null;
@@ -295,25 +360,17 @@ function setSystemProperty(key: string, value: unknown) {
   }
 }
 
-export const is_defined = defineFunction(
-  'is_defined',
-  [{ name: 'name' }],
-  (ctx, { name }) => {
-    return ctx.hasLocal(name);
-  },
-  undefined,
-  {
-    description: 'Check if a variable is defined',
-    parameters: {
-      name: 'The name of the variable to check',
-    },
-    returns: 'true if the variable is defined, false otherwise',
-  }
-);
-
-export const eval_js = defineFunction(
+export const eval_js = defineFunction3(
   'eval_js',
   [{ name: 'code' }, { name: 'context' }],
+  typeFunction(
+    [
+      { name: 'code', type: typeString() },
+      { name: 'context', type: typeDict(typeAny()) },
+    ],
+    [],
+    typeAny()
+  ),
   (_ctx, { code, context }) => {
     return new Function(...Object.keys(context), `return (${code})`)(
       ...Object.values(context)
@@ -331,9 +388,10 @@ export const eval_js = defineFunction(
   }
 );
 
-export const exit = defineFunction(
+export const exit = defineFunction3(
   'exit',
   [{ name: 'code' }],
+  typeFunction([{ name: 'code', type: typeNumber() }], [], typeNull()),
   (_ctx, { code }) => {
     try {
       if (typeof window != 'undefined' && (window as any).electronAPI) {

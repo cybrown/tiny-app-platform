@@ -1,7 +1,17 @@
 import { customRpc } from '../util/custom-rpc';
-import { defineFunction, RuntimeContext } from 'tal-eval';
+import {
+  defineFunction3,
+  RuntimeContext,
+  typeAny,
+  typeBoolean,
+  typeDict,
+  typeFunction,
+  typeNull,
+  typeString,
+  typeUnion,
+} from 'tal-eval';
 
-export const pg_query = defineFunction(
+export const pg_query = defineFunction3(
   'pg_query',
   [
     { name: 'uri' },
@@ -10,6 +20,17 @@ export const pg_query = defineFunction(
     { name: 'ssl' },
     { name: 'insecure' },
   ],
+  typeFunction(
+    [
+      { name: 'uri', type: typeString() },
+      { name: 'query', type: typeString() },
+      { name: 'params', type: typeUnion(typeNull(), typeDict(typeAny())) },
+      { name: 'ssl', type: typeUnion(typeNull(), typeBoolean()) },
+      { name: 'insecure', type: typeUnion(typeNull(), typeBoolean()) },
+    ],
+    [],
+    typeAny()
+  ),
   undefined,
   pg_query_impl,
   {

@@ -69,6 +69,84 @@ export const array_group = defineFunction3(
   }
 );
 
+export const array_group_unique = defineFunction3(
+  'array_group_unique',
+  [
+    { name: 'array' },
+    { name: 'key_extractor' },
+    { name: 'value_extractor' },
+    { name: 'accumulator' },
+  ],
+  typeFunction(
+    [
+      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'key_extractor',
+        type: typeFunction(
+          [{ name: 'item', type: typeGenericPlaceholder('T') }],
+          [],
+          typeString()
+        ),
+      },
+      {
+        name: 'value_extractor',
+        type: typeUnion(
+          typeNull(),
+          typeFunction(
+            [{ name: 'item', type: typeGenericPlaceholder('T') }],
+            [],
+            typeGenericPlaceholder('Value')
+          )
+        ),
+      },
+      {
+        name: 'accumulator',
+        type: typeFunction(
+          [
+            { name: 'a', type: typeGenericPlaceholder('Value') },
+            { name: 'b', type: typeGenericPlaceholder('Value') },
+          ],
+          [],
+          typeGenericPlaceholder('Value')
+        ),
+      },
+    ],
+    ['T', 'Value'],
+    typeDict(typeArray(typeGenericPlaceholder('Value')))
+  ),
+  (ctx, { array, key_extractor, value_extractor, accumulator }) => {
+    const result: { [key: string]: unknown } = {};
+    (array as any[]).forEach((it) => {
+      const key = ctx.callFunction(key_extractor, [it]) as string;
+      const value = value_extractor
+        ? ctx.callFunction(value_extractor, [it])
+        : it;
+      if (Object.hasOwn(result, key)) {
+        result[key] = ctx.callFunction(accumulator, [], {
+          a: result[key],
+          b: value,
+        });
+      } else {
+        result[key] = value;
+      }
+    });
+    return result;
+  },
+  undefined,
+  {
+    description: 'Groups an array by a key',
+    parameters: {
+      array: 'The array to group',
+      key_extractor: 'A function to extract the key from an element',
+      value_extractor:
+        'A function to extract the value from an element, optional',
+      accumulator: 'A function to combine values with the same key',
+    },
+    returns:
+      'A dict with the keys extracted by key_extractor, the values extracted by value_extractor and combined by accumulator',
+  }
+);
+
 export const array_append = defineFunction3(
   'array_append',
   [{ name: 'array' }, { name: 'value' }],

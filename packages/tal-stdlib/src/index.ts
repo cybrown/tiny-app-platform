@@ -22,6 +22,7 @@ import {
   array_find_index,
   array_set,
   array_contains,
+  array_group_unique,
 } from './functions/array';
 import { bytes_from, bytes_to_string } from './functions/bytes';
 import { cheerio_find, cheerio_load } from './functions/cheerio';
@@ -183,6 +184,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(array_flat_map);
   ctx.registerFunction(array_get);
   ctx.registerFunction(array_group);
+  ctx.registerFunction(array_group_unique);
   ctx.registerFunction(array_join);
   ctx.registerFunction(array_length);
   ctx.registerFunction(array_map);

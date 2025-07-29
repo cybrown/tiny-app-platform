@@ -6,6 +6,8 @@
 ## Stdlib
  [ ] ( ) Add an option to regexp_find (and _global) to return the first capture group instead (maybe --capture ?)
  [ ] ( ) Add humanize formater (SI decimal scale, SI binary scale, file size, time relative, duration, ...)
+ [ ] ( ) Rich stdlib for dicts
+ [ ] ( ) Rework stdlib for records
 
 ## Editor
  [x] ( ) Show type errors directly in editor
@@ -63,7 +65,7 @@
             Allows for dead code detection
             Use it to type check return and throw expressions as never
  [ ] ( ) `opaque`type that takes a name as parameter to represent resources used by native functions
-            such as cheerio. The name would be used to prevent each
+            such as cheerio. The name would be used to prevent each opaque type kind to be assigned to each other
 
 ### Functions
  [ ] ( ) Make type system aware of only named parameters

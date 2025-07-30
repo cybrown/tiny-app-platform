@@ -538,7 +538,7 @@ export class TypeChecker {
 
             if (!expectedEntryType) {
               this.defError(
-                node,
+                entry.value,
                 `Unknown entry key: ${entry.key} in kinded record`
               );
               this.symbolTable.pop();

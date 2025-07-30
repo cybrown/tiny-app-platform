@@ -8,6 +8,7 @@
  [ ] ( ) Add humanize formater (SI decimal scale, SI binary scale, file size, time relative, duration, ...)
  [ ] ( ) Rich stdlib for dicts
  [ ] ( ) Rework stdlib for records
+ [ ] ( ) Allow most collection functions to use null and infer it as an empty collection
 
 ## Editor
  [x] ( ) Show type errors directly in editor

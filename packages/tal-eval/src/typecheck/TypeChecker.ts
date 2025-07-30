@@ -1640,12 +1640,18 @@ function substituteLateInit(
       }
       return result;
     }
-    case 'union':
-      return typeUnion(
-        ...type.types.map((type) =>
-          substituteLateInit(type, symbolTable, defError)
-        )
-      );
+    case 'union': {
+      let result: Type = type.types[0];
+      for (let i = 1; i < type.types.length; i++) {
+        const newType = substituteLateInit(
+          type.types[i],
+          symbolTable,
+          defError
+        );
+        result = mergeTypes(result, newType, symbolTable);
+      }
+      return result;
+    }
     case 'record':
       return typeRecord(
         Object.fromEntries(

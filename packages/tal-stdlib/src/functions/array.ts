@@ -236,13 +236,14 @@ export const array_length = defineFunction3(
     [
       {
         name: 'array',
-        type: typeArray(typeAny()),
+        type: typeUnion(typeNull(), typeArray(typeAny())),
       },
     ],
     [],
     typeNumber()
   ),
   (_ctx, { array }) => {
+    if (array == null) return 0;
     return array.length;
   },
   undefined,
@@ -251,7 +252,7 @@ export const array_length = defineFunction3(
     parameters: {
       array: 'Array to get the length from',
     },
-    returns: 'Length of the array',
+    returns: 'Length of the array, 0 if null',
   }
 );
 
@@ -626,7 +627,10 @@ export const array_map = defineFunction3(
   [{ name: 'array' }, { name: 'mapper' }],
   typeFunction(
     [
-      { name: 'array', type: typeArray(typeGenericPlaceholder('T')) },
+      {
+        name: 'array',
+        type: typeUnion(typeNull(), typeArray(typeGenericPlaceholder('T'))),
+      },
       {
         name: 'mapper',
         type: typeFunction(
@@ -643,11 +647,13 @@ export const array_map = defineFunction3(
     typeArray(typeGenericPlaceholder('U'))
   ),
   (ctx, { array, mapper }) => {
+    if (array == null) return [];
     return (array as any[]).map((it, index) =>
       ctx.callFunction(mapper, [it, index])
     );
   },
   async (ctx, { array, mapper }) => {
+    if (array == null) return [];
     const result = [];
     for (let index = 0; index < array.length; index++) {
       const it = array[index];

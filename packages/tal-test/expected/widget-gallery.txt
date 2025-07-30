@@ -1,292 +1,162 @@
 (3:3) Unknown symbol: Text
-(3:3) Kind of record must be a function
 (12:3) Unknown symbol: Column
-(12:3) Kind of record must be a function
 (15:5) Unknown symbol: Text
-(15:5) Kind of record must be a function
 (16:5) Unknown symbol: Text
-(16:5) Kind of record must be a function
 (17:5) Unknown symbol: Text
-(17:5) Kind of record must be a function
 (18:5) Unknown symbol: Text
-(18:5) Kind of record must be a function
 (23:5) Unknown symbol: Text
-(23:5) Kind of record must be a function
 (25:5) Unknown symbol: Text
-(25:5) Kind of record must be a function
 (31:5) Unknown symbol: Text
-(31:5) Kind of record must be a function
 (37:5) Unknown symbol: Text
-(37:5) Kind of record must be a function
 (44:5) Unknown symbol: Text
-(44:5) Kind of record must be a function
 (53:5) Unknown symbol: Text
-(53:5) Kind of record must be a function
 (58:5) Unknown symbol: Row
-(58:5) Kind of record must be a function
 (59:7) Unknown symbol: Text
-(59:7) Kind of record must be a function
 (70:3) Unknown symbol: Column
-(70:3) Kind of record must be a function
 (73:5) Unknown symbol: InputText
-(73:5) Kind of record must be a function
 (75:5) Unknown symbol: InputText
-(75:5) Kind of record must be a function
 (80:5) Unknown symbol: InputText
-(80:5) Kind of record must be a function
 (82:5) Unknown symbol: InputText
-(82:5) Kind of record must be a function
 (84:5) Unknown symbol: InputText
-(84:5) Kind of record must be a function
 (90:5) Unknown symbol: InputText
-(90:5) Kind of record must be a function
 (102:3) Unknown symbol: Column
-(102:3) Kind of record must be a function
 (104:5) Unknown symbol: Row
-(104:5) Kind of record must be a function
 (105:7) Unknown symbol: CheckBox
-(105:7) Kind of record must be a function
 (106:7) Unknown symbol: Switch
-(106:7) Kind of record must be a function
 (108:5) Unknown symbol: Row
-(108:5) Kind of record must be a function
 (109:7) Unknown symbol: CheckBox
-(109:7) Kind of record must be a function
 (114:7) Unknown symbol: Switch
-(114:7) Kind of record must be a function
 (120:5) Unknown symbol: Row
-(120:5) Kind of record must be a function
 (121:7) Unknown symbol: CheckBox
-(121:7) Kind of record must be a function
 (126:7) Unknown symbol: Switch
-(126:7) Kind of record must be a function
 (132:5) Unknown symbol: Row
-(132:5) Kind of record must be a function
 (133:7) Unknown symbol: CheckBox
-(133:7) Kind of record must be a function
 (139:7) Unknown symbol: Switch
-(139:7) Kind of record must be a function
 (153:3) Unknown symbol: Column
-(153:3) Kind of record must be a function
 (156:5) Unknown symbol: Switch
-(156:5) Kind of record must be a function
 (158:5) Unknown symbol: Button
-(158:5) Kind of record must be a function
 (160:5) Unknown symbol: Button
-(160:5) Kind of record must be a function
 (163:23) Unknown symbol: log
 (167:5) Unknown symbol: Button
-(167:5) Kind of record must be a function
 (173:5) Unknown symbol: Button
-(173:5) Kind of record must be a function
 (179:5) Unknown symbol: Button
-(179:5) Kind of record must be a function
 (186:5) Unknown symbol: Button
-(186:5) Kind of record must be a function
 (190:23) Unknown symbol: log
 (193:5) Unknown symbol: Button
-(193:5) Kind of record must be a function
 (198:24) Unknown symbol: log
 (206:3) Unknown symbol: Column
-(206:3) Kind of record must be a function
 (208:5) Unknown symbol: Link
-(208:5) Kind of record must be a function
 (218:3) Unknown symbol: Column
-(218:3) Kind of record must be a function
 (221:5) Unknown symbol: Switch
-(221:5) Kind of record must be a function
 (226:5) Unknown symbol: Switch
-(226:5) Kind of record must be a function
 (228:5) Unknown symbol: Row
-(228:5) Kind of record must be a function
 (229:7) Unknown symbol: Select
-(229:7) Kind of record must be a function
 (233:7) Unknown symbol: Text
-(233:7) Kind of record must be a function
 (236:5) Unknown symbol: Pager
-(236:5) Kind of record must be a function
 (241:21) Unknown symbol: string_to_number
 (253:3) Unknown symbol: Column
-(253:3) Kind of record must be a function
 (256:5) Unknown symbol: Switch
-(256:5) Kind of record must be a function
 (258:5) Unknown symbol: Select
-(258:5) Kind of record must be a function
 (264:5) Unknown symbol: Select
-(264:5) Kind of record must be a function
 (270:5) Unknown symbol: Text
-(270:5) Kind of record must be a function
 (271:5) Unknown symbol: Select
-(271:5) Kind of record must be a function
 (276:5) Unknown symbol: Select
-(276:5) Kind of record must be a function
 (283:5) Unknown symbol: Row
-(283:5) Kind of record must be a function
 (285:12) Unknown symbol: array_map
 (297:5) Unknown symbol: Row
-(297:5) Kind of record must be a function
 (299:12) Unknown symbol: array_map
 (328:3) Unknown symbol: Column
-(328:3) Kind of record must be a function
 (331:5) Unknown symbol: CheckBox
-(331:5) Kind of record must be a function
 (336:5) Unknown symbol: CheckBox
-(336:5) Kind of record must be a function
 (338:5) Unknown symbol: CheckBox
-(338:5) Kind of record must be a function
 (340:5) Unknown symbol: CheckBox
-(340:5) Kind of record must be a function
 (345:5) Unknown symbol: CheckBox
-(345:5) Kind of record must be a function
 (347:5) Unknown symbol: Table
-(347:5) Kind of record must be a function
 (348:20) Implicit parameter row, expected parameters: unknown parameter list
 (356:25) Implicit parameter row, expected parameters: unknown parameter list
 (356:32) Unknown symbol: Text
-(356:32) Kind of record must be a function
 (359:39) Implicit parameter row, expected parameters: unknown parameter list
 (359:46) Unknown symbol: Text
-(359:46) Kind of record must be a function
 (364:5) Unknown symbol: Table
-(364:5) Kind of record must be a function
 (372:5) Unknown symbol: Table
-(372:5) Kind of record must be a function
 (381:24) Implicit parameter row, expected parameters: unknown parameter list
 (381:31) Unknown symbol: Text
-(381:31) Kind of record must be a function
 (393:3) Unknown symbol: Column
-(393:3) Kind of record must be a function
 (396:5) Unknown symbol: Switch
-(396:5) Kind of record must be a function
 (398:5) Unknown symbol: Tabs
-(398:5) Kind of record must be a function
 (405:9) Unknown symbol: Row
-(405:9) Kind of record must be a function
 (406:21) Unknown symbol: flex
 (407:11) Unknown symbol: Button
-(407:11) Kind of record must be a function
 (415:19) Unknown symbol: Text
-(415:19) Kind of record must be a function
 (416:19) Unknown symbol: Text
-(416:19) Kind of record must be a function
 (428:3) Unknown symbol: Column
-(428:3) Kind of record must be a function
 (431:5) Unknown symbol: Row
-(431:5) Kind of record must be a function
 (432:7) Unknown symbol: Switch
-(432:7) Kind of record must be a function
 (434:7) Unknown symbol: Switch
-(434:7) Kind of record must be a function
 (440:5) Unknown symbol: Row
-(440:5) Kind of record must be a function
 (441:7) Unknown symbol: Radio
-(441:7) Kind of record must be a function
 (446:7) Unknown symbol: Radio
-(446:7) Kind of record must be a function
 (451:7) Unknown symbol: Radio
-(451:7) Kind of record must be a function
 (458:5) Unknown symbol: Loader
-(458:5) Kind of record must be a function
 (464:5) Unknown symbol: Row
-(464:5) Kind of record must be a function
 (467:7) Unknown symbol: InputText
-(467:7) Kind of record must be a function
 (469:19) Implicit parameter newValue, expected parameters: unknown parameter list
 (469:43) Unknown symbol: string_to_number
 (474:7) Unknown symbol: InputText
-(474:7) Kind of record must be a function
 (476:19) Implicit parameter newValue, expected parameters: unknown parameter list
 (476:41) Unknown symbol: string_to_number
 (480:5) Unknown symbol: Loader
-(480:5) Kind of record must be a function
 (496:3) Unknown symbol: Column
-(496:3) Kind of record must be a function
 (499:5) Unknown symbol: Row
-(499:5) Kind of record must be a function
 (500:7) Unknown symbol: Text
-(500:7) Kind of record must be a function
 (501:7) Unknown symbol: Radio
-(501:7) Kind of record must be a function
 (506:7) Unknown symbol: Radio
-(506:7) Kind of record must be a function
 (511:7) Unknown symbol: Radio
-(511:7) Kind of record must be a function
 (518:5) Unknown symbol: Button
-(518:5) Kind of record must be a function
 (521:24) Type of expression is not compatible during assignment: Type string is not assignable to null
 (522:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (523:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (527:5) Unknown symbol: Button
-(527:5) Kind of record must be a function
 (530:24) Type of expression is not compatible during assignment: Type string is not assignable to null
 (531:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (532:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (536:5) Unknown symbol: Button
-(536:5) Kind of record must be a function
 (539:24) Type of expression is not compatible during assignment: Type string is not assignable to null
 (540:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (541:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (545:5) Unknown symbol: Button
-(545:5) Kind of record must be a function
 (548:24) Type of expression is not compatible during assignment: Type string is not assignable to null
 (549:21) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (550:27) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (555:7) Unknown symbol: Overlay
-(555:7) Kind of record must be a function
 (559:43) Type of expression is not compatible during assignment: Type boolean is not assignable to null
 (562:9) Unknown symbol: Text
-(562:9) Kind of record must be a function
 (563:9) Unknown symbol: Text
-(563:9) Kind of record must be a function
 (572:3) Unknown symbol: Column
-(572:3) Kind of record must be a function
 (575:5) Unknown symbol: Button
-(575:5) Kind of record must be a function
 (577:22) Unknown symbol: unknown_function
 (583:3) Unknown symbol: Column
-(583:3) Kind of record must be a function
 (586:5) Unknown symbol: Snippet
-(586:5) Kind of record must be a function
 (593:1) Unknown symbol: Column
-(593:1) Kind of record must be a function
 (596:3) Unknown symbol: Debug
-(596:3) Kind of record must be a function
 (610:3) Unknown symbol: Column
-(610:3) Kind of record must be a function
 (611:5) Unknown symbol: Row
-(611:5) Kind of record must be a function
 (612:7) Unknown symbol: Text
-(612:7) Kind of record must be a function
 (613:7) Unknown symbol: Select
-(613:7) Kind of record must be a function
 (615:19) Implicit parameter newVal, expected parameters: unknown parameter list
 (617:11) Unknown symbol: set_system_property
 (623:5) Unknown symbol: Row
-(623:5) Kind of record must be a function
 (626:7) Unknown symbol: View
-(626:7) Kind of record must be a function
 (627:7) Unknown symbol: View
-(627:7) Kind of record must be a function
 (628:7) Unknown symbol: View
-(628:7) Kind of record must be a function
 (629:7) Unknown symbol: View
-(629:7) Kind of record must be a function
 (630:7) Unknown symbol: View
-(630:7) Kind of record must be a function
 (631:7) Unknown symbol: View
-(631:7) Kind of record must be a function
 (632:7) Unknown symbol: View
-(632:7) Kind of record must be a function
 (637:7) Unknown symbol: View
-(637:7) Kind of record must be a function
 (638:7) Unknown symbol: View
-(638:7) Kind of record must be a function
 (639:7) Unknown symbol: View
-(639:7) Kind of record must be a function
 (640:7) Unknown symbol: View
-(640:7) Kind of record must be a function
 (641:7) Unknown symbol: View
-(641:7) Kind of record must be a function
 (642:7) Unknown symbol: View
-(642:7) Kind of record must be a function
-() => kinded-record
+kinded-record

@@ -128,7 +128,11 @@ class Lowerer {
             previous = {
               ...current,
               args: [
-                { kind: 'PositionalArgument', value: previous },
+                {
+                  location: previous.location,
+                  kind: 'PositionalArgument',
+                  value: previous,
+                },
                 ...current.args,
               ],
             };
@@ -137,7 +141,13 @@ class Lowerer {
               kind: 'Call',
               location: previous.location,
               value: current,
-              args: [{ kind: 'PositionalArgument', value: previous }],
+              args: [
+                {
+                  location: previous.location,
+                  kind: 'PositionalArgument',
+                  value: previous,
+                },
+              ],
             };
           }
           const nextCurrent = rest.shift();
@@ -301,6 +311,7 @@ class Lowerer {
         return {
           kind: 'Function',
           parameters: [],
+          kindedRecordWrapper: true,
           body: {
             ...node,
             kindOfRecord: this.lowerSingle(node.kindOfRecord),

@@ -1,2 +1,2 @@
-(9:1) If condition must be of type boolean or null
+(9:5) If condition must be of type boolean or null
 {} | null

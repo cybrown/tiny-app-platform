@@ -1,5 +1,5 @@
-(17:1) Return type not compatible: Type null is not assignable to T
-(22:1) Return type not compatible: Type number is not assignable to T
-(27:1) Return type not compatible: Type null is not assignable to T
-(37:1) Return type not compatible: Type T is not assignable to U
+(17:39) Return type not compatible: Type null is not assignable to T
+(22:39) Return type not compatible: Type number is not assignable to T
+(27:34) Return type not compatible: Type null is not assignable to T
+(37:37) Return type not compatible: Type T is not assignable to U
 null

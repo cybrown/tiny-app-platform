@@ -36,7 +36,10 @@ export class SymbolTable {
     mutable: boolean,
     allowRedeclaration?: boolean
   ): boolean {
-    if (Object.hasOwn(this.symbols, name) && !this.symbols[name].allowRedeclaration) {
+    if (
+      Object.hasOwn(this.symbols, name) &&
+      !this.symbols[name].allowRedeclaration
+    ) {
       return false;
     }
     this.symbols[name] = {

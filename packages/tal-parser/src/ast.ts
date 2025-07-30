@@ -250,6 +250,7 @@ export type FunctionNode = NodeMetadata & {
   returnType?: TypeNode;
   genericParameters?: GenericParameterNode[];
   body: Node;
+  kindedRecordWrapper?: true;
 };
 
 export type CommentNode = NodeMetadata & {

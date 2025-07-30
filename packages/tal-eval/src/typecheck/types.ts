@@ -157,10 +157,10 @@ export function typeFunction(
   };
 }
 
-export function typeUnion(...types: Type[]): TypeUnion {
+export function typeUnion(...types: Type[]): Type {
   for (let type of types) {
     if (type.kind == 'any') {
-      throw new Error("Can't build an union type with any");
+      return typeAny();
     }
     if (type.kind == 'union') {
       throw new Error("Can't build an union type within an other union type");

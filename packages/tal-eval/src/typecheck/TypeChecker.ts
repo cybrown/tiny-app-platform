@@ -258,7 +258,10 @@ export class TypeChecker {
             isNullAssignableTo(conditionType, this.symbolTable)
           )
         ) {
-          this.defError(node, 'If condition must be of type boolean or null');
+          this.defError(
+            node.condition,
+            'If condition must be of type boolean or null'
+          );
         }
 
         const trueType = this.check(node.ifTrue);
@@ -474,21 +477,25 @@ export class TypeChecker {
           this.check(node.kindOfRecord)
         );
 
-        if (kindType2.kind == 'any' || kindType2.kind != 'function') {
-          this.defError(node, 'Kind of record must be a function');
+        // Even if the callee is not a kinded object, we can still check the props
+        // and the children
+        for (const entry of node.entries) {
+          if (Array.isArray(entry.value)) {
+            this.checkArray(entry.value);
+          } else {
+            this.check(entry.value);
+          }
+        }
+        for (const child of node.children) {
+          this.check(child);
+        }
 
-          // Even if the callee is not a kinded object, we can still check the props
-          // and the children
-          for (const entry of node.entries) {
-            if (Array.isArray(entry.value)) {
-              this.checkArray(entry.value);
-            } else {
-              this.check(entry.value);
-            }
-          }
-          for (const child of node.children) {
-            this.check(child);
-          }
+        if (kindType2.kind != 'any' && kindType2.kind != 'function') {
+          this.defError(node.kindOfRecord, 'Kind of record must be a function');
+          return typeKindedRecord();
+        }
+
+        if (kindType2.kind == 'any') {
           return typeKindedRecord();
         }
 
@@ -651,7 +658,7 @@ export class TypeChecker {
           );
           if (!isAssignable.result) {
             this.defError(
-              node,
+              declaredReturnType,
               'Return type not compatible: ' +
                 assignmentFailureText(isAssignable)
             );
@@ -676,18 +683,20 @@ export class TypeChecker {
 
         const result = this.defType(
           node,
-          typeFunction(
-            parametersType.map((a) => ({
-              name: a.name,
-              type: a.type,
-            })),
-            node.genericParameters
-              ? node.genericParameters.map(
-                  (genericParameterNode) => genericParameterNode.name
-                )
-              : [],
-            realReturnType
-          )
+          node.kindedRecordWrapper // Hack because kinded records are sometimes lowered with function wrappers
+            ? realReturnType
+            : typeFunction(
+                parametersType.map((a) => ({
+                  name: a.name,
+                  type: a.type,
+                })),
+                node.genericParameters
+                  ? node.genericParameters.map(
+                      (genericParameterNode) => genericParameterNode.name
+                    )
+                  : [],
+                realReturnType
+              )
         );
 
         this.symbolTable.pop();
@@ -827,9 +836,8 @@ export class TypeChecker {
         }
 
         // Consider substitution returns the same type when a function type is substituted
-        const funType2 = substituteLateInit(
-          funType,
-          this.symbolTable
+        const funType2 = substituteLateInit(funType, this.symbolTable, (e) =>
+          this.defError(node, e)
         ) as TypeFunction;
 
         const result = this.defType(node, funType2.returnType);
@@ -905,6 +913,9 @@ export class TypeChecker {
 
   private predeclareFunctions(nodes: Node[]) {
     for (const node of nodes) {
+      if (node.kind == 'TypeAlias') {
+        this.check(node);
+      }
       if (
         node.kind == 'DeclareLocal' &&
         !node.mutable &&
@@ -1194,7 +1205,9 @@ function typeIsAssignableTo(
     return {
       result: false,
       reasons: [
-        `Type ${type2.kind} is a union type and cannot be assigned to ${type1.kind}`,
+        `Type ${typeToString(type2)} cannot be assigned to ${typeToString(
+          type1
+        )}`,
       ],
     };
   }
@@ -1228,7 +1241,7 @@ function typeIsAssignableTo(
 
     return {
       result: false,
-      reasons: [`Type ${type2.kind} is not assignable to dict`],
+      reasons: [`Type ${typeToString(type2)} is not assignable to dict`],
     };
   }
 
@@ -1611,27 +1624,34 @@ function substituteGenericPlaceholders(
   }
 }
 
-function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
+function substituteLateInit(
+  type: Type,
+  symbolTable: SymbolTable,
+  defError: (err: string) => void
+): Type {
   switch (type.kind) {
     case 'array':
-      return typeArray(substituteLateInit(type.item, symbolTable));
+      return typeArray(substituteLateInit(type.item, symbolTable, defError));
     case 'generic-placeholder-late-init': {
       const result = symbolTable.getTypeAlias(type.name);
       if (!result) {
-        throw new Error(`Late init with name <${type.name}> is not defined`);
+        defError(`Late init with name <${type.name}> is not defined`);
+        return typeAnyAfterError();
       }
       return result;
     }
     case 'union':
       return typeUnion(
-        ...type.types.map((type) => substituteLateInit(type, symbolTable))
+        ...type.types.map((type) =>
+          substituteLateInit(type, symbolTable, defError)
+        )
       );
     case 'record':
       return typeRecord(
         Object.fromEntries(
           Object.entries(type.fields).map((t) => [
             t[0],
-            substituteLateInit(t[1], symbolTable),
+            substituteLateInit(t[1], symbolTable, defError),
           ])
         )
       );
@@ -1643,27 +1663,32 @@ function substituteLateInit(type: Type, symbolTable: SymbolTable): Type {
             ? p
             : {
                 name: p.name,
-                type: substituteLateInit(p.type, symbolTable),
+                type: substituteLateInit(p.type, symbolTable, defError),
               }
         ),
         type.genericParameters,
-        substituteLateInit(type.returnType, symbolTable)
+        substituteLateInit(type.returnType, symbolTable, defError)
       );
     }
     case 'aliased':
       if (type.type.kind == 'generic-placeholder-late-init') {
-        return substituteLateInit(type.type, symbolTable);
+        return substituteLateInit(type.type, symbolTable, defError);
       }
-      return typeAliased(type.name, substituteLateInit(type.type, symbolTable));
+      return typeAliased(
+        type.name,
+        substituteLateInit(type.type, symbolTable, defError)
+      );
     case 'generic-placeholder': {
       const result = symbolTable.getTypeAlias(type.name);
       if (!result) {
-        throw new Error(`Late init with name <${type.name}> is not defined`);
+        throw new Error(
+          `Generic placeholder <${type.name}> has not been replaced`
+        );
       }
       return result;
     }
     case 'dict':
-      return typeDict(substituteLateInit(type.item, symbolTable));
+      return typeDict(substituteLateInit(type.item, symbolTable, defError));
     case 'any':
     case 'number':
     case 'null':

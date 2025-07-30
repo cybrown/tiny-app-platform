@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "Pipe",
+    "first": {
+      "kind": "KindedRecord",
+      "kindOfRecord": {
+        "kind": "Local",
+        "name": "Column"
+      },
+      "children": [],
+      "entries": []
+    },
+    "values": [
+      {
+        "kind": "Local",
+        "name": "scroller"
+      }
+    ]
+  }
+]

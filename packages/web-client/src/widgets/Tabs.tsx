@@ -75,7 +75,7 @@ export const TabsDocumentation: WidgetDocumentation<TabsProps> = {
       },
       {
         name: "after",
-        type: typeUnion(typeNull(), typeFunction([], [], typeAny())),
+        type: typeUnion(typeNull(), typeKindedRecord()),
       },
     ],
     [],

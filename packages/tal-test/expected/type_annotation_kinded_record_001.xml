@@ -1,0 +1,8 @@
+<program>
+  <pipe>
+    <kindedrecord>
+      <local />
+    </kindedrecord>
+    <local />
+  </pipe>
+</program>

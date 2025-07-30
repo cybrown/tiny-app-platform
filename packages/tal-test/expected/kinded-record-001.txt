@@ -1,9 +1,5 @@
 (1:1) Unknown symbol: App
-(1:1) Kind of record must be a function
 (3:1) Unknown symbol: Text
-(3:1) Kind of record must be a function
 (5:1) Unknown symbol: View
-(5:1) Kind of record must be a function
 (6:3) Unknown symbol: Text
-(6:3) Kind of record must be a function
-() => kinded-record
+kinded-record

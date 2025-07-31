@@ -1,0 +1,5 @@
+fun Debug(value: number) {
+
+}
+
+Debug { value: a }

@@ -1,0 +1,44 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "Debug",
+    "value": {
+      "kind": "Function",
+      "body": {
+        "kind": "Record",
+        "entries": []
+      },
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "value"
+          },
+          "type": {
+            "kind": "named",
+            "name": "number"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "KindedRecord",
+    "kindOfRecord": {
+      "kind": "Local",
+      "name": "Debug"
+    },
+    "children": [],
+    "entries": [
+      {
+        "kind": "KindedRecordEntry",
+        "key": "value",
+        "value": {
+          "kind": "Local",
+          "name": "a"
+        }
+      }
+    ]
+  }
+]

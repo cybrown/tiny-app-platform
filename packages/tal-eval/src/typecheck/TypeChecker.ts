@@ -477,25 +477,29 @@ export class TypeChecker {
           this.check(node.kindOfRecord)
         );
 
-        // Even if the callee is not a kinded object, we can still check the props
-        // and the children
-        for (const entry of node.entries) {
-          if (Array.isArray(entry.value)) {
-            this.checkArray(entry.value);
-          } else {
-            this.check(entry.value);
+        const basicChildrenAndPropsCheck = () => {
+          // Even if the callee is not a kinded object, we can still check the props
+          // and the children
+          for (const entry of node.entries) {
+            if (Array.isArray(entry.value)) {
+              this.checkArray(entry.value);
+            } else {
+              this.check(entry.value);
+            }
           }
-        }
-        for (const child of node.children) {
-          this.check(child);
-        }
+          for (const child of node.children) {
+            this.check(child);
+          }
+        };
 
         if (kindType2.kind != 'any' && kindType2.kind != 'function') {
           this.defError(node.kindOfRecord, 'Kind of record must be a function');
+          basicChildrenAndPropsCheck();
           return typeKindedRecord();
         }
 
         if (kindType2.kind == 'any') {
+          basicChildrenAndPropsCheck();
           return typeKindedRecord();
         }
 

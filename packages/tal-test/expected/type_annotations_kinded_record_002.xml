@@ -1,0 +1,14 @@
+<program>
+  <declarelocal>
+    <function>
+      <record>
+      </record>
+    </function>
+  </declarelocal>
+  <kindedrecord>
+    <local />
+    <kindedrecordentry>
+      <local />
+    </kindedrecordentry>
+  </kindedrecord>
+</program>

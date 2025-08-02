@@ -1,4 +1,4 @@
-fun box(item: T): {value: T} { {value: item} }
+fun box<T>(item: T): {value: T} { {value: item} }
 
 box(42)
 box(42)

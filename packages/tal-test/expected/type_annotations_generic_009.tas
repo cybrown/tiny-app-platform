@@ -1,4 +1,4 @@
-fun run(n: T, f: (value: T, index: number) => boolean): boolean { f(value: n, index: 0) }
+fun run<T>(n: T, f: (value: T, index: number) => boolean): boolean { f(value: n, index: 0) }
 
 // Parameter index is not defined, but should not be an error
 run(8, value => true)

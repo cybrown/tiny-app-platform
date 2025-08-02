@@ -221,6 +221,10 @@ class Stringifier {
   }
 
   stringifyNamedFunction(obj: DeclareLocalNode, func: FunctionNode): string {
+    const genericParamsList =
+      func.genericParameters && func.genericParameters.length > 0
+        ? '<' + func.genericParameters.map((g) => g.name).join(', ') + '>'
+        : '';
     let argList =
       '(' +
       func.parameters
@@ -244,7 +248,13 @@ class Stringifier {
       this.decrementDepth();
       argList += '\n' + this.depthSpace() + ') ';
     }
-    return 'fun ' + obj.name + argList + this.stringify(func.body);
+    return (
+      'fun ' +
+      obj.name +
+      genericParamsList +
+      argList +
+      this.stringify(func.body)
+    );
   }
 
   stringifyTypeAnnotation(obj: TypeNode | null | undefined): string {

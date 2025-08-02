@@ -1,14 +1,14 @@
-fun map(arr: array<T>, mapper: (in: T) => U): array<U> {
+fun map<T, U>(arr: array<T>, mapper: (in: T) => U): array<U> {
   let a: any
   a
 }
 
-fun filter(arr: array<T>, predicate: (in: T) => boolean): array<T> {
+fun filter<T>(arr: array<T>, predicate: (in: T) => boolean): array<T> {
   let a: any
   a
 }
 
-fun reduce(arr: array<T>, reducer: (in: T) => boolean): T {
+fun reduce<T>(arr: array<T>, reducer: (in: T) => boolean): T {
   let a: any
   a
 }

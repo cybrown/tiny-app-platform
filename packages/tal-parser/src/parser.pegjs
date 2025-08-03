@@ -206,7 +206,7 @@ NodeLevel1
     / NamedFunction
     / Function
 	/ KindedRecord
-    / Local
+    / TypeNarrowing
     / Record
     / Block
     / String
@@ -408,6 +408,14 @@ RecordKey
 Array
 	= '[' _ nodes:(Node _ ','? _ )* ']'
     	{ return { location: buildLocation(), kind: "Array", value: nodes.map(e => ({ ...e[0], newLines: (e[1] ?? 0) + (e[3] ?? 0) })) }; }
+
+TypeNarrowing
+    = local:Local params:typeNarrowingParams?
+        { return params == null ? local : { localtion: buildLocation(), kind: 'TypeNarrowing', expr: local, ...params} }
+
+typeNarrowingParams
+    = _ operator:('is' / 'has') _ not:'not'? _ identifier:IdentifierNode
+        { return {operator, not: !!not, identifier}; }
 
 Local
     = id:Identifier

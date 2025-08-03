@@ -1,0 +1,20 @@
+let a: number | string = 3
+
+fun use_number(b: number) null
+fun use_string(c: string) null
+
+if (a is number) {
+  use_number(a)
+  use_string(a) // KO
+} else {
+  use_number(a) // KO
+  use_string(b)
+}
+
+if (a is string) {
+  use_number(a) // KO
+  use_string(a)
+} else {
+  use_number(a)
+  use_string(b) // KO
+}

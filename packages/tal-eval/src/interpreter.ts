@@ -545,6 +545,33 @@ export class VM {
         this.pc++;
         break;
       }
+      case 'Is': {
+        let result = false;
+        const stackTop = this.stack.pop();
+        if (['boolean', 'number', 'string'].includes(node.type)) {
+          result = typeof stackTop == node.type;
+        } else if (node.type == 'array') {
+          result = Array.isArray(stackTop);
+        } else if (['record', 'dict'].includes(node.type)) {
+          // TODO: Seperate records and dicts as values ?
+          result = stackTop != null && typeof stackTop == 'object';
+        } else if (node.type == 'null') {
+          result = stackTop == null;
+        } else if (node.type == 'function') {
+          throw new Error('Function not supported yet');
+        } else {
+          throw new Error('Type not supported for is: ' + node.type);
+        }
+        if (node.not) result = !result;
+        this.stack.push(result);
+        break;
+      }
+      case 'Has': {
+        let hasMember = Object.hasOwn(this.popObject(), node.identifier);
+        if (node.not) hasMember = !hasMember;
+        this.stack.push(hasMember);
+        break;
+      }
       default: {
         const _: never = node;
         _;

@@ -21,6 +21,7 @@ import {
   CommentNode,
   WhileNode,
   TypeNode,
+  TypeNarrowingNode,
 } from './ast';
 
 export function stringify(value: Node[]): string {
@@ -149,6 +150,8 @@ class Stringifier {
         return 'type ' + obj.name + ' = ' + this.stringifyType(obj.type);
       case 'Identifier':
         return obj.name;
+      case 'TypeNarrowing':
+        return this.stringifyTypeNarrowing(obj);
       case 'Intrinsic':
       case 'SwitchBranch':
       case 'KindedRecordEntry':
@@ -161,6 +164,12 @@ class Stringifier {
         _;
         throw new Error('Failed to stringify kind: ' + (obj as any).kind);
     }
+  }
+
+  stringifyTypeNarrowing(obj: TypeNarrowingNode): string {
+    return `${this.stringify(obj.expr)} ${obj.operator}${
+      obj.not ? ' not' : ''
+    } ${this.stringify(obj.identifier)}`;
   }
 
   stringifyLiteral(obj: LiteralNode): string {

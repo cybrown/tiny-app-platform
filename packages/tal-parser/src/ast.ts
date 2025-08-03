@@ -198,6 +198,14 @@ export type BinaryOperatorNode = NodeMetadata & {
   right: Node;
 };
 
+export type TypeNarrowingNode = NodeMetadata & {
+  kind: 'TypeNarrowing';
+  expr: Node;
+  operator: 'is' | 'has';
+  not: boolean;
+  identifier: IdentifierNode;
+};
+
 export type BlockNode = NodeMetadata & {
   kind: 'Block';
   children: Node[];
@@ -330,6 +338,7 @@ export type NodeByKind = {
   AttributeLambdaSugar: AttributeLambdaSugarNode;
   TypeAlias: TypeAliasNode;
   Identifier: IdentifierNode;
+  TypeNarrowing: TypeNarrowingNode;
 };
 
 export type Node = NodeByKind[keyof NodeByKind];

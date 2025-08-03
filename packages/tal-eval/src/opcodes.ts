@@ -91,6 +91,10 @@ type OpcodeMakeArrayForBlock = { count: number } & OpcodeMetadata;
 
 type OpcodePushLatestError = {} & OpcodeMetadata;
 
+type OpcodeIs = { not: boolean; type: string } & OpcodeMetadata;
+
+type OpcodeHas = { not: boolean; identifier: string } & OpcodeMetadata;
+
 type OpcodeByKind2 = {
   Literal: OpcodeLiteral;
   MakeArray: OpcodeMakeArray;
@@ -117,6 +121,8 @@ type OpcodeByKind2 = {
   Import: OpcodeImport;
   MakeArrayForBlock: OpcodeMakeArrayForBlock;
   PushLatestError: OpcodePushLatestError;
+  Is: OpcodeIs;
+  Has: OpcodeHas;
 };
 
 export type OpcodeByKind = {

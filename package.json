@@ -7,9 +7,10 @@
   },
   "scripts": {
     "start": "turbo start",
-    "build": "turbo build",
+    "build": "turbo build --force",
     "test": "turbo test",
-    "update": "npx npm-check-updates --root -ws -u"
+    "update": "npx npm-check-updates --root -ws -u",
+    "kill-node": "ps | grep node | while read line; do echo $line; done | cut -d ' ' -f 1 | while read line; do kill $line; done"
   },
   "repository": {
     "type": "git",

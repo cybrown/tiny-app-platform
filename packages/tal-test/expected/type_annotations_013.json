@@ -1,0 +1,126 @@
+[
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "a",
+    "value": {
+      "kind": "Function",
+      "body": null,
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "row"
+          },
+          "type": {
+            "kind": "record",
+            "fields": {
+              "name": {
+                "kind": "named",
+                "name": "string"
+              },
+              "age": {
+                "kind": "named",
+                "name": "number"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "b",
+    "value": {
+      "kind": "Function",
+      "body": null,
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "row"
+          },
+          "type": {
+            "kind": "record",
+            "fields": {
+              "name": {
+                "kind": "named",
+                "name": "string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "c",
+    "value": {
+      "kind": "Function",
+      "body": null,
+      "parameters": [
+        {
+          "name": {
+            "kind": "Identifier",
+            "name": "row"
+          },
+          "type": {
+            "kind": "record",
+            "fields": {
+              "age": {
+                "kind": "named",
+                "name": "number"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": false,
+    "name": "d",
+    "value": {
+      "kind": "Array",
+      "value": [
+        {
+          "kind": "Local",
+          "name": "b"
+        },
+        {
+          "kind": "Local",
+          "name": "c"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DeclareLocal",
+    "mutable": true,
+    "name": "a2",
+    "value": {
+      "kind": "Local",
+      "name": "a"
+    }
+  },
+  {
+    "kind": "Assign",
+    "address": {
+      "kind": "Local",
+      "name": "a2"
+    },
+    "value": {
+      "kind": "Index",
+      "index": 0,
+      "value": {
+        "kind": "Local",
+        "name": "d"
+      }
+    }
+  }
+]

@@ -1,0 +1,47 @@
+<program>
+  <typealias>
+    <typealias />
+  </typealias>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <literal />
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <literal />
+      </function>
+    </declarelocal>
+  </comment>
+  <comment>
+    <declarelocal>
+      <function>
+        <literal />
+      </function>
+    </declarelocal>
+  </comment>
+</program>

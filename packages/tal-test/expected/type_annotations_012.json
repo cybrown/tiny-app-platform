@@ -1,0 +1,248 @@
+[
+  {
+    "kind": "TypeAlias",
+    "name": "R",
+    "type": {
+      "kind": "record",
+      "fields": {
+        "name": {
+          "kind": "named",
+          "name": "string"
+        },
+        "age": {
+          "kind": "named",
+          "name": "number"
+        }
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "a1",
+      "type": {
+        "kind": "named",
+        "name": "R"
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "name",
+            "value": "toto"
+          },
+          {
+            "kind": "RecordEntry",
+            "key": "age",
+            "value": 32
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO, missing field age\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "a2",
+      "type": {
+        "kind": "named",
+        "name": "R"
+      },
+      "value": {
+        "kind": "Record",
+        "entries": [
+          {
+            "kind": "RecordEntry",
+            "key": "name",
+            "value": "toto"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "a3",
+      "type": {
+        "kind": "function",
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "row"
+            },
+            "type": {
+              "kind": "record",
+              "fields": {
+                "name": {
+                  "kind": "named",
+                  "name": "string"
+                },
+                "age": {
+                  "kind": "named",
+                  "name": "number"
+                }
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "null"
+        }
+      },
+      "value": {
+        "kind": "Function",
+        "body": null,
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "row"
+            },
+            "type": {
+              "kind": "record",
+              "fields": {
+                "name": {
+                  "kind": "named",
+                  "name": "string"
+                },
+                "age": {
+                  "kind": "named",
+                  "name": "number"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "a4",
+      "type": {
+        "kind": "function",
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "row"
+            },
+            "type": {
+              "kind": "record",
+              "fields": {
+                "name": {
+                  "kind": "named",
+                  "name": "string"
+                },
+                "age": {
+                  "kind": "named",
+                  "name": "number"
+                }
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "null"
+        }
+      },
+      "value": {
+        "kind": "Function",
+        "body": null,
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "row"
+            },
+            "type": {
+              "kind": "record",
+              "fields": {
+                "name": {
+                  "kind": "named",
+                  "name": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO, missing field age in parameter\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": true,
+      "name": "a5",
+      "type": {
+        "kind": "function",
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "row"
+            },
+            "type": {
+              "kind": "record",
+              "fields": {
+                "name": {
+                  "kind": "named",
+                  "name": "string"
+                }
+              }
+            }
+          }
+        ],
+        "returnType": {
+          "kind": "named",
+          "name": "null"
+        }
+      },
+      "value": {
+        "kind": "Function",
+        "body": null,
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "row"
+            },
+            "type": {
+              "kind": "record",
+              "fields": {
+                "name": {
+                  "kind": "named",
+                  "name": "string"
+                },
+                "age": {
+                  "kind": "named",
+                  "name": "number"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]

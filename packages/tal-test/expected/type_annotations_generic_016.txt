@@ -1,0 +1,2 @@
+(20:12) Argument columns is not assignable: Type array<(row: {name: string, age: number}) => null> is not assignable to any types in this union: null | array<(row: {name: string}) => any>
+{}

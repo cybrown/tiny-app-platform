@@ -1,0 +1,297 @@
+[
+  {
+    "kind": "Comment",
+    "text": " OK\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "toto1",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Record",
+          "entries": []
+        },
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "columns"
+            },
+            "type": {
+              "kind": "array",
+              "item": {
+                "kind": "function",
+                "parameters": [
+                  {
+                    "name": {
+                      "kind": "Identifier",
+                      "name": "row"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "T"
+                    }
+                  }
+                ],
+                "returnType": {
+                  "kind": "named",
+                  "name": "any"
+                }
+              }
+            }
+          },
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "data"
+            },
+            "type": {
+              "kind": "array",
+              "item": {
+                "kind": "named",
+                "name": "T"
+              }
+            }
+          }
+        ],
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": {
+          "kind": "Identifier",
+          "name": "data"
+        },
+        "value": {
+          "kind": "Array",
+          "value": [
+            {
+              "kind": "Record",
+              "entries": [
+                {
+                  "kind": "RecordEntry",
+                  "key": "name",
+                  "value": "ok"
+                },
+                {
+                  "kind": "RecordEntry",
+                  "key": "age",
+                  "value": 3
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "kind": "NamedArgument",
+        "name": {
+          "kind": "Identifier",
+          "name": "columns"
+        },
+        "value": {
+          "kind": "Array",
+          "value": [
+            {
+              "kind": "Function",
+              "body": null,
+              "parameters": [
+                {
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "row"
+                  },
+                  "type": {
+                    "kind": "record",
+                    "fields": {
+                      "name": {
+                        "kind": "named",
+                        "name": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "Function",
+              "body": null,
+              "parameters": [
+                {
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "row"
+                  },
+                  "type": {
+                    "kind": "record",
+                    "fields": {
+                      "age": {
+                        "kind": "named",
+                        "name": "number"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "toto1"
+    }
+  },
+  {
+    "kind": "Comment",
+    "text": " KO\r",
+    "node": {
+      "kind": "DeclareLocal",
+      "mutable": false,
+      "name": "toto2",
+      "value": {
+        "kind": "Function",
+        "body": {
+          "kind": "Record",
+          "entries": []
+        },
+        "parameters": [
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "columns"
+            },
+            "type": {
+              "kind": "union",
+              "types": [
+                {
+                  "kind": "named",
+                  "name": "null"
+                },
+                {
+                  "kind": "array",
+                  "item": {
+                    "kind": "function",
+                    "parameters": [
+                      {
+                        "name": {
+                          "kind": "Identifier",
+                          "name": "row"
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "T"
+                        }
+                      }
+                    ],
+                    "returnType": {
+                      "kind": "named",
+                      "name": "any"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": {
+              "kind": "Identifier",
+              "name": "data"
+            },
+            "type": {
+              "kind": "array",
+              "item": {
+                "kind": "named",
+                "name": "T"
+              }
+            }
+          }
+        ],
+        "genericParameters": [
+          {
+            "name": "T"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "Call",
+    "args": [
+      {
+        "kind": "NamedArgument",
+        "name": {
+          "kind": "Identifier",
+          "name": "data"
+        },
+        "value": {
+          "kind": "Array",
+          "value": [
+            {
+              "kind": "Record",
+              "entries": [
+                {
+                  "kind": "RecordEntry",
+                  "key": "name",
+                  "value": "ok"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "kind": "NamedArgument",
+        "name": {
+          "kind": "Identifier",
+          "name": "columns"
+        },
+        "value": {
+          "kind": "Array",
+          "value": [
+            {
+              "kind": "Function",
+              "body": null,
+              "parameters": [
+                {
+                  "name": {
+                    "kind": "Identifier",
+                    "name": "row"
+                  },
+                  "type": {
+                    "kind": "record",
+                    "fields": {
+                      "name": {
+                        "kind": "named",
+                        "name": "string"
+                      },
+                      "age": {
+                        "kind": "named",
+                        "name": "number"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "value": {
+      "kind": "Local",
+      "name": "toto2"
+    }
+  }
+]

@@ -1,0 +1,54 @@
+<program>
+  <comment>
+    <declarelocal>
+      <function>
+        <record>
+        </record>
+      </function>
+    </declarelocal>
+  </comment>
+  <call>
+    <local />
+    <array>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </array>
+    <array>
+      <function>
+        <literal />
+      </function>
+      <function>
+        <literal />
+      </function>
+    </array>
+  </call>
+  <comment>
+    <declarelocal>
+      <function>
+        <record>
+        </record>
+      </function>
+    </declarelocal>
+  </comment>
+  <call>
+    <local />
+    <array>
+      <record>
+        <recordentry>
+          <literal />
+        </recordentry>
+      </record>
+    </array>
+    <array>
+      <function>
+        <literal />
+      </function>
+    </array>
+  </call>
+</program>

@@ -1,0 +1,23 @@
+// OK
+
+fun toto1<T>(columns: array<(row: T) => any>, data: array<T>) {}
+
+toto1(
+  data:    [{name: "ok", age: 3}]
+  columns: [
+    (row: {name: string}) => null
+    (row: {age: number}) => null
+  ]
+)
+
+
+// KO
+
+fun toto2<T>(columns: null | array<(row: T) => any>, data: array<T>) {}
+
+toto2(
+  data:    [{name: "ok"}]
+  columns: [
+    (row: {name: string, age: number}) => null
+  ]
+)

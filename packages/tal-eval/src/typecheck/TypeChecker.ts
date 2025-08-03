@@ -1204,16 +1204,25 @@ function typeIsAssignableTo(
     };
   }
 
-  // A union type is not assignable to a non union type
+  // A union type is assignable to a non union type if all the members of the union are assignable
   if (isUnion(type2)) {
-    return {
-      result: false,
-      reasons: [
-        `Type ${typeToString(type2)} cannot be assigned to ${typeToString(
-          type1
-        )}`,
-      ],
-    };
+    for (let type2Item of type2.types) {
+      const result = typeIsAssignableTo(type1, type2Item, symbolTable);
+      if (!result.result) {
+        return {
+          result: false,
+          reasons: [
+            `Type ${typeToString(
+              type2Item
+            )} cannot be assigned to ${typeToString(
+              type1
+            )}: ${result.reasons.join(', ')}`,
+          ],
+        };
+      }
+    }
+
+    return AssignableResult_TRUE;
   }
 
   if (type1.kind == 'dict') {
@@ -1409,8 +1418,8 @@ function typeIsAssignableTo(
         };
       }
       const result = typeIsAssignableTo(
-        type1ParamsByName[param.name] ?? typeNull(),
         param.type,
+        type1ParamsByName[param.name] ?? typeNull(),
         symbolTable
       );
       if (!result.result) {
@@ -1426,9 +1435,10 @@ function typeIsAssignableTo(
         };
       }
     }
+
+    return AssignableResult_TRUE;
   }
 
-  // For non union types other than any, their kinds must be the same
   return type1.kind == type2.kind
     ? AssignableResult_TRUE
     : {

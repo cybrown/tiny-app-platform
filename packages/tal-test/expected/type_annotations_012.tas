@@ -1,0 +1,16 @@
+type R = {name: string, age: number}
+
+// OK
+let a1: R = {name: "toto", age: 32}
+
+// KO, missing field age
+let a2: R = {name: "toto"}
+
+// OK
+fun a3(row: {name: string, age: number}) null
+
+// OK
+fun a4(row: {name: string}) null
+
+// KO, missing field age in parameter
+fun a5(row: {name: string, age: number}) null

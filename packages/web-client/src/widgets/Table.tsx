@@ -207,24 +207,27 @@ export const TableDocumentation: WidgetDocumentation<TableProps> = {
         type: typeUnion(
           typeNull(),
           typeArray(
-            typeRecord({
-              description: typeString(),
-              display: typeFunction(
-                [{ name: "row", type: typeGenericPlaceholder("T") }],
-                [],
-                typeAny()
-              ),
-              sort: typeUnion(
-                typeNull(),
-                typeFunction(
+            typeUnion(
+              typeString(),
+              typeRecord({
+                description: typeString(),
+                display: typeFunction(
                   [{ name: "row", type: typeGenericPlaceholder("T") }],
                   [],
                   typeAny()
-                )
-              ),
-              width: typeUnion(typeNull(), typeNumber()),
-              useRemaining: typeUnion(typeNull(), typeBoolean()),
-            })
+                ),
+                sort: typeUnion(
+                  typeNull(),
+                  typeFunction(
+                    [{ name: "row", type: typeGenericPlaceholder("T") }],
+                    [],
+                    typeAny()
+                  )
+                ),
+                width: typeUnion(typeNull(), typeNumber()),
+                useRemaining: typeUnion(typeNull(), typeBoolean()),
+              })
+            )
           )
         ),
       },

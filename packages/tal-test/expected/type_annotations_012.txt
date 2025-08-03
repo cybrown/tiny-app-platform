@@ -1,0 +1,3 @@
+(10:13) Incompatible initial value: Non nullable field age is missing
+(21:41) Incompatible initial value: Parameter row from (row: {name: string, age: number}) => null is not assignable to {name: string, age: number}: Non nullable field age is missing
+null

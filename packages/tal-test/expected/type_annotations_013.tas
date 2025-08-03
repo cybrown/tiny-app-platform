@@ -1,0 +1,11 @@
+fun a(row: {name: string, age: number}) null
+fun b(row: {name: string}) null
+fun c(row: {age: number}) null
+
+let d = [
+  b
+  c
+]
+
+var a2 = a
+set a2 = d[0]

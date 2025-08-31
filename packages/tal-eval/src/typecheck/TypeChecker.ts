@@ -867,6 +867,9 @@ export class TypeChecker {
         );
         return this.defType(node, typeNull());
       }
+      case 'TypeNarrowing':
+        break;
+      // TODO: CONTINUE HERE
       case 'Export':
       case 'Switch':
       case 'Comment':

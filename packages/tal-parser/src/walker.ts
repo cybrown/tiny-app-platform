@@ -147,6 +147,9 @@ function* walkSingle(node: Node): Iterable<NodeWithParents> {
         yield* walk(node.node);
       }
       break;
+    case 'TypeNarrowing':
+      yield* walk(node.expr);
+      break;
 
     // Leaves
     case 'Literal':

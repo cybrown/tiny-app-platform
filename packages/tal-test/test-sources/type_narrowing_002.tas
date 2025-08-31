@@ -1,0 +1,14 @@
+let a: number | string = 3
+let b: boolean | {name: string} | {age: number}
+
+fun use_number(b: number) null
+fun use_string(c: string) null
+
+if (a is number && b is record && b has name) {
+  use_number(a)
+  use_string(b.name)
+} else if (b is record && b has age) {
+  use_number(a) // KO
+  b.name // KO
+  use_number(b.age)
+}

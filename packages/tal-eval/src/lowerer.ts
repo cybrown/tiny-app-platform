@@ -436,6 +436,12 @@ class Lowerer {
       case 'TypeAlias': {
         return node;
       }
+      case 'TypeNarrowing': {
+        return {
+          ...node,
+          expr: this.lowerSingle(node.expr),
+        };
+      }
       case 'KindedRecordEntry':
       case 'RecordEntry':
       case 'NamedArgument':

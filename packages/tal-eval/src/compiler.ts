@@ -399,6 +399,22 @@ export class Compiler {
         }
         return;
       }
+      case 'TypeNarrowing': {
+        this.compile(node.expr);
+        if (node.operator == 'is') {
+          this.appendOpcode('Is', node.location, {
+            not: node.not,
+            type: node.identifier.name,
+          });
+        } else if (node.operator == 'has') {
+          this.appendOpcode('Has', node.location, {
+            not: node.not,
+            identifier: node.identifier.name,
+          });
+        } else {
+          throw new Error('Unexpected node operator: ' + node.operator);
+        }
+      }
       case 'TypeAlias':
         // Type aliases are not compiled, they are only used for type checking
         return;

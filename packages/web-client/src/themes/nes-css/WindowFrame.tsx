@@ -17,12 +17,16 @@ export function WindowFrame({
       } ${title != null ? "with-title" : ""}`}
     >
       <p className="title" style={drag ? ELECTRON_DRAG : {}}>
-        <i
-          className="nes-icon close is-small"
-          onClick={onClose}
-          style={ELECTRON_NO_DRAG}
-        ></i>
-        {"\u00A0"}
+        {onClose ? (
+          <>
+            <i
+              className="nes-icon close is-small"
+              onClick={onClose}
+              style={ELECTRON_NO_DRAG}
+            ></i>
+            {"\u00A0"}
+          </>
+        ) : null}
         {title}
       </p>
       <div className={styles.Body}>{children}</div>

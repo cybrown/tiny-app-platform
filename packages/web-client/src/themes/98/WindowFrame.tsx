@@ -12,9 +12,11 @@ export default function WindowFrame({
     <div className={`window ${styles.WindowFrame}`}>
       <div className="title-bar" style={drag ? ELECTRON_DRAG : {}}>
         <div className="title-bar-text">{title}</div>
-        <div className="title-bar-controls" style={ELECTRON_NO_DRAG}>
-          <button aria-label="Close" onClick={onClose}></button>
-        </div>
+        {onClose ? (
+          <div className="title-bar-controls" style={ELECTRON_NO_DRAG}>
+            <button aria-label="Close" onClick={onClose}></button>
+          </div>
+        ) : null}
       </div>
       <div className={styles.Body}>
         <div className="window-body">{children}</div>

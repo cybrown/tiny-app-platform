@@ -206,7 +206,7 @@ export type WindowFrameProps = {
   modal?: boolean;
   drag?: boolean;
   size?: string;
-  onClose(): void;
+  onClose?(): void;
 } & React.PropsWithChildren;
 
 interface ColorScale {

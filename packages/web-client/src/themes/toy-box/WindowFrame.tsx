@@ -12,7 +12,7 @@ export function WindowFrame({
   footer,
   modal,
   drag,
-  size
+  size,
 }: WindowFrameProps) {
   return (
     <div
@@ -22,9 +22,11 @@ export function WindowFrame({
     >
       <div className={styles.Header} style={drag ? ELECTRON_DRAG : {}}>
         {title ? <Text text={title} size={1.2} /> : null}
-        <div style={ELECTRON_NO_DRAG}>
-          <Link text="Close" onClick={onClose} url="#" />
-        </div>
+        {onClose ? (
+          <div style={ELECTRON_NO_DRAG}>
+            <Link text="Close" onClick={onClose} url="#" />
+          </div>
+        ) : null}
       </div>
       <div className={styles.Body}>{children}</div>
       {footer ? <div className={styles.Footer}>{footer}</div> : null}

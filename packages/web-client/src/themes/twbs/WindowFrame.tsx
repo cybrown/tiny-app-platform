@@ -21,14 +21,16 @@ export function WindowFrame({
         <div className={`modal-content ${isDrawer ? styles.drawer : ""}`}>
           <div className="modal-header" style={drag ? ELECTRON_DRAG : {}}>
             <h5 className="modal-title">{title}</h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              onClick={onClose}
-              style={ELECTRON_NO_DRAG}
-            ></button>
+            {onClose ? (
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={onClose}
+                style={ELECTRON_NO_DRAG}
+              ></button>
+            ) : null}
           </div>
           <div className={`modal-body ${styles.Body}`}>{children}</div>
         </div>

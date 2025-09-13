@@ -40,7 +40,7 @@ export default function Overlay({
 }: OverlayProps) {
   const childContext = ctx.createChild({});
   const onCloseHandler = useCallback(() => {
-    onClose && ctx.callFunctionAsync(onClose, []);
+    if (onClose) ctx.callFunctionAsync(onClose, []);
   }, [ctx, onClose]);
 
   const content = (children ?? [])
@@ -66,7 +66,7 @@ export default function Overlay({
       ) : (
         <WindowFrame
           title={title}
-          onClose={onCloseHandler}
+          onClose={onClose ? onCloseHandler : undefined}
           position={position}
           modal={modal ?? true}
           size={size}

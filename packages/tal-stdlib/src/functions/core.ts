@@ -226,9 +226,17 @@ export const typeof$ = defineFunction(
   }
 );
 
-export const default$ = defineFunction(
+export const default$ = defineFunction3(
   'default',
-  [],
+  [{ name: 'value' }, { name: 'orElse' }],
+  typeFunction(
+    [
+      { name: 'value', type: typeGenericPlaceholder('T') },
+      { name: 'orElse', type: typeGenericPlaceholder('T') },
+    ],
+    ['T'],
+    typeGenericPlaceholder('T')
+  ),
   (_ctx, _kwargs, args) => {
     for (let arg of args) {
       if (arg != null) {
@@ -240,7 +248,10 @@ export const default$ = defineFunction(
   undefined,
   {
     description: 'Returns the first non null value',
-    parameters: {},
+    parameters: {
+      value: 'Value if not null',
+      orElse: 'Value if value is null',
+    },
     returns: 'The first non null value or null if all are null',
   }
 );

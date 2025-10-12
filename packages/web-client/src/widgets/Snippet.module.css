@@ -31,19 +31,7 @@
   white-space: pre-wrap;
 }
 
-.Snippet .fullScreen {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  position: fixed;
-  z-index: 1;
-  background-color: azure;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-}
-
-.Snippet .floatingFullscreenToolbar {
+.floatingFullscreenToolbar {
   position: absolute;
   top: 2px;
   right: 2px;
@@ -52,4 +40,16 @@
 .scroller {
   overflow: auto;
   height: 100%;
+}
+
+.snippetContainer {
+  position: relative;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.snippetContent {
+  max-height: 100%;
+  overflow: auto;
 }

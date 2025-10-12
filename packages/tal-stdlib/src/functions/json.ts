@@ -9,6 +9,7 @@ import {
 } from 'tal-eval';
 import { search } from 'jmespath';
 import { bytes_to_string_impl } from '../util/bytes';
+import { typeBoolean } from 'tal-eval';
 
 export const json_parse = defineFunction3(
   'json_parse',
@@ -43,7 +44,14 @@ export const json_parse = defineFunction3(
 export const json_stringify = defineFunction3(
   'json_stringify',
   [{ name: 'input' }, { name: 'format' }],
-  typeFunction([{ name: 'input', type: typeAny() }], [], typeString()),
+  typeFunction(
+    [
+      { name: 'input', type: typeAny() },
+      { name: 'format', type: typeUnion(typeBoolean(), typeNull()) },
+    ],
+    [],
+    typeString()
+  ),
   (_ctx, { input, format }) => {
     if (format) {
       return JSON.stringify(input, null, '  ');

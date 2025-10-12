@@ -222,7 +222,7 @@ export class TypeChecker {
           right,
           this.symbolTable
         );
-        if (typeIsAssignableToNullLeft && typeIsAssignableToNullRight) {
+        if (typeIsAssignableToNullLeft || typeIsAssignableToNullRight) {
           if (!BINARY_OPERATOR_NULL.includes(node.operator)) {
             this.defError(
               node,

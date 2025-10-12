@@ -16,10 +16,8 @@
 (116:3) Unknown symbol: InputText
 (122:3) Unknown symbol: Button
 (128:34) Unknown symbol: array_filter
-(131:11) Incompatible types for binary operator string != null
 (132:9) Unknown symbol: Text
 (135:16) Unknown symbol: string_format
-(148:11) Incompatible types for binary operator string != null
 (149:9) Unknown symbol: Text
 (152:16) Unknown symbol: string_format
 (172:5) Unknown symbol: Column

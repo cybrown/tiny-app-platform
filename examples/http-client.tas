@@ -1,22 +1,25 @@
 set_system_property(key: "title", value: "HTTP Client")
-var language = "text"
+var language: string | null = "text"
 var doFormat = false
 var doShowHeaders = false
 
-let request = {
+type Request = {method: string, url: string, headers: array<any>, body: any}
+
+let request: Request = {
   method:  "GET"
   url:     ""
   headers: []
   body:    null
 }
 
-var response
-var responseBodyString
+var response: any
+var responseBodyString: string | null
 var is_loading = false
 
 var requestHistory = default(try json_parse(storage_read("history")), [])
 
-fun save_request_to_history(request) {
+
+fun save_request_to_history(request: Request) {
   set requestHistory = array_append(
     requestHistory
     record_merge(
@@ -27,15 +30,15 @@ fun save_request_to_history(request) {
   history_persist()
 }
 
-fun apply_request_from_history(requestFromHistory) {
+fun apply_request_from_history(requestFromHistory: Request) {
   set request.method = requestFromHistory.method
   set request.url = requestFromHistory.url
   set request.headers = requestFromHistory.headers
   set request.body = requestFromHistory.body
 }
 
-fun history_remove(requestToRemove) {
-  set requestHistory = requestHistory | array_filter(req => req != requestToRemove)
+fun history_remove(requestToRemove: Request) {
+  set requestHistory = requestHistory | array_filter(item => item != requestToRemove)
   history_persist()
 }
 
@@ -50,8 +53,8 @@ fun executeHttpRequest() {
       request.method
       request.url
       request.headers
-         | array_filter(header => header.selected && header.name && header.value)
-         | array_map(header => [header.name, header.value])
+         | array_filter(item => item.selected && item.name && item.value)
+         | array_map(item => [item.name, item.value])
       request.body
       allowErrorStatusCode: true
       insecure:             true
@@ -70,21 +73,26 @@ fun executeHttpRequest() {
   set is_loading = false
 }
 
-fun buildCurlCode(method, url, headers) {
+fun buildCurlCode(method: string, url: string, headers: array<any>) {
   "curl -X $method $headers '$url'"
      | string_format({
         method:  method
         url:     url
         headers: headers
-           | array_map(header => string_format(
+           | array_map(item => string_format(
               "-H '$name: $value'"
-              {name: header.name, value: header.value}
+              {name: item.name, value: item.value}
             ))
            | array_join(" ")
       })
 }
 
-fun buildTalCode(method, url, headers, body) {
+fun buildTalCode(
+  method: string
+  url: string
+  headers: array<any>
+  body: any
+) {
   'http_request(method: "$method", url: "$url" $headers $body)'
      | string_format({
         method:  method
@@ -108,7 +116,7 @@ fun RequestHistory() {
     InputText { bindTo: search }
 
     Table {
-      _key:     req => req.id
+      _key:     row => row.id
       noHeader: true
       columns:  [
         {
@@ -230,24 +238,24 @@ Column {
         if (array_length(request.headers) > 0) Column {
           array_map(
             request.headers
-            (header, index) => [
+            (item, index) => [
               Row {
-                CheckBox { bindTo: header.selected }
+                CheckBox { bindTo: item.selected }
 
                 InputText {
                   placeholder: "Header name"
-                  bindTo:      header.name
+                  bindTo:      item.name
                 }
 
                 InputText {
                   placeholder: "Header value"
-                  bindTo:      header.value
+                  bindTo:      item.value
                 } | flex(2)
 
 
                 Button {
                   text:    "🗑️"
-                  confirm: if (header.name || header.value) "Remove header ?"
+                  confirm: if (item.name || item.value) "Remove header ?"
                   outline: true
                   onClick: () => set request.headers = array_remove(request.headers, index)
                 }
@@ -274,8 +282,7 @@ Column {
       }
     "code"    => Column {
         {
-          let validHeaders = request.headers
-             | array_filter(header => header.selected && header.name && header.value)
+          let validHeaders = request.headers | array_filter(item => item.selected && item.name && item.value)
 
           if (request.method != null && request.url != null) {
             Text {
@@ -332,7 +339,7 @@ Column {
             ]
             values:  response.headers
                | record_entries
-               | array_map(header => {key: header[0], value: header[1]})
+               | array_map(item => {key: item[0], value: item[1]})
           }
         }
       "body"    => Column {

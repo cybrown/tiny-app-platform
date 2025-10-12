@@ -3,7 +3,9 @@ import {
   defineFunction3,
   typeBytes,
   typeFunction,
+  typeNull,
   typeString,
+  typeUnion,
 } from 'tal-eval';
 import { bytes_to_string_impl } from '../util/bytes';
 
@@ -13,7 +15,7 @@ export const bytes_to_string = defineFunction3(
   typeFunction(
     [
       { name: 'bytes', type: typeBytes() },
-      { name: 'encoding', type: typeString() },
+      { name: 'encoding', type: typeUnion(typeNull(), typeString()) },
     ],
     [],
     typeString()

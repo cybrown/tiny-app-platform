@@ -179,12 +179,26 @@ try {
 function buildContext(
   onStateChange: (sync: boolean) => void,
   setPromptPasswordVisible: (visible: boolean) => void,
+  setConfirmationOverlayContent: (content: {
+    message: string;
+    resolver: (result: boolean) => void;
+  }) => void,
   resolveRef: React.MutableRefObject<((password: string) => void) | null>
 ): RuntimeContext {
   const ctx = new RuntimeContext(onStateChange);
   ctx.setSourceFetcher(
     (window as any).electronAPI ? electronSourceFetcher : webSourceFetcher
   );
+  ctx.registerDispatchListener("confirm", async (payload: any) => {
+    return new Promise<boolean>((resolve) => {
+      setConfirmationOverlayContent({
+        message: payload.message,
+        resolver: (result: boolean) => {
+          resolve(result);
+        },
+      });
+    });
+  });
   ctx.promptPassword = async () => {
     return new Promise((resolve) => {
       setPromptPasswordVisible(true);
@@ -470,11 +484,27 @@ function App() {
     };
   }, []);
 
+  const [confirmationOverlayContent, setConfirmationOverlayContent] = useState<{
+    message: string;
+    resolver: (result: boolean) => void;
+  }>();
+
+  const onCloseConfirmationOverlay = useCallback(() => {
+    confirmationOverlayContent?.resolver(false);
+    setConfirmationOverlayContent(undefined);
+  }, [confirmationOverlayContent]);
+
+  const onCloseConfirmationOverlayWithConfirm = useCallback(() => {
+    confirmationOverlayContent?.resolver(true);
+    setConfirmationOverlayContent(undefined);
+  }, [confirmationOverlayContent]);
+
   const ctx: RuntimeContext = useMemo(
     () =>
       buildContext(
         queueRenderAllApp,
         setPasswordPromptVisible,
+        setConfirmationOverlayContent,
         resolvePasswordRef
       ),
     [queueRenderAllApp]
@@ -582,6 +612,37 @@ function App() {
       <ThemeProvider value={theme}>
         <div className={styles.App}>
           <div className={styles.AppRendererContainer}>
+            {confirmationOverlayContent ? (
+              <LowLevelOverlay
+                size="m"
+                position="center"
+                onClose={onCloseConfirmationOverlay}
+                modal
+              >
+                <theme.WindowFrame
+                  title="Confirm"
+                  position="center"
+                  onClose={onCloseConfirmationOverlay}
+                  modal
+                >
+                  <theme.View padding={0.5} layout="flex-column" gap={0.5}>
+                    <Text text={confirmationOverlayContent.message} />
+                    <theme.View layout="flex-row" gap={0.5}>
+                      <div style={{ flexGrow: 1 }}></div>
+                      <theme.Button
+                        text="Cancel"
+                        outline
+                        onClick={onCloseConfirmationOverlay}
+                      />
+                      <theme.Button
+                        text="Confirm"
+                        onClick={onCloseConfirmationOverlayWithConfirm}
+                      />
+                    </theme.View>
+                  </theme.View>
+                </theme.WindowFrame>
+              </LowLevelOverlay>
+            ) : null}
             {app ? (
               <AppRenderer ctx={ctx} app={app} />
             ) : parseError ? (

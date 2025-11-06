@@ -44,6 +44,7 @@ import { http_request_form, http_request, http } from './functions/http';
 import { jmespath_search, json_parse, json_stringify } from './functions/json';
 import {
   mongodb_delete_one,
+  mongodb_delete_many,
   mongodb_find,
   mongodb_insert_one,
   mongodb_update_one,
@@ -225,6 +226,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(json_parse);
   ctx.registerFunction(json_stringify);
   ctx.registerFunction(mongodb_delete_one);
+  ctx.registerFunction(mongodb_delete_many);
   ctx.registerFunction(mongodb_find);
   ctx.registerFunction(mongodb_insert_one);
   ctx.registerFunction(mongodb_update_one);

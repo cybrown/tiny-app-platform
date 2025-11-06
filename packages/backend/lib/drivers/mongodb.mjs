@@ -40,11 +40,11 @@ export const operations = [
     },
   },
   {
-    route: "/op/mongodb-delete-one",
+    route: "/op/mongodb-delete",
     handler: async (req, params) => {
       const body = await readBody(req);
       const request = JSON.parse(body.toString());
-      let { uri, query: queryFromRequest, options } = request;
+      let { uri, query: queryFromRequest, options, many } = request;
       const query = queryFromRequest
         ? bson.EJSON.parse(JSON.stringify(queryFromRequest))
         : {};
@@ -54,7 +54,9 @@ export const operations = [
         const dbName = rUri.pathname.slice(1);
         const db = client.db(dbName);
         const collection = db.collection(request.collection);
-        const deleteResult = await collection.deleteOne(query, options);
+        const deleteResult = await (many
+          ? collection.deleteMany(query, options)
+          : collection.deleteOne(query, options));
         return okJson(deleteResult);
       } finally {
         client.close();

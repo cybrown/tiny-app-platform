@@ -91,6 +91,30 @@ export const mongodb_delete_one = defineFunction(
   }
 );
 
+export const mongodb_delete_many = defineFunction(
+  'mongodb_delete_many',
+  [
+    { name: 'uri' },
+    { name: 'collection' },
+    { name: 'query' },
+    { name: 'options' },
+    { name: 'confirm' },
+  ],
+  undefined,
+  mongodb_delete_many_impl,
+  {
+    description: 'Delete many documents from a MongoDB collection',
+    parameters: {
+      uri: 'MongoDB connection URI',
+      collection: 'Name of the collection',
+      query: 'Filter to select the document',
+      options: 'Delete options',
+      confirm: 'Whether to skip confirmation prompt (default: true)',
+    },
+    returns: 'Result of the delete operation',
+  }
+);
+
 function getUri(uri: string) {
   return uri;
 }
@@ -104,22 +128,48 @@ async function mongodb_delete_one_impl(
   value: { [key: string]: any }
 ) {
   return withLog(ctx, 'delete-one', value, value.options, () =>
-    mongodbDeleteOne({
+    mongodbDelete({
       uri: getUri(value.uri),
       collection: getCollection(value.collection),
       query: value.query,
       options: value.options,
+      many: false,
     })
   );
 }
 
-async function mongodbDeleteOne(params: {
+async function mongodb_delete_many_impl(
+  ctx: RuntimeContext,
+  value: { [key: string]: any }
+) {
+  if (
+    (value.confirm ?? true) &&
+    !(await ctx.dispatch('confirm', {
+      message:
+        'Are you sure you want to delete MANY documents? This action cannot be undone.',
+    }))
+  ) {
+    return;
+  }
+  return withLog(ctx, 'delete-many', value, value.options, () =>
+    mongodbDelete({
+      uri: getUri(value.uri),
+      collection: getCollection(value.collection),
+      query: value.query,
+      options: value.options,
+      many: true,
+    })
+  );
+}
+
+async function mongodbDelete(params: {
   uri: string;
   collection: string;
   query: unknown;
   options: unknown;
+  many: boolean;
 }) {
-  const response = await customRpc('mongodb-delete-one', params);
+  const response = await customRpc('mongodb-delete', params);
   if (response.status === 500) {
     const errorJson = await response.json();
     throw new Error(errorJson.message);

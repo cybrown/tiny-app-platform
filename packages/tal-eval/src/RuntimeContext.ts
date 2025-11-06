@@ -59,6 +59,33 @@ export class RuntimeContext {
 
   private _promptPassword: PasswordPrompter | null = null;
 
+  private _dispatchListeners: Map<string, (payload: any) => Promise<void>> =
+    new Map();
+
+  public async dispatch(action: string, payload?: any): Promise<any> {
+    if (this.parent) {
+      return this.parent.dispatch(action, payload);
+    }
+    const listener = this._dispatchListeners.get(action);
+    if (!listener) {
+      return;
+    }
+    return await listener(payload);
+  }
+
+  public registerDispatchListener(
+    action: string,
+    listener: (payload: any) => Promise<any>
+  ) {
+    if (this._dispatchListeners.has(action)) {
+      throw new Error(
+        'Dispatch listener already registered for action: ' + action
+      );
+    }
+    this._dispatchListeners.set(action, listener);
+  }
+
+  // TODO: Move those 2 methods to dispatch
   public get promptPassword(): PasswordPrompter | null {
     if (this.parent) {
       return this.parent.promptPassword;

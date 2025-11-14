@@ -237,14 +237,7 @@ export const default$ = defineFunction3(
     ['T'],
     typeGenericPlaceholder('T')
   ),
-  (_ctx, _kwargs, args) => {
-    for (let arg of args) {
-      if (arg != null) {
-        return arg;
-      }
-    }
-    return null;
-  },
+  (_ctx, { value, orElse }) => value ?? orElse,
   undefined,
   {
     description: 'Returns the first non null value',

@@ -2,6 +2,7 @@ import { PropsWithChildren, useCallback, useState } from "react";
 import { RuntimeContext, EvaluationError } from "tal-eval";
 import { LogItem } from "tal-eval";
 import {
+  FsLogItemData,
   HttpLogItemData,
   MongoLogItemData,
   PgLogItemData,
@@ -36,7 +37,8 @@ function isUnknownLogType(type: string): boolean {
     type !== "pg" &&
     type !== "http-request" &&
     type !== "process" &&
-    type !== "sqlite"
+    type !== "sqlite" &&
+    type !== "fs"
   );
 }
 
@@ -52,6 +54,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
   const [includeRedis, setIncludeRedis] = useState(true);
   const [includeSqlite, setIncludeSqlite] = useState(true);
   const [includeProcess, setIncludeProcess] = useState(true);
+  const [includeFs, setIncludeFs] = useState(true);
   const [includeUnknown, setIncludeUnknown] = useState(true);
 
   const clearConsoleHandler = useCallback(() => {
@@ -69,6 +72,7 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
         <CheckBox label="🐞" value={includeBugs} onChange={setIncludeBugs} />
         <CheckBox label="🌱" value={includeMongo} onChange={setIncludeMongo} />
         <CheckBox label="🎲" value={includeRedis} onChange={setIncludeRedis} />
+        <CheckBox label="📁" value={includeFs} onChange={setIncludeFs} />
         <ViewChild flexGrow={1}> </ViewChild>
         <CheckBox
           label="❓"
@@ -98,7 +102,8 @@ export default function ConsoleTab({ ctx }: ConsoleTabProps) {
             (logItem.type === "process" && includeProcess) ||
             (logItem.type === "redis" && includeRedis) ||
             (logItem.type === "sqlite" && includeSqlite) ||
-            (isUnknownLogType(logItem.type) && includeUnknown)
+            (logItem.type === "fs" && includeFs) ||
+            (isUnknownLogType(logItem.type) && includeUnknown),
         )
         .map((logItem) => (
           <View key={logItem.id} layout="flex-row">
@@ -132,6 +137,8 @@ function RenderLogItem({ item }: { item: LogItem<unknown> }) {
       return <RenderRedisLogItem item={item as LogItem<RedisLogItemData>} />;
     case "sqlite":
       return <RenderSqliteLogItem item={item as LogItem<SqliteLogItemData>} />;
+    case "fs":
+      return <RenderFsLogItem item={item as LogItem<FsLogItemData>} />;
     case "error":
       return <RenderErrorLogItem item={item} />;
   }
@@ -184,7 +191,7 @@ function RenderMongoLogItem({ item }: { item: LogItem<MongoLogItemData> }) {
   >(null);
   const showDetailsHandler = useCallback(
     () => setDetailsTabToShow("query"),
-    []
+    [],
   );
   const hideDetailsHandler = useCallback(() => setDetailsTabToShow(null), []);
 
@@ -368,6 +375,56 @@ function RenderSqliteLogItem({ item }: { item: LogItem<SqliteLogItemData> }) {
   );
 }
 
+function RenderFsLogItem({ item }: { item: LogItem<FsLogItemData> }) {
+  const { path, operation, stage, result } = item.data;
+
+  const [isDetailsTabVisible, setDetailsTabVisible] = useState<boolean>(false);
+  const showDetailsHandler = useCallback(() => setDetailsTabVisible(true), []);
+  const hideDetailsHandler = useCallback(() => setDetailsTabVisible(false), []);
+
+  return (
+    <>
+      <Text text="📁" />
+      <Button text="🔎" onClick={showDetailsHandler} outline />
+      {stage === "fulfilled" ? (
+        <Text text="OK" color="green" weight="bold" />
+      ) : stage === "rejected" ? (
+        <Text text="KO" color="red" weight="bold" />
+      ) : (
+        <Loader size="md" />
+      )}
+      <Text text={operation} ellipsis weight="bold" />
+      <Text text={path} ellipsis />
+      {isDetailsTabVisible ? (
+        <LowLevelOverlay
+          onClose={hideDetailsHandler}
+          modal
+          position="right"
+          size="l"
+        >
+          <WindowFrame
+            modal
+            position="right"
+            title="Query details"
+            onClose={hideDetailsHandler}
+          >
+            <View layout="flex-row">
+              <Text text="Path:" />
+              <Text text={path} />
+            </View>
+            <View layout="flex-row">
+              <Text text="Operation:" />
+              <Text text={operation} />
+            </View>
+            <Text text="Result" size={1.1} />
+            <Debug force value={result} extend={3} />
+          </WindowFrame>
+        </LowLevelOverlay>
+      ) : null}
+    </>
+  );
+}
+
 function RenderProcessLogItem({ item }: { item: LogItem<ProcessLogItemData> }) {
   const { command, args, stage, exitStatus, stdout } = item.data;
 
@@ -417,7 +474,7 @@ function RenderProcessLogItem({ item }: { item: LogItem<ProcessLogItemData> }) {
                   [
                     command,
                     ...(args ?? []).map((arg) => `'${escapeShellQuote(arg)}'`),
-                  ].join(" ")
+                  ].join(" "),
                 )
               }
             />
@@ -520,7 +577,7 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
   >(null);
   const showDetailsHandler = useCallback(
     () => setDetailsTabToShow("request"),
-    []
+    [],
   );
   const hideDetailsHandler = useCallback(() => setDetailsTabToShow(null), []);
   const copyAsCurl = useCallback(() => {
@@ -611,7 +668,7 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
                             { content: <Text text={entry[0]} /> },
                             { content: <Text wrap text={entry[1]} /> },
                           ],
-                        })
+                        }),
                       )}
                     />
                   )
@@ -628,7 +685,7 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
                       outline
                       onClick={() =>
                         navigator.clipboard.writeText(
-                          bytesToString(item?.data.response?.body)
+                          bytesToString(item?.data.response?.body),
                         )
                       }
                     />
@@ -649,7 +706,7 @@ function RenderHttpLogItem({ item }: { item: LogItem<HttpLogItemData> }) {
                     outline
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        bytesToString(item?.data.response?.body)
+                        bytesToString(item?.data.response?.body),
                       )
                     }
                   />
@@ -734,12 +791,12 @@ function requestToCurl(request: HttpLogItemData["request"]): string {
       ...(request.headers && request.headers.length
         ? request.headers.map(
             ([name, value]) =>
-              `-H '${escapeShellQuote(name)}: ${escapeShellQuote(value)}'`
+              `-H '${escapeShellQuote(name)}: ${escapeShellQuote(value)}'`,
           )
         : []),
       body
         ? `-d '${escapeShellQuote(
-            typeof body === "string" ? body : JSON.stringify(body)
+            typeof body === "string" ? body : JSON.stringify(body),
           )}'`
         : null,
     ]
@@ -754,7 +811,7 @@ function RenderRedisLogItem({ item }: { item: LogItem<RedisLogItemData> }) {
   >(null);
   const showDetailsHandler = useCallback(
     () => setDetailsTabToShow("command"),
-    []
+    [],
   );
   const hideDetailsHandler = useCallback(() => setDetailsTabToShow(null), []);
 
@@ -824,7 +881,7 @@ function RenderRedisLogItem({ item }: { item: LogItem<RedisLogItemData> }) {
                       outline
                       onClick={() =>
                         navigator.clipboard.writeText(
-                          bytesToString(item?.data.result)
+                          bytesToString(item?.data.result),
                         )
                       }
                     />
@@ -842,7 +899,7 @@ function RenderRedisLogItem({ item }: { item: LogItem<RedisLogItemData> }) {
                     outline
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        bytesToString(item?.data.result)
+                        bytesToString(item?.data.result),
                       )
                     }
                   />

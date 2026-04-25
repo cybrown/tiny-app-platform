@@ -51,7 +51,7 @@ function httpRequest(method, urlStr, headers, body, insecure = false) {
               Object.entries(response.headers).map(([key, value]) => [
                 "x-fetch-header-" + key,
                 value,
-              ])
+              ]),
             );
             responseHeaders["x-fetch-status-code"] = response.statusCode;
 
@@ -64,7 +64,7 @@ function httpRequest(method, urlStr, headers, body, insecure = false) {
             return resolve(createResponse(200, responseHeaders, body));
           })
           .catch(reject);
-      }
+      },
     );
     body.pipe(request);
 
@@ -162,7 +162,7 @@ const routes = [
                   let filename;
                   if (response.headers["content-disposition"]) {
                     const disposition = contentDisposition.parse(
-                      response.headers["content-disposition"]
+                      response.headers["content-disposition"],
                     );
                     if (
                       disposition.type === "attachment" &&
@@ -189,7 +189,7 @@ const routes = [
               throw new Error("info sourceKind not known: " + info.sourceKind);
           }
           form.append(field, valueToAppend, optionToAppend);
-        })
+        }),
       );
 
       try {
@@ -197,7 +197,7 @@ const routes = [
           method,
           url,
           { ...headers, ...form.getHeaders() },
-          form
+          form,
         );
       } catch (err) {
         config.log && console.error(err);
@@ -214,7 +214,7 @@ const routes = [
         return createResponse(
           400,
           null,
-          "Process related operations disabled on this server"
+          "Process related operations disabled on this server",
         );
       }
       const body = await readBody(req);
@@ -246,7 +246,7 @@ const routes = [
       return createResponse(
         200,
         { "x-exit-status": exitStatus, "x-pid": pid },
-        result
+        result,
       );
     },
   },
@@ -257,7 +257,7 @@ const routes = [
         return createResponse(
           400,
           null,
-          "Process related operations disabled on this server"
+          "Process related operations disabled on this server",
         );
       }
       const body = await readBody(req);
@@ -274,7 +274,7 @@ const routes = [
         return createResponse(
           400,
           null,
-          "Process related operations disabled on this server"
+          "Process related operations disabled on this server",
         );
       }
       const body = await readBody(req);
@@ -453,7 +453,7 @@ const routes = [
           },
           {
             upsert: true,
-          }
+          },
         );
       } finally {
         client.close();
@@ -499,7 +499,7 @@ const handleRequest = superHandler(routes, (req, res) => {
     req.url = "/";
   }
   servePublicWithoutFallThrough(req, res, (err) =>
-    sendResponse(res, { status: err.statusCode ?? 500 })
+    sendResponse(res, { status: err.statusCode ?? 500 }),
   );
 });
 
@@ -513,6 +513,7 @@ const wss = new WebSocketServer({ server });
 const wsCommands = {
   process_pty_create: process_pty_create,
   ssh_exec: ssh_exec,
+  fs_read: fs_read,
 };
 
 wss.on("connection", (client) => {
@@ -722,6 +723,46 @@ async function ssh_exec(client, body) {
   });
 }
 
+/**
+ *
+ * @param {WebSocket} client
+ * @param {*} body
+ */
+async function fs_read(client, body) {
+  try {
+    const { path } = body;
+
+    let closed = false;
+
+    fs.readFile(path, (err, data) => {
+      if (err) {
+        const frameHeader = Buffer.alloc(1);
+        frameHeader.writeUInt8(3, 0);
+        client.send(frameHeader);
+        client.close();
+        return;
+      }
+      if (closed) return;
+      const frameHeader = Buffer.alloc(1);
+      frameHeader.writeUInt8(1, 0);
+      client.send(Buffer.concat([frameHeader, data]));
+    });
+
+    client.on("close", () => {
+      closed = true;
+    });
+
+    client.on("error", () => {
+      closed = true;
+    });
+  } catch (e) {
+    const frameHeader = Buffer.alloc(1);
+    frameHeader.writeUInt8(3, 0);
+    client.send(frameHeader);
+    client.close();
+  }
+}
+
 export default server;
 
 async function killPtyProcess(ptyProcess) {
@@ -736,7 +777,7 @@ async function killPtyProcess(ptyProcess) {
             return reject(err);
           }
           resolve();
-        }
+        },
       );
     });
   } else {

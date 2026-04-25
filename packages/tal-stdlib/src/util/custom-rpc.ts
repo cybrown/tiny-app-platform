@@ -31,7 +31,7 @@ export async function customRpcWs(
 
   let isFirstMessage = true;
 
-  async function firstMessageHandler(message: MessageEvent<Blob>) {
+  async function messageHandler(message: MessageEvent<Blob>) {
     if (isFirstMessage) {
       isFirstMessage = false;
       const firstMessage = new Uint8Array(await message.data.arrayBuffer());
@@ -46,7 +46,7 @@ export async function customRpcWs(
       messages.push(await message.data.arrayBuffer());
     }
   }
-  client.addEventListener('message', firstMessageHandler);
+  client.addEventListener('message', messageHandler);
   client.addEventListener('error', successReject);
 
   await new Promise((resolve) => {

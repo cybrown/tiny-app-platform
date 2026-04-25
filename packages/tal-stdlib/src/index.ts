@@ -164,6 +164,7 @@ import {
   regexp_test,
 } from './functions/regexp';
 import { human_date } from './functions/human';
+import { fs_read } from './functions/fs';
 
 export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(default$);
@@ -331,12 +332,15 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(notify);
   ctx.registerFunction(rpc);
 
+  ctx.registerFunction(fs_read);
+
   ctx.registerFunction(human_date);
 }
 
 export { HttpLogItemData } from './functions/http';
 export { MongoLogItemData } from './functions/mongodb';
 export { PgLogItemData } from './functions/pg';
+export { FsLogItemData } from './functions/fs';
 export { ProcessLogItemData, ProcessPtyObject } from './functions/process';
 export { RedisLogItemData } from './functions/redis';
 export { base64_to_bytes, bytes_to_base64 } from './util/base64';

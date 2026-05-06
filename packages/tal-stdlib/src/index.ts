@@ -109,6 +109,7 @@ import {
   string_length,
   string_percent_encode,
   string_percent_decode,
+  string_replace,
 } from './functions/string';
 import { uuid_v4 } from './functions/uuid';
 import {
@@ -280,6 +281,7 @@ export function importStdlibInContext(ctx: RuntimeContext) {
   ctx.registerFunction(string_upper);
   ctx.registerFunction(string_slice);
   ctx.registerFunction(string_repeat);
+  ctx.registerFunction(string_replace);
   ctx.registerFunction(string_trim_start);
   ctx.registerFunction(string_trim_end);
   ctx.registerFunction(string_pad_start);

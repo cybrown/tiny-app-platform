@@ -13,6 +13,36 @@ import {
 } from 'tal-eval';
 import { base64_to_bytes } from '../util/base64';
 
+export const string_replace = defineFunction3(
+  'string_replace',
+  [{ name: 'string' }, { name: 'search' }, { name: 'replace' }],
+  typeFunction(
+    [
+      { name: 'string', type: typeString() },
+      { name: 'search', type: typeString() },
+      { name: 'replace', type: typeString() },
+    ],
+    [],
+    typeBytes()
+  ),
+  (_ctx, { string, search, replace }) => {
+    if (typeof string == 'string') {
+      return string.replace(search, replace);
+    }
+    return string;
+  },
+  undefined,
+  {
+    description: 'Replaces a substring inside a string',
+    parameters: {
+      string: 'String to search into',
+      search: 'Substring to search',
+      replace: 'String to replace',
+    },
+    returns: 'String with replacement, or initial value if not a string',
+  }
+);
+
 export const string_to_bytes = defineFunction3(
   'string_to_bytes',
   [{ name: 'string' }, { name: 'encoding' }],

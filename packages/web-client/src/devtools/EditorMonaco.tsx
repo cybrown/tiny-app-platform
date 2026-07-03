@@ -3,7 +3,7 @@ import styles from "./Editor.module.css";
 import "./Editor.css";
 import * as monaco from "monaco-editor";
 import { EditorApi } from "./EditorApi";
-import { useTheme } from "../theme";
+import { useTheme } from "tal-web-theme-api";
 import { Node, TypeNode } from "tal-parser";
 
 // TODO: Custom themes for each theme ?

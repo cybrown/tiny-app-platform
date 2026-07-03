@@ -28,7 +28,17 @@
     "packages/backend",
     "packages/web-client",
     "packages/tal-stdlib",
-    "packages/tal-runner"
+    "packages/tal-runner",
+    "packages/tal-web-theme-api",
+    "packages/tal-web-widget-system",
+    "packages/tal-web-theme-html",
+    "packages/tal-web-theme-toy-box",
+    "packages/tal-web-theme-twbs",
+    "packages/tal-web-theme-twbs-dark",
+    "packages/tal-web-theme-nes-css",
+    "packages/tal-web-theme-98",
+    "packages/tal-web-theme-dark-orange",
+    "packages/tal-web-theme-mozaic-lm"
   ],
   "devDependencies": {
     "turbo": "^2.5.4"

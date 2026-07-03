@@ -6,8 +6,8 @@ import {
   TypeChecker,
 } from "tal-eval";
 import { parse } from "tal-parser";
-import { View, WindowFrame, Text } from "../theme";
-import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
+import { View, WindowFrame, Text } from "tal-web-theme-api";
+import { LowLevelOverlay } from "tal-web-widget-system";
 import { useState, useMemo, useEffect } from "react";
 import { EditorApi } from "./EditorApi";
 import { AnyTmp } from "../util";

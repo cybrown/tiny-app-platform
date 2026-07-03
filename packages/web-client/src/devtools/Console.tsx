@@ -19,10 +19,10 @@ import {
   Table,
   Text,
   CheckBox,
-} from "../theme";
-import Debug from "../widgets/Debug";
-import ViewChild from "../widgets/ViewChild";
-import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
+} from "tal-web-theme-api";
+import { Debug } from "tal-web-widget-system";
+import { ViewChild } from "tal-web-widget-system";
+import { LowLevelOverlay } from "tal-web-widget-system";
 import { useForceRender } from "../utils";
 
 type ConsoleTabProps = {

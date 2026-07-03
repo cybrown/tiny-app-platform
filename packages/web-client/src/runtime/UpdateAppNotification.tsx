@@ -1,6 +1,6 @@
-import { WindowFrame, View, Button, Text } from "../theme";
-import ViewChild from "../widgets/ViewChild";
-import LowLevelOverlay from "../widgets/internal/LowLevelOverlay";
+import { WindowFrame, View, Button, Text } from "tal-web-theme-api";
+import { ViewChild } from "tal-web-widget-system";
+import { LowLevelOverlay } from "tal-web-widget-system";
 
 type UpdateAppNotificationProps = {
   close: () => void;

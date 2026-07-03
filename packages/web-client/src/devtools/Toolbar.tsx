@@ -1,4 +1,4 @@
-import { Button, View } from "../theme";
+import { Button, View } from "tal-web-theme-api";
 
 export default function ToolBar({
   onFormat,

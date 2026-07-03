@@ -1,10 +1,10 @@
 import { RuntimeContext, Program, runAsync } from "tal-eval";
-import RenderExpression from "./RenderExpression";
+import { RenderExpression } from "tal-web-widget-system";
 import { useCallback, useEffect, useState } from "react";
-import { APP_DEBUG_MODE_ENV } from "./constants";
-import RenderError from "./RenderError";
+import { APP_DEBUG_MODE_ENV } from "tal-web-widget-system";
+import { RenderError } from "tal-web-widget-system";
 import { useNotificationController } from "./notifications";
-import { Text } from "../theme";
+import { Text } from "tal-web-theme-api";
 
 function AppRenderer({
   app,

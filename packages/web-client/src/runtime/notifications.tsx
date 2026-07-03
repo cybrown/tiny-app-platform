@@ -6,7 +6,7 @@ import {
   useReducer,
 } from "react";
 import styles from "./notifications.module.css";
-import { Button, Text } from "../theme";
+import { Button, Text } from "tal-web-theme-api";
 
 type NotificationState = {
   notifications: Record<string, ReactNode>;

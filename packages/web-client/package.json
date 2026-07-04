@@ -38,6 +38,7 @@
     "tal-web-theme-98": "*",
     "tal-web-theme-dark-orange": "*",
     "tal-web-theme-mozaic-lm": "*",
+    "tal-web-theme-dkt": "*",
     "typescript": "^5.8.3",
     "yaml": "^2.8.0"
   },

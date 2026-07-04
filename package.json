@@ -38,7 +38,8 @@
     "packages/tal-web-theme-nes-css",
     "packages/tal-web-theme-98",
     "packages/tal-web-theme-dark-orange",
-    "packages/tal-web-theme-mozaic-lm"
+    "packages/tal-web-theme-mozaic-lm",
+    "packages/tal-web-theme-dkt"
   ],
   "devDependencies": {
     "turbo": "^2.5.4"

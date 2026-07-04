@@ -28,6 +28,7 @@ import nesCssTheme from "tal-web-theme-nes-css";
 import theme98 from "tal-web-theme-98";
 import darkOrangeTheme from "tal-web-theme-dark-orange";
 import mozaicLmTheme from "tal-web-theme-mozaic-lm";
+import dktTheme from "tal-web-theme-dkt";
 import { lower } from "tal-eval";
 import Devtools from "./devtools/Devtools";
 import {
@@ -252,6 +253,7 @@ const themes = [
   theme98,
   darkOrangeTheme,
   mozaicLmTheme,
+  dktTheme,
 ];
 
 const selectedThemeFromQueryString = themes.find(

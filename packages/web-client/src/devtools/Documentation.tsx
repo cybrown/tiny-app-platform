@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { RuntimeContext, WidgetDocumentation } from "tal-eval";
-import { Button, InputText, Link, Tabs, Text, View } from "../theme";
+import { Button, InputText, Link, Tabs, Text, View } from "tal-web-theme-api";
 import { RegisterableFunction } from "tal-eval";
 import {
   keyboardEventToShortcutDefinition,
   KEYS_TO_IGNORE,
   stringifyShortcutDefinition,
-} from "../widgets/internal/keyboard-util";
+} from "tal-web-widget-system";
 
 export default function Documentation({
   ctx,

@@ -11,43 +11,24 @@ import * as tal from "tal-parser";
 import { EditorApi } from "./devtools/Editor";
 import AppRenderer from "./runtime/AppRenderer";
 import { useHotkeys } from "react-hotkeys-hook";
-import Button, { ButtonDocumentation } from "./widgets/Button";
-import CheckBox, { CheckBoxDocumentation } from "./widgets/CheckBox";
-import InputFile, { InputFileDocumentation } from "./widgets/InputFile";
-import Text, { TextDocumentation } from "./widgets/Text";
-import Radio, { RadioDocumentation } from "./widgets/Radio";
-import Link, { LinkDocumentation } from "./widgets/Link";
-import Select, { SelectDocumentation } from "./widgets/Select";
-import Table, { TableDocumentation } from "./widgets/Table";
-import InputText, { InputTextDocumentation } from "./widgets/InputText";
-import Switch, { SwitchDocumentation } from "./widgets/Switch";
-import Snippet, { SnippetDocumentation } from "./widgets/Snippet";
-import Row, { RowDocumentation } from "./widgets/Row";
-import Image, { ImageDocumentation } from "./widgets/Image";
-import Column, { ColumnDocumentation } from "./widgets/Column";
-import Loader, { LoaderDocumentation } from "./widgets/Loader";
-import Html, { HtmlDocumentation } from "./widgets/Html";
-import Md, { MdDocumentation } from "./widgets/Md";
-import Overlay, { OverlayDocumentation } from "./widgets/Overlay";
-import View, { ViewDocumentation } from "./widgets/View";
+import {
+  registerWidgets,
+  Text,
+  LowLevelOverlay,
+  APP_DEBUG_MODE_ENV,
+} from "tal-web-widget-system";
 import { backendUrl } from "./runtime/configuration";
-import Debug, { DebugDocumentation } from "./widgets/Debug";
-import { APP_DEBUG_MODE_ENV } from "./runtime/constants";
-import Pager, { PagerDocumentation } from "./widgets/Pager";
 import { importStdlibInContext } from "tal-stdlib";
-import { ThemeProvider, Theme, useTheme } from "./theme";
-import toyBoxTheme from "./themes/toy-box";
-import htmlTheme from "./themes/html";
-import twbsTheme from "./themes/twbs";
-import twbsDarkTheme from "./themes/twbs-dark";
-import nesCssTheme from "./themes/nes-css";
-import theme98 from "./themes/98";
-import darkOrangeTheme from "./themes/dark-orange";
-import mozaicLmTheme from "./themes/mozaic-lm";
-import Tabs, { TabsDocumentation } from "./widgets/Tabs";
+import { ThemeProvider, Theme, useTheme } from "tal-web-theme-api";
+import toyBoxTheme from "tal-web-theme-toy-box";
+import htmlTheme from "tal-web-theme-html";
+import twbsTheme from "tal-web-theme-twbs";
+import twbsDarkTheme from "tal-web-theme-twbs-dark";
+import nesCssTheme from "tal-web-theme-nes-css";
+import theme98 from "tal-web-theme-98";
+import darkOrangeTheme from "tal-web-theme-dark-orange";
+import mozaicLmTheme from "tal-web-theme-mozaic-lm";
 import { lower } from "tal-eval";
-import WindowFrame, { WindowFrameDocumentation } from "./widgets/WindowFrame";
-import LowLevelOverlay from "./widgets/internal/LowLevelOverlay";
 import Devtools from "./devtools/Devtools";
 import {
   NotificationDisplay,
@@ -55,7 +36,6 @@ import {
 } from "./runtime/notifications";
 import UpdateAppNotification from "./runtime/UpdateAppNotification";
 import { useForceRender } from "./utils";
-import Terminal, { TerminalDocumentation } from "./widgets/Terminal";
 
 const queryParams = window.location.search
   .slice(1)
@@ -207,30 +187,7 @@ function buildContext(
   };
   importStdlibInContext(ctx);
 
-  ctx.registerWidget("Button", Button, ButtonDocumentation);
-  ctx.registerWidget("CheckBox", CheckBox, CheckBoxDocumentation);
-  ctx.registerWidget("Column", Column, ColumnDocumentation);
-  ctx.registerWidget("Debug", Debug, DebugDocumentation);
-  ctx.registerWidget("Html", Html, HtmlDocumentation);
-  ctx.registerWidget("Md", Md, MdDocumentation);
-  ctx.registerWidget("Image", Image, ImageDocumentation);
-  ctx.registerWidget("InputFile", InputFile, InputFileDocumentation);
-  ctx.registerWidget("InputText", InputText, InputTextDocumentation);
-  ctx.registerWidget("Link", Link, LinkDocumentation);
-  ctx.registerWidget("Loader", Loader, LoaderDocumentation);
-  ctx.registerWidget("Overlay", Overlay, OverlayDocumentation);
-  ctx.registerWidget("Pager", Pager, PagerDocumentation);
-  ctx.registerWidget("Radio", Radio, RadioDocumentation);
-  ctx.registerWidget("Row", Row, RowDocumentation);
-  ctx.registerWidget("Select", Select, SelectDocumentation);
-  ctx.registerWidget("Snippet", Snippet, SnippetDocumentation);
-  ctx.registerWidget("Switch", Switch, SwitchDocumentation);
-  ctx.registerWidget("Table", Table, TableDocumentation);
-  ctx.registerWidget("Tabs", Tabs, TabsDocumentation);
-  ctx.registerWidget("Text", Text, TextDocumentation);
-  ctx.registerWidget("View", View, ViewDocumentation);
-  ctx.registerWidget("WindowFrame", WindowFrame, WindowFrameDocumentation);
-  ctx.registerWidget("Terminal", Terminal, TerminalDocumentation);
+  registerWidgets(ctx);
 
   return ctx;
 }

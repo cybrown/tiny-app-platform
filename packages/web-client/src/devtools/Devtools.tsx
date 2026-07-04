@@ -1,10 +1,10 @@
 import { RuntimeContext } from "tal-eval";
-import { Select, Switch, Tabs, Theme, View } from "../theme";
+import { Select, Switch, Tabs, Theme, View } from "tal-web-theme-api";
 import { EditorApi } from "./Editor";
 import { useState } from "react";
 import SourceTab from "./SourceTab";
 import ConsoleTab from "./Console";
-import { APP_DEBUG_MODE_ENV } from "../runtime/constants";
+import { APP_DEBUG_MODE_ENV } from "tal-web-widget-system";
 
 type DevtoolsProps = {
   ctx: RuntimeContext;

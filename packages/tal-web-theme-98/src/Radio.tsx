@@ -1,0 +1,24 @@
+import { useId } from "react";
+import { RadioProps } from "tal-web-theme-api";
+
+export default function Radio({
+  disabled,
+  onChange,
+  value,
+  option,
+  label,
+}: RadioProps) {
+  const id = useId();
+  return (
+    <div>
+      <input
+        id={id}
+        type="radio"
+        checked={value === option}
+        onChange={() => onChange && onChange()}
+        disabled={disabled}
+      />
+      <label htmlFor={id}>{label || "\u00A0"}</label>
+    </div>
+  );
+}

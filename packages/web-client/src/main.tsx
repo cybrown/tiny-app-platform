@@ -4,6 +4,13 @@ import App from "./App";
 import "normalize.css";
 import "font-proxima-nova/style.css";
 import "./reset.css";
+import "tal-web-widget-system/style.css";
+import "tal-web-theme-html/style.css";
+import "tal-web-theme-toy-box/style.css";
+import "tal-web-theme-twbs/style.css";
+import "tal-web-theme-nes-css/style.css";
+import "tal-web-theme-98/style.css";
+import "tal-web-theme-mozaic-lm/style.css";
 
 const isElectron = !!(window as any).electronAPI;
 const hasServiceWorker = "serviceWorker" in navigator;
